@@ -1,0 +1,64 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": ["prettier", "security", "unicorn", "promise"],
+  "extends": [
+    "eslint:recommended",
+    "prettier",
+    "prettier/babel",
+    "plugin:security/recommended",
+    "plugin:eslint-comments/recommended",
+    "plugin:unicorn/recommended",
+    "plugin:promise/recommended",
+    "plugin:node/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "globals": {
+    "Promise": true
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "node/shebang": [
+      "error",
+      {
+        "convertPath": {
+          "bin/**/*.js": ["^bin/(.+?)\\.js$", "lib/bin/$1.js"]
+        }
+      }
+    ],
+    "node/no-unsupported-features/es-syntax": [
+      "error",
+      {
+        "ignores": ["modules"]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/test/**"],
+      "plugins": ["chai-friendly"],
+      "extends": ["plugin:chai-friendly/recommended"],
+      "globals": {
+        "expect": true,
+        "PendingError": true
+      }
+    },
+    {
+      "files": ["scripts/**"],
+      "parserOptions": {
+        "sourceType": "module",
+        "allowImportExportEverywhere": true
+      },
+      "rules": {
+        "node/shebang": "off"
+      }
+    }
+  ]
+}

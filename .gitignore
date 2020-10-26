@@ -1,0 +1,15 @@
+node_modules
+docker_node_modules
+dist
+*.log
+yarn.lock
+*.rerun
+*.tgz
+.env
+*.p8
+lib
+coverage
+stats.json
+.dockerignore
+.nyc_output
+test-results

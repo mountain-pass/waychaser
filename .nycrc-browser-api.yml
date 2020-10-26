@@ -1,0 +1,14 @@
+extends: '@istanbuljs/nyc-config-babel'
+all: true
+skip-full: false
+exclude:
+  - 'lib/**/*.js'
+  - 'dist/**/*.js'
+  - 'scripts/**/*.js'
+  - 'coverage/**/*.js'
+check-coverage: false
+
+reporter:
+  - text-summary
+  - lcov
+  - text

@@ -1,0 +1,17 @@
+{
+  "eslint.alwaysShowStatus": true,
+  "editor.formatOnSave": true,
+  "cucumberautocomplete.onTypeFormat": true,
+  "cucumberautocomplete.steps": ["src/test/**/*.js"],
+  "cucumberautocomplete.skipDocStringsFormat": true,
+  "cucumberautocomplete.syncfeatures": "src/test/**/*.feature",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "search.exclude": {
+    "**/coverage": true,
+    "**/dist": true,
+    "**/lib": true,
+    "**/test-results": true,
+  }
+}
