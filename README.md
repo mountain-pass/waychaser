@@ -188,7 +188,7 @@ const address = await nextAddresses.op.item[0]();
 ```
 
 ```
-library.load(“https://beta-api-addressr.mountain-pass.com.au”)
+library.load(“https://api-addressr.mountain-pass.com.au”)
 .then(root => root.op[“https://addressr.mountain-pass.com.au/rels/address-search”]({q: “8 Arthur St”}))
 .then(addresses => addresses.op.next())
 .then(nextAddresses => nextAddresses.op.item[0]())
@@ -198,7 +198,10 @@ library.load(“https://beta-api-addressr.mountain-pass.com.au”)
 
 # TO DO
 
-- [ ] lots 😂
+- [ ] CI/CD pipeline
+- [ ] Firefox/Safari/IE testing
+- [ ] Code coverage and code quality reporting
+- [ ] lots more 😂
 
 # Development
 
