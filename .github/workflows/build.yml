@@ -57,7 +57,6 @@ jobs:
       - name: Archive package
         uses: actions/upload-artifact@v2
         with:
-          name: package
           path: mountainpass-waychaser-*.tgz
 
   bump_version:
