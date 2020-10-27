@@ -53,7 +53,8 @@
     "eslint-check": "eslint --print-config src/server/index.js | eslint-config-prettier-check",
     "precommit": "lint-staged && npm run test:node-api",
     "npm-check-unused": "depcheck",
-    "version-bump": "scripts/version-bump.sh"
+    "version-bump": "scripts/version-bump.sh",
+    "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public"
   },
   "files": [
     "/dist/*.js",

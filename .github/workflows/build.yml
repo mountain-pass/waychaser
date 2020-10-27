@@ -49,12 +49,15 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-
-      - run: npm ci
-      - run: |
-          npm publish
+      - run: npm pack
+      - run: npm run dopublish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Archive package
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: mountainpass-waychaser-*.tgz
 
   bump_version:
     needs: publish
