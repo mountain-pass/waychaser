@@ -198,7 +198,8 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 
 # TO DO
 
-- [ ] CI/CD pipeline
+- [x] CI/CD pipeline
+- [ ] dependabot
 - [ ] Firefox/Safari/IE testing
 - [ ] Code coverage and code quality reporting
 - [ ] lots more 😂
