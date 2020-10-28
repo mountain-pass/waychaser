@@ -32,14 +32,15 @@ jobs:
     - run: npm run lint
     - run: npm run build
     - run: npm run cover
-    - name: Archive code coverage results
-      uses: actions/upload-artifact@v2
-      with:
-        name: code-coverage-report
-        path: |
-          coverage/full
-          !lcov-report/**/*
-          !lcov.info
+    # removed artifact upload because the server is flakey
+    # - name: Archive code coverage results
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: code-coverage-report
+    #     path: |
+    #       coverage/full
+    #       !lcov-report/**/*
+    #       !lcov.info
 
   publish:
     needs: build
@@ -56,10 +57,11 @@ jobs:
       - run: npm run dopublish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - name: Archive package
-        uses: actions/upload-artifact@v2
-        with:
-          path: mountainpass-waychaser-*.tgz
+      # removed artifact upload because the server is flakey
+      # - name: Archive package
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     path: mountainpass-waychaser-*.tgz
 
   bump_version:
     needs: publish
