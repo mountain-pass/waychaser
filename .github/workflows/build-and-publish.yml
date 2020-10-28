@@ -54,7 +54,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Publish and Tag
         run: |
-          CURRENT_VERSION=$(npm --unsafe-perm show "@mountainpass/addressr" version)
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          CURRENT_VERSION=$(npm --unsafe-perm show "${PACKAGE_NAME}" version)
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           if [ $CURRENT_VERSION = $PACKAGE_VERSION ]; then
             echo "Version ${PACKAGE_VERSION} has already been published"
@@ -69,6 +70,8 @@ jobs:
             git push --tags
             echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
           fi
+          PACKAGE_NAME_WITHOUT_AT="${PACKAGE_NAME#@}"
+          echo "TGZ_NAME=${PACKAGE_NAME_WITHOUT_AT//\//-}" >> $GITHUB_ENV
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
@@ -92,8 +95,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./mountainpass-waychaser-${{ env.PACKAGE_VERSION }}.tgz
-          asset_name: mountainpass-waychaser-${{ env.PACKAGE_VERSION }}.tgz
+          asset_path: ./${TGZ_NAME}-${{ env.PACKAGE_VERSION }}.tgz
+          asset_name: ${TGZ_NAME}-${{ env.PACKAGE_VERSION }}.tgz
           asset_content_type: application/gzip
 
       - name: Bump Version
