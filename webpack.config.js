@@ -1,21 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = ['source-map'].map((devtool) => ({
+module.exports = (environment) => ({
   mode: 'development',
   entry: './src/waychaser.js',
-  //  entry: ['babel-polyfill', './src/waychaser.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'waychaser.js',
-    // chunkFilename: 'waychaser.js',
-    // publicPath: '/',
-    // devtoolModuleFilenameTemplate: '[absolute-resource-path]',
-    // devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]',
+    filename: environment.OUTPUT_FILENAME,
     libraryTarget: 'umd',
-    // library: 'waychaser',
   },
-  devtool,
+  devtool: 'source-map',
   optimization: {
     runtimeChunk: true,
   },
@@ -31,16 +25,10 @@ module.exports = ['source-map'].map((devtool) => ({
   resolve: {
     extensions: ['.js'],
   },
-  // devServer: {
-  //   watchContentBase: true,
-  //   historyApiFallback: true,
-  //   port: 3000,
-  //   open: true,
-  // },
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: './index.html',
     }),
   ],
-}));
+});
