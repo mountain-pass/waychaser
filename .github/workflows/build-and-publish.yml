@@ -56,7 +56,10 @@ jobs:
         run: |
           CURRENT_VERSION=$(npm --unsafe-perm show "@mountainpass/addressr" version)
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          if[ $CURRENT_VERSION == $PACKAGE_VERSION ]; then
+          if [ $CURRENT_VERSION = $PACKAGE_VERSION ]; then
+            echo "Version ${PACKAGE_VERSION} has already been published"
+            echo "PACKAGE_VERSION=" >> $GITHUB_ENV
+          else
             npm ci
             npm pack
             npm run dopublish
@@ -65,9 +68,6 @@ jobs:
             git tag "v${PACKAGE_VERSION}"
             git push --tags
             echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
-          else
-            echo "Version ${PACKAGE_VERSION} has already been published"
-            echo "PACKAGE_VERSION=" >> $GITHUB_ENV
           fi
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
