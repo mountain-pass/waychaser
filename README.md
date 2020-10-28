@@ -199,7 +199,7 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 # TO DO
 
 - [x] CI/CD pipeline
-- [ ] dependabot
+- [x] dependabot
 - [ ] Firefox/Safari/IE testing
 - [ ] Code coverage and code quality reporting
 - [ ] lots more 😂
