@@ -1,0 +1,105 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    runs-on: ubuntu-latest
+
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npm run lint
+    - run: npm run build
+    - run: npm run cover
+    # removed artifact upload because the server is flakey
+    # - name: Archive code coverage results
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: code-coverage-report
+    #     path: |
+    #       coverage/full
+    #       !lcov-report/**/*
+    #       !lcov.info
+
+  publish:
+    needs: build
+    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - name: Publish and Tag
+        run: |
+          CURRENT_VERSION=$(npm --unsafe-perm show "@mountainpass/addressr" version)
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          if[ $CURRENT_VERSION == $PACKAGE_VERSION ]; then
+            npm ci
+            npm pack
+            npm run dopublish
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git tag "v${PACKAGE_VERSION}"
+            git push --tags
+            echo "::set-env name=PACKAGE_VERSION::$PACKAGE_VERSION"
+          else
+            echo "Version ${PACKAGE_VERSION} has already been published"
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: Create Release
+        if: ${{ "env.PACKAGE_VERSION" != "" }}
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: Release v${{ env.PACKAGE_VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        if: ${{ "env.PACKAGE_VERSION" != "" }}
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./mountainpass-waychaser-${{ env.PACKAGE_VERSION }}.tgz
+          asset_name: mountainpass-waychaser-${{ env.PACKAGE_VERSION }}.tgz
+          asset_content_type: application/gzip
+
+      - name: Bump Version
+        run: |
+          npm --unsafe-perm --no-git-tag-version version patch -m "Version minor to %s."
+          git add package.json
+          NEXT_VERSION=$(node -p "require('./package.json').version")
+          git commit -m "Version bump to $NEXT_VERSION. [skip ci]"
+          git push origin HEAD:main
+
