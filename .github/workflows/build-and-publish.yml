@@ -64,15 +64,16 @@ jobs:
             git config user.email github-actions@github.com
             git tag "v${PACKAGE_VERSION}"
             git push --tags
-            echo "::set-env name=PACKAGE_VERSION::$PACKAGE_VERSION"
+            echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
           else
             echo "Version ${PACKAGE_VERSION} has already been published"
+            echo "PACKAGE_VERSION=" >> $GITHUB_ENV
           fi
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - name: Create Release
-        if: ${{ "env.PACKAGE_VERSION" != "" }}
+        if: ${{ env.PACKAGE_VERSION != "" }}
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -84,7 +85,7 @@ jobs:
           prerelease: false
 
       - name: Upload Release Asset
-        if: ${{ "env.PACKAGE_VERSION" != "" }}
+        if: ${{ env.PACKAGE_VERSION != "" }}
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
