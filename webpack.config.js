@@ -1,15 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = ['source-map'].map((devtool) => ({
+module.exports = (environment) => ({
   mode: 'development',
   entry: './src/waychaser.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'waychaser.js',
+    filename: environment.OUTPUT_FILENAME,
     libraryTarget: 'umd',
   },
-  devtool,
+  devtool: 'source-map',
   optimization: {
     runtimeChunk: true,
   },
@@ -31,4 +31,4 @@ module.exports = ['source-map'].map((devtool) => ({
       filename: './index.html',
     }),
   ],
-}));
+});
