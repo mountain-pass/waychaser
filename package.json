@@ -93,7 +93,7 @@
     "concurrently": "^5.3.0",
     "cucumber": "^5.1.0",
     "cucumber-junit-formatter": "^0.2.2",
-    "depcheck": "^0.9.1",
+    "depcheck": "^1.2.0",
     "dockerode": "^2.5.8",
     "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.5.0",
