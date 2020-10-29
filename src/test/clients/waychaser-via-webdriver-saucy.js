@@ -74,12 +74,10 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
 
     return this.driver;
   }
+  /* istanbul ignore next: only get's executed when there are web driver issues */
   catch(error) {
-    /* istanbul ignore next: only get's executed when there are web driver issues */
-    {
-      logger.error('error getting broswer', error);
-      throw error;
-    }
+    logger.error('error getting broswer', error);
+    throw error;
   }
 
   async sendTestResult(result) {
