@@ -1,6 +1,8 @@
 # waychaser
 
-Client library for RESTful APIs
+Client library for level 3 RESTful APIs
+
+[![Sauce Test Status](https://app.saucelabs.com/browser-matrix/tompahoward.svg)](https://app.saucelabs.com/u/tompahoward)
 
 # ToC
 
