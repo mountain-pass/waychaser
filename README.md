@@ -2,6 +2,8 @@
 
 Client library for level 3 RESTful APIs
 
+[![Build Status](https://github.com/mountain-pass/waychaser/workflows/Build/badge.svg)](https://github.com/mountain-pass/waychaser/actions?query=workflow%3ABuild)
+
 [![Sauce Test Status](https://app.saucelabs.com/browser-matrix/tompahoward.svg)](https://app.saucelabs.com/u/tompahoward)
 
 # ToC
