@@ -22,6 +22,10 @@ jobs:
       matrix:
         node-version: [10.17.x, 12.x, 14.x]
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -46,6 +50,11 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
