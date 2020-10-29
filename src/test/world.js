@@ -95,8 +95,7 @@ function world({ attach, parameters }) {
     'browser-api-saucy': waychaserViaWebdriverSaucy,
   };
   this.waychaser = clients[this.parameters.client];
-  // ignore, because it only get's executed when there are test config issues
-  /* istanbul ignore next */
+  /* istanbul ignore next: only get's executed when there are test config issues*/
   if (this.waychaser == undefined) {
     throw new Error(`unknown client: ${this.parameters.client}`);
   }
@@ -113,8 +112,7 @@ After({ timeout: 600000 }, async function (scenario) {
     try {
       await ioc.waychaser.loadCoverage();
     } catch (error) {
-      // ignore, because it only get's executed on test framework failure
-      /* istanbul ignore next */
+      /* istanbul ignore next: only get's executed on test framework failure */
       logger.error('coverage', error);
     }
   }
@@ -122,8 +120,7 @@ After({ timeout: 600000 }, async function (scenario) {
   if (this.waychaser && ioc.waychaser.sendTestResult) {
     await ioc.waychaser.sendTestResult(scenario.result.status);
   }
-  // ignore, because it only get's executed on test failure
-  /* istanbul ignore next */
+  /* istanbul ignore next: only get's executed on test failure */
   if (
     scenario.result.status === 'failed' ||
     scenario.result.status === 'pending'
@@ -140,8 +137,7 @@ AfterAll({ timeout: 30000 }, async function () {
     try {
       await ioc.waychaser.quit();
     } catch (error) {
-      // ignore, because it only get's executed on test failure
-      /* istanbul ignore next */
+      /* istanbul ignore next: only get's executed on test failure */
       logger.error(error);
     }
   }

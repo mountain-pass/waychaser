@@ -8,8 +8,7 @@ const NO_STRICT = process.env.NO_STRICT || '';
 const outputDirectory = 'test-results';
 
 function getFeatureGlob(RERUN, profile) {
-  // ignore, because RERUN is not set for full test runs
-  /* istanbul ignore next */
+  /* istanbul ignore next: RERUN is not set for full test runs */
   return fs.existsSync(RERUN) && fs.statSync(RERUN).size !== 0
     ? RERUN
     : `src/test/**/*.feature --tags 'not(@not-${profile})'`;

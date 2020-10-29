@@ -3,7 +3,7 @@
   "parserOptions": {
     "sourceType": "module"
   },
-  "plugins": ["prettier", "security", "unicorn", "promise"],
+  "plugins": ["prettier", "security", "unicorn", "promise", "istanbul"],
   "extends": [
     "eslint:recommended",
     "prettier",
@@ -38,7 +38,9 @@
       {
         "ignores": ["modules"]
       }
-    ]
+    ],
+    "istanbul/no-ignore-file": "error",
+    "istanbul/prefer-ignore-reason": "error"
   },
   "overrides": [
     {

@@ -21,8 +21,7 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
     try {
       const options = this.getBrowserOptions();
       options.windowSize(screen);
-      // ignore, because it only get's executed on CI server
-      /* istanbul ignore next */
+      /* istanbul ignore next: only get's executed on CI server*/
       if (process.env.CI) {
         options.headless();
       }
@@ -41,11 +40,12 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
 
       return this.driver;
     } catch (error) {
-      // ignore, because it only get's executed when there are web driver issues
-      /* istanbul ignore next */
       {
-        logger.error('error getting broswer', error);
-        throw error;
+        /* istanbul ignore next: only get's executed when there are web driver issues*/
+        {
+          logger.error('error getting broswer', error);
+          throw error;
+        }
       }
     }
   }

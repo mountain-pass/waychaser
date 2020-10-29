@@ -74,9 +74,8 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
 
     return this.driver;
   }
-  // ignore, because it only get's executed when there are web driver issues
-  /* istanbul ignore next */
   catch(error) {
+    /* istanbul ignore next: only get's executed when there are web driver issues */
     {
       logger.error('error getting broswer', error);
       throw error;
@@ -95,8 +94,7 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
     await this.getBrowser(name);
   }
 
-  // ignore, because it only get's executed on test failure
-  /* istanbul ignore next */
+  /* istanbul ignore next: only get's executed on test failure */
   async allowDebug() {}
 
   async quit() {

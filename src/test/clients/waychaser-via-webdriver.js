@@ -5,7 +5,7 @@ import logger from '../../util/logger';
 class WaychaserViaWebdriver {
   async load(url, options) {
     const result = await this.driver.executeScript(
-      /* istanbul ignore next */
+      /* istanbul ignore next: won't work in browser otherwise */
       function () {
         /* global window */
         return window.waychaser
@@ -29,8 +29,7 @@ class WaychaserViaWebdriver {
     return result.success;
   }
 
-  // ignore, because it only get's executed on test failure
-  /* istanbul ignore next */
+  /* istanbul ignore next: only get's executed on test failure */
   async allowDebug(timeout) {
     if (this.driver) {
       this.driver.executeScript(
@@ -52,8 +51,7 @@ class WaychaserViaWebdriver {
   }
 
   async quit() {
-    // ignore, because it only get's executed when there are fatal web driver issues
-    /* istanbul ignore else */
+    /* istanbul ignore else: only get's executed when there are fatal web driver issues */
     if (this.driver) {
       await this.driver.quit();
     }
@@ -80,8 +78,7 @@ class WaychaserViaWebdriver {
   }
 
   async loadCoverage() {
-    // ignore, because it only get's executed when there are fatal web driver issues
-    /* istanbul ignore else */
+    /* istanbul ignore else: only get's executed when there are fatal web driver issues  */
     if (this.driver) {
       try {
         const remoteCoverage = await this.driver.executeScript(
@@ -92,8 +89,7 @@ class WaychaserViaWebdriver {
         // clear coverage
         await this.clearRemoteCoverage();
       } catch (error) {
-        // ignore, because it only get's executed when there are instanbul issues
-        /* istanbul ignore next */
+        /* istanbul ignore next: only get's executed when there are instanbul issues */
         {
           logger.error(error);
           throw error;
