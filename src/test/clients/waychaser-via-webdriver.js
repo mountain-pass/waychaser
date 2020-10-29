@@ -1,12 +1,7 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable security/detect-non-literal-fs-filename */
 import { Builder, Capabilities } from 'selenium-webdriver';
-import chrome from 'selenium-webdriver/chrome';
 import logging from 'selenium-webdriver/lib/logging';
 import humanizeDuration from 'humanize-duration';
-import core from '../../../node_modules/istanbul-middleware/lib/core';
-import { promises as fsp } from 'fs';
-// eslint-disable-next-line no-unused-vars
+import core from 'istanbul-middleware/lib/core';
 import logger from '../../util/logger';
 
 const screen = {
@@ -14,15 +9,37 @@ const screen = {
   height: 800,
 };
 
-const waychaserViaWebdriver = {
+class WaychaserViaWebdriver {
   async load(url, options) {
     const driver = this.driver ? this.driver : await this.getBrowser();
-    return driver.executeScript(`await waychaser.load('${url}', ${options})`);
-  },
+    const result = await driver.executeScript(
+      /* istanbul ignore next */
+      function () {
+        /* global window */
+        return window.waychaser
+          .load(arguments[0], arguments[1])
+          .then((success) => {
+            console.log({ success });
+            return { success };
+          })
+          .catch((error) => {
+            console.log({ error });
+            return { error };
+          });
+      },
+      url,
+      options
+    );
+    if (result.error) {
+      logger.debug(result.error);
+      throw new Error(result.error);
+    }
+    return result.success;
+  }
 
   async getBrowser() {
     try {
-      const options = new chrome.Options();
+      const options = this.getBrowserOptions();
       options.windowSize(screen);
       // ignore, because it only get's executed on CI server
       /* istanbul ignore next */
@@ -33,14 +50,12 @@ const waychaserViaWebdriver = {
       const prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      const caps = Capabilities.chrome();
+      const caps = Capabilities[process.env.BROWSER || 'chrome']();
       caps.setLoggingPrefs(prefs);
 
-      this.driver = await new Builder()
-        .withCapabilities(caps)
-        .forBrowser('chrome')
-        .setChromeOptions(options)
-        .build();
+      let builder = new Builder().withCapabilities(caps);
+      builder = this.setBrowserOptions(builder, options);
+      this.driver = await builder.build();
       await this.driver.get(`http://localhost:${process.env.UI_PORT}`);
       await this.loadCoverage();
 
@@ -53,7 +68,7 @@ const waychaserViaWebdriver = {
         throw error;
       }
     }
-  },
+  }
 
   // ignore, because it only get's executed on test failure
   /* istanbul ignore next */
@@ -75,35 +90,15 @@ const waychaserViaWebdriver = {
         timeout
       );
     }
-  },
-
-  async takeScreenshot(filename = 'test-results/last.png') {
-    // ignore, because it only get's executed when there are fatal web driver issues
-    /* istanbul ignore else */
-    if (this.driver) {
-      const screenShot = await this.driver.takeScreenshot();
-      await fsp.writeFile(filename, screenShot, 'base64');
-      await this.driver
-        .manage()
-        .logs()
-        .get(logging.Type.BROWSER)
-        .then((entries) => {
-          entries.forEach((entry) => {
-            logger.browser('[%s] %s', entry.level.name, entry.message);
-          });
-          return;
-        });
-    }
-  },
+  }
 
   async quit() {
     // ignore, because it only get's executed when there are fatal web driver issues
     /* istanbul ignore else */
     if (this.driver) {
-      await this.takeScreenshot();
       await this.driver.quit();
     }
-  },
+  }
 
   async clearRemoteCoverage() {
     await this.driver.executeScript(`var i = null;
@@ -123,7 +118,7 @@ const waychaserViaWebdriver = {
               }
           }
       }`);
-  },
+  }
 
   async loadCoverage() {
     // ignore, because it only get's executed when there are fatal web driver issues
@@ -146,7 +141,7 @@ const waychaserViaWebdriver = {
         }
       }
     }
-  },
-};
+  }
+}
 
-export { waychaserViaWebdriver };
+export { WaychaserViaWebdriver };

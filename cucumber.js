@@ -33,10 +33,11 @@ function generateConfig(profile) {
     FORMAT_OPTIONS
   )}' ${MODULES} --require ${REQUIRE_GLOB} ${NO_STRICT} --format rerun:${RERUN} --format json:${resultsDirectory}/results.cucumber -f node_modules/cucumber-junit-formatter:${resultsDirectory}/results.xml ${FAIL_FAST}`;
 
-  return BASE_CONFIG;
+  return `${BASE_CONFIG} --world-parameters '${JSON.stringify({ profile })}'`;
 }
 
 module.exports = {
   'node-api': generateConfig('node-api'),
-  'browser-api': generateConfig('browser-api'),
+  'browser-api-chrome': generateConfig('browser-api-chrome'),
+  'browser-api-firefox': generateConfig('browser-api-firefox'),
 };

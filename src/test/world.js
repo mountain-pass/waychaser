@@ -17,7 +17,9 @@ import ioc from '../util/ioc-container';
 import chaiAsPromised from 'chai-as-promised';
 import { waychaser } from '../../dist/waychaser';
 
-import { waychaserViaWebdriver } from './clients/waychaser-via-webdriver';
+import { waychaserViaWebdriverChrome } from './clients/waychaser-via-webdriver-chrome';
+import { waychaserViaWebdriverFirefox } from './clients/waychaser-via-webdriver-firefox';
+
 chai.use(chaiAsPromised);
 
 global.expect = chai.expect;
@@ -73,31 +75,42 @@ function world({ attach, parameters }) {
   logger.debug('BEGIN world');
   this.attach = attach;
   this.parameters = parameters;
+  logger.debug('parameters:\n', JSON.stringify(parameters, undefined, 2));
   this.app = app;
   router = express.Router();
   this.router = router;
 
-  switch (process.env.TEST_PROFILE) {
+  switch (this.parameters.profile) {
     case 'node-api':
       this.waychaser = waychaser;
       break;
-    case 'browser-api':
-      this.waychaser = waychaserViaWebdriver;
+    case 'browser-api-chrome':
+      this.waychaser = waychaserViaWebdriverChrome;
+      break;
+    case 'browser-api-firefox':
+      this.waychaser = waychaserViaWebdriverFirefox;
       break;
     // ignore, because it only get's executed when there are test config issues
     /* istanbul ignore next */
     default:
-      throw new Error(`unknown TEST_PROFILE: ${process.env.TEST_PROFILE}`);
+      throw new Error(`unknown profile: ${this.parameters.profile}`);
   }
   ioc.service('waychaser', () => this.waychaser);
 
   return '';
 }
 
-After({ timeout: 600000 }, async (scenario) => {
+After({ timeout: 600000 }, async function (scenario) {
   logger.debug('%s: - %s', scenario.pickle.name, scenario.result.status);
   if (ioc.waychaser && ioc.waychaser.loadCoverage) {
-    await ioc.waychaser.loadCoverage();
+    logger.debug('downloading coverage from browser...');
+    try {
+      await ioc.waychaser.loadCoverage();
+    } catch (error) {
+      // ignore, because it only get's executed on test framework failure
+      /* istanbul ignore next */
+      logger.error('coverage', error);
+    }
   }
 
   // ignore, because it only get's executed on test failure
@@ -106,35 +119,26 @@ After({ timeout: 600000 }, async (scenario) => {
     scenario.result.status === 'failed' ||
     scenario.result.status === 'pending'
   ) {
-    if (ioc.waychaser && ioc.waychaser.takeScreenshot) {
-      await ioc.waychaser.takeScreenshot(
-        `test-results/${process.env.TEST_PROFILE}/debug.png`
-      );
-    }
     if (!process.env.CI && ioc.waychaser && ioc.waychaser.allowDebug) {
+      logger.debug('waiting for browser debugging to complete...');
       await ioc.waychaser.allowDebug(600000);
     }
   }
 });
 
 AfterAll({ timeout: 30000 }, async function () {
-  try {
-    if (ioc.waychaser && ioc.waychaser.loadCoverage) {
-      await ioc.waychaser.loadCoverage();
-    }
-    if (ioc.waychaser && ioc.waychaser.quit) {
-      ioc.waychaser.quit();
-    }
-    stopServer();
-  } catch (error) {
-    // ignore, because it only get's executed on test failure
-    /* istanbul ignore next */
-    {
+  if (ioc.waychaser && ioc.waychaser.quit) {
+    try {
+      await ioc.waychaser.quit();
+    } catch (error) {
+      // ignore, because it only get's executed on test failure
+      /* istanbul ignore next */
       logger.error(error);
-      throw error;
     }
   }
+  stopServer();
 });
+
 setWorldConstructor(world);
 
 setDefinitionFunctionWrapper(stepDefinitionWrapper);

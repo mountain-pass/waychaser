@@ -15,7 +15,7 @@ When('we try to load that API', async function () {
   this.attempt = this.waychaser.load(`http://localhost:${PORT}`);
 });
 
-Then('the API will load successfully', async function () {
+Then('the API will load successfully', { timeout: 40000 }, async function () {
   await expect(this.attempt).to.not.be.rejectedWith(Error);
 });
 

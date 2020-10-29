@@ -48,6 +48,9 @@
       "globals": {
         "expect": true,
         "PendingError": true
+      },
+      "rules": {
+        "security/detect-non-literal-fs-filename": "off"
       }
     },
     {
