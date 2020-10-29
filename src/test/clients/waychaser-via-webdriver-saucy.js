@@ -14,6 +14,12 @@ const RUN =
   dateFormat(new Date(), "yyyy-MM-dd'T'hh:mm:ss.l ") +
   moment().tz(Intl.DateTimeFormat().resolvedOptions().timeZone).zoneAbbr();
 
+const BUILD = `${process.env.GITHUB_RUN_ID || 'LOCAL'}-${
+  process.env.GITHUB_RUN_NUMBER || RUN
+}`;
+
+const TUNNEL_ID = `${BUILD}-${RUN}`;
+
 class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
   async startTunnel() {
     this.myAccount = new SauceLabs({ user: username, key: accessKey });
@@ -24,7 +30,7 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
        * all parameters have to be applied camel cased instead of with hyphens, e.g.
        * to apply the `--tunnel-identifier` parameter, set:
        */
-      tunnelIdentifier: process.env.GITHUB_RUN_ID || RUN,
+      tunnelIdentifier: TUNNEL_ID,
     });
   }
 
@@ -39,12 +45,10 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
         browserVersion: 'latest',
         'goog:chromeOptions': { w3c: true },
         'sauce:options': {
-          tunnelIdentifier: process.env.GITHUB_RUN_ID || RUN,
+          tunnelIdentifier: TUNNEL_ID,
           username: username,
           accessKey: accessKey,
-          build: `${process.env.GITHUB_RUN_ID || 'LOCAL'}-${
-            process.env.GITHUB_RUN_NUMBER || RUN
-          }`,
+          build: BUILD,
           name,
           /* As a best practice, set important test metadata and execution options
           such as build info, tags for reporting, and timeout durations.
