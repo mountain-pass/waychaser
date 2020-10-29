@@ -1,9 +1,9 @@
 import chrome from 'selenium-webdriver/chrome';
 // eslint-disable-next-line no-unused-vars
 import logger from '../../util/logger';
-import { WaychaserViaWebdriver } from './waychaser-via-webdriver';
+import { WaychaserViaWebdriverLocal } from './waychaser-via-webdriver-local';
 
-class WaychaserViaWebdriverChrome extends WaychaserViaWebdriver {
+class WaychaserViaWebdriverChrome extends WaychaserViaWebdriverLocal {
   getBrowserOptions() {
     return new chrome.Options();
   }

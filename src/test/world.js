@@ -19,6 +19,7 @@ import { waychaser } from '../../dist/waychaser';
 
 import { waychaserViaWebdriverChrome } from './clients/waychaser-via-webdriver-chrome';
 import { waychaserViaWebdriverFirefox } from './clients/waychaser-via-webdriver-firefox';
+import { waychaserViaWebdriverSaucy } from './clients/waychaser-via-webdriver-saucy';
 
 chai.use(chaiAsPromised);
 
@@ -69,7 +70,11 @@ BeforeAll({ timeout: 240000 }, async function () {
   startServer();
 });
 
-Before({ timeout: 240000 }, async function () {});
+Before({ timeout: 240000 }, async function (scenario) {
+  if (this.waychaser && ioc.waychaser.setJobName) {
+    await ioc.waychaser.setJobName(scenario.pickle.name);
+  }
+});
 
 function world({ attach, parameters }) {
   logger.debug('BEGIN world');
@@ -80,21 +85,22 @@ function world({ attach, parameters }) {
   router = express.Router();
   this.router = router;
 
-  switch (this.parameters.profile) {
-    case 'node-api':
-      this.waychaser = waychaser;
-      break;
-    case 'browser-api-chrome':
-      this.waychaser = waychaserViaWebdriverChrome;
-      break;
-    case 'browser-api-firefox':
-      this.waychaser = waychaserViaWebdriverFirefox;
-      break;
-    // ignore, because it only get's executed when there are test config issues
-    /* istanbul ignore next */
-    default:
-      throw new Error(`unknown profile: ${this.parameters.profile}`);
+  waychaserViaWebdriverSaucy.browser = this.parameters.browser;
+  waychaserViaWebdriverSaucy.platform = this.parameters.platform;
+
+  const clients = {
+    'node-api': waychaser,
+    'browser-api-chrome-local': waychaserViaWebdriverChrome,
+    'browser-api-firefox-local': waychaserViaWebdriverFirefox,
+    'browser-api-saucy': waychaserViaWebdriverSaucy,
+  };
+  this.waychaser = clients[this.parameters.client];
+  // ignore, because it only get's executed when there are test config issues
+  /* istanbul ignore next */
+  if (this.waychaser == undefined) {
+    throw new Error(`unknown client: ${this.parameters.client}`);
   }
+
   ioc.service('waychaser', () => this.waychaser);
 
   return '';
@@ -113,6 +119,9 @@ After({ timeout: 600000 }, async function (scenario) {
     }
   }
 
+  if (this.waychaser && ioc.waychaser.sendTestResult) {
+    await ioc.waychaser.sendTestResult(scenario.result.status);
+  }
   // ignore, because it only get's executed on test failure
   /* istanbul ignore next */
   if (

@@ -1,9 +1,9 @@
 import firefox from 'selenium-webdriver/firefox';
 // eslint-disable-next-line no-unused-vars
 import logger from '../../util/logger';
-import { WaychaserViaWebdriver } from './waychaser-via-webdriver';
+import { WaychaserViaWebdriverLocal } from './waychaser-via-webdriver-local';
 
-class WaychaserViaWebdriverFirefox extends WaychaserViaWebdriver {
+class WaychaserViaWebdriverFirefox extends WaychaserViaWebdriverLocal {
   getBrowserOptions() {
     return new firefox.Options();
   }

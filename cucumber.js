@@ -15,7 +15,7 @@ function getFeatureGlob(RERUN, profile) {
     : `src/test/**/*.feature --tags 'not(@not-${profile})'`;
 }
 
-function generateConfig(profile) {
+function generateConfig(profile, client, browser, platform) {
   const resultsDirectory = `${outputDirectory}/${profile}`;
   fs.mkdirSync(resultsDirectory, { recursive: true });
 
@@ -33,11 +33,28 @@ function generateConfig(profile) {
     FORMAT_OPTIONS
   )}' ${MODULES} --require ${REQUIRE_GLOB} ${NO_STRICT} --format rerun:${RERUN} --format json:${resultsDirectory}/results.cucumber -f node_modules/cucumber-junit-formatter:${resultsDirectory}/results.xml ${FAIL_FAST}`;
 
-  return `${BASE_CONFIG} --world-parameters '${JSON.stringify({ profile })}'`;
+  return `${BASE_CONFIG} --world-parameters '${JSON.stringify({
+    profile,
+    client: client || profile,
+    browser,
+    platform,
+  })}'`;
 }
 
 module.exports = {
   'node-api': generateConfig('node-api'),
-  'browser-api-chrome': generateConfig('browser-api-chrome'),
-  'browser-api-firefox': generateConfig('browser-api-firefox'),
+  'browser-api-chrome-local': generateConfig('browser-api-chrome-local'),
+  'browser-api-chrome-saucy': generateConfig(
+    'browser-api-chrome-saucy',
+    'browser-api-saucy',
+    'chrome',
+    'Windows 10'
+  ),
+  'browser-api-firefox-local': generateConfig('browser-api-firefox-local'),
+  'browser-api-firefox-saucy': generateConfig(
+    'browser-api-firefox-saucy',
+    'browser-api-saucy',
+    'firefox',
+    'Windows 10'
+  ),
 };

@@ -200,7 +200,10 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 
 - [x] CI/CD pipeline
 - [x] dependabot
-- [ ] Firefox/Safari/IE testing
+- [x] Firefox testing
+- [ ] matrix testing for firefox
+- [ ] Safari/IE testing
+- [ ] badges
 - [ ] Code coverage and code quality reporting
 - [ ] lots more 😂
 

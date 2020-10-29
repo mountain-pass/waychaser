@@ -1,0 +1,17 @@
+extends: '@istanbuljs/nyc-config-babel'
+all: true
+skip-full: false
+exclude:
+  - 'lib/**/*.js'
+  - 'dist/**/*.js'
+  - 'scripts/**/*.js'
+  - 'coverage/**/*.js'
+  - 'src/test/clients/waychaser-via-webdriver-firefox.js'
+  - 'src/test/clients/waychaser-via-webdriver-chrome.js'
+  - 'src/test/clients/waychaser-via-webdriver-local.js'
+check-coverage: false
+
+reporter:
+  - text-summary
+  - lcov
+  - text

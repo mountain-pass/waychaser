@@ -37,6 +37,10 @@ jobs:
     - run: npm run lint
     - run: npm run build
     - run: npm run cover
+      env:
+        SAUCE_LABS_KEY: ${{secrets.SAUCE_LABS_KEY}}
+        SAUCE_LABS_USERNAME: ${{secrets.SAUCE_LABS_USERNAME}}
+
     # removed artifact upload because the server is flakey
     # - name: Archive code coverage results
     #   uses: actions/upload-artifact@v2
