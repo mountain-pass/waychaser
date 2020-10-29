@@ -24,7 +24,7 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
        * all parameters have to be applied camel cased instead of with hyphens, e.g.
        * to apply the `--tunnel-identifier` parameter, set:
        */
-      tunnelIdentifier: 'my-tunnel',
+      tunnelIdentifier: process.env.GITHUB_RUN_ID || RUN,
     });
   }
 
@@ -39,7 +39,7 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
         browserVersion: 'latest',
         'goog:chromeOptions': { w3c: true },
         'sauce:options': {
-          tunnelIdentifier: 'my-tunnel',
+          tunnelIdentifier: process.env.GITHUB_RUN_ID || RUN,
           username: username,
           accessKey: accessKey,
           build: `${process.env.GITHUB_RUN_ID || 'LOCAL'}-${
