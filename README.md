@@ -23,7 +23,6 @@ Client library for level 3 RESTful APIs
 - [Usage](#usage)
   - [Node.js](#nodejs)
   - [Browser](#browser)
-- [Usage](#usage-1)
 - [API Design Notes](#api-design-notes)
   - [Get root API](#get-root-api)
   - [Get list of operations](#get-list-of-operations)
@@ -94,16 +93,33 @@ _None_
 import { waychaser } from '@mountainpass/waychaser'
 
 ...
-
-const api = await waychaser.load(apiUrl);
+try {
+  const api = await waychaser.load(apiUrl);
+  // do something with `api`
+}
+catch(error) {
+  // do something with `error`
+}
 
 ```
 
 ## Browser
 
-_Comming Soon..._
+```html
+<script type="text/javascript" src="https://unpkg.com/@mountainpass/waychaser@VERSION"></script>
 
-# Usage
+...
+<script type="text/javascript">
+waychaser.load(apiUrl).then(api => {
+  // do something with `api`
+}).catch(error => {
+  // do something with `error`
+});
+
+</script>
+```
+
+Where `VERSION` is the version of waychaser you would like to use.
 
 # API Design Notes
 

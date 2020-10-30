@@ -16,6 +16,7 @@
   ],
   "license": "Apache-2.0",
   "main": "dist/waychaser.js",
+  "unpkg": "dist/waychaser.umd.min.js",
   "module": "src/waychaser.js",
   "engines": {
     "node": ">=10.17.0"
