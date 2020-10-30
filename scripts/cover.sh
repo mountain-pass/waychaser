@@ -1,0 +1,14 @@
+#!/bin/bash
+
+: "${npm_lifecycle_event?This script should be run from npm}"
+
+COVERING=${npm_lifecycle_event#cover:}
+COVER_NAME=${COVERING//:/-}
+
+nyc \
+    --nycrc-path \
+    ".nycrc-${COVER_NAME}.yml" \
+    --clean \
+    --temp-dir "coverage/${COVER_NAME}/.nyc_output" \
+    --report-dir "coverage/${COVER_NAME}" \
+    npm run "test:${COVERING}"
