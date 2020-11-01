@@ -8,7 +8,11 @@ import moment from 'moment-timezone';
 
 const username = process.env.SAUCE_LABS_USERNAME,
   accessKey = process.env.SAUCE_LABS_KEY,
-  tags = [process.env.npm_package_name, process.env.npm_package_version];
+  tags = [
+    process.env.npm_package_name,
+    process.env.npm_package_version,
+    process.version,
+  ];
 
 const RUN =
   dateFormat(new Date(), "yyyy-MM-dd'T'hh:mm:ss.l ") +
