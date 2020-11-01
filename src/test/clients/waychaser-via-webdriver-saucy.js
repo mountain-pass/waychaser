@@ -54,9 +54,7 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
           accessKey: accessKey,
           build: BUILD,
           name,
-          /* As a best practice, set important test metadata and execution options
-          such as build info, tags for reporting, and timeout durations.
-          */
+          extendedDebugging: true,
           maxDuration: 3600,
           idleTimeout: 1000,
           tags: tags,
@@ -76,8 +74,16 @@ class WaychaserViaWebdriverSaucy extends WaychaserViaWebdriver {
   }
   /* istanbul ignore next: only get's executed when there are web driver issues */
   catch(error) {
-    logger.error('error getting broswer', error);
+    logger.error('error getting browser', error);
     throw error;
+  }
+
+  async getBrowserLogs() {
+    // getting logs is not possible wtih safari
+    // https://stackoverflow.com/questions/46272218/unable-to-console-logs-from-safari-using-selenium-webdriver-python
+    if (this.browser != 'safari' && this.browser != 'firefox') {
+      super.getBrowserLogs();
+    }
   }
 
   async sendTestResult(result) {

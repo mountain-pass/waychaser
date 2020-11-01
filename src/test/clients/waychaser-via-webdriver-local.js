@@ -4,10 +4,10 @@ import logging from 'selenium-webdriver/lib/logging';
 
 import logger from '../../util/logger';
 
-const screen = {
-  width: 1024,
-  height: 800,
-};
+// const screen = {
+//   width: 1024,
+//   height: 800,
+// };
 
 class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
   async load(url, options) {
@@ -20,7 +20,7 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
   async getBrowser() {
     try {
       const options = this.getBrowserOptions();
-      options.windowSize(screen);
+      //options.windowSize(screen);
       /* istanbul ignore next: only get's executed on CI server*/
       if (process.env.CI) {
         options.headless();
@@ -43,7 +43,7 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
       {
         /* istanbul ignore next: only get's executed when there are web driver issues*/
         {
-          logger.error('error getting broswer', error);
+          logger.error('error getting browser', error);
           throw error;
         }
       }

@@ -1,6 +1,7 @@
 import humanizeDuration from 'humanize-duration';
 import core from 'istanbul-middleware/lib/core';
 import logger from '../../util/logger';
+import logging from 'selenium-webdriver/lib/logging';
 
 class WaychaserViaWebdriver {
   async load(url, options) {
@@ -12,21 +13,38 @@ class WaychaserViaWebdriver {
           .load(arguments[0], arguments[1])
           .then((success) => {
             console.log({ success });
-            return { success };
+            return { success, result: 'success' };
           })
           .catch((error) => {
             console.log({ error });
-            return { error };
+            return { error, result: 'error' };
           });
       },
       url,
       options
     );
+
+    await this.getBrowserLogs();
+
+    logger.debug(`result:`, result);
     if (result.error) {
       logger.debug(result.error);
       throw new Error(result.error);
     }
     return result.success;
+  }
+
+  async getBrowserLogs() {
+    await this.driver
+      .manage()
+      .logs()
+      .get(logging.Type.BROWSER)
+      .then((entries) => {
+        entries.forEach((entry) => {
+          logger.browser('[%s] %s', entry.level.name, entry.message);
+        });
+        return;
+      });
   }
 
   /* istanbul ignore next: only get's executed on test failure */

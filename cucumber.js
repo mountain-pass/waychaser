@@ -56,4 +56,11 @@ module.exports = {
     'firefox',
     'Windows 10'
   ),
+  'browser-api-safari-local': generateConfig('browser-api-safari-local'),
+  'browser-api-safari-saucy': generateConfig(
+    'browser-api-safari-saucy',
+    'browser-api-saucy',
+    'safari',
+    'macOS 10.15'
+  ),
 };

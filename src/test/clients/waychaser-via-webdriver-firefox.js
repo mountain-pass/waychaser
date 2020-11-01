@@ -11,6 +11,10 @@ class WaychaserViaWebdriverFirefox extends WaychaserViaWebdriverLocal {
   setBrowserOptions(builder, options) {
     return builder.forBrowser('firefox').setChromeOptions(options);
   }
+
+  async getBrowserLogs() {
+    // getting logs is not possible with firefox
+  }
 }
 
 const instance = new WaychaserViaWebdriverFirefox();

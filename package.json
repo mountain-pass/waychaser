@@ -48,6 +48,8 @@
     "test:browser-api:chrome:saucy": "scripts/test-browser.sh",
     "test:browser-api:firefox:local": "scripts/test-browser.sh",
     "test:browser-api:firefox:saucy": "scripts/test-browser.sh",
+    "test:browser-api:safari:local": "scripts/test-browser.sh",
+    "test:browser-api:safari:saucy": "scripts/test-browser.sh",
     "test:browser-api": "scripts/for-all-browsers.sh",
     "test": "npm-run-all --sequential ${npm_lifecycle_event}:*",
     "watch:test:node-api": "nodemon -V -x npm -- run ${npm_lifecycle_event#watch:}",
@@ -60,6 +62,8 @@
     "cover:browser-api:chrome:saucy": "scripts/cover.sh",
     "cover:browser-api:firefox:local": "scripts/cover.sh",
     "cover:browser-api:firefox:saucy": "scripts/cover.sh",
+    "cover:browser-api:safari:local": "scripts/cover.sh",
+    ".cover:browser-api:safari:saucy": "scripts/cover.sh",
     "cover:browser-api": "scripts/for-all-browsers.sh",
     "cover": "scripts/cover-all.sh",
     "eslint-check": "eslint --print-config src/server/index.js | eslint-config-prettier-check",
@@ -72,9 +76,9 @@
     "/dist/*.js.map"
   ],
   "dependencies": {
-    "cross-fetch": "^3.0.4",
     "debug": "^4.1.1",
     "http-link-header": "^1.0.2",
+    "isomorphic-fetch": "^3.0.0",
     "shellcheck": "^0.4.4",
     "url-polyfill": "^1.1.7"
   },

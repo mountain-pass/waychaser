@@ -20,6 +20,7 @@ import { waychaser } from '../../dist/waychaser';
 import { waychaserViaWebdriverChrome } from './clients/waychaser-via-webdriver-chrome';
 import { waychaserViaWebdriverFirefox } from './clients/waychaser-via-webdriver-firefox';
 import { waychaserViaWebdriverSaucy } from './clients/waychaser-via-webdriver-saucy';
+import { waychaserViaWebdriverSafari } from './clients/waychaser-via-webdriver-safari';
 
 chai.use(chaiAsPromised);
 
@@ -92,6 +93,7 @@ function world({ attach, parameters }) {
     'node-api': waychaser,
     'browser-api-chrome-local': waychaserViaWebdriverChrome,
     'browser-api-firefox-local': waychaserViaWebdriverFirefox,
+    'browser-api-safari-local': waychaserViaWebdriverSafari,
     'browser-api-saucy': waychaserViaWebdriverSaucy,
   };
   this.waychaser = clients[this.parameters.client];
