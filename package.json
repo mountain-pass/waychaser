@@ -63,7 +63,7 @@
     "cover:browser-api:firefox:local": "scripts/cover.sh",
     "cover:browser-api:firefox:saucy": "scripts/cover.sh",
     "cover:browser-api:safari:local": "scripts/cover.sh",
-    ".cover:browser-api:safari:saucy": "scripts/cover.sh",
+    "cover:browser-api:safari:saucy": "scripts/cover.sh",
     "cover:browser-api": "scripts/for-all-browsers.sh",
     "cover": "scripts/cover-all.sh",
     "eslint-check": "eslint --print-config src/server/index.js | eslint-config-prettier-check",

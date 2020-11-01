@@ -5,19 +5,22 @@ import logging from 'selenium-webdriver/lib/logging';
 
 class WaychaserViaWebdriver {
   async load(url, options) {
-    const result = await this.driver.executeScript(
+    const result = await this.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function () {
         /* global window */
+        var callback = arguments[arguments.length - 1];
         return window.waychaser
           .load(arguments[0], arguments[1])
           .then((success) => {
             console.log({ success });
-            return { success, result: 'success' };
+            callback({ success, result: 'success' });
+            return;
           })
           .catch((error) => {
             console.log({ error });
-            return { error, result: 'error' };
+            callback({ error, result: 'error' });
+            return;
           });
       },
       url,

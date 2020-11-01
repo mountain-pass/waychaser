@@ -40,7 +40,8 @@
       }
     ],
     "istanbul/no-ignore-file": "error",
-    "istanbul/prefer-ignore-reason": "error"
+    "istanbul/prefer-ignore-reason": "error",
+    "promise/no-callback-in-promise": "off"
   },
   "overrides": [
     {
