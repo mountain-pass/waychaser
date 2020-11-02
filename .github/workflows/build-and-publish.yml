@@ -112,6 +112,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
     defaults:
       run:
         shell: bash
@@ -136,7 +139,8 @@ jobs:
     - run: npm install
     - run: npm run --silent json:list-github-actions-browser-matrix | sed 's/"/\\"/g' > browser-matrix.json
     - run: cat browser-matrix.json
-    - run: echo "::set-output name=matrix::{\"include\":[{\"browser\":\"chrome\"},{\"browser\":\"firefox\"},{\"browser\":\"safari\"}]}"
+    - id: set-matrix
+      run: echo "::set-output name=matrix::$(cat browser-matrix.json)"
 
 
   test-browser-api:
@@ -170,7 +174,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-
+    
+    - run: echo ${{ needs.get-browser-list.outputs.matrix }}
     - run: npm config set script-shell $(which bash)
     - run: npm install
     - run: npm run cover:browser-api:${{ matrix.browser }}:saucy
