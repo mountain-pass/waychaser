@@ -228,8 +228,8 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] dependency caching in CI pipeline
 - [ ] Edge browser testing
 - [ ] badges
-- [ ] Code coverage and code quality reporting
-- [ ] have pull requests from for run node-api and chrome local (nto sure how to tell if PR from fork)
+- [ ] Code coverage and code quality reporting (publish pages?)
+- [ ] have pull requests from fork run node-api and chrome local (nto sure how to tell if PR from fork)
 - [ ] lots more 😂
 
 # Development
