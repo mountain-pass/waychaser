@@ -3,7 +3,7 @@ import chrome from 'selenium-webdriver/chrome';
 import logger from '../../util/logger';
 import { WaychaserViaWebdriverLocal } from './waychaser-via-webdriver-local';
 
-class WaychaserViaWebdriverChrome extends WaychaserViaWebdriverLocal {
+class WaychaserViaWebdriverLocalChrome extends WaychaserViaWebdriverLocal {
   getBrowserOptions() {
     return new chrome.Options();
   }
@@ -13,6 +13,6 @@ class WaychaserViaWebdriverChrome extends WaychaserViaWebdriverLocal {
   }
 }
 
-const instance = new WaychaserViaWebdriverChrome();
+const instance = new WaychaserViaWebdriverLocalChrome();
 
-export { instance as waychaserViaWebdriverChrome };
+export { instance as waychaserViaWebdriverLocalChrome };

@@ -3,7 +3,7 @@ import safari from 'selenium-webdriver/safari';
 import logger from '../../util/logger';
 import { WaychaserViaWebdriverLocal } from './waychaser-via-webdriver-local';
 
-class WaychaserViaWebdriverSafari extends WaychaserViaWebdriverLocal {
+class WaychaserViaWebdriverLocalSafari extends WaychaserViaWebdriverLocal {
   getBrowserOptions() {
     return new safari.Options();
   }
@@ -18,6 +18,6 @@ class WaychaserViaWebdriverSafari extends WaychaserViaWebdriverLocal {
   }
 }
 
-const instance = new WaychaserViaWebdriverSafari();
+const instance = new WaychaserViaWebdriverLocalSafari();
 
-export { instance as waychaserViaWebdriverSafari };
+export { instance as waychaserViaWebdriverLocalSafari };

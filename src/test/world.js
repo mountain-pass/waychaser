@@ -17,10 +17,10 @@ import ioc from '../util/ioc-container';
 import chaiAsPromised from 'chai-as-promised';
 import { waychaser } from '../waychaser';
 
-import { waychaserViaWebdriverChrome } from './clients/waychaser-via-webdriver-chrome';
-import { waychaserViaWebdriverFirefox } from './clients/waychaser-via-webdriver-firefox';
+import { waychaserViaWebdriverLocalChrome } from './clients/waychaser-via-webdriver-local-chrome';
+import { waychaserViaWebdriverLocalFirefox } from './clients/waychaser-via-webdriver-local-firefox';
 import { waychaserViaWebdriverSaucy } from './clients/waychaser-via-webdriver-saucy';
-import { waychaserViaWebdriverSafari } from './clients/waychaser-via-webdriver-safari';
+import { waychaserViaWebdriverLocalSafari } from './clients/waychaser-via-webdriver-local-safari';
 
 chai.use(chaiAsPromised);
 
@@ -91,9 +91,9 @@ function world({ attach, parameters }) {
 
   const clients = {
     'node-api': waychaser,
-    'browser-api-chrome-local': waychaserViaWebdriverChrome,
-    'browser-api-firefox-local': waychaserViaWebdriverFirefox,
-    'browser-api-safari-local': waychaserViaWebdriverSafari,
+    'browser-api-chrome-local': waychaserViaWebdriverLocalChrome,
+    'browser-api-firefox-local': waychaserViaWebdriverLocalFirefox,
+    'browser-api-safari-local': waychaserViaWebdriverLocalSafari,
     'browser-api-saucy': waychaserViaWebdriverSaucy,
   };
   this.waychaser = clients[this.parameters.client];

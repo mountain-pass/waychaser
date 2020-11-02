@@ -3,7 +3,7 @@ import firefox from 'selenium-webdriver/firefox';
 import logger from '../../util/logger';
 import { WaychaserViaWebdriverLocal } from './waychaser-via-webdriver-local';
 
-class WaychaserViaWebdriverFirefox extends WaychaserViaWebdriverLocal {
+class WaychaserViaWebdriverLocalFirefox extends WaychaserViaWebdriverLocal {
   getBrowserOptions() {
     return new firefox.Options();
   }
@@ -17,6 +17,6 @@ class WaychaserViaWebdriverFirefox extends WaychaserViaWebdriverLocal {
   }
 }
 
-const instance = new WaychaserViaWebdriverFirefox();
+const instance = new WaychaserViaWebdriverLocalFirefox();
 
-export { instance as waychaserViaWebdriverFirefox };
+export { instance as waychaserViaWebdriverLocalFirefox };
