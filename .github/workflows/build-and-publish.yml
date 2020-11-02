@@ -179,7 +179,8 @@ jobs:
       with:
         node-version: 12.x
     
-    - run: echo ${{ needs.get-browser-list.outputs.matrix }}
+    - run: echo "${{ needs.get-browser-list.outputs.matrix }}"
+    - run: echo "${{ fromJson(needs.get-browser-list.outputs.matrix) }}"
     - run: npm config set script-shell $(which bash)
     - run: npm install
     - run: npm run cover:browser-api:${{ matrix.browser }}:saucy
