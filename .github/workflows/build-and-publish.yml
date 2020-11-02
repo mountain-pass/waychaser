@@ -303,7 +303,9 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         npm --unsafe-perm --no-git-tag-version version minor -m "Version minor to %s."
+        npm install
         git add package.json
+        git add package-lock.json
         NEXT_VERSION=$(node -p "require('./package.json').version")
         git commit -m "Version bump to $NEXT_VERSION. [skip ci]"
         git push origin HEAD:main
