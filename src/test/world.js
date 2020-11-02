@@ -15,7 +15,7 @@ import chai from 'chai';
 import logger from '../util/logger';
 import ioc from '../util/ioc-container';
 import chaiAsPromised from 'chai-as-promised';
-import { waychaser } from '../../dist/waychaser';
+import { waychaser } from '../waychaser';
 
 import { waychaserViaWebdriverChrome } from './clients/waychaser-via-webdriver-chrome';
 import { waychaserViaWebdriverFirefox } from './clients/waychaser-via-webdriver-firefox';
