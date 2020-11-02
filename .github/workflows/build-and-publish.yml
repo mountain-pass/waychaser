@@ -27,7 +27,9 @@ jobs:
     - name: Cache NPM dependencies
       uses: actions/cache@v1
       with:
-        path: ~/.npm
+        path: |
+           ~/.npm
+           node_modules
         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.OS }}-npm-cache-
@@ -56,7 +58,9 @@ jobs:
     - name: Cache NPM dependencies
       uses: actions/cache@v1
       with:
-        path: ~/.npm
+        path: |
+           ~/.npm
+           node_modules
         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.OS }}-npm-cache-
@@ -88,7 +92,9 @@ jobs:
     - name: Cache NPM dependencies
       uses: actions/cache@v1
       with:
-        path: ~/.npm
+        path: |
+           ~/.npm
+           node_modules
         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.OS }}-npm-cache-
@@ -125,7 +131,9 @@ jobs:
     - name: Cache NPM dependencies
       uses: actions/cache@v1
       with:
-        path: ~/.npm
+        path: |
+           ~/.npm
+           node_modules
         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.OS }}-npm-cache-
@@ -165,7 +173,9 @@ jobs:
     - name: Cache NPM dependencies
       uses: actions/cache@v1
       with:
-        path: ~/.npm
+        path: |
+           ~/.npm
+           node_modules
         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.OS }}-npm-cache-
@@ -175,7 +185,6 @@ jobs:
       with:
         node-version: 12.x
     
-    - run: echo '${{ needs.get-browser-list.outputs.matrix }}'
     - run: npm config set script-shell $(which bash)
     - run: npm install
     - run: npm run cover:browser-api:${{ matrix.browser }}:saucy
@@ -202,7 +211,9 @@ jobs:
     - name: Cache NPM dependencies
       uses: actions/cache@v1
       with:
-        path: ~/.npm
+        path: |
+           ~/.npm
+           node_modules
         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.OS }}-npm-cache-
@@ -237,7 +248,9 @@ jobs:
     - name: Cache NPM dependencies
       uses: actions/cache@v1
       with:
-        path: ~/.npm
+        path: |
+           ~/.npm
+           node_modules
         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.OS }}-npm-cache-
