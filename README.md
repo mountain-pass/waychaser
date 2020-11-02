@@ -1,6 +1,8 @@
 # waychaser
 
-Client library for level 3 RESTful APIs
+Client library for level 3 RESTful APIs.
+
+Compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox and Safari.
 
 [![Build Status](https://github.com/mountain-pass/waychaser/workflows/Build/badge.svg)](https://github.com/mountain-pass/waychaser/actions?query=workflow%3ABuild)
 
@@ -221,10 +223,13 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] CI/CD pipeline
 - [x] dependabot
 - [x] Firefox testing
-- [ ] matrix testing for firefox
-- [ ] Safari/IE testing
+- [x] Safari testing
+- [x] fix matrix testing for UI (don't nodejs need matrix for browser tests)
+- [ ] Edge browser testing
+- [ ] dependency caching in CI pipeline
 - [ ] badges
 - [ ] Code coverage and code quality reporting
+- [ ] have pull requests from for run node-api and chrome local (nto sure how to tell if PR from fork)
 - [ ] lots more 😂
 
 # Development

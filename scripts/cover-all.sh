@@ -6,11 +6,5 @@ rm -rf coverage
 npm-run-all \
     --sequential \
     "${npm_lifecycle_event}:*"
-    
-scripts/merge-coverage.js 
 
-nyc \
-    report \
-    --clean \
-    --check-coverage \
-    --report-dir coverage/full
+scripts/report-cover.sh

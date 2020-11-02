@@ -12,7 +12,46 @@ on:
       - '**'
 
 jobs:
+  lint:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: env
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: npm run lint
+
   build:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: npm run build
+
+  test-node-api:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
     runs-on: ubuntu-latest
@@ -20,7 +59,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.17.x, 12.x, 14.x]
+        node-version: [10.x, 12.x, 14.x]
 
     defaults:
       run:
@@ -36,24 +75,91 @@ jobs:
     - run: npm ci
     - run: npm run lint
     - run: npm run build
-    - run: npm run cover
+    - run: npm run cover:node-api
       env:
         SAUCE_LABS_KEY: ${{secrets.SAUCE_LABS_KEY}}
         SAUCE_LABS_USERNAME: ${{secrets.SAUCE_LABS_USERNAME}}
 
-    # removed artifact upload because the server is flakey
-    # - name: Archive code coverage results
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: code-coverage-report
-    #     path: |
-    #       coverage/full
-    #       !lcov-report/**/*
-    #       !lcov.info
+  get-browser-list:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: echo "::set-output name=matrix::$(npm run json:list-cover-browsers)"
+
+
+  test-browser-api:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    needs:
+      - get-browser-list
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix: ${{fromJson(needs.get-browser-list.outputs.matrix)}}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: npm run cover:browser-api:${{ matrix.browser }}:saucy
+      env:
+        SAUCE_LABS_KEY: ${{secrets.SAUCE_LABS_KEY}}
+        SAUCE_LABS_USERNAME: ${{secrets.SAUCE_LABS_USERNAME}}
+
+  report-cover:
+    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    needs:
+      - test-node
+      - test-browsers
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run report:cover
+
 
   publish:
-    needs: build
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    needs: 
+      - lint
+      - build
+      - report-cover
+
     runs-on: ubuntu-latest
 
     defaults:
