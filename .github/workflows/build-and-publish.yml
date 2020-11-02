@@ -108,6 +108,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    name: Test "${{ matrix.browser }}" on Saucy
     strategy:
       matrix: ${{fromJson(needs.get-browser-list.outputs.matrix)}}
 
