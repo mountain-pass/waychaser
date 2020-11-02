@@ -229,6 +229,8 @@ jobs:
 
   publish-reports:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+    
+    continue-on-error: true
 
     needs:
       - report-cover
