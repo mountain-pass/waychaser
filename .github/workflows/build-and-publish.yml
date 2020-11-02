@@ -153,11 +153,7 @@ jobs:
 
     name: Test ${{ matrix.browser }} on Saucy
     strategy:
-      matrix: 
-        browser:
-          - chrome
-          - firefox
-          - safari
+      matrix: ${{fromJson(needs.get-browser-list.outputs.matrix)}}
 
     defaults:
       run:
