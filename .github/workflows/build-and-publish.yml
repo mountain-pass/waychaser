@@ -132,8 +132,8 @@ jobs:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     needs:
-      - test-node
-      - test-browsers
+      - test-node-api
+      - test-browser-api
 
     runs-on: ubuntu-latest
 
