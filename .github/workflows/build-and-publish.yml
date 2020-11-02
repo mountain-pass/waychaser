@@ -140,7 +140,7 @@ jobs:
     - run: npm run --silent json:list-github-actions-browser-matrix | sed 's/"/\\"/g' > browser-matrix.json
     - run: cat browser-matrix.json
     - id: set-matrix
-      run: echo "::set-output name=matrix::$(cat browser-matrix.json)"
+      run: echo "::set-output name=matrix::{\"include\":[{\"browser\":\"chrome\"},{\"browser\":\"firefox\"},{\"browser\":\"safari\"}]}"
 
 
   test-browser-api:
@@ -153,7 +153,11 @@ jobs:
 
     name: Test ${{ matrix.browser }} on Saucy
     strategy:
-      matrix: ${{fromJson(needs.get-browser-list.outputs.matrix)}}
+      matrix: 
+        browser:
+          - chrome
+          - firefox
+          - safari
 
     defaults:
       run:
