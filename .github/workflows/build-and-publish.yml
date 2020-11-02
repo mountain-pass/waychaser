@@ -97,7 +97,7 @@ jobs:
         node-version: 12.x
     - run: npm config set script-shell $(which bash)
     - run: npm ci
-    - run: echo "::set-output name=matrix::$(npm run --silent json:list-cover-browsers)"
+    - run: echo "::set-output name=matrix::$(npm run --silent json:list-github-actions-browser-matrix)"
 
 
   test-browser-api:
