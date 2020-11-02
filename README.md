@@ -225,8 +225,8 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] Firefox testing
 - [x] Safari testing
 - [x] fix matrix testing for UI (don't nodejs need matrix for browser tests)
+- [x] dependency caching in CI pipeline
 - [ ] Edge browser testing
-- [ ] dependency caching in CI pipeline
 - [ ] badges
 - [ ] Code coverage and code quality reporting
 - [ ] have pull requests from for run node-api and chrome local (nto sure how to tell if PR from fork)
