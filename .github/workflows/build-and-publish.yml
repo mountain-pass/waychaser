@@ -149,11 +149,7 @@ jobs:
 
     name: Test ${{ matrix.browser }} on Saucy
     strategy:
-      matrix: 
-        include:
-          - browser: chrome
-          - browser: firefox
-          - browser: safari
+      matrix: ${{fromJson("{\"include\":[{\"browser\":\"chrome\"},{\"browser\":\"firefox\"},{\"browser\":\"safari\"}]}")}}
 
     defaults:
       run:
