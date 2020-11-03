@@ -2,7 +2,7 @@
 
 Client library for level 3 RESTful APIs.
 
-Compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox and Safari.
+Compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari and Edge.
 
 [![Build Status](https://github.com/mountain-pass/waychaser/workflows/Build/badge.svg)](https://github.com/mountain-pass/waychaser/actions?query=workflow%3ABuild)
 
@@ -226,9 +226,12 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] Safari testing
 - [x] fix matrix testing for UI (don't nodejs need matrix for browser tests)
 - [x] dependency caching in CI pipeline
-- [ ] Edge browser testing
+- [x] Edge browser testing
+- [ ] automatically update version number in README.md
 - [ ] badges
-- [ ] Code coverage and code quality reporting (publish pages?)
+- [ ] create docs site
+  - [ ] integrate Code coverage and code quality reporting 
+  - [ ] integrate API docs
 - [ ] have pull requests from fork run node-api and chrome local (nto sure how to tell if PR from fork)
 - [ ] lots more 😂
 

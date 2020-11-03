@@ -63,4 +63,10 @@ module.exports = {
     'safari',
     'macOS 10.15'
   ),
+  'browser-api-edge-saucy': generateConfig(
+    'browser-api-edge-saucy',
+    'browser-api-saucy',
+    'MicrosoftEdge',
+    'Windows 10'
+  ),
 };
