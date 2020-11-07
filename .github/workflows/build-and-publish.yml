@@ -40,6 +40,13 @@ jobs:
         node-version: 12.x
     - run: env
     - run: npm install
+    - run: npm config set script-shell $(which bash)
+    - uses: actions/upload-artifact@v2
+      with:
+        name: dependencies
+        path: |
+          node_modules
+          ~/.npm
 
   lint:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
@@ -59,7 +66,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - run: npm config set script-shell $(which bash)
+    - uses: actions/download-artifact@v2
     - run: npm run lint
 
   build:
@@ -80,7 +87,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - run: npm config set script-shell $(which bash)
+    - uses: actions/download-artifact@v2
     - run: npm run build
 
   test-node-api:
@@ -106,8 +113,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - run: npm config set script-shell $(which bash)
+    - uses: actions/download-artifact@v2
     - run: npm run cover:node-api
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-node-api
+        path: |
+          coverage/node-api
 
   get-browser-list:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
@@ -131,7 +143,7 @@ jobs:
       with:
         node-version: 12.x
 
-    - run: npm config set script-shell $(which bash)
+    - uses: actions/download-artifact@v2
     - run: npm run --silent json:list-github-actions-browser-matrix > browser-matrix.json
     - id: set-matrix
       run: echo "::set-output name=matrix::$(cat browser-matrix.json)"
@@ -141,6 +153,7 @@ jobs:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
     needs:
+      - dependencies
       - get-browser-list
 
     runs-on: ubuntu-latest
@@ -160,16 +173,22 @@ jobs:
       with:
         node-version: 12.x
     
-    - run: npm config set script-shell $(which bash)
+    - uses: actions/download-artifact@v2
     - run: npm run cover:browser-api:${{ matrix.browser }}:remote
       env:
         BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
         BROWSERSTACK_USERNAME: ${{secrets.BROWSERSTACK_USERNAME}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-browser-api-${{ matrix.browser }}
+        path: |
+          coverage/browser-api-${{ matrix.browser }}-remote
 
   report-cover:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     needs:
+      - dependencies
       - test-node-api
       - test-browser-api
 
@@ -185,8 +204,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-
-    - run: npm config set script-shell $(which bash)
+    - uses: actions/download-artifact@v2
     - run: npm run report:cover
 
   publish-reports:
@@ -195,6 +213,7 @@ jobs:
     continue-on-error: true
 
     needs:
+      - dependencies
       - report-cover
 
     runs-on: ubuntu-latest
@@ -204,7 +223,7 @@ jobs:
         shell: bash
 
     steps:
-
+    - uses: actions/download-artifact@v2
     - name: Publish Cover Report
       uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
@@ -214,20 +233,11 @@ jobs:
         TARGET_FOLDER: /builds/${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}/coverage
         CLEAN: true # Automatically remove deleted files from the deploy branch
 
-    - name: Publish Test Results
-      uses: JamesIves/github-pages-deploy-action@3.7.1
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: test-results/full # The folder the action should deploy.
-        TARGET_FOLDER: /builds/${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}/test-results
-        CLEAN: true # Automatically remove deleted files from the deploy branch
-
-
   publish:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     needs: 
+      - dependencies
       - lint
       - build
       - report-cover
@@ -244,9 +254,9 @@ jobs:
       with:
         node-version: 12.x
         registry-url: https://registry.npmjs.org/
+    - uses: actions/download-artifact@v2
     - name: Publish and Tag
       run: |
-        npm config set script-shell $(which bash)
         PACKAGE_NAME=$(node -p "require('./package.json').name")
         CURRENT_VERSION=$(npm --unsafe-perm show "${PACKAGE_NAME}" version)
         PACKAGE_VERSION=$(node -p "require('./package.json').version")
