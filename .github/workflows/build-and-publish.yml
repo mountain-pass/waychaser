@@ -159,7 +159,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    name: Test ${{ matrix.browser }} on Remote
+    name: test-${{ matrix.browser }}-remote
     strategy:
       matrix: ${{fromJson(needs.get-browser-list.outputs.matrix)}}
 
