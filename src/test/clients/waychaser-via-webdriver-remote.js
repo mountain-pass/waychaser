@@ -80,6 +80,9 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
       .withCapabilities(capabilities)
       .build();
     await this.driver.manage().setTimeouts({ script: 20000 });
+    logger.debug('Getting fake api...');
+    await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}/api`);
+    logger.debug('...api loaded');
     logger.debug('Getting waychaser test page...');
     await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}`);
     logger.debug('...page loaded');
