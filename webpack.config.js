@@ -25,6 +25,15 @@ module.exports = (environment) => ({
   resolve: {
     extensions: ['.js'],
   },
+  devServer: {
+    historyApiFallback: true,
+    open: true,
+    proxy: {
+      '/api': {
+        target: `http://localhost:${environment.API_PORT}`,
+      },
+    },
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',

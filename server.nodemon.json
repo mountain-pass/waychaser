@@ -1,0 +1,9 @@
+{
+  "watch": [
+    "scripts/development-server.js",
+    "src/test/server.js",
+    "src/util/logger.js",
+    "src/test/config.js"
+  ],
+  "ext": "*.js"
+}

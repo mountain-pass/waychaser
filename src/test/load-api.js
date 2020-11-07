@@ -1,18 +1,15 @@
 import { Given, When, Then } from 'cucumber';
 // eslint-disable-next-line no-unused-vars
-import { PORT } from './config';
+import { API_ACCESS_PORT } from './config';
 
 Given('a API returning {int}', async function (status) {
-  await this.router.route('/').get(async (request, response) => {
+  await this.router.route('/api').get(async (request, response) => {
     response.status(status).send({ status });
   });
-  // .all((request, res) => {
-  //   res.status(406).send({});
-  // });
 });
 
 When('we try to load that API', async function () {
-  this.attempt = this.waychaser.load(`http://localhost:${PORT}`);
+  this.attempt = this.waychaser.load(`http://localhost:${API_ACCESS_PORT}/api`);
 });
 
 Then('the API will load successfully', { timeout: 40000 }, async function () {

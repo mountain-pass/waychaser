@@ -35,7 +35,7 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
       let builder = new Builder().withCapabilities(caps);
       builder = this.setBrowserOptions(builder, options);
       this.driver = await builder.build();
-      await this.driver.get(`http://localhost:${process.env.UI_PORT}`);
+      await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}`);
       await this.loadCoverage();
 
       return this.driver;

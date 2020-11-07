@@ -159,7 +159,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    name: Test ${{ matrix.browser }} on Saucy
+    name: Test ${{ matrix.browser }} on Remote
     strategy:
       matrix: ${{fromJson(needs.get-browser-list.outputs.matrix)}}
 
@@ -187,7 +187,7 @@ jobs:
     
     - run: npm config set script-shell $(which bash)
     - run: npm install
-    - run: npm run cover:browser-api:${{ matrix.browser }}:saucy
+    - run: npm run cover:browser-api:${{ matrix.browser }}:remote
       env:
         SAUCE_LABS_KEY: ${{secrets.SAUCE_LABS_KEY}}
         SAUCE_LABS_USERNAME: ${{secrets.SAUCE_LABS_USERNAME}}

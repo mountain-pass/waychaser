@@ -14,7 +14,11 @@ function getFeatureGlob(RERUN, profile) {
     : `src/test/**/*.feature --tags 'not(@not-${profile})'`;
 }
 
-function generateConfig(profile, client, browser, platform) {
+function generateConfig() {
+  const profile = process.env.npm_lifecycle_event
+    .replace('test:', '')
+    .replace(/:/g, '-');
+
   const resultsDirectory = `${outputDirectory}/${profile}`;
   fs.mkdirSync(resultsDirectory, { recursive: true });
 
@@ -34,39 +38,37 @@ function generateConfig(profile, client, browser, platform) {
 
   return `${BASE_CONFIG} --world-parameters '${JSON.stringify({
     profile,
-    client: client || profile,
-    browser,
-    platform,
   })}'`;
 }
 
 module.exports = {
-  'node-api': generateConfig('node-api'),
-  'browser-api-chrome-local': generateConfig('browser-api-chrome-local'),
-  'browser-api-chrome-saucy': generateConfig(
-    'browser-api-chrome-saucy',
-    'browser-api-saucy',
-    'chrome',
-    'Windows 10'
-  ),
-  'browser-api-firefox-local': generateConfig('browser-api-firefox-local'),
-  'browser-api-firefox-saucy': generateConfig(
-    'browser-api-firefox-saucy',
-    'browser-api-saucy',
-    'firefox',
-    'Windows 10'
-  ),
-  'browser-api-safari-local': generateConfig('browser-api-safari-local'),
-  'browser-api-safari-saucy': generateConfig(
-    'browser-api-safari-saucy',
-    'browser-api-saucy',
-    'safari',
-    'macOS 10.15'
-  ),
-  'browser-api-edge-saucy': generateConfig(
-    'browser-api-edge-saucy',
-    'browser-api-saucy',
-    'MicrosoftEdge',
-    'Windows 10'
-  ),
+  default: generateConfig(),
+  // 'browser-api-chrome-local': generateConfig('browser-api-chrome-local'),
+  // 'browser-api-chrome-remote': generateConfig(
+  //   'browser-api-chrome-remote',
+  //   'browser-api-remote',
+  //   'chrome'
+  // ),
+  // 'browser-api-firefox-local': generateConfig('browser-api-firefox-local'),
+  // 'browser-api-firefox-remote': generateConfig(
+  //   'browser-api-firefox-remote',
+  //   'browser-api-remote',
+  //   'firefox'
+  // ),
+  // 'browser-api-safari-local': generateConfig('browser-api-safari-local'),
+  // 'browser-api-safari-remote': generateConfig(
+  //   'browser-api-safari-remote',
+  //   'browser-api-remote',
+  //   'safari'
+  // ),
+  // 'browser-api-edge-remote': generateConfig(
+  //   'browser-api-edge-remote',
+  //   'browser-api-remote',
+  //   'MicrosoftEdge'
+  // ),
+  // 'browser-api-ie-remote': generateConfig(
+  //   'browser-api-ie-remote',
+  //   'browser-api-remote',
+  //   'internet explorer'
+  // ),
 };

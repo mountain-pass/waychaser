@@ -2,11 +2,9 @@
 
 Client library for level 3 RESTful APIs.
 
-Compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari and Edge.
+This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE. <img alt="aw yeah!" src="./docs/images/aw_yeah.gif" width="20" height="20" />
 
 [![Build Status](https://github.com/mountain-pass/waychaser/workflows/Build/badge.svg)](https://github.com/mountain-pass/waychaser/actions?query=workflow%3ABuild)
-
-[![Sauce Test Status](https://app.saucelabs.com/browser-matrix/tompahoward.svg)](https://app.saucelabs.com/u/tompahoward)
 
 # ToC
 
@@ -227,6 +225,7 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] fix matrix testing for UI (don't nodejs need matrix for browser tests)
 - [x] dependency caching in CI pipeline
 - [x] Edge browser testing
+- [x] IE browser testing lol
 - [ ] automatically update version number in README.md
 - [ ] badges
 - [ ] create docs site
@@ -279,7 +278,7 @@ Please don't force commit. Fix your 💩 and then try again. If you need help, a
 
 If you force commit 💩 then you could get...
 
-![the old fork in the eye](https://media.giphy.com/media/3orieR0uvdULeXGv4I/giphy.gif)
+![the old fork in the eye](./docs/images/fork_in_the_eye.gif)
 
 ## Babel
 

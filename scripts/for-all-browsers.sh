@@ -4,4 +4,4 @@
 
 npm-run-all \
     --sequential \
-    "${npm_lifecycle_event}:*:$([ -z ${CI+x} ] && echo "local" || echo "saucy")"
+    "${npm_lifecycle_event}:*:$([ -z ${CI+x} ] && echo "local" || echo "remote")"

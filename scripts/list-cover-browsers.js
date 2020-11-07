@@ -7,14 +7,14 @@ import { scripts } from '../package.json';
 console.log(
   JSON.stringify({
     include: Object.keys(scripts)
-      // filter the scritps to just the saucy ones
+      // filter the scritps to just the remote ones
       .filter((script) => {
-        return script.match(/cover:browser-api:.*:saucy/);
+        return script.match(/cover:browser-api:.*:remote/);
       })
       // extract the browser name
       .map((script) => {
         return {
-          browser: script.replace(/cover:browser-api:(.*):saucy/, '$1'),
+          browser: script.replace(/cover:browser-api:(.*):remote/, '$1'),
         };
       }),
   })

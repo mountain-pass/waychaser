@@ -5,36 +5,53 @@ import logging from 'selenium-webdriver/lib/logging';
 
 class WaychaserViaWebdriver {
   async load(url, options) {
-    const result = await this.driver.executeAsyncScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        /* global window */
-        var callback = arguments[arguments.length - 1];
-        return window.waychaser
-          .load(arguments[0], arguments[1])
-          .then((success) => {
-            console.log({ success });
-            callback({ success, result: 'success' });
-            return;
-          })
-          .catch((error) => {
-            console.log({ error });
-            callback({ error, result: 'error' });
-            return;
-          });
-      },
-      url,
-      options
-    );
+    logger.debug('loading url...: %s', url);
+    try {
+      const result = await this.driver.executeAsyncScript(
+        /* istanbul ignore next: won't work in browser otherwise */
+        function () {
+          /* global window */
+          console.log('starting load');
+          var callback = arguments[arguments.length - 1];
+          try {
+            window.waychaser
+              .load(arguments[0])
+              .then(function (success) {
+                console.log('finished load', success);
+                callback({ success, result: 'success' });
+                return;
+              })
+              .catch(function (error) {
+                console.log('finished load', error);
+                callback({
+                  error,
+                  errorJson: JSON.stringify(error, undefined, 2),
+                  errorString: error.toString(),
+                  result: 'error',
+                  position: 'inner',
+                });
+                return;
+              });
+          } catch (error) {
+            callback({ error, result: 'error', position: 'outer' });
+          }
+        },
+        url,
+        options
+      );
+      logger.debug('after load');
 
-    await this.getBrowserLogs();
+      await this.getBrowserLogs();
 
-    logger.debug(`result:`, result);
-    if (result.error) {
-      logger.debug(result.error);
+      logger.debug(`result:`, result);
+      if (result.success) {
+        return result.success;
+      }
       throw new Error(result.error);
+    } catch (error) {
+      console.log('error', error);
+      throw error;
     }
-    return result.success;
   }
 
   async getBrowserLogs() {
