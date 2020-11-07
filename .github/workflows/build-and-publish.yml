@@ -12,7 +12,7 @@ on:
       - '**'
 
 jobs:
-  lint:
+  dependencies:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
     runs-on: ubuntu-latest
@@ -39,12 +39,45 @@ jobs:
       with:
         node-version: 12.x
     - run: env
-    - run: npm config set script-shell $(which bash)
     - run: npm install
+
+  lint:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    needs:
+      - dependencies
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm config set script-shell $(which bash)
     - run: npm run lint
 
   build:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    needs:
+      - dependencies
 
     runs-on: ubuntu-latest
 
@@ -70,11 +103,13 @@ jobs:
       with:
         node-version: 12.x
     - run: npm config set script-shell $(which bash)
-    - run: npm install
     - run: npm run build
 
   test-node-api:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    needs:
+      - dependencies
 
     runs-on: ubuntu-latest
 
@@ -105,16 +140,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - run: npm config set script-shell $(which bash)
-    - run: npm install
-    - run: npm run lint
-    - run: npm run build
     - run: npm run cover:node-api
-      env:
-        SAUCE_LABS_KEY: ${{secrets.SAUCE_LABS_KEY}}
-        SAUCE_LABS_USERNAME: ${{secrets.SAUCE_LABS_USERNAME}}
 
   get-browser-list:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    needs:
+      - dependencies
 
     runs-on: ubuntu-latest
 
@@ -144,9 +176,7 @@ jobs:
         node-version: 12.x
 
     - run: npm config set script-shell $(which bash)
-    - run: npm install
     - run: npm run --silent json:list-github-actions-browser-matrix > browser-matrix.json
-    - run: cat browser-matrix.json
     - id: set-matrix
       run: echo "::set-output name=matrix::$(cat browser-matrix.json)"
 
@@ -186,7 +216,6 @@ jobs:
         node-version: 12.x
     
     - run: npm config set script-shell $(which bash)
-    - run: npm install
     - run: npm run cover:browser-api:${{ matrix.browser }}:remote
       env:
         BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
@@ -224,7 +253,6 @@ jobs:
         node-version: 12.x
 
     - run: npm config set script-shell $(which bash)
-    - run: npm install
     - run: npm run report:cover
 
   publish-reports:
