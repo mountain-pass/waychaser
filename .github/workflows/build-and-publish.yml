@@ -145,10 +145,10 @@ jobs:
 
     - run: npm config set script-shell $(which bash)
     - run: npm install
-    - run: npm run --silent json:list-github-actions-browser-matrix | sed 's/"/\\"/g' > browser-matrix.json
+    - run: npm run --silent json:list-github-actions-browser-matrix > browser-matrix.json
     - run: cat browser-matrix.json
     - id: set-matrix
-      run: echo "::set-output name=matrix::{\"include\":[{\"browser\":\"chrome\"},{\"browser\":\"firefox\"},{\"browser\":\"safari\"}]}"
+      run: echo "::set-output name=matrix::$(cat browser-matrix.json)"
 
 
   test-browser-api:
@@ -189,8 +189,8 @@ jobs:
     - run: npm install
     - run: npm run cover:browser-api:${{ matrix.browser }}:remote
       env:
-        SAUCE_LABS_KEY: ${{secrets.SAUCE_LABS_KEY}}
-        SAUCE_LABS_USERNAME: ${{secrets.SAUCE_LABS_USERNAME}}
+        BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
+        BROWSERSTACK_USERNAME: ${{secrets.BROWSERSTACK_USERNAME}}
 
   report-cover:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
