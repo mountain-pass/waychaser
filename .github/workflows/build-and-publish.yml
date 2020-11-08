@@ -40,7 +40,7 @@ jobs:
         node-version: 12.x
     - run: env
     - run: npm config set script-shell $(which bash)
-    - run: npm install
+    - run: npm ci
     - run: npm run lint
 
   build:
@@ -70,7 +70,7 @@ jobs:
       with:
         node-version: 12.x
     - run: npm config set script-shell $(which bash)
-    - run: npm install
+    - run: npm ci
     - run: npm run build
 
   test-node-api:
@@ -105,7 +105,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - run: npm config set script-shell $(which bash)
-    - run: npm install
+    - run: npm ci
     - run: npm run lint
     - run: npm run build
     - run: npm run cover:node-api
@@ -144,7 +144,7 @@ jobs:
         node-version: 12.x
 
     - run: npm config set script-shell $(which bash)
-    - run: npm install
+    - run: npm ci
     - run: npm run --silent json:list-github-actions-browser-matrix > browser-matrix.json
     - run: cat browser-matrix.json
     - id: set-matrix
@@ -186,7 +186,7 @@ jobs:
         node-version: 12.x
     
     - run: npm config set script-shell $(which bash)
-    - run: npm install
+    - run: npm ci
     - uses: 'browserstack/github-actions/setup-env@v1.0.1'
       with:
         username:  ${{ secrets.BROWSERSTACK_USERNAME }}
@@ -232,7 +232,7 @@ jobs:
         node-version: 12.x
 
     - run: npm config set script-shell $(which bash)
-    - run: npm install
+    - run: npm ci
     - run: npm run report:cover
 
   publish-reports:
@@ -354,7 +354,7 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         npm --unsafe-perm --no-git-tag-version version minor -m "Version minor to %s."
-        npm install
+        npm ci
         git add package.json
         git add package-lock.json
         NEXT_VERSION=$(node -p "require('./package.json').version")
