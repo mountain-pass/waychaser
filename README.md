@@ -230,6 +230,8 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] dependency caching in CI pipeline
 - [x] Edge browser testing
 - [x] IE browser testing lol
+- [ ] iOS Safari testing
+- [ ] Andriod Chrome testing
 - [ ] automatically update version number in README.md
 - [ ] badges
 - [ ] create docs site
