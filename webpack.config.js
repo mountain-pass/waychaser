@@ -26,7 +26,7 @@ module.exports = (environment) => ({
     extensions: ['.js'],
   },
   devServer: {
-    historyApiFallback: true,
+    port: environment.BROWSER_PORT,
     open: true,
     proxy: {
       '/api': {

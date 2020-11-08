@@ -20,6 +20,34 @@ const BUILD = `${
 }`;
 
 class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
+  async beforeAllTests() {
+    await this.startTunnel();
+    await super.beforeAllTests();
+  }
+
+  async beforeTest(scenario) {
+    this.driver = await this.buildDriver(scenario.pickle.name);
+    await this.loadWaychaserTestPage();
+
+    super.beforeTest(scenario);
+  }
+
+  async afterTest(scenario) {
+    await super.afterTest(scenario);
+
+    try {
+      logger.debug('sending test results...', scenario.result.status);
+      await this.sendTestResult(scenario.result.status);
+    } catch (error) {
+      /* istanbul ignore next: only get's executed on test framework failure */
+      logger.error('coverage', error);
+    }
+    logger.debug('...sent');
+
+    await this.driver.quit();
+    delete this.driver;
+  }
+
   async startTunnel() {
     assert(
       process.env.BROWSERSTACK_ACCESS_KEY,
@@ -44,71 +72,47 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
     logger.info(`Browserstack tunnel started`);
   }
 
-  async getBrowser(name) {
-    if (this.tunnel == undefined) {
-      await this.startTunnel();
-    }
-    assert(
-      process.env.BROWSERSTACK_USERNAME,
-      `process.env.BROWSERSTACK_USERNAME not set`
-    );
-    assert(
-      process.env.BROWSERSTACK_ACCESS_KEY,
-      `process.env.BROWSERSTACK_ACCESS_KEY not set`
-    );
-
-    var capabilities = {
-      'bstack:options': {
-        os: 'Any',
-        projectName: process.env.npm_package_name,
-        buildName: BUILD,
-        sessionName: name,
-        local: 'true',
-        debug: 'true',
-        consoleLogs: 'verbose',
-        networkLogs: 'true',
-        seleniumVersion: '3.14.0',
-        userName: process.env.BROWSERSTACK_USERNAME,
-        accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
-      },
-      browserName: this.browser,
-      browserVersion: 'latest',
-    };
-
-    this.driver = new webdriver.Builder()
-      .usingServer('https://hub-cloud.browserstack.com/wd/hub')
-      .withCapabilities(capabilities)
-      .build();
-    await this.driver.manage().setTimeouts({ script: 20000 });
-    logger.debug('Getting fake api...');
-    await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}/api`);
-    logger.debug('...api loaded');
-    logger.debug('Getting waychaser test page...');
-    await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}`);
-    logger.debug('...page loaded');
-    await this.driver.wait(() => {
-      return this.driver.executeScript(
-        /* istanbul ignore next: won't work in browser otherwise */
-        function () {
-          /* global window */
-          return window.waychaser != undefined;
-        }
+  async buildDriver(name) {
+    try {
+      assert(
+        process.env.BROWSERSTACK_USERNAME,
+        `process.env.BROWSERSTACK_USERNAME not set`
       );
-    }, 5000);
-    await this.loadCoverage();
+      assert(
+        process.env.BROWSERSTACK_ACCESS_KEY,
+        `process.env.BROWSERSTACK_ACCESS_KEY not set`
+      );
 
-    return this.driver;
-  }
-  /* istanbul ignore next: only get's executed when there are web driver issues */
-  catch(error) {
-    logger.error('error getting browser', error);
-    throw error;
-  }
+      var capabilities = {
+        'bstack:options': {
+          os: 'Any',
+          projectName: process.env.npm_package_name,
+          buildName: BUILD,
+          sessionName: name,
+          local: 'true',
+          debug: 'true',
+          consoleLogs: 'verbose',
+          networkLogs: 'true',
+          seleniumVersion: '3.14.0',
+          userName: process.env.BROWSERSTACK_USERNAME,
+          accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+        },
+        browserName: this.browser,
+        browserVersion: 'latest',
+      };
 
-  async getBrowserLogs() {
-    // getting logs appears to be only possible wtih chrome
-    if (this.browser == 'chrome') {
-      super.getBrowserLogs();
+      this.driver = new webdriver.Builder()
+        .usingServer('https://hub-cloud.browserstack.com/wd/hub')
+        .withCapabilities(capabilities)
+        .build();
+      await this.driver.manage().setTimeouts({ script: 20000 });
+      return this.driver;
+    } catch (error) {
+      /* istanbul ignore next: only get's executed when there are web driver issues */
+      {
+        logger.error('error getting browser', error);
+        throw error;
+      }
     }
   }
 
@@ -121,18 +125,8 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
     }
   }
 
-  async setJobName(name) {
-    if (this.driver) {
-      await this.driver.quit();
-      delete this.driver;
-    }
-    await this.getBrowser(name);
-  }
-
-  /* istanbul ignore next: only get's executed on test failure */
-  async allowDebug() {}
-
-  async quit() {
+  async afterAllTests() {
+    super.afterAllTests();
     /* istanbul ignore else: only get's executed if the tunnel couldn't be setup */
     if (this.tunnel) {
       await new Promise((resolve) => {
@@ -140,7 +134,6 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
       });
       delete this.tunnel;
     }
-    await super.quit();
   }
 }
 

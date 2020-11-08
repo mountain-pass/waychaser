@@ -1,6 +1,6 @@
-import logger from '../util/logger';
+import logger from '../../util/logger';
 import { createServer } from 'http';
-import { API_PORT } from './config';
+import { API_PORT } from '../config';
 
 import express from 'express';
 
@@ -8,7 +8,7 @@ export var app = express();
 
 var router;
 
-export function resetRouter() {
+export function getNewRouter() {
   router = express.Router();
   return router;
 }

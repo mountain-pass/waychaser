@@ -1,4 +1,3 @@
-import humanizeDuration from 'humanize-duration';
 import core from 'istanbul-middleware/lib/core';
 import logger from '../../util/logger';
 import logging from 'selenium-webdriver/lib/logging';
@@ -33,7 +32,14 @@ class WaychaserViaWebdriver {
                 return;
               });
           } catch (error) {
-            callback({ error, result: 'error', position: 'outer' });
+            console.log('finished load', error);
+            callback({
+              error,
+              errorJson: JSON.stringify(error, undefined, 2),
+              errorString: error.toString(),
+              result: 'error',
+              position: 'outer',
+            });
           }
         },
         url,
@@ -54,46 +60,54 @@ class WaychaserViaWebdriver {
     }
   }
 
+  async loadWaychaserTestPage() {
+    await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}`);
+    logger.debug('...page loaded');
+    await this.driver.wait(() => {
+      return this.driver.executeScript(
+        /* istanbul ignore next: won't work in browser otherwise */
+        function () {
+          /* global window */
+          return window.waychaser != undefined;
+        }
+      );
+    }, 5000);
+  }
+
+  async beforeAllTests() {}
+
+  async beforeTest() {}
+
+  async afterTest() {
+    await this.getBrowserLogs();
+
+    logger.debug('downloading coverage from browser...');
+    try {
+      await this.loadCoverage();
+    } catch (error) {
+      /* istanbul ignore next: only get's executed on test framework failure */
+      logger.error('coverage', error);
+    }
+    logger.debug('...coverage downloaded');
+  }
+
   async getBrowserLogs() {
-    await this.driver
-      .manage()
-      .logs()
-      .get(logging.Type.BROWSER)
-      .then((entries) => {
-        entries.forEach((entry) => {
-          logger.browser('[%s] %s', entry.level.name, entry.message);
+    // getting logs appears to be only possible wtih chrome
+    if (this.browser == 'chrome') {
+      await this.driver
+        .manage()
+        .logs()
+        .get(logging.Type.BROWSER)
+        .then((entries) => {
+          entries.forEach((entry) => {
+            logger.browser('[%s] %s', entry.level.name, entry.message);
+          });
+          return;
         });
-        return;
-      });
-  }
-
-  /* istanbul ignore next: only get's executed on test failure */
-  async allowDebug(timeout) {
-    if (this.driver) {
-      this.driver.executeScript(
-        `
-        alert('Window will remain for ${humanizeDuration(
-          timeout
-        )} for debugging purposes');
-      `
-      );
-      await this.driver.wait(
-        () =>
-          this.driver.getAllWindowHandles().then((handles) => {
-            // logger.debug(`${handles.length} handles still open`);
-            return handles.length === 0;
-          }),
-        timeout
-      );
     }
   }
 
-  async quit() {
-    /* istanbul ignore else: only get's executed when there are fatal web driver issues */
-    if (this.driver) {
-      await this.driver.quit();
-    }
-  }
+  async afterAllTests() {}
 
   async clearRemoteCoverage() {
     await this.driver.executeScript(`var i = null;

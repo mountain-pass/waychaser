@@ -1,9 +1,9 @@
-import { resetRouter, startServer } from '../src/test/server';
+import { getNewRouter, startServer } from '../src/test/fakes/server';
 
 console.log('DEVELOPMENT SERVER STARTED');
 
 startServer();
-const router = resetRouter();
-router.route('/').get(async (request, response) => {
+const router = getNewRouter();
+router.route('/api').get(async (request, response) => {
   response.status(200).send({ status: 200 });
 });

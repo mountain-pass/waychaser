@@ -13,112 +13,95 @@ import {
 } from 'cucumber';
 import chai from 'chai';
 import logger from '../util/logger';
-import ioc from '../util/ioc-container';
 import chaiAsPromised from 'chai-as-promised';
-import { waychaser } from '../waychaser';
+import { waychaser as waychaserDirect } from '../waychaser';
 
-import { waychaserViaWebdriverLocalChrome } from './clients/waychaser-via-webdriver-local-chrome';
-import { waychaserViaWebdriverLocalFirefox } from './clients/waychaser-via-webdriver-local-firefox';
+import { waychaserViaWebdriverLocal } from './clients/waychaser-via-webdriver-local';
 import { waychaserViaWebdriverRemote } from './clients/waychaser-via-webdriver-remote';
-import { waychaserViaWebdriverLocalSafari } from './clients/waychaser-via-webdriver-local-safari';
 
 chai.use(chaiAsPromised);
 
 global.expect = chai.expect;
 global.PendingError = PendingError;
 
-import { startServer, app, stopServer, resetRouter } from './server';
+import { startServer, app, stopServer, getNewRouter } from './fakes/server';
+
+const profile = process.env.npm_lifecycle_event
+  .replace('test:', '')
+  .replace(/:/g, '-');
+
+let waychaser, webdriver;
+
+// if testing via browser, setup web-driver
+if (profile.startsWith('browser-api')) {
+  const mode = profile.replace(/browser-api-.*-(.*)/, '$1');
+  const clients = {
+    local: waychaserViaWebdriverLocal,
+    remote: waychaserViaWebdriverRemote,
+  };
+  waychaser = clients[mode.toString()];
+
+  /* istanbul ignore next: only get's executed when there are test config issues*/
+  if (waychaser == undefined) {
+    throw new Error(`unknown mode: ${mode}`);
+  }
+
+  webdriver = waychaser;
+  webdriver.browser = profile.replace(/browser-api-(.*)-.*/, '$1');
+} else {
+  // otherwise, direct
+  waychaser = waychaserDirect;
+}
 
 BeforeAll({ timeout: 240000 }, async function () {
   logger.debug(['BEGIN BeforeAll', Date.now()]);
 
+  if (webdriver) {
+    await webdriver.beforeAllTests();
+  }
   startServer();
 });
 
-Before({ timeout: 240000 }, async function (scenario) {
-  if (this.waychaser && this.waychaser.setJobName) {
-    await this.waychaser.setJobName(scenario.pickle.name);
-  }
-});
-
-function world({ attach, parameters }) {
+function world({ attach }) {
   logger.debug('BEGIN world');
+
   this.attach = attach;
   this.app = app;
-  this.router = resetRouter();
 
-  const clients = {
-    'node-api': waychaser,
-    'browser-api-chrome-local': waychaserViaWebdriverLocalChrome,
-    'browser-api-firefox-local': waychaserViaWebdriverLocalFirefox,
-    'browser-api-safari-local': waychaserViaWebdriverLocalSafari,
-    'browser-api-remote': waychaserViaWebdriverRemote,
-  };
-  const clientName = parameters.profile.replace(
-    /browser-api-.*-remote/,
-    'browser-api-remote'
-  );
-  this.waychaser = clients[clientName.toString()];
-  /* istanbul ignore next: only get's executed when there are test config issues*/
-  if (this.waychaser == undefined) {
-    throw new Error(`unknown client: ${clientName}`);
-  }
-  waychaserViaWebdriverRemote.browser = parameters.profile.replace(
-    /browser-api-(.*)-remote/,
-    '$1'
-  );
+  // reset the fake API server, so we can set new routes
+  this.router = getNewRouter();
 
-  // needed for afterAll shutdown
-  ioc.service('waychaser', () => this.waychaser);
-
+  logger.debug('END world');
   return '';
 }
 
-After({ timeout: 600000 }, async function (scenario) {
-  logger.debug('%s: - %s', scenario.pickle.name, scenario.result.status);
-  if (this.waychaser && this.waychaser.loadCoverage) {
-    logger.debug('downloading coverage from browser...');
-    try {
-      await this.waychaser.loadCoverage();
-    } catch (error) {
-      /* istanbul ignore next: only get's executed on test framework failure */
-      logger.error('coverage', error);
-    }
-    logger.debug('...coverage downloaded');
+Before({ timeout: 240000 }, async function (scenario) {
+  logger.debug('BEGIN Before');
+  this.router = getNewRouter();
+  this.waychaser = waychaser;
+  if (webdriver) {
+    await webdriver.beforeTest(scenario);
   }
+  logger.debug('END Before');
+});
 
-  if (this.waychaser && this.waychaser.sendTestResult) {
-    try {
-      logger.debug('sending test results...', scenario.result.status);
-      await this.waychaser.sendTestResult(scenario.result.status);
-    } catch (error) {
-      /* istanbul ignore next: only get's executed on test framework failure */
-      logger.error('coverage', error);
-    }
-    logger.debug('...sent');
+After({ timeout: 600000 }, async function (scenario) {
+  logger.debug('BEGIN After');
+
+  logger.debug('%s: - %s', scenario.pickle.name, scenario.result.status);
+  if (webdriver) {
+    await webdriver.afterTest(scenario);
   }
-  /* istanbul ignore next: only get's executed on test failure */
-  if (
-    scenario.result.status === 'failed' ||
-    scenario.result.status === 'pending'
-  ) {
-    if (!process.env.CI && this.waychaser && this.waychaser.allowDebug) {
-      logger.debug('waiting for browser debugging to complete...');
-      await this.waychaser.allowDebug(600000);
-    }
-  }
+  logger.debug('END After');
 });
 
 AfterAll({ timeout: 600000 }, async function () {
-  if (ioc.waychaser && ioc.waychaser.quit) {
-    try {
-      await ioc.waychaser.quit();
-    } catch (error) {
-      /* istanbul ignore next: only get's executed on test failure */
-      logger.error(error);
-    }
+  logger.debug('BEGIN AfterAll');
+  if (webdriver) {
+    await webdriver.afterAllTests();
   }
   stopServer();
+  logger.debug('END AfterAll');
 });
 
 setWorldConstructor(world);

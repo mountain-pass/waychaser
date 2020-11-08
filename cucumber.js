@@ -32,13 +32,11 @@ function generateConfig() {
   const MODULES =
     '--require-module @babel/register  --require-module @babel/polyfill';
   const REQUIRE_GLOB = 'src/test/**/*.js';
-  const BASE_CONFIG = `${FEATURE_GLOB} --format-options '${JSON.stringify(
+  const CONFIG = `${FEATURE_GLOB} --format-options '${JSON.stringify(
     FORMAT_OPTIONS
   )}' ${MODULES} --require ${REQUIRE_GLOB} ${NO_STRICT} --format rerun:${RERUN} --format json:${resultsDirectory}/results.cucumber -f node_modules/cucumber-junit-formatter:${resultsDirectory}/results.xml ${FAIL_FAST}`;
 
-  return `${BASE_CONFIG} --world-parameters '${JSON.stringify({
-    profile,
-  })}'`;
+  return CONFIG;
 }
 
 module.exports = {

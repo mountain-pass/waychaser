@@ -4,55 +4,65 @@ import logging from 'selenium-webdriver/lib/logging';
 
 import logger from '../../util/logger';
 
-// const screen = {
-//   width: 1024,
-//   height: 800,
-// };
-
 class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
-  async load(url, options) {
-    if (this.driver == undefined) {
-      await this.getBrowser();
-    }
-    return super.load(url, options);
+  async beforeAllTests() {
+    this.driver = await this.buildDriver();
+    await this.loadWaychaserTestPage();
+    await super.beforeAllTests();
   }
 
-  async getBrowser() {
-    try {
-      const options = this.getBrowserOptions();
-      //options.windowSize(screen);
-      /* istanbul ignore next: only get's executed on CI server*/
-      if (process.env.CI) {
-        options.headless();
-      }
+  async afterTest(scenario) {
+    await super.afterTest(scenario);
 
+    /* istanbul ignore next: only get's executed on test failure */
+    if (
+      scenario.result.status === 'failed' ||
+      scenario.result.status === 'pending'
+    ) {
+      logger.debug('waiting for browser debugging to complete...');
+      await this.driver.allowDebug(600000);
+    }
+  }
+
+  async afterAllTests() {
+    // we should call this.driver.quit() here, but
+    // doing so cause the tests to hang on my machine, waiting for
+    // firefox to quit.
+    // Since webdriver closes the browsers when the process terminates
+    // we rely on that instead.
+    /* istanbul ignore else: only happens on test setup failure */
+    if (this.driver) {
+      if (this.browser != 'firefox') {
+        await this.driver.quit();
+      }
+    }
+    await super.afterAllTests();
+  }
+
+  async buildDriver() {
+    try {
       const prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      const caps = Capabilities[process.env.BROWSER || 'chrome']();
+      const caps = Capabilities[this.browser]();
       caps.setLoggingPrefs(prefs);
 
-      let builder = new Builder().withCapabilities(caps);
-      builder = this.setBrowserOptions(builder, options);
-      this.driver = await builder.build();
-      await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}`);
-      await this.loadCoverage();
+      this.driver = new Builder()
+        .withCapabilities(caps)
+        .forBrowser(this.browser)
+        .build();
 
       return this.driver;
     } catch (error) {
+      /* istanbul ignore next: only get's executed when there are web driver issues */
       {
-        /* istanbul ignore next: only get's executed when there are web driver issues*/
-        {
-          logger.error('error getting browser', error);
-          throw error;
-        }
+        logger.error('error getting browser', error);
+        throw error;
       }
     }
   }
-
-  async sendTestResult() {}
-
-  async setJobName() {}
 }
 
-export { WaychaserViaWebdriverLocal };
+const instance = new WaychaserViaWebdriverLocal();
+
+export { instance as waychaserViaWebdriverLocal };
