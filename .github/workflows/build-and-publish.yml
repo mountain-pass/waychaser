@@ -187,10 +187,18 @@ jobs:
     
     - run: npm config set script-shell $(which bash)
     - run: npm install
+    - uses: 'browserstack/github-actions/setup-env@v1.0.1'
+      with:
+        username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+        access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+    - uses: 'browserstack/github-actions/setup-local@v1.0.1'
+      with:
+        local-testing: start
+        local-identifier: random
     - run: npm run cover:browser-api:${{ matrix.browser }}:remote
-      env:
-        BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
-        BROWSERSTACK_USERNAME: ${{secrets.BROWSERSTACK_USERNAME}}
+    - uses: 'browserstack/github-actions/setup-local@v1.0.1'
+      with:
+        local-testing: stop
 
   report-cover:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')

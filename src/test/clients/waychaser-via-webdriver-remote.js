@@ -54,9 +54,11 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
       `process.env.BROWSERSTACK_ACCESS_KEY not set`
     );
     this.tunnel = new browserstack.Local({
+      key: process.env.BROWSERSTACK_ACCESS_KEY,
       verbose: true,
-      force: true,
-      localIdentifier: BUILD,
+      ...(process.env.BROWSERSTACK_LOCAL_IDENTIFIER && {
+        localIdentifier: process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+      }),
     });
     await new Promise((resolve, reject) => {
       this.tunnel.start({}, (error) => {
@@ -90,6 +92,9 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
           buildName: BUILD,
           sessionName: name,
           local: 'true',
+          ...(process.env.BROWSERSTACK_LOCAL_IDENTIFIER && {
+            localIdentifier: process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+          }),
           debug: 'true',
           consoleLogs: 'verbose',
           networkLogs: 'true',
