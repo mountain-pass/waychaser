@@ -124,7 +124,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
   async sendTestResult(status) {
     /* istanbul ignore else: only get's executed on driver setup failure */
     if (this.driver) {
-      this.driver.executeScript(
+      await this.driver.executeScript(
         `browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"${status}"}}`
       );
     }
