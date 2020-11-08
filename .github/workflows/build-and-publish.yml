@@ -276,7 +276,10 @@ jobs:
 
 
   publish:
-    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+    if: |
+      github.ref == 'refs/heads/main' && 
+        ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+        ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
 
     needs: 
       - lint
