@@ -4,7 +4,8 @@ Client library for level 3 RESTful APIs.
 
 This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE. <img alt="aw yeah!" src="./docs/images/aw_yeah.gif" width="20" height="20" />
 
-[![Build Status](https://github.com/mountain-pass/waychaser/workflows/Build/badge.svg)](https://github.com/mountain-pass/waychaser/actions?query=workflow%3ABuild)
+[![Build Status](https://github.com/mountain-pass/waychaser/workflows/Build/badge.svg)](https://github.com/mountain-pass/waychaser/actions?query=workflow%3ABuild) [![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25)](https://automate.browserstack.com/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25)
+
 
 # ToC
 
@@ -216,7 +217,8 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] dependency caching in CI pipeline
 - [x] Edge browser testing
 - [x] IE browser testing lol
-- [ ] add CONTRIBUTING.md
+- [ ] iOS Safari testing
+- [ ] Andriod Chrome testing
 - [ ] automatically update version number in README.md
 - [ ] badges
 - [ ] create docs site
@@ -224,4 +226,3 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
   - [ ] integrate API docs
 - [ ] have pull requests from fork run node-api and chrome local (nto sure how to tell if PR from fork)
 - [ ] lots more 😂
-
