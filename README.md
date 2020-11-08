@@ -37,6 +37,9 @@ This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, 
   - [Folder Structure](#folder-structure)
   - [Testing](#testing)
   - [🚫💩](#)
+  - [CI/CD](#cicd)
+    - [Skipping CI](#skipping-ci)
+    - [Skipping releases](#skipping-releases)
   - [Babel](#babel)
     - [ESLint](#eslint)
     - [Webpack](#webpack)
@@ -279,6 +282,22 @@ Please don't force commit. Fix your 💩 and then try again. If you need help, a
 If you force commit 💩 then you could get...
 
 ![the old fork in the eye](./docs/images/fork_in_the_eye.gif)
+
+## CI/CD
+
+GitHub actions are uses for [waychaser's CI/CD](https://github.com/mountain-pass/waychaser/actions). 
+
+### Skipping CI
+
+If you are making changes that you are CERTAIN have no impact on the code or the release (e.g. updates to README),
+you can add `[skip-ci]` to your commit message and the pipeline will be skipped.
+
+⚠️ USE WITH CAUTION ⚠️
+
+### Skipping releases
+
+If all the tests pass, the pipeline's default behaviour is to publish a new version to NPM.  If you are making changes that don't warrant a release (e.g. refactoring tests), you can skip the release by adding `[skip-release]` to your commit message.
+
 
 ## Babel
 
