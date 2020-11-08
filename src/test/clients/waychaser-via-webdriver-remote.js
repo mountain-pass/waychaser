@@ -54,9 +54,9 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
       `process.env.BROWSERSTACK_ACCESS_KEY not set`
     );
     this.tunnel = new browserstack.Local({
-      verbose: 'true',
-      force: 'true',
-      // localIdentifier: BUILD,
+      verbose: true,
+      force: true,
+      localIdentifier: BUILD,
     });
     await new Promise((resolve, reject) => {
       this.tunnel.start({}, (error) => {
