@@ -26,7 +26,7 @@ plugins:
     enabled: true
     config:
       config: .eslintrc.json
-    channel: 'eslint-6'
+    channel: 'eslint-7'
   # git-legal:
   #   enabled: true
   # duplication:
