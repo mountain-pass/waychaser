@@ -1,7 +1,7 @@
 import { WaychaserViaWebdriver } from './waychaser-via-webdriver';
 import { Builder, Capabilities } from 'selenium-webdriver';
 import logging from 'selenium-webdriver/lib/logging';
-
+import chrome from 'selenium-webdriver/chrome';
 import logger from '../../util/logger';
 
 class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
@@ -47,10 +47,15 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
       const caps = Capabilities[this.browser]();
       caps.setLoggingPrefs(prefs);
 
-      this.driver = new Builder()
+      const builder = new Builder()
         .withCapabilities(caps)
-        .forBrowser(this.browser)
-        .build();
+        .forBrowser(this.browser);
+
+      /* istanbul ignore next: only get's executed on CI server */
+      if (process.env.CI) {
+        builder.setChromeOptions(new chrome.Options().headless());
+      }
+      this.driver = builder.build();
 
       return this.driver;
     } catch (error) {
