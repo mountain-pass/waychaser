@@ -277,7 +277,51 @@ jobs:
         name: test-report-${{ matrix.browser }}
         path: test-results/browser-api-${{ matrix.browser }}-remote
 
-  report-cover:
+
+  check-coverage-local:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+
+    needs:
+      - test-node-api
+      - test-browser-api-local
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
+          
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - uses: actions/download-artifact@v2
+    - run: mkdir -p coverage
+    - run: |
+        for directory in $(ls -d code-coverage-report-*); do
+          mv "${directory}" "coverage/." 
+        done
+        ls -l coverage
+    - run: npm run report:cover
+
+
+  check-coverage:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
     needs:
@@ -323,7 +367,7 @@ jobs:
   report-cover-to-codeclimate:
     needs:
       - checksecret
-      - report-cover
+      - check-coverage
     if: |
       needs.checksecret.outputs.SECRETS_SET == 'true' &&
       github.ref == 'refs/heads/main' && 
@@ -359,7 +403,7 @@ jobs:
     continue-on-error: true
 
     needs:
-      - report-cover
+      - check-coverage
 
     runs-on: ubuntu-latest
 
@@ -391,7 +435,7 @@ jobs:
   publish:
     needs:
       - checksecret
-      - report-cover
+      - check-coverage
       - lint
       - build
     if: |
