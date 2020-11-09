@@ -12,6 +12,19 @@ on:
       - '**'
 
 jobs:
+  checksecret:
+    runs-on: ubuntu-latest
+    outputs:
+      SECRETS_SET: ${{ steps.checksecret.outputs.SECRETS_SET }}
+    steps:
+      - id: checksecret
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+        run: |
+            echo "SECRETS_SET: ${{ env.BROWSERSTACK_USERNAME != '' }}"
+            echo "::set-output name=SECRETS_SET::${{ env.BROWSERSTACK_USERNAME != '' }}"
+
+
   lint:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
@@ -119,10 +132,11 @@ jobs:
         path: test-results/node-api
 
   get-browser-list:
-    env:
-      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
-
-    if: "env.BROWSERSTACK_USERNAME != null && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    needs:
+      - checksecret
+    if: |
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     runs-on: ubuntu-latest
 
@@ -165,13 +179,12 @@ jobs:
 
 
   test-browser-api:
-    env:
-      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
-
-    if: "env.BROWSERSTACK_USERNAME != null && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
-
     needs:
+      - checksecret
       - get-browser-list
+    if: |
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     runs-on: ubuntu-latest
 
@@ -268,16 +281,16 @@ jobs:
 
 
   report-cover-to-codeclimate:
-    env:
-      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-
+    needs:
+      - checksecret
+      - report-cover
     if: |
-      env.CC_TEST_REPORTER_ID != null && 
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
       github.ref == 'refs/heads/main' && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
-    
-    needs:
-      - report-cover
+
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
     runs-on: ubuntu-latest
 
@@ -301,7 +314,7 @@ jobs:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   publish-reports:
-    if: false
+    if: "false"
     
     continue-on-error: true
 
@@ -336,20 +349,16 @@ jobs:
 
 
   publish:
-    env:
-      CC_TEST_REPORTER_ID: ${{ secrets.NPM_TOKEN }}
-
+    needs:
+      - checksecret
+      - report-cover
+      - lint
+      - build
     if: |
-      env.NPM_TOKEN != null && 
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
       github.ref == 'refs/heads/main' && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
-
-
-    needs: 
-      - lint
-      - build
-      - report-cover
 
     runs-on: ubuntu-latest
 
