@@ -38,7 +38,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - run: env | sort
+    # the following should be blank on fork from PR
+    - run: echo "BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}"
     - run: npm config set script-shell $(which bash)
     - run: npm ci
     - run: npm run lint
