@@ -111,7 +111,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
         .usingServer('https://hub-cloud.browserstack.com/wd/hub')
         .withCapabilities(capabilities)
         .build();
-      await this.driver.manage().setTimeouts({ script: 20000 });
+      await this.driver.manage().setTimeouts({ script: 40000 });
       return this.driver;
     } catch (error) {
       /* istanbul ignore next: only get's executed when there are web driver issues */
