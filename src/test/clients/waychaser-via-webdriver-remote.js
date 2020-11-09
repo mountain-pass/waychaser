@@ -133,7 +133,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
 
   async afterAllTests() {
     super.afterAllTests();
-    /* istanbul ignore else: only get's executed if the tunnel couldn't be setup or running on CI */
+    /* istanbul ignore next: only get's executed if the tunnel couldn't be setup or running on CI */
     if (this.tunnel) {
       await new Promise((resolve) => {
         this.tunnel.stop(resolve);
