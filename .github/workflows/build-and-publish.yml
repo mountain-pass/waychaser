@@ -116,6 +116,10 @@ jobs:
       with:
         name: code-coverage-report-node-${{ matrix.node-version }}
         path: coverage/node-api
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-report-node-${{ matrix.node-version }}
+        path: test-results/node-api
 
   get-browser-list:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
@@ -212,6 +216,10 @@ jobs:
       with:
         name: code-coverage-report-${{ matrix.browser }}
         path: coverage/browser-api-${{ matrix.browser }}-remote
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-report-${{ matrix.browser }}
+        path: test-results/browser-api-${{ matrix.browser }}-remote
 
   report-cover:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
@@ -259,8 +267,6 @@ jobs:
   report-cover-to-codeclimate:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
     
-    continue-on-error: true
-
     needs:
       - report-cover
 
