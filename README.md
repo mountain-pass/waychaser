@@ -113,7 +113,7 @@ catch(error) {
 ## Browser
 
 ```html
-<script type="text/javascript" src="https://unpkg.com/@mountainpass/waychaser@1.24.0"></script>
+<script type="text/javascript" src="https://unpkg.com/@mountainpass/waychaser@1.25.0"></script>
 
 ...
 <script type="text/javascript">
