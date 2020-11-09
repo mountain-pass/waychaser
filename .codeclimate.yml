@@ -29,11 +29,11 @@ plugins:
     channel: 'eslint-7'
   # git-legal:
   #   enabled: true
-  # duplication:
-  #   enabled: true
-  #   config:
-  #     languages:
-  #       - javascript
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
   # markdownlint:
   #   enabled: true
   # nodesecurity:
