@@ -93,6 +93,7 @@ class WaychaserViaWebdriver {
 
   async getBrowserLogs() {
     // getting logs appears to be only possible wtih chrome
+    /* istanbul ignore else: doesn't get executed on CI */
     if (this.browser == 'chrome') {
       await this.driver
         .manage()
