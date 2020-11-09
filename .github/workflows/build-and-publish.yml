@@ -220,6 +220,7 @@ jobs:
     needs:
       - checksecret
       - get-browser-list
+      - test-browser-api-local
     if: |
       needs.checksecret.outputs.SECRETS_SET == 'true' &&
        ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
@@ -262,7 +263,13 @@ jobs:
       with:
         local-testing: start
         local-identifier: random
-    - run: npm run cover:browser-api:${{ matrix.browser }}:remote
+    # browserstack can be moody at times, so let
+    # the pipeline have a few cracks at it
+    - uses: nick-invision/retry@v2
+      with:
+        timeout_seconds: 60
+        max_attempts: 3
+        command: npm run cover:browser-api:${{ matrix.browser }}:remote
     - uses: 'browserstack/github-actions/setup-local@v1.0.1'
       with:
         local-testing: stop
