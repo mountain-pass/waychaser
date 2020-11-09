@@ -267,6 +267,7 @@ jobs:
         shell: bash
 
     steps:
+    - uses: actions/checkout@v2
     - uses: actions/download-artifact@v2
     - run: ls code-coverage-report-chrome
     - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
