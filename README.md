@@ -236,11 +236,11 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] automatically update version number in README.md
 - [x] badges
 - [x] archive test results
+- [x] have pull requests from fork run node-api and chrome local
 - [ ] expand code-climate analysis
 - [ ] iOS Safari testing
 - [ ] Andriod Chrome testing
 - [ ] create docs site
   - [ ] integrate Code coverage and code quality reporting 
   - [ ] integrate API docs
-- [ ] have pull requests from fork run node-api and chrome local (not sure how to tell if PR from fork)
 - [ ] lots more 😂
