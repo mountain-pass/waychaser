@@ -238,7 +238,33 @@ jobs:
 
     - run: npm config set script-shell $(which bash)
     - run: npm ci
+    - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./node_modules/cc-test-reporter
+    - run: chmod +x ./node_modules/cc-test-reporter
+
     - run: npm run report:cover
+
+
+  report-cover-to-codeclimate:
+    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+    
+    continue-on-error: true
+
+    needs:
+      - report-cover
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - run: chmod +x ./cc-test-reporter
+    - run: ./cc-test-reporter format-coverage -t lcov -o coverage/full/codeclimate.json coverage/full/lcov.info
+    - run: ./cc-test-reporter upload-coverage -i coverage/full/codeclimate.json
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   publish-reports:
     if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
