@@ -38,8 +38,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    # the following should be blank on fork from PR
-    - run: env | sort
     - run: npm config set script-shell $(which bash)
     - run: npm ci
     - run: npm run lint
@@ -75,7 +73,7 @@ jobs:
     - run: npm run build
 
   test-node-api:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')" 
 
     runs-on: ubuntu-latest
 
@@ -123,7 +121,10 @@ jobs:
         path: test-results/node-api
 
   get-browser-list:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: |
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') &&
+      ("${{ secrets.BROWSERSTACK_USERNAME }}" != "")
+
 
     runs-on: ubuntu-latest
 
@@ -166,7 +167,9 @@ jobs:
 
 
   test-browser-api:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: |
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') &&
+      ("${{ secrets.BROWSERSTACK_USERNAME }}" != "")
 
     needs:
       - get-browser-list
@@ -223,7 +226,7 @@ jobs:
         path: test-results/browser-api-${{ matrix.browser }}-remote
 
   report-cover:
-    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
     needs:
       - test-node-api
@@ -266,7 +269,9 @@ jobs:
 
 
   report-cover-to-codeclimate:
-    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+    if: |
+     ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') &&
+      ("${{ secrets.CC_TEST_REPORTER_ID }}" != "")
     
     needs:
       - report-cover
