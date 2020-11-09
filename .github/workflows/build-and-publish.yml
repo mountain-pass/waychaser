@@ -50,8 +50,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    # the following should be blank on fork from PR
-    - run: env | sort
     - run: npm config set script-shell $(which bash)
     - run: npm ci
     - run: npm run lint
@@ -87,7 +85,7 @@ jobs:
     - run: npm run build
 
   test-node-api:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')" 
 
     runs-on: ubuntu-latest
 
