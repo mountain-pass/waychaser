@@ -43,394 +43,394 @@ jobs:
     - run: npm ci
     - run: npm run lint
 
-  # build:
-  #   if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+  build:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   defaults:
-  #     run:
-  #       shell: bash
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
-  #   - uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v2
 
-  #   - name: Cache NPM dependencies
-  #     uses: actions/cache@v1
-  #     with:
-  #       path: |
-  #          ~/.npm
-  #          node_modules
-  #       key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-  #       restore-keys: |
-  #         ${{ runner.OS }}-npm-cache-
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
           
-  #   - name: Use Node.js 12.x
-  #     uses: actions/setup-node@v1
-  #     with:
-  #       node-version: 12.x
-  #   - run: npm config set script-shell $(which bash)
-  #   - run: npm ci
-  #   - run: npm run build
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: npm run build
 
-  # test-node-api:
-  #   if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+  test-node-api:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   strategy:
-  #     matrix:
-  #       node-version: [10.x, 12.x, 14.x]
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
 
-  #   defaults:
-  #     run:
-  #       shell: bash
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
-  #   - uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v2
 
-  #   - name: Cache NPM dependencies
-  #     uses: actions/cache@v1
-  #     with:
-  #       path: |
-  #          ~/.npm
-  #          node_modules
-  #       key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-  #       restore-keys: |
-  #         ${{ runner.OS }}-npm-cache-
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
           
-  #   - name: Use Node.js ${{ matrix.node-version }}
-  #     uses: actions/setup-node@v1
-  #     with:
-  #       node-version: ${{ matrix.node-version }}
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
 
-  #   - run: npm config set script-shell $(which bash)
-  #   - run: npm ci
-  #   - run: npm run lint
-  #   - run: npm run build
-  #   - run: npm run cover:node-api
-  #     env:
-  #       SAUCE_LABS_KEY: ${{secrets.SAUCE_LABS_KEY}}
-  #       SAUCE_LABS_USERNAME: ${{secrets.SAUCE_LABS_USERNAME}}
-  #   - uses: actions/upload-artifact@v2
-  #     with:
-  #       name: code-coverage-report-node-${{ matrix.node-version }}
-  #       path: coverage/node-api
-  #   - uses: actions/upload-artifact@v2
-  #     with:
-  #       name: test-report-node-${{ matrix.node-version }}
-  #       path: test-results/node-api
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: npm run lint
+    - run: npm run build
+    - run: npm run cover:node-api
+      env:
+        SAUCE_LABS_KEY: ${{secrets.SAUCE_LABS_KEY}}
+        SAUCE_LABS_USERNAME: ${{secrets.SAUCE_LABS_USERNAME}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage-report-node-${{ matrix.node-version }}
+        path: coverage/node-api
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-report-node-${{ matrix.node-version }}
+        path: test-results/node-api
 
-  # get-browser-list:
-  #   if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+  get-browser-list:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   outputs:
-  #     matrix: ${{ steps.set-matrix.outputs.matrix }}
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
 
-  #   defaults:
-  #     run:
-  #       shell: bash
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
-  #   # wait here so we don't overload our browserstack quota
-  #   - uses: softprops/turnstyle@v1 
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    # wait here so we don't overload our browserstack quota
+    - uses: softprops/turnstyle@v1 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  #   - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-  #   - name: Cache NPM dependencies
-  #     uses: actions/cache@v1
-  #     with:
-  #       path: |
-  #          ~/.npm
-  #          node_modules
-  #       key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-  #       restore-keys: |
-  #         ${{ runner.OS }}-npm-cache-
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
           
-  #   - name: Use Node.js 12.x
-  #     uses: actions/setup-node@v1
-  #     with:
-  #       node-version: 12.x
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
 
-  #   - run: npm config set script-shell $(which bash)
-  #   - run: npm ci
-  #   - run: npm run --silent json:list-github-actions-browser-matrix > browser-matrix.json
-  #   - run: cat browser-matrix.json
-  #   - id: set-matrix
-  #     run: echo "::set-output name=matrix::$(cat browser-matrix.json)"
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: npm run --silent json:list-github-actions-browser-matrix > browser-matrix.json
+    - run: cat browser-matrix.json
+    - id: set-matrix
+      run: echo "::set-output name=matrix::$(cat browser-matrix.json)"
 
 
-  # test-browser-api:
-  #   if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+  test-browser-api:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
-  #   needs:
-  #     - get-browser-list
+    needs:
+      - get-browser-list
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   name: test-${{ matrix.browser }}-remote
-  #   strategy:
-  #     matrix: ${{fromJson(needs.get-browser-list.outputs.matrix)}}
+    name: test-${{ matrix.browser }}-remote
+    strategy:
+      matrix: ${{fromJson(needs.get-browser-list.outputs.matrix)}}
 
-  #   defaults:
-  #     run:
-  #       shell: bash
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
-  #   - uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v2
 
-  #   - name: Cache NPM dependencies
-  #     uses: actions/cache@v1
-  #     with:
-  #       path: |
-  #          ~/.npm
-  #          node_modules
-  #       key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-  #       restore-keys: |
-  #         ${{ runner.OS }}-npm-cache-
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
           
-  #   - name: Use Node.js 12.x
-  #     uses: actions/setup-node@v1
-  #     with:
-  #       node-version: 12.x
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
     
-  #   - run: npm config set script-shell $(which bash)
-  #   - run: npm ci
-  #   - uses: 'browserstack/github-actions/setup-env@v1.0.1'
-  #     with:
-  #       username:  ${{ secrets.BROWSERSTACK_USERNAME }}
-  #       access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-  #   - uses: 'browserstack/github-actions/setup-local@v1.0.1'
-  #     with:
-  #       local-testing: start
-  #       local-identifier: random
-  #   - run: npm run cover:browser-api:${{ matrix.browser }}:remote
-  #   - uses: 'browserstack/github-actions/setup-local@v1.0.1'
-  #     with:
-  #       local-testing: stop
-  #   - uses: actions/upload-artifact@v2
-  #     with:
-  #       name: code-coverage-report-${{ matrix.browser }}
-  #       path: coverage/browser-api-${{ matrix.browser }}-remote
-  #   - uses: actions/upload-artifact@v2
-  #     with:
-  #       name: test-report-${{ matrix.browser }}
-  #       path: test-results/browser-api-${{ matrix.browser }}-remote
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - uses: 'browserstack/github-actions/setup-env@v1.0.1'
+      with:
+        username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+        access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+    - uses: 'browserstack/github-actions/setup-local@v1.0.1'
+      with:
+        local-testing: start
+        local-identifier: random
+    - run: npm run cover:browser-api:${{ matrix.browser }}:remote
+    - uses: 'browserstack/github-actions/setup-local@v1.0.1'
+      with:
+        local-testing: stop
+    - uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage-report-${{ matrix.browser }}
+        path: coverage/browser-api-${{ matrix.browser }}-remote
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-report-${{ matrix.browser }}
+        path: test-results/browser-api-${{ matrix.browser }}-remote
 
-  # report-cover:
-  #   if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+  report-cover:
+    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
-  #   needs:
-  #     - test-node-api
-  #     - test-browser-api
+    needs:
+      - test-node-api
+      - test-browser-api
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   defaults:
-  #     run:
-  #       shell: bash
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
-  #   - uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v2
 
-  #   - name: Cache NPM dependencies
-  #     uses: actions/cache@v1
-  #     with:
-  #       path: |
-  #          ~/.npm
-  #          node_modules
-  #       key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-  #       restore-keys: |
-  #         ${{ runner.OS }}-npm-cache-
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
           
-  #   - name: Use Node.js 12.x
-  #     uses: actions/setup-node@v1
-  #     with:
-  #       node-version: 12.x
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
 
-  #   - run: npm config set script-shell $(which bash)
-  #   - run: npm ci
-  #   - uses: actions/download-artifact@v2
-  #   - run: mkdir -p coverage
-  #   - run: |
-  #       for directory in $(ls -d code-coverage-report-*); do
-  #         mv "${directory}" "coverage/." 
-  #       done
-  #       ls -l coverage
-  #   - run: npm run report:cover
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - uses: actions/download-artifact@v2
+    - run: mkdir -p coverage
+    - run: |
+        for directory in $(ls -d code-coverage-report-*); do
+          mv "${directory}" "coverage/." 
+        done
+        ls -l coverage
+    - run: npm run report:cover
 
 
-  # report-cover-to-codeclimate:
-  #   if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+  report-cover-to-codeclimate:
+    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
     
-  #   needs:
-  #     - report-cover
+    needs:
+      - report-cover
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   defaults:
-  #     run:
-  #       shell: bash
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - uses: actions/download-artifact@v2
-  #   - run: ls code-coverage-report-chrome
-  #   - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  #   - run: chmod +x ./cc-test-reporter
-  #   - run: |
-  #       for directory in $(ls -d code-coverage-report-*); do
-  #         ./cc-test-reporter format-coverage -t lcov -o ${directory}-codeclimate.json ${directory}/lcov.info
-  #       done
-  #   - run: ./cc-test-reporter sum-coverage *-codeclimate.json -o code-coverage-report-full-codeclimate.json
-  #   - run: ./cc-test-reporter upload-coverage -i code-coverage-report-full-codeclimate.json
-  #     env:
-  #       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2
+    - run: ls code-coverage-report-chrome
+    - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - run: chmod +x ./cc-test-reporter
+    - run: |
+        for directory in $(ls -d code-coverage-report-*); do
+          ./cc-test-reporter format-coverage -t lcov -o ${directory}-codeclimate.json ${directory}/lcov.info
+        done
+    - run: ./cc-test-reporter sum-coverage *-codeclimate.json -o code-coverage-report-full-codeclimate.json
+    - run: ./cc-test-reporter upload-coverage -i code-coverage-report-full-codeclimate.json
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
-  # publish-reports:
-  #   if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+  publish-reports:
+    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
     
-  #   continue-on-error: true
+    continue-on-error: true
 
-  #   needs:
-  #     - report-cover
+    needs:
+      - report-cover
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   defaults:
-  #     run:
-  #       shell: bash
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
+    steps:
 
-  #   - name: Publish Cover Report
-  #     uses: JamesIves/github-pages-deploy-action@3.7.1
-  #     with:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       BRANCH: gh-pages # The branch the action should deploy to.
-  #       FOLDER: coverage/full # The folder the action should deploy.
-  #       TARGET_FOLDER: /builds/${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}/coverage
-  #       CLEAN: true # Automatically remove deleted files from the deploy branch
+    - name: Publish Cover Report
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: coverage/full # The folder the action should deploy.
+        TARGET_FOLDER: /builds/${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}/coverage
+        CLEAN: true # Automatically remove deleted files from the deploy branch
 
-  #   - name: Publish Test Results
-  #     uses: JamesIves/github-pages-deploy-action@3.7.1
-  #     with:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       BRANCH: gh-pages # The branch the action should deploy to.
-  #       FOLDER: test-results/full # The folder the action should deploy.
-  #       TARGET_FOLDER: /builds/${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}/test-results
-  #       CLEAN: true # Automatically remove deleted files from the deploy branch
-
-
-  # publish:
-  #   if: |
-  #     github.ref == 'refs/heads/main' && 
-  #     ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && 
-  #     ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
+    - name: Publish Test Results
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: test-results/full # The folder the action should deploy.
+        TARGET_FOLDER: /builds/${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}/test-results
+        CLEAN: true # Automatically remove deleted files from the deploy branch
 
 
-  #   needs: 
-  #     - lint
-  #     - build
-  #     - report-cover
+  publish:
+    if: |
+      github.ref == 'refs/heads/main' && 
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && 
+      ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
 
-  #   runs-on: ubuntu-latest
 
-  #   defaults:
-  #     run:
-  #       shell: bash
+    needs: 
+      - lint
+      - build
+      - report-cover
 
-  #   steps:
-  #   - uses: actions/checkout@v2
+    runs-on: ubuntu-latest
 
-  #   - name: Cache NPM dependencies
-  #     uses: actions/cache@v1
-  #     with:
-  #       path: |
-  #          ~/.npm
-  #          node_modules
-  #       key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-  #       restore-keys: |
-  #         ${{ runner.OS }}-npm-cache-
+    defaults:
+      run:
+        shell: bash
 
-  #   - uses: actions/setup-node@v1
-  #     with:
-  #       node-version: 12.x
-  #       registry-url: https://registry.npmjs.org/
-  #   - name: Publish and Tag
-  #     run: |
-  #       npm config set script-shell $(which bash)
-  #       PACKAGE_NAME=$(node -p "require('./package.json').name")
-  #       CURRENT_VERSION=$(npm --unsafe-perm show "${PACKAGE_NAME}" version)
-  #       PACKAGE_VERSION=$(node -p "require('./package.json').version")
-  #       if [ $CURRENT_VERSION = $PACKAGE_VERSION ]; then
-  #         echo "Version ${PACKAGE_VERSION} has already been published"
-  #         echo "PACKAGE_VERSION=" >> $GITHUB_ENV
-  #       else
-  #         npm ci
-  #         # need to bump version in README.md to PACKAGE_VERSION
-  #         # so that the correct version appears on npmjs.com
-  #         npm run sync-readme-version
-  #         git config user.name github-actions
-  #         git config user.email github-actions@github.com
-  #         git add README.md
-  #         git commit -m "Updated version in README.md to $PACKAGE_VERSION. [skip-ci]"
-  #         npm pack
-  #         npm run dopublish
-  #         git config user.name github-actions
-  #         git config user.email github-actions@github.com
-  #         git tag "v${PACKAGE_VERSION}"
-  #         git pull --rebase
-  #         git push --tags
-  #         echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
-  #       fi
-  #       PACKAGE_NAME_WITHOUT_AT="${PACKAGE_NAME#@}"
-  #       echo "TGZ_NAME=${PACKAGE_NAME_WITHOUT_AT//\//-}" >> $GITHUB_ENV
-  #     env:
-  #       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    steps:
+    - uses: actions/checkout@v2
 
-  #   - name: Create Release
-  #     if: ${{ env.PACKAGE_VERSION != '' }}
-  #     id: create_release
-  #     uses: actions/create-release@v1
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-  #     with:
-  #       tag_name: v${{ env.PACKAGE_VERSION }}
-  #       release_name: Release v${{ env.PACKAGE_VERSION }}
-  #       draft: false
-  #       prerelease: false
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
 
-  #   - name: Upload Release Asset
-  #     if: ${{ env.PACKAGE_VERSION != '' }}
-  #     id: upload-release-asset 
-  #     uses: actions/upload-release-asset@v1
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     with:
-  #       upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-  #       asset_path: ./${{ env.TGZ_NAME }}-${{ env.PACKAGE_VERSION }}.tgz
-  #       asset_name: ${{ env.TGZ_NAME }}-${{ env.PACKAGE_VERSION }}.tgz
-  #       asset_content_type: application/gzip
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+        registry-url: https://registry.npmjs.org/
+    - name: Publish and Tag
+      run: |
+        npm config set script-shell $(which bash)
+        PACKAGE_NAME=$(node -p "require('./package.json').name")
+        CURRENT_VERSION=$(npm --unsafe-perm show "${PACKAGE_NAME}" version)
+        PACKAGE_VERSION=$(node -p "require('./package.json').version")
+        if [ $CURRENT_VERSION = $PACKAGE_VERSION ]; then
+          echo "Version ${PACKAGE_VERSION} has already been published"
+          echo "PACKAGE_VERSION=" >> $GITHUB_ENV
+        else
+          npm ci
+          # need to bump version in README.md to PACKAGE_VERSION
+          # so that the correct version appears on npmjs.com
+          npm run sync-readme-version
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add README.md
+          git commit -m "Updated version in README.md to $PACKAGE_VERSION. [skip-ci]"
+          npm pack
+          npm run dopublish
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag "v${PACKAGE_VERSION}"
+          git pull --rebase
+          git push --tags
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+        fi
+        PACKAGE_NAME_WITHOUT_AT="${PACKAGE_NAME#@}"
+        echo "TGZ_NAME=${PACKAGE_NAME_WITHOUT_AT//\//-}" >> $GITHUB_ENV
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-  #   - name: Bump Version
-  #     run: |
-  #       git config user.name github-actions
-  #       git config user.email github-actions@github.com
-  #       npm --unsafe-perm --no-git-tag-version version minor -m "Version minor to %s."
-  #       npm ci
-  #       git add package.json
-  #       git add package-lock.json
-  #       # We don't want to bump the version in the README.md
-  #       # otherwise people reading on github will try to
-  #       # use the unreleased version.
-  #       # instead, we need to update it, just before we pack and tag
-  #       NEXT_VERSION=$(node -p "require('./package.json').version")
-  #       git commit -m "Version bump to $NEXT_VERSION. [skip-ci]"
-  #       git pull --rebase
-  #       git push origin HEAD:main
+    - name: Create Release
+      if: ${{ env.PACKAGE_VERSION != '' }}
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: v${{ env.PACKAGE_VERSION }}
+        release_name: Release v${{ env.PACKAGE_VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      if: ${{ env.PACKAGE_VERSION != '' }}
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./${{ env.TGZ_NAME }}-${{ env.PACKAGE_VERSION }}.tgz
+        asset_name: ${{ env.TGZ_NAME }}-${{ env.PACKAGE_VERSION }}.tgz
+        asset_content_type: application/gzip
+
+    - name: Bump Version
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        npm --unsafe-perm --no-git-tag-version version minor -m "Version minor to %s."
+        npm ci
+        git add package.json
+        git add package-lock.json
+        # We don't want to bump the version in the README.md
+        # otherwise people reading on github will try to
+        # use the unreleased version.
+        # instead, we need to update it, just before we pack and tag
+        NEXT_VERSION=$(node -p "require('./package.json').version")
+        git commit -m "Version bump to $NEXT_VERSION. [skip-ci]"
+        git pull --rebase
+        git push origin HEAD:main
 
