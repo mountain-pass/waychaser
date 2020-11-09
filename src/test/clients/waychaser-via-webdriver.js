@@ -61,6 +61,7 @@ class WaychaserViaWebdriver {
   }
 
   async loadWaychaserTestPage() {
+    logger.debug('...loading page');
     await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}`);
     logger.debug('...page loaded');
     await this.driver.wait(() => {
@@ -71,7 +72,7 @@ class WaychaserViaWebdriver {
           return window.waychaser != undefined;
         }
       );
-    }, 5000);
+    }, 20000);
   }
 
   async beforeAllTests() {}

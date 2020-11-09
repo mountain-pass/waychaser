@@ -27,6 +27,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
 
   async beforeTest(scenario) {
     this.driver = await this.buildDriver(scenario.pickle.name);
+    logger.debug('driver built');
     await this.loadWaychaserTestPage();
 
     super.beforeTest(scenario);
