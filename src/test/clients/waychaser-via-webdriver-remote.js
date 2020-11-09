@@ -49,26 +49,29 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
   }
 
   async startTunnel() {
-    assert(
-      process.env.BROWSERSTACK_ACCESS_KEY,
-      `process.env.BROWSERSTACK_ACCESS_KEY not set`
-    );
-    this.tunnel = new browserstack.Local({
-      key: process.env.BROWSERSTACK_ACCESS_KEY,
-      verbose: true,
-    });
-    await new Promise((resolve, reject) => {
-      this.tunnel.start({}, (error) => {
-        /* istanbul ignore if: only get's executed on tunnel setup failure */
-        if (error) {
-          logger.error('error starting tunnel', error);
-          reject(error);
-        }
-        logger.info('tunnel started');
-        resolve();
+    /* istanbul ignore if: does not get executed on CI */
+    if (!process.env.BROWSERSTACK_LOCAL_IDENTIFIER) {
+      assert(
+        process.env.BROWSERSTACK_ACCESS_KEY,
+        `process.env.BROWSERSTACK_ACCESS_KEY not set`
+      );
+      this.tunnel = new browserstack.Local({
+        key: process.env.BROWSERSTACK_ACCESS_KEY,
+        verbose: true,
       });
-    });
-    logger.info(`Browserstack tunnel started`);
+      await new Promise((resolve, reject) => {
+        this.tunnel.start({}, (error) => {
+          /* istanbul ignore if: only get's executed on tunnel setup failure */
+          if (error) {
+            logger.error('error starting tunnel', error);
+            reject(error);
+          }
+          logger.info('tunnel started');
+          resolve();
+        });
+      });
+      logger.info(`Browserstack tunnel started`);
+    }
   }
 
   async buildDriver(name) {
@@ -129,7 +132,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
 
   async afterAllTests() {
     super.afterAllTests();
-    /* istanbul ignore else: only get's executed if the tunnel couldn't be setup */
+    /* istanbul ignore else: only get's executed if the tunnel couldn't be setup or running on CI */
     if (this.tunnel) {
       await new Promise((resolve) => {
         this.tunnel.stop(resolve);
