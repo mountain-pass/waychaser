@@ -321,11 +321,19 @@ jobs:
           echo "PACKAGE_VERSION=" >> $GITHUB_ENV
         else
           npm ci
+          # need to bump version in README.md to PACKAGE_VERSION
+          # so that the correct version appears on npmjs.com
+          npm run sync-readme-version
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add README.md
+          git commit -m "Updated version in README.md to $PACKAGE_VERSION. [skip-ci]"
           npm pack
           npm run dopublish
           git config user.name github-actions
           git config user.email github-actions@github.com
           git tag "v${PACKAGE_VERSION}"
+          git pull --rebase
           git push --tags
           echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
         fi
@@ -366,6 +374,10 @@ jobs:
         npm ci
         git add package.json
         git add package-lock.json
+        # We don't want to bump the version in the README.md
+        # otherwise people reading on github will try to
+        # use the unreleased version.
+        # instead, we need to update it, just before we pack and tag
         NEXT_VERSION=$(node -p "require('./package.json').version")
         git commit -m "Version bump to $NEXT_VERSION. [skip-ci]"
         git pull --rebase

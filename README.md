@@ -97,7 +97,7 @@ catch(error) {
 ## Browser
 
 ```html
-<script type="text/javascript" src="https://unpkg.com/@mountainpass/waychaser@VERSION"></script>
+<script type="text/javascript" src="https://unpkg.com/@mountainpass/waychaser@1.22.0"></script>
 
 ...
 <script type="text/javascript">
@@ -217,9 +217,9 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] dependency caching in CI pipeline
 - [x] Edge browser testing
 - [x] IE browser testing lol
+- [x] automatically update version number in README.md
 - [ ] iOS Safari testing
 - [ ] Andriod Chrome testing
-- [ ] automatically update version number in README.md
 - [ ] badges
 - [ ] create docs site
   - [ ] integrate Code coverage and code quality reporting 
