@@ -247,8 +247,12 @@ jobs:
     - run: npm config set script-shell $(which bash)
     - run: npm ci
     - uses: actions/download-artifact@v2
-    # - run: ls -l
-    # - run: ls -l coverage
+    - run: mkdir -p coverage
+    - run: |
+        for directory in $(ls -d code-coverage-report-*); do
+          mv "${directory}" "coverage/." 
+        done
+        ls -l coverage
     - run: npm run report:cover
 
 
