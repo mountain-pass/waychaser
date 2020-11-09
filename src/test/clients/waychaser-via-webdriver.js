@@ -71,7 +71,7 @@ class WaychaserViaWebdriver {
           return window.waychaser != undefined;
         }
       );
-    }, 20000);
+    }, 40000);
   }
 
   async beforeAllTests() {}

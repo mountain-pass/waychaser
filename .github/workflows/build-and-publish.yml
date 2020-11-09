@@ -12,6 +12,18 @@ on:
       - '**'
 
 jobs:
+  checksecret:
+    runs-on: ubuntu-latest
+    outputs:
+      SECRETS_SET: ${{ steps.checksecret.outputs.SECRETS_SET }}
+    steps:
+      - id: checksecret
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+        run: |
+            echo "SECRETS_SET: ${{ env.BROWSERSTACK_USERNAME != '' }}"
+            echo "::set-output name=SECRETS_SET::${{ env.BROWSERSTACK_USERNAME != '' }}"
+
   lint:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
@@ -38,6 +50,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
+    # the following should be blank on fork from PR
+    - run: env | sort
     - run: npm config set script-shell $(which bash)
     - run: npm ci
     - run: npm run lint
@@ -73,7 +87,7 @@ jobs:
     - run: npm run build
 
   test-node-api:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')" 
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
     runs-on: ubuntu-latest
 
@@ -102,8 +116,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: |
-        echo "BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}"
     - run: npm config set script-shell $(which bash)
     - run: npm ci
     - run: npm run lint
@@ -119,10 +131,11 @@ jobs:
         path: test-results/node-api
 
   get-browser-list:
+    needs:
+      - checksecret
     if: |
-      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') &&
-      ("${{ secrets.BROWSERSTACK_USERNAME }}" != "")
-
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     runs-on: ubuntu-latest
 
@@ -163,14 +176,55 @@ jobs:
     - id: set-matrix
       run: echo "::set-output name=matrix::$(cat browser-matrix.json)"
 
+  test-browser-api-local:
+    if: |
+       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    runs-on: ubuntu-latest
+
+    name: test-chrome-local
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
+      with:
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
+          
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: npm run cover:browser-api:chrome:local
+    - uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage-report-chrome-local
+        path: coverage/browser-api-chrome-local
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-report-chrome-local
+        path: test-results/browser-api-chrome-local
 
   test-browser-api:
-    if: |
-      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') &&
-      ("${{ secrets.BROWSERSTACK_USERNAME }}" != "")
-
     needs:
+      - checksecret
       - get-browser-list
+    if: |
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     runs-on: ubuntu-latest
 
@@ -267,12 +321,16 @@ jobs:
 
 
   report-cover-to-codeclimate:
-    if: |
-     ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') &&
-      ("${{ secrets.CC_TEST_REPORTER_ID }}" != "")
-    
     needs:
+      - checksecret
       - report-cover
+    if: |
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+      github.ref == 'refs/heads/main' && 
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
     runs-on: ubuntu-latest
 
@@ -296,7 +354,7 @@ jobs:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   publish-reports:
-    if: github.ref == 'refs/heads/main' && ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+    if: "false"
     
     continue-on-error: true
 
@@ -331,16 +389,16 @@ jobs:
 
 
   publish:
+    needs:
+      - checksecret
+      - report-cover
+      - lint
+      - build
     if: |
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
       github.ref == 'refs/heads/main' && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
-
-
-    needs: 
-      - lint
-      - build
-      - report-cover
 
     runs-on: ubuntu-latest
 
