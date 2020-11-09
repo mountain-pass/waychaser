@@ -268,12 +268,15 @@ jobs:
 
     steps:
     - uses: actions/download-artifact@v2
-    - run: ls -l
-    - run: ls -l coverage
+    - run: ls code-coverage-report-chrome
     - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     - run: chmod +x ./cc-test-reporter
-    - run: ./cc-test-reporter format-coverage -t lcov -o coverage/full/codeclimate.json coverage/full/lcov.info
-    - run: ./cc-test-reporter upload-coverage -i coverage/full/codeclimate.json
+    - run: |
+        for directory in $(ls -d code-coverage-report-*); do
+          ./cc-test-reporter format-coverage -t lcov -o ${directory}-codeclimate.json ${directory}/lcov.info
+        done
+    - run: ./cc-test-reporter sum-coverage *-codeclimate.json -o code-coverage-report-full-codeclimate.json
+    - run: ./cc-test-reporter upload-coverage -i code-coverage-report-full-codeclimate.json
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
