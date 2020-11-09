@@ -68,7 +68,6 @@ class WaychaserViaWebdriver {
       return this.driver.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */
         function () {
-          /* global window */
           return window.waychaser != undefined;
         }
       );
