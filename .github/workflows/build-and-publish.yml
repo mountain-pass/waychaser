@@ -24,7 +24,6 @@ jobs:
             echo "SECRETS_SET: ${{ env.BROWSERSTACK_USERNAME != '' }}"
             echo "::set-output name=SECRETS_SET::${{ env.BROWSERSTACK_USERNAME != '' }}"
 
-
   lint:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
@@ -287,7 +286,7 @@ jobs:
     if: |
       needs.checksecret.outputs.SECRETS_SET == 'true' &&
       github.ref == 'refs/heads/main' && 
-      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
