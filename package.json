@@ -166,6 +166,10 @@
       "eslint --fix",
       "git add"
     ],
+    "*.{sh}": [
+      "shellcheck",
+      "git add"
+    ],
     "*.{json,css,md}": [
       "prettier --write",
       "git add"
