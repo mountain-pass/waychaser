@@ -3,7 +3,7 @@
   "parserOptions": {
     "sourceType": "module"
   },
-  "plugins": ["prettier", "security", "unicorn", "promise", "istanbul"],
+  "plugins": ["prettier", "security", "unicorn", "promise", "istanbul", "jsdoc"],
   "extends": [
     "eslint:recommended",
     "prettier",
@@ -14,7 +14,8 @@
     "plugin:promise/recommended",
     "plugin:node/recommended",
     "plugin:import/errors",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
+    "plugin:jsdoc/recommended"
   ],
   "env": {
     "browser": false,
@@ -45,7 +46,7 @@
   },
   "overrides": [
     {
-      "files": ["src/test/**"],
+      "files": ["src/test/**", "cucumber.js"],
       "plugins": ["chai-friendly"],
       "extends": ["plugin:chai-friendly/recommended"],
       "globals": {
@@ -53,7 +54,8 @@
         "PendingError": true
       },
       "rules": {
-        "security/detect-non-literal-fs-filename": "off"
+        "security/detect-non-literal-fs-filename": "off",
+        "jsdoc/require-jsdoc": "off"
       }
     },
     {

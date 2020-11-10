@@ -244,6 +244,9 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] Andriod Chrome testing
 - [x] npm audit
 - [x] snky security scanning
+- [ ] api docs
+- [ ] markdown lint
+- [ ] tags in npm
 - [ ] expand code-climate analysis
 - [ ] create docs site
   - [ ] integrate Code coverage and code quality reporting 

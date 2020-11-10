@@ -5,3 +5,4 @@ test-results/**
 lib/**/*
 dist/**
 .env
+out
