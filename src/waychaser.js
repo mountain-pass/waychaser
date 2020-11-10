@@ -1,5 +1,5 @@
-require('es6-promise').polyfill();
-import fetch from 'isomorphic-fetch';
+import fetch from "isomorphic-fetch";
+require("es6-promise").polyfill();
 
 class ApiResourceObject {
   constructor(response) {
@@ -21,9 +21,9 @@ const waychaser = {
    */
   load: async function (url, options) {
     return fetch(url, options).then((response) => {
-      console.log('waychaser:response', response);
+      console.log("waychaser:response", response);
       if (response.status >= 400) {
-        throw new Error('Bad response from server', response);
+        throw new Error("Bad response from server", response);
       }
 
       return new ApiResourceObject(response);

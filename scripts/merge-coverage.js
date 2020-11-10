@@ -2,12 +2,12 @@
 /* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable security/detect-non-literal-fs-filename */
 
-import fs from 'fs';
-import fsExtra from 'fs-extra';
+import fs from "fs";
+import fsExtra from "fs-extra";
 
-const RESULTS_DIR = 'coverage';
-const FULL_DIRNAME = 'full';
-const FULL_DIRPATH = `.nyc_output`;
+const RESULTS_DIR = "coverage";
+const FULL_DIRNAME = "full";
+const FULL_DIRPATH = ".nyc_output";
 
 console.log(`cleaning ${FULL_DIRPATH} ...`);
 fs.mkdirSync(FULL_DIRPATH, { recursive: true });
@@ -23,4 +23,4 @@ fs.readdirSync(RESULTS_DIR)
     fsExtra.copySync(n, FULL_DIRPATH);
   });
 
-console.log('... done');
+console.log("... done");

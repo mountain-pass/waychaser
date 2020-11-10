@@ -1,12 +1,12 @@
-import logger from '../../util/logger';
-import { createServer } from 'http';
-import { API_PORT } from '../config';
+import logger from "../../util/logger";
+import { createServer } from "http";
+import { API_PORT } from "../config";
 
-import express from 'express';
+import express from "express";
 
-export var app = express();
+export const app = express();
 
-var router;
+let router;
 
 export function getNewRouter() {
   router = express.Router();
@@ -17,7 +17,7 @@ app.use(function (request, response, next) {
   router(request, response, next);
 });
 
-export var server;
+export let server;
 
 export function stopServer() {
   if (server !== undefined) {
@@ -30,7 +30,7 @@ export function startServer() {
   server = createServer(app);
   server.listen(API_PORT, function () {
     logger.info(
-      '📡  Server is listening on port %d ( http://localhost:%d ) ',
+      "📡  Server is listening on port %d ( http://localhost:%d ) ",
       API_PORT,
       API_PORT
     );

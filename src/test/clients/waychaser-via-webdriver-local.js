@@ -1,8 +1,8 @@
-import { WaychaserViaWebdriver } from './waychaser-via-webdriver';
-import { Builder, Capabilities } from 'selenium-webdriver';
-import logging from 'selenium-webdriver/lib/logging';
-import chrome from 'selenium-webdriver/chrome';
-import logger from '../../util/logger';
+import { WaychaserViaWebdriver } from "./waychaser-via-webdriver";
+import { Builder, Capabilities } from "selenium-webdriver";
+import logging from "selenium-webdriver/lib/logging";
+import chrome from "selenium-webdriver/chrome";
+import logger from "../../util/logger";
 
 class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
   async beforeAllTests() {
@@ -16,10 +16,10 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
 
     /* istanbul ignore next: only get's executed on test failure */
     if (
-      scenario.result.status === 'failed' ||
-      scenario.result.status === 'pending'
+      scenario.result.status === "failed" ||
+      scenario.result.status === "pending"
     ) {
-      logger.debug('waiting for browser debugging to complete...');
+      logger.debug("waiting for browser debugging to complete...");
       await this.driver.allowDebug(600000);
     }
   }
@@ -33,7 +33,7 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
     /* istanbul ignore else: only happens on test setup failure */
     if (this.driver) {
       /* istanbul ignore next: only firefox */
-      if (this.browser != 'firefox') {
+      if (this.browser !== "firefox") {
         await this.driver.quit();
       }
     }
@@ -61,10 +61,9 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
       return this.driver;
     } catch (error) {
       /* istanbul ignore next: only get's executed when there are web driver issues */
-      {
-        logger.error('error getting browser', error);
-        throw error;
-      }
+      logger.error("error getting browser", error);
+      /* istanbul ignore next: only get's executed when there are web driver issues */
+      throw error;
     }
   }
 }

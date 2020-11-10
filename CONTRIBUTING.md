@@ -133,4 +133,4 @@ By submitting changes to this repository, you are accepting:
 1. To adhear to our [code of conduct](./CODE_OF_CONDUCT.md), and
 2. You are transfering copyright of your change to the waychaser project.
 
-You will get an author credit if we are able to accept your contribution. Active contributors may get invited to join the core team that will grant them privileges to merge existing PRs. 
+You will get an author credit if we are able to accept your contribution. Active contributors may get invited to join the core team that will grant them privileges to merge existing PRs.

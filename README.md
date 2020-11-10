@@ -10,21 +10,17 @@ This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, 
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/532f3a287fbffed6f295/maintainability)](https://codeclimate.com/github/mountain-pass/waychaser/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/532f3a287fbffed6f295/test_coverage)](https://codeclimate.com/github/mountain-pass/waychaser/test_coverage)
 
-[![GitHub issues](https://img.shields.io/github/issues/mountain-pass/waychaser)](https://github.com/mountain-pass/waychaser/issues) [![GitHub pull requests](https://img.shields.io/github/issues-pr/mountain-pass/waychaser)](https://github.com/mountain-pass/waychaser/pulls) 
+[![GitHub issues](https://img.shields.io/github/issues/mountain-pass/waychaser)](https://github.com/mountain-pass/waychaser/issues) [![GitHub pull requests](https://img.shields.io/github/issues-pr/mountain-pass/waychaser)](https://github.com/mountain-pass/waychaser/pulls)
 
 [![source code vulnerabilties](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?label=source%20code%20vulnerabilities)](https://snyk.io/test/github/mountain-pass/waychaser) [![source code dependencies](https://img.shields.io/librariesio/github/mountain-pass/waychaser?label=source%20code%20dependencies)](https://libraries.io/github/mountain-pass/waychaser#dependencies)
 
 [![npm package vulnerabilties](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@1.34.0?label=npm%20package%20vulnerabilties)](https://snyk.io/test/npm/@mountainpass/waychaser/1.34.0) [![npm package dependencies](https://img.shields.io/librariesio/release/npm/@mountainpass/waychaser/1.34.0)](https://libraries.io/npm/@mountainpass/waychaser/1.34.0)
 
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
  | <img src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.svg" alt="Node.js" width="24px" height="24px" /><br/>Node.js | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome](https://automate.browserstack.com/dashboard/v2/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25?browsers=[{%22browser%22:%22chrome%22}]) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox](https://automate.browserstack.com/dashboard/v2/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25?browsers=[{%22browser%22:%22firefox%22}]) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" /><br/>Safari](https://automate.browserstack.com/dashboard/v2/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25?browsers=[{%22browser%22:%22safari%22}]) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" /><br/>Edge](https://automate.browserstack.com/dashboard/v2/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25?browsers=[{%22browser%22:%22edge%22}]) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS" width="24px" height="24px" /><br/>iOS](https://automate.browserstack.com/dashboard/v2/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25?oses=[{%22os%22:%22ios%22}]) | [<img src="https://source.android.com/setup/images/Android_symbol_green_RGB.svg" alt="Android" width="24px" height="24px" /><br/>Android](https://automate.browserstack.com/dashboard/v2/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25?oses=[{%22os%22:%22android%22}]) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png" alt="IE" width="24px" height="24px" /><br/>IE](https://automate.browserstack.com/dashboard/v2/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25?browsers=[{%22browser%22:%22ie%22}]) |
-| --------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- | 
+| --------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
 | 10.x, 12.x, 14.x | latest version | latest version| latest version| latest version | latest version | latest version | 11 |
-
-
-
-
-
-
 
 # ToC
 
@@ -93,14 +89,14 @@ _None_
 
 _None_
 
-# Usage 
+# Usage
 
 ## Node.js
 
 `npm install @mountainpass/waychaser`
 
 ```js
-import { waychaser } from '@mountainpass/waychaser';
+import { waychaser } from "@mountainpass/waychaser";
 
 //...
 
@@ -247,9 +243,10 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] api docs
 - [x] tags in npm
 - [x] markdown lint
+- [x] switched to JS Standard format 
 - [ ] expand code-climate analysis
 - [ ] create docs site
-  - [ ] integrate Code coverage and code quality reporting 
+  - [ ] integrate Code coverage and code quality reporting
   - [ ] integrate API docs
 - [ ] look at using a proxy for webchaser-via-webdriver
 - [ ] lots more 😂

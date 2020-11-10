@@ -1,11 +1,11 @@
-import webdriver from 'selenium-webdriver';
+import webdriver from "selenium-webdriver";
 // eslint-disable-next-line no-unused-vars
-import logger from '../../util/logger';
-import { WaychaserViaWebdriver } from './waychaser-via-webdriver';
-import dateFormat from 'dateformat';
-import moment from 'moment-timezone';
-import browserstack from 'browserstack-local';
-import assert from 'assert';
+import logger from "../../util/logger";
+import { WaychaserViaWebdriver } from "./waychaser-via-webdriver";
+import dateFormat from "dateformat";
+import moment from "moment-timezone";
+import browserstack from "browserstack-local";
+import assert from "assert";
 
 const RUN =
   dateFormat(new Date(), "yyyy-MM-dd'T'hh:mm:ss.l ") +
@@ -13,7 +13,7 @@ const RUN =
 
 const BUILD = `${
   process.env.GITHUB_RUN_ID ||
-  /* istanbul ignore next: only gets executed locally */ 'LOCAL'
+  /* istanbul ignore next: only gets executed locally */ "LOCAL"
 }-${
   process.env.GITHUB_RUN_NUMBER ||
   /* istanbul ignore next: only gets executed locally */ RUN
@@ -27,7 +27,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
 
   async beforeTest(scenario) {
     this.driver = await this.buildDriver(scenario.pickle.name);
-    logger.debug('driver built');
+    logger.debug("driver built");
     await this.loadWaychaserTestPage();
 
     super.beforeTest(scenario);
@@ -37,13 +37,13 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
     await super.afterTest(scenario);
 
     try {
-      logger.debug('sending test results...', scenario.result.status);
+      logger.debug("sending test results...", scenario.result.status);
       await this.sendTestResult(scenario.result.status);
     } catch (error) {
       /* istanbul ignore next: only get's executed on test framework failure */
-      logger.error('coverage', error);
+      logger.error("coverage", error);
     }
-    logger.debug('...sent');
+    logger.debug("...sent");
 
     await this.driver.quit();
     delete this.driver;
@@ -54,7 +54,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
     if (!process.env.BROWSERSTACK_LOCAL_IDENTIFIER) {
       assert(
         process.env.BROWSERSTACK_ACCESS_KEY,
-        `process.env.BROWSERSTACK_ACCESS_KEY not set`
+        "process.env.BROWSERSTACK_ACCESS_KEY not set"
       );
       this.tunnel = new browserstack.Local({
         key: process.env.BROWSERSTACK_ACCESS_KEY,
@@ -64,14 +64,14 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
         this.tunnel.start({}, (error) => {
           /* istanbul ignore if: only get's executed on tunnel setup failure */
           if (error) {
-            logger.error('error starting tunnel', error);
+            logger.error("error starting tunnel", error);
             reject(error);
           }
-          logger.info('tunnel started');
+          logger.info("tunnel started");
           resolve();
         });
       });
-      logger.info(`Browserstack tunnel started`);
+      logger.info("Browserstack tunnel started");
     }
   }
 
@@ -79,47 +79,46 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
     try {
       assert(
         process.env.BROWSERSTACK_USERNAME,
-        `process.env.BROWSERSTACK_USERNAME not set`
+        "process.env.BROWSERSTACK_USERNAME not set"
       );
       assert(
         process.env.BROWSERSTACK_ACCESS_KEY,
-        `process.env.BROWSERSTACK_ACCESS_KEY not set`
+        "process.env.BROWSERSTACK_ACCESS_KEY not set"
       );
 
-      var capabilities = {
-        'bstack:options': {
-          os: 'Any',
+      const capabilities = {
+        "bstack:options": {
+          os: "Any",
           projectName: process.env.npm_package_name,
           buildName: BUILD,
           sessionName: name,
-          local: 'true',
+          local: "true",
           ...(process.env.BROWSERSTACK_LOCAL_IDENTIFIER && {
             localIdentifier: process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
           }),
-          debug: 'true',
-          consoleLogs: 'verbose',
-          networkLogs: 'true',
-          seleniumVersion: '3.14.0',
+          debug: "true",
+          consoleLogs: "verbose",
+          networkLogs: "true",
+          seleniumVersion: "3.14.0",
           userName: process.env.BROWSERSTACK_USERNAME,
           accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         },
         browserName: this.browser,
-        ...(this.browser !== 'iphone' &&
-          this.browser !== 'android' && { browserVersion: 'latest' }),
+        ...(this.browser !== "iphone" &&
+          this.browser !== "android" && { browserVersion: "latest" }),
       };
 
       this.driver = new webdriver.Builder()
-        .usingServer('https://hub-cloud.browserstack.com/wd/hub')
+        .usingServer("https://hub-cloud.browserstack.com/wd/hub")
         .withCapabilities(capabilities)
         .build();
       await this.driver.manage().setTimeouts({ script: 40000 });
       return this.driver;
     } catch (error) {
       /* istanbul ignore next: only get's executed when there are web driver issues */
-      {
-        logger.error('error getting browser', error);
-        throw error;
-      }
+      logger.error("error getting browser", error);
+      /* istanbul ignore next: only get's executed when there are web driver issues */
+      throw error;
     }
   }
 

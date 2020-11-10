@@ -2,7 +2,7 @@
 /* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable security/detect-non-literal-fs-filename */
 
-import { scripts } from '../package.json';
+import { scripts } from "../package.json";
 
 console.log(
   JSON.stringify({
@@ -14,7 +14,7 @@ console.log(
       // extract the browser name
       .map((script) => {
         return {
-          browser: script.replace(/cover:browser-api:(.*):remote/, '$1'),
+          browser: script.replace(/cover:browser-api:(.*):remote/, "$1"),
         };
       }),
   })
