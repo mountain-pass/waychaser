@@ -96,6 +96,8 @@ jobs:
       uses: snyk/actions/node@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --dev
 
   build:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
