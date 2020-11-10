@@ -104,7 +104,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
           accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         },
         browserName: this.browser,
-        browserVersion: 'latest',
+        ...(this.browser !== 'iphone' && { browserVersion: 'latest' }),
       };
 
       this.driver = new webdriver.Builder()

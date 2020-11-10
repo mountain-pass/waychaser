@@ -1,6 +1,7 @@
 import core from 'istanbul-middleware/lib/core';
 import logger from '../../util/logger';
 import logging from 'selenium-webdriver/lib/logging';
+import { BROWSER_PORT, BROWSER_HOST } from '../config';
 
 class WaychaserViaWebdriver {
   async load(url, options) {
@@ -62,7 +63,7 @@ class WaychaserViaWebdriver {
 
   async loadWaychaserTestPage() {
     logger.debug('...loading page');
-    await this.driver.get(`http://localhost:${process.env.BROWSER_PORT}`);
+    await this.driver.get(`http://${BROWSER_HOST}:${BROWSER_PORT}`);
     logger.debug('...page loaded');
     await this.driver.wait(() => {
       return this.driver.executeScript(

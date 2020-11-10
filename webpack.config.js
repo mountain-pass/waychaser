@@ -27,6 +27,7 @@ module.exports = (environment) => ({
   },
   devServer: {
     port: environment.BROWSER_PORT,
+    disableHostCheck: true,
     open: true,
     proxy: {
       '/api': {
