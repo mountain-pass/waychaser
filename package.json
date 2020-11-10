@@ -69,6 +69,7 @@
     "cover:browser-api:firefox:remote": "scripts/cover.sh",
     "cover:browser-api:safari:local": "scripts/cover.sh",
     "cover:browser-api:safari:remote": "scripts/cover.sh",
+    "cover:browser-api:iphone:remote": "scripts/cover.sh",
     "cover:browser-api:edge:remote": "scripts/cover.sh",
     "cover:browser-api:ie:remote": "scripts/cover.sh",
     "cover:browser-api": "scripts/for-all-browsers.sh",
