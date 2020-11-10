@@ -94,10 +94,10 @@
     "es6-promise": "^4.2.8",
     "http-link-header": "^1.0.2",
     "isomorphic-fetch": "^3.0.0",
-    "shellcheck": "^0.4.4",
     "url-polyfill": "^1.1.7"
   },
   "devDependencies": {
+    "shellcheck": "^0.4.4",
     "@babel/cli": "^7.6.2",
     "@babel/core": "^7.12.3",
     "@babel/node": "^7.6.2",
@@ -149,7 +149,6 @@
     "husky": "^4.2.5",
     "imagemin-lint-staged": "^0.4.0",
     "istanbul": "^0.4.5",
-    "istanbul-middleware": "^0.2.2",
     "lint-staged": "^10.2.11",
     "moment-timezone": "^0.5.31",
     "ngrok": "^3.2.2",

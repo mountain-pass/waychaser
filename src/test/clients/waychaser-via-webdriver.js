@@ -1,8 +1,20 @@
-import core from 'istanbul-middleware/lib/core';
 import logger from '../../util/logger';
 import logging from 'selenium-webdriver/lib/logging';
 import { BROWSER_PORT, BROWSER_HOST } from '../config';
+import { utils } from 'istanbul';
 
+/* global __coverage__ */
+// based on https://github.com/gotwarlost/istanbul-middleware/blob/master/lib/core.js#L217
+function mergeClientCoverage(object) {
+  Object.keys(object).forEach((filePath) => {
+    const original = __coverage__[filePath.toString()];
+    const added = object[filePath.toString()];
+    __coverage__[filePath.toString()] = utils.mergeFileCoverage(
+      original,
+      added
+    );
+  });
+}
 class WaychaserViaWebdriver {
   async load(url, options) {
     logger.debug('loading url...: %s', url);
@@ -138,7 +150,7 @@ class WaychaserViaWebdriver {
         const remoteCoverage = await this.driver.executeScript(
           'return window.__coverage__;'
         );
-        core.mergeClientCoverage(remoteCoverage);
+        mergeClientCoverage(remoteCoverage);
 
         // clear coverage
         await this.clearRemoteCoverage();
