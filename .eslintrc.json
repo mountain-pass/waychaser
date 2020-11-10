@@ -16,7 +16,8 @@
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:jsdoc/recommended",
-    "plugin:md/recommended"
+    "plugin:md/recommended",
+    "plugin:json/recommended"
   ],
   "env": {
     "browser": false,
