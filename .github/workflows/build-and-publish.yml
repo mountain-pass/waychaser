@@ -97,7 +97,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        args: --dev --fail-on=upgradable
+        args: "--dev --fail-on=upgradable"
 
   build:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
