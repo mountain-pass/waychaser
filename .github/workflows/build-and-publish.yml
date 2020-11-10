@@ -82,6 +82,21 @@ jobs:
         node-version: 12.x
     - run: npm audit
 
+  security:
+    needs:
+      - checksecret
+    if: |
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
   build:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
@@ -472,6 +487,7 @@ jobs:
       - check-coverage
       - lint
       - audit
+      - security
       - build
     if: |
       needs.checksecret.outputs.SECRETS_SET == 'true' &&
