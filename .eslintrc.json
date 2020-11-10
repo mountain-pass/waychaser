@@ -3,7 +3,7 @@
   "parserOptions": {
     "sourceType": "module"
   },
-  "plugins": ["prettier", "security", "unicorn", "promise", "istanbul", "jsdoc"],
+  "plugins": ["prettier", "security", "unicorn", "promise", "istanbul", "jsdoc", "markdown"],
   "extends": [
     "eslint:recommended",
     "prettier",
@@ -15,7 +15,8 @@
     "plugin:node/recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:jsdoc/recommended"
+    "plugin:jsdoc/recommended",
+    "plugin:md/recommended"
   ],
   "env": {
     "browser": false,
@@ -66,6 +67,13 @@
       },
       "rules": {
         "node/shebang": "off"
+      }
+    },
+    {
+      "files": ["*.md"],
+      "parser": "markdown-eslint-parser",
+      "rules": {
+        "unicorn/filename-case": "off"
       }
     }
   ]

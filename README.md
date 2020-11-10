@@ -100,14 +100,14 @@ _None_
 `npm install @mountainpass/waychaser`
 
 ```js
-import { waychaser } from '@mountainpass/waychaser'
+import { waychaser } from '@mountainpass/waychaser';
 
-...
+//...
+
 try {
   const api = await waychaser.load(apiUrl);
   // do something with `api`
-}
-catch(error) {
+} catch (error) {
   // do something with `error`
 }
 
@@ -246,7 +246,7 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] snky security scanning
 - [x] api docs
 - [x] tags in npm
-- [ ] markdown lint
+- [x] markdown lint
 - [ ] expand code-climate analysis
 - [ ] create docs site
   - [ ] integrate Code coverage and code quality reporting 

@@ -136,13 +136,15 @@
     "cucumber-junit-formatter": "^0.2.2",
     "dateformat": "^3.0.3",
     "depcheck": "^1.2.0",
-    "eslint": "^7.12.1",
+    "eslint": "^7.13.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-chai-friendly": "^0.6.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-istanbul": "^0.1.2",
     "eslint-plugin-jsdoc": "^30.7.7",
+    "eslint-plugin-markdown": "^1.0.2",
+    "eslint-plugin-md": "^1.0.19",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
@@ -159,6 +161,7 @@
     "istanbul": "^0.4.5",
     "jsdoc": "^3.6.6",
     "lint-staged": "^10.2.11",
+    "markdownlint": "^0.21.1",
     "moment-timezone": "^0.5.31",
     "ngrok": "^3.2.2",
     "nodemon": "^2.0.4",
@@ -175,7 +178,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "lint-staged": {
-    "*.{js}": [
+    "*.{js,md}": [
       "eslint --fix",
       "git add"
     ],
