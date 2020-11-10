@@ -244,11 +244,12 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] Andriod Chrome testing
 - [x] npm audit
 - [x] snky security scanning
-- [ ] api docs
+- [x] api docs
+- [x] tags in npm
 - [ ] markdown lint
-- [ ] tags in npm
 - [ ] expand code-climate analysis
 - [ ] create docs site
   - [ ] integrate Code coverage and code quality reporting 
   - [ ] integrate API docs
+- [ ] look at using a proxy for webchaser-via-webdriver
 - [ ] lots more 😂

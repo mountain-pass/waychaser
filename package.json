@@ -15,6 +15,15 @@
     "Tom Howard <tom@mountain-pass.com.au>"
   ],
   "license": "Apache-2.0",
+  "keywords": [
+    "rest",
+    "rest-client",
+    "isomophic",
+    "fetch",
+    "hateoas",
+    "hateoas-client",
+    "client"
+  ],
   "main": "dist/waychaser.js",
   "unpkg": "dist/waychaser.umd.min.js",
   "module": "src/waychaser.js",
