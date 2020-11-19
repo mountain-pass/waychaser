@@ -96,6 +96,11 @@ class WebdriverManagerRemote extends WebdriverManager {
       );
     }
   }
+
+  async afterAllTests() {
+    super.afterAllTests();
+    await this.tunneler.stopTunnel();
+  }
 }
 
 const instance = new WebdriverManagerRemote();
