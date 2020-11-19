@@ -2,26 +2,18 @@ import webdriver from "selenium-webdriver";
 // eslint-disable-next-line no-unused-vars
 import logger from "../../util/logger";
 import { WebdriverManager } from "./webdriver-manager";
-import dateFormat from "dateformat";
-import moment from "moment-timezone";
-import browserstack from "browserstack-local";
 import assert from "assert";
-
-const RUN =
-  dateFormat(new Date(), "yyyy-MM-dd'T'hh:mm:ss.l ") +
-  moment().tz(Intl.DateTimeFormat().resolvedOptions().timeZone).zoneAbbr();
-
-const BUILD = `${
-  process.env.GITHUB_RUN_ID ||
-  /* istanbul ignore next: only gets executed locally */ "LOCAL"
-}-${
-  process.env.GITHUB_RUN_NUMBER ||
-  /* istanbul ignore next: only gets executed locally */ RUN
-}`;
+import { remoteTunneler } from "./remote-tunneler";
+import { BUILD } from "./build-info";
 
 class WebdriverManagerRemote extends WebdriverManager {
+  constructor() {
+    super();
+    this.tunneler = remoteTunneler;
+  }
+
   async beforeAllTests() {
-    await this.startTunnel();
+    await this.tunneler.startTunnel();
     await super.beforeAllTests();
   }
 
@@ -47,32 +39,6 @@ class WebdriverManagerRemote extends WebdriverManager {
 
     await this.driver.quit();
     delete this.driver;
-  }
-
-  async startTunnel() {
-    /* istanbul ignore next: does not get executed on CI */
-    if (!process.env.BROWSERSTACK_LOCAL_IDENTIFIER) {
-      assert(
-        process.env.BROWSERSTACK_ACCESS_KEY,
-        "process.env.BROWSERSTACK_ACCESS_KEY not set"
-      );
-      this.tunnel = new browserstack.Local({
-        key: process.env.BROWSERSTACK_ACCESS_KEY,
-        verbose: true,
-      });
-      await new Promise((resolve, reject) => {
-        this.tunnel.start({}, (error) => {
-          /* istanbul ignore if: only get's executed on tunnel setup failure */
-          if (error) {
-            logger.error("error starting tunnel", error);
-            reject(error);
-          }
-          logger.info("tunnel started");
-          resolve();
-        });
-      });
-      logger.info("Browserstack tunnel started");
-    }
   }
 
   async buildDriver(name) {
@@ -128,17 +94,6 @@ class WebdriverManagerRemote extends WebdriverManager {
       await this.driver.executeScript(
         `browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"${status}"}}`
       );
-    }
-  }
-
-  async afterAllTests() {
-    super.afterAllTests();
-    /* istanbul ignore next: only get's executed if the tunnel couldn't be setup or running on CI */
-    if (this.tunnel) {
-      await new Promise((resolve) => {
-        this.tunnel.stop(resolve);
-      });
-      delete this.tunnel;
     }
   }
 }

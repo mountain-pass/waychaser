@@ -272,8 +272,8 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] tags in npm
 - [x] markdown lint
 - [x] switched to JS Standard format 
-- [ ] split webdriver from waychaser-via
-- [ ] split browser stack tunnel into seperate class
+- [x] split webdriver from waychaser-via
+- [x] split browser stack tunnel into seperate class
 - [ ] reduce webpacking of node_modules
 - [ ] try to use umd for both node and browser
 - [ ] fix struture of package so we get better jsdoc linting

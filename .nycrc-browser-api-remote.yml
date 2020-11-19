@@ -7,7 +7,7 @@ exclude:
   - 'scripts/**/*.js'
   - 'coverage/**/*.js'
   - 'src/test/clients/waychaser-direct.js'
-  - 'src/test/clients/waychaser-via-webdriver-local.js'
+  - 'src/test/clients/webdriver-manager-local.js'
 check-coverage: false
 
 reporter:
