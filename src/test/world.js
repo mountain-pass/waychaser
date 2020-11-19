@@ -54,7 +54,7 @@ if (profile.startsWith("browser-api")) {
 }
 
 BeforeAll({ timeout: 240000 }, async function () {
-  logger.debug(["BEGIN BeforeAll", Date.now()]);
+  logger.debug("BEGIN BeforeAll", Date.now());
 
   if (webdriverManager) {
     await webdriverManager.beforeAllTests();
