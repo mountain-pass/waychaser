@@ -1,10 +1,10 @@
-import { WaychaserViaWebdriver } from "./waychaser-via-webdriver";
+import { WebdriverManager } from "./webdriver-manager";
 import { Builder, Capabilities } from "selenium-webdriver";
 import logging from "selenium-webdriver/lib/logging";
 import chrome from "selenium-webdriver/chrome";
 import logger from "../../util/logger";
 
-class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
+class WebdriverManagerLocal extends WebdriverManager {
   async beforeAllTests() {
     this.driver = await this.buildDriver();
     await this.loadWaychaserTestPage();
@@ -68,6 +68,6 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
   }
 }
 
-const instance = new WaychaserViaWebdriverLocal();
+const instance = new WebdriverManagerLocal();
 
-export { instance as waychaserViaWebdriverLocal };
+export { instance as webdriverManagerLocal };

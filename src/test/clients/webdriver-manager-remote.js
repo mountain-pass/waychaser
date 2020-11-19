@@ -1,7 +1,7 @@
 import webdriver from "selenium-webdriver";
 // eslint-disable-next-line no-unused-vars
 import logger from "../../util/logger";
-import { WaychaserViaWebdriver } from "./waychaser-via-webdriver";
+import { WebdriverManager } from "./webdriver-manager";
 import dateFormat from "dateformat";
 import moment from "moment-timezone";
 import browserstack from "browserstack-local";
@@ -19,7 +19,7 @@ const BUILD = `${
   /* istanbul ignore next: only gets executed locally */ RUN
 }`;
 
-class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
+class WebdriverManagerRemote extends WebdriverManager {
   async beforeAllTests() {
     await this.startTunnel();
     await super.beforeAllTests();
@@ -50,7 +50,7 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
   }
 
   async startTunnel() {
-    /* istanbul ignore if: does not get executed on CI */
+    /* istanbul ignore next: does not get executed on CI */
     if (!process.env.BROWSERSTACK_LOCAL_IDENTIFIER) {
       assert(
         process.env.BROWSERSTACK_ACCESS_KEY,
@@ -143,6 +143,6 @@ class WaychaserViaWebdriverRemote extends WaychaserViaWebdriver {
   }
 }
 
-const instance = new WaychaserViaWebdriverRemote();
+const instance = new WebdriverManagerRemote();
 
-export { instance as waychaserViaWebdriverRemote };
+export { instance as webdriverManagerRemote };

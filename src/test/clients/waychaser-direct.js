@@ -66,6 +66,5 @@ class WaychaserDirect {
     return result.resource.url;
   }
 }
-const instance = new WaychaserDirect();
 
-export { instance as waychaserDirect };
+export { WaychaserDirect };

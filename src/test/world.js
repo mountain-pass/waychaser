@@ -15,9 +15,10 @@ import chai from "chai";
 import logger from "../util/logger";
 import chaiAsPromised from "chai-as-promised";
 
-import { waychaserDirect } from "./clients/waychaser-direct";
-import { waychaserViaWebdriverLocal } from "./clients/waychaser-via-webdriver-local";
-import { waychaserViaWebdriverRemote } from "./clients/waychaser-via-webdriver-remote";
+import { WaychaserDirect } from "./clients/waychaser-direct";
+import { WaychaserViaWebdriver } from "./clients/waychaser-via-webdriver";
+import { webdriverManagerLocal } from "./clients/webdriver-manager-local";
+import { webdriverManagerRemote } from "./clients/webdriver-manager-remote";
 
 import { startServer, app, stopServer, getNewRouter } from "./fakes/server";
 
@@ -30,34 +31,33 @@ const profile = process.env.npm_lifecycle_event
   .replace("test:", "")
   .replace(/:/g, "-");
 
-let waychaserProxy, webdriver;
+let waychaserProxy, webdriverManager;
 
 // if testing via browser, setup web-driver
 if (profile.startsWith("browser-api")) {
   const mode = profile.replace(/browser-api-.*-(.*)/, "$1");
   const clients = {
-    local: waychaserViaWebdriverLocal,
-    remote: waychaserViaWebdriverRemote,
+    local: webdriverManagerLocal,
+    remote: webdriverManagerRemote,
   };
-  waychaserProxy = clients[mode.toString()];
+  webdriverManager = clients[mode.toString()];
 
   /* istanbul ignore next: only get's executed when there are test config issues */
-  if (waychaserProxy === undefined) {
+  if (webdriverManager === undefined) {
     throw new Error(`unknown mode: ${mode}`);
   }
-
-  webdriver = waychaserProxy;
-  webdriver.browser = profile.replace(/browser-api-(.*)-.*/, "$1");
+  webdriverManager.browser = profile.replace(/browser-api-(.*)-.*/, "$1");
+  waychaserProxy = new WaychaserViaWebdriver(webdriverManager);
 } else {
   // otherwise, direct
-  waychaserProxy = waychaserDirect;
+  waychaserProxy = new WaychaserDirect();
 }
 
 BeforeAll({ timeout: 240000 }, async function () {
   logger.debug(["BEGIN BeforeAll", Date.now()]);
 
-  if (webdriver) {
-    await webdriver.beforeAllTests();
+  if (webdriverManager) {
+    await webdriverManager.beforeAllTests();
   }
   startServer();
 });
@@ -79,8 +79,8 @@ Before({ timeout: 240000 }, async function (scenario) {
   logger.debug("BEGIN Before");
   this.router = getNewRouter();
   this.waychaserProxy = waychaserProxy;
-  if (webdriver) {
-    await webdriver.beforeTest(scenario);
+  if (webdriverManager) {
+    await webdriverManager.beforeTest(scenario);
   }
   logger.debug("END Before");
 });
@@ -89,16 +89,16 @@ After({ timeout: 600000 }, async function (scenario) {
   logger.debug("BEGIN After");
 
   logger.debug("%s: - %s", scenario.pickle.name, scenario.result.status);
-  if (webdriver) {
-    await webdriver.afterTest(scenario);
+  if (webdriverManager) {
+    await webdriverManager.afterTest(scenario);
   }
   logger.debug("END After");
 });
 
 AfterAll({ timeout: 600000 }, async function () {
   logger.debug("BEGIN AfterAll");
-  if (webdriver) {
-    await webdriver.afterAllTests();
+  if (webdriverManager) {
+    await webdriverManager.afterAllTests();
   }
   stopServer();
   logger.debug("END AfterAll");

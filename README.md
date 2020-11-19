@@ -272,9 +272,23 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] tags in npm
 - [x] markdown lint
 - [x] switched to JS Standard format 
+- [ ] split webdriver from waychaser-via
+- [ ] split browser stack tunnel into seperate class
+- [ ] reduce webpacking of node_modules
+- [ ] try to use umd for both node and browser
+- [ ] fix struture of package so we get better jsdoc linting
+- [ ] clean up lining problems
+- [ ] refactor browserstack test run to use single tunnel when running locally
+- [ ] add code duplication checks
+- [ ] add tests for abort
+- [ ] add tests for different types of error responses
+- [ ] add tests for authenticated requests
+- [ ] add tests for parameterised links
+- [ ] add tests for non-get operations
+- [ ] add tests for validation
+- [ ] look at using standard instead of eslint
 - [ ] expand code-climate analysis
 - [ ] create docs site
   - [ ] integrate Code coverage and code quality reporting
   - [ ] integrate API docs
-- [ ] look at using a proxy for webchaser-via-webdriver
 - [ ] lots more 😂
