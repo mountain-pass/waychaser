@@ -2,7 +2,7 @@
   "eslint.alwaysShowStatus": true,
   "editor.formatOnSave": true,
   "cucumberautocomplete.onTypeFormat": true,
-  "cucumberautocomplete.steps": ["src/test/**/*.js"],
+  "cucumberautocomplete.steps": ["src/test/*.steps.js"],
   "cucumberautocomplete.skipDocStringsFormat": true,
   "cucumberautocomplete.syncfeatures": "src/test/**/*.feature",
   "editor.codeActionsOnSave": {

@@ -149,11 +149,39 @@ returns an API Resource Object (ARO)
 ## Get list of operations
 
 - `ARO.operations` ✅
-- `ARO.op` ✅ (shorthand)
+- `ARO.ops` ✅ (shorthand)
 - `ARO.operations()`
 - `ARO.getOperations()`
 
-returns a map of API operation objects (AOO)
+
+so the plan was to return a map of API operation objects (AOO), with the key being the rel. However it's perfectly fine to have
+multiple operations with the same rel. So, we either need to:
+ - return a map of arrays,
+ - return a map with each value either being a AOO or an Array of AOO.
+
+The former sucks from a refencing point of view. e.g., `ARO.ops[rel][0]()`
+The later sucks because we need to test if AOO or array. e.g. `Array.isArray(ARO.ops[rel]) ? ARO.ops[rel][0]() : ARO.ops[rel]()`
+The later sucks even more because most of the time, users would just do `ARO.ops[rel]()`, which will be fine until the day that
+resource returns multiple links with the same rel.
+
+For instance if you have a ARO that is a list, you can have multiple links with  `rel=item` with different `anchor`s, which tells 
+you where to get each item in the data.
+
+You could also have and ARO that has links with the same rel, that take a different number of parameters.
+
+It's worth noting that the `http-link-header` library's `link.get(attr, value)` method returns an array.
+
+Maybe if the ARO is a list, we can treat each item as a ARO. e.g. `ARO.data[9].operations` will return the operations just for that item. For more complexe structures `ARO.data.foo.bar.operations` will do the same. Doesn't feel ideal, because the data structre is not just a JSON. Also, things got to crap if the JSON has a field called `operations`
+
+Instead, mayb we can use the anchor structure for the operations. e.g. for a list, `ARO.operations[9][rel]` would get the link with the rel for the 9th item in the list. Whereas `ARO.operations.foo.bar[rel]` would get the link with the rel for the item at `foo.bar`. Again this will fail if the data has a field with the same name as a rel. 😭
+
+We probably need to be explicit about the anchor. Something like `ARO.operations[anchor][rel]`.e.g., For root links it might look like `ARO.operations['#'][rel]`. 
+
+What of `operations` returns a function? Then we could go `ARO.operations(rel)` for root and `ARO.operations(rel, {anchor="foo.bar})` or whatever other attribute we want to get it by.
+
+If we do that, what should happen if `ARO.operations(rel, {anchor="foo.bar})` still finds multiple links? We'd still have the same problem that we started with, so we're going to have to always return an array, in order to not break clients when the server adds an extra link with the same rel. 
+
+So let's go with `ARO.operations(rel)` and `ARO.operations(rel, {anchor="foo.bar})` and `ARO.operations({anchor="foo.bar})` as all valid options. And they all return a set of operations, so `ARO.operations(rel, {anchor="foo.bar})[0]` is the same as `ARO.operations(rel)({anchor="foo.bar})[0]`
 
 ## Get specific operation
 
@@ -161,7 +189,7 @@ returns a map of API operation objects (AOO)
 - `ARO[rel]`
 - `ARO.operation(rel)`
 - `ARO.operations[rel]` ✅
-- `ARO.op[rel]` ✅
+- `ARO.ops[rel]` ✅
 
 returns an API operation or an array of API operations
 

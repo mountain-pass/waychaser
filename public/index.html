@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Waychaser</title>
+    <script>window.onload = function() {
+      document.getElementById("loading-status").innerText = window.waychaser !== undefined ? "Loaded ✅" : "Error ❌";
+    }</script>
   </head>
 
   <body>
     <h1>Waychaser</h1>
+    <h2>Waychaser status: <span id="loading-status">Loading</span></h2>
+    <h2>Test: <span id="test-name">init</span></h2>
   </body>
 </html>

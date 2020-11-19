@@ -6,7 +6,8 @@ exclude:
   - 'dist/**/*.js'
   - 'scripts/**/*.js'
   - 'coverage/**/*.js'
-  - 'src/test/clients/*.js'
+  - 'src/test/clients/waychaser-via-webdriver-remote.js'
+  - 'src/test/clients/waychaser-via-webdriver-local.js'
 check-coverage: false
 reporter:
   - text-summary

@@ -13,11 +13,21 @@ module.exports = (environment) => ({
   optimization: {
     runtimeChunk: true,
   },
+  node: {
+    fs: "empty",
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
+        test: [/\.(js)$/],
+        exclude: [
+          /coverage/,
+          /docs/,
+          /out/,
+          /scripts/,
+          /test-results/,
+          /cucumber\.js/,
+        ],
         use: ["babel-loader"],
       },
     ],
@@ -28,6 +38,7 @@ module.exports = (environment) => ({
   devServer: {
     port: environment.BROWSER_PORT,
     disableHostCheck: true,
+    liveReload: false,
     open: true,
     proxy: {
       "/api": {

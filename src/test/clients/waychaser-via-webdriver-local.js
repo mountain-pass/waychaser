@@ -19,8 +19,8 @@ class WaychaserViaWebdriverLocal extends WaychaserViaWebdriver {
       scenario.result.status === "failed" ||
       scenario.result.status === "pending"
     ) {
-      logger.debug("waiting for browser debugging to complete...");
-      await this.driver.allowDebug(600000);
+      // logger.debug("waiting for browser debugging to complete...");
+      // await this.allowDebug(600000);
     }
   }
 

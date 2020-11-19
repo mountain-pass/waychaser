@@ -6,6 +6,7 @@ const FAIL_FAST = process.env.FAIL_FAST || "--fail-fast";
 const NO_STRICT = process.env.NO_STRICT || "";
 
 const outputDirectory = "test-results";
+fs.mkdirSync(outputDirectory, { recursive: true });
 
 function getFeatureGlob(RERUN, profile) {
   /* istanbul ignore next: RERUN is not set for full test runs */
@@ -22,7 +23,7 @@ function generateConfig() {
   const resultsDirectory = `${outputDirectory}/${profile}`;
   fs.mkdirSync(resultsDirectory, { recursive: true });
 
-  const RERUN = `@cucumber-${profile}.rerun`;
+  const RERUN = `${outputDirectory}/@cucumber-${profile}.rerun`;
   const FEATURE_GLOB = getFeatureGlob(RERUN, profile);
   const FORMAT_OPTIONS = {
     snippetInterface: "async-await",

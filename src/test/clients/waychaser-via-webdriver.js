@@ -2,6 +2,7 @@ import logger from "../../util/logger";
 import logging from "selenium-webdriver/lib/logging";
 import { BROWSER_PORT, BROWSER_HOST } from "../config";
 import { utils } from "istanbul";
+import { waychaser } from "../../waychaser";
 
 /* global __coverage__ */
 // based on https://github.com/gotwarlost/istanbul-middleware/blob/master/lib/core.js#L217
@@ -15,69 +16,233 @@ function mergeClientCoverage(object) {
     );
   });
 }
+
 class WaychaserViaWebdriver {
-  async load(url, options) {
-    logger.debug("loading url...: %s", url);
-    try {
-      const result = await this.driver.executeAsyncScript(
-        /* istanbul ignore next: won't work in browser otherwise */
-        function () {
-          /* global window */
-          console.log("starting load");
-          const callback = arguments[arguments.length - 1];
-          try {
-            window.waychaser
-              .load(arguments[0])
-              .then(function (success) {
-                console.log("finished load", success);
-                const rval = { success, result: "success" };
-                callback(rval);
-              })
-              .catch(function (error) {
-                console.log("finished load", error);
-                const rval = {
-                  error,
-                  errorJson: JSON.stringify(error, undefined, 2),
-                  errorString: error.toString(),
-                  result: "error",
-                  position: "inner",
-                };
-                callback(rval);
-              });
-          } catch (error) {
-            console.log("finished load", error);
-            const rval = {
-              error,
-              errorJson: JSON.stringify(error, undefined, 2),
-              errorString: error.toString(),
-              result: "error",
-              position: "outer",
-            };
-            callback(rval);
-          }
-        },
-        url,
-        options
-      );
-      logger.debug("after load");
+  async load(url) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        console.log("in method");
+        console.log(window);
+        window.waychaser
+          .load(arguments[0])
+          .then(function (resource) {
+            const id = uuidv4();
+            window[id] = resource;
+            callback({ success: true, id });
+          })
+          .catch(function (error) {
+            const id = uuidv4();
+            window[id] = error;
+            console.log(window);
+            console.log(window.error);
+            callback({ success: false, id });
+          });
+      },
+      url
+    );
+  }
 
-      await this.getBrowserLogs();
+  async getOperationsCount(result) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        const id = arguments[0];
+        callback(window[id.toString()].operations.count());
+      },
+      result.id
+    );
+  }
 
-      logger.debug("result:", result);
-      if (result.success) {
-        return result.success;
-      }
-      throw new Error(result.error);
-    } catch (error) {
-      console.log("error", error);
-      throw error;
-    }
+  async getOpsCount(result) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        const id = arguments[0];
+        callback(window[id.toString()].ops.count());
+      },
+      result.id
+    );
+  }
+
+  async findOneOperationByRel(result, relationship) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        const id = arguments[0];
+        const relationship = arguments[1];
+        console.log(relationship);
+        console.log(relationship === "self");
+        console.log(window[id.toString()].operations.count());
+        console.log(
+          "collection",
+          JSON.stringify(window[id.toString()].operations)
+        );
+        console.log(
+          "findOne",
+          JSON.stringify(window[id.toString()].operations.findOne())
+        );
+        console.log(
+          "findOneByRel",
+          JSON.stringify(
+            window[id.toString()].operations.findOneByRel(relationship)
+          )
+        );
+        callback(window[id.toString()].operations.findOneByRel(relationship));
+      },
+      result.id,
+      relationship
+    );
+  }
+
+  async findOneOpByRel(result, relationship) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        const id = arguments[0];
+        const relationship = arguments[1];
+        console.log(relationship);
+        console.log(relationship === "self");
+        console.log(window[id.toString()].ops.count());
+        console.log("collection", JSON.stringify(window[id.toString()].ops));
+        console.log(
+          "findOne",
+          JSON.stringify(window[id.toString()].ops.findOne())
+        );
+        console.log(
+          "findOneByRel",
+          JSON.stringify(window[id.toString()].ops.findOneByRel(relationship))
+        );
+        callback(window[id.toString()].ops.findOneByRel(relationship));
+      },
+      result.id,
+      relationship
+    );
+  }
+
+  async invokeOperationByRel(result, relationship) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        const id = arguments[0];
+        const relationship = arguments[1];
+        window[id.toString()].operations
+          .invokeByRel(relationship)
+          .then(function (resource) {
+            const id = uuidv4();
+            window[id] = resource;
+            callback({ success: true, id });
+          })
+          .catch(function (error) {
+            const id = uuidv4();
+            window[id] = error;
+            console.log(window);
+            console.log(window.error);
+            callback({ success: false, id });
+          });
+      },
+      result.id,
+      relationship
+    );
+  }
+
+  async invokeOpByRel(result, relationship) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        const id = arguments[0];
+        const relationship = arguments[1];
+        window[id.toString()].ops
+          .invokeByRel(relationship)
+          .then(function (resource) {
+            const id = uuidv4();
+            window[id] = resource;
+            callback({ success: true, id });
+          })
+          .catch(function (error) {
+            const id = uuidv4();
+            window[id] = error;
+            console.log(window);
+            console.log(window.error);
+            callback({ success: false, id });
+          });
+      },
+      result.id,
+      relationship
+    );
+  }
+
+  async invokeByRel(result, relationship) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        const id = arguments[0];
+        const relationship = arguments[1];
+        window[id.toString()]
+          .invokeByRel(relationship)
+          .then(function (resource) {
+            const id = uuidv4();
+            window[id] = resource;
+            callback({ success: true, id });
+          })
+          .catch(function (error) {
+            const id = uuidv4();
+            window[id] = error;
+            console.log(window);
+            console.log(window.error);
+            callback({ success: false, id });
+          });
+      },
+      result.id,
+      relationship
+    );
+  }
+
+  async getUrl(result) {
+    return this.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        const callback = arguments[arguments.length - 1];
+        const id = arguments[0];
+        callback(window[id.toString()].url);
+      },
+      result.id
+    );
   }
 
   async loadWaychaserTestPage() {
-    logger.debug("...loading page");
+    logger.debug("loading page...");
     await this.driver.get(`http://${BROWSER_HOST}:${BROWSER_PORT}`);
     logger.debug("...page loaded");
+
+    logger.debug("setting uo uuid function...");
+    await this.driver.executeScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        window.uuidv4 = function () {
+          /* global crypto */
+          return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(
+            /[018]/g,
+            function (c) {
+              return (
+                c ^
+                (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+              ).toString(16);
+            }
+          );
+        };
+      }
+    );
+
+    logger.debug("waiting for waychaser...");
     await this.driver.wait(() => {
       return this.driver.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */

@@ -14,8 +14,8 @@ import {
 import chai from "chai";
 import logger from "../util/logger";
 import chaiAsPromised from "chai-as-promised";
-import { waychaser as waychaserDirect } from "../waychaser";
 
+import { waychaserDirect } from "./clients/waychaser-direct";
 import { waychaserViaWebdriverLocal } from "./clients/waychaser-via-webdriver-local";
 import { waychaserViaWebdriverRemote } from "./clients/waychaser-via-webdriver-remote";
 
@@ -30,7 +30,7 @@ const profile = process.env.npm_lifecycle_event
   .replace("test:", "")
   .replace(/:/g, "-");
 
-let waychaser, webdriver;
+let waychaserProxy, webdriver;
 
 // if testing via browser, setup web-driver
 if (profile.startsWith("browser-api")) {
@@ -39,18 +39,18 @@ if (profile.startsWith("browser-api")) {
     local: waychaserViaWebdriverLocal,
     remote: waychaserViaWebdriverRemote,
   };
-  waychaser = clients[mode.toString()];
+  waychaserProxy = clients[mode.toString()];
 
   /* istanbul ignore next: only get's executed when there are test config issues */
-  if (waychaser === undefined) {
+  if (waychaserProxy === undefined) {
     throw new Error(`unknown mode: ${mode}`);
   }
 
-  webdriver = waychaser;
+  webdriver = waychaserProxy;
   webdriver.browser = profile.replace(/browser-api-(.*)-.*/, "$1");
 } else {
   // otherwise, direct
-  waychaser = waychaserDirect;
+  waychaserProxy = waychaserDirect;
 }
 
 BeforeAll({ timeout: 240000 }, async function () {
@@ -78,7 +78,7 @@ function world({ attach }) {
 Before({ timeout: 240000 }, async function (scenario) {
   logger.debug("BEGIN Before");
   this.router = getNewRouter();
-  this.waychaser = waychaser;
+  this.waychaserProxy = waychaserProxy;
   if (webdriver) {
     await webdriver.beforeTest(scenario);
   }
