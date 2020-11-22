@@ -6,7 +6,7 @@ COVERING=${npm_lifecycle_event#cover:}
 COVER_NAME=${COVERING//:/-}
 COVER_NAME_ALL=${COVER_NAME//browser-api-*-/browser-api-}
 
-nyc \
+COVERAGE=1 nyc \
     --nycrc-path \
     ".nycrc-${COVER_NAME_ALL}.yml" \
     --clean \

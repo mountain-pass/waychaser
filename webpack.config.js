@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (environment) => ({
   mode: "development",
-  entry: "./src/waychaser.js",
+  entry: ["babel-polyfill", "core-js/web", "./src/waychaser.js"],
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: environment.OUTPUT_FILENAME,
@@ -21,6 +21,7 @@ module.exports = (environment) => ({
       {
         test: [/\.(js)$/],
         exclude: [
+          /node_modules\/(?!debug|ms|http-link-header|lokijs|\/).*/,
           /coverage/,
           /docs/,
           /out/,

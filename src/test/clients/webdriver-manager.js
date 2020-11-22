@@ -2,18 +2,24 @@ import logger from "../../util/logger";
 import logging from "selenium-webdriver/lib/logging";
 import { BROWSER_PORT, BROWSER_HOST } from "../config";
 import { utils } from "istanbul";
+import * as babel from "@babel/core";
+import babelConfig from "../../../babel.config";
+
+delete babelConfig.env.test;
 
 /* global __coverage__ */
 // based on https://github.com/gotwarlost/istanbul-middleware/blob/master/lib/core.js#L217
 function mergeClientCoverage(object) {
-  Object.keys(object).forEach((filePath) => {
-    const original = __coverage__[filePath.toString()];
-    const added = object[filePath.toString()];
-    __coverage__[filePath.toString()] = utils.mergeFileCoverage(
-      original,
-      added
-    );
-  });
+  if (process.env.COVERAGE) {
+    Object.keys(object).forEach((filePath) => {
+      const original = __coverage__[filePath.toString()];
+      const added = object[filePath.toString()];
+      __coverage__[filePath.toString()] = utils.mergeFileCoverage(
+        original,
+        added
+      );
+    });
+  }
 }
 
 class WebdriverManager {
@@ -22,39 +28,72 @@ class WebdriverManager {
     await this.driver.get(`http://${BROWSER_HOST}:${BROWSER_PORT}`);
     logger.debug("...page loaded");
 
-    logger.debug("setting uo uuid function...");
-    await this.driver.executeScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        window.uuidv4 = function () {
-          /* global crypto */
-          return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(
-            /[018]/g,
-            function (c) {
-              return (
-                c ^
-                (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
-              ).toString(16);
-            }
-          );
-        };
-      }
-    );
-
     logger.debug("waiting for waychaser...");
     await this.driver.wait(() => {
-      return this.driver.executeScript(
+      return this.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */
         function () {
           return window.waychaser !== undefined;
         }
       );
     }, 40000);
+
+    logger.debug("setting up logger function...");
+    await this.executeScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        window.testResults = [];
+        window.testLogs = [];
+        window.testLogger = function (arguments_) {
+          console.log(arguments_);
+          window.testLogs.push(arguments_);
+          // eslint-disable-next-line unicorn/prefer-query-selector
+          var logsElement = document.getElementById("logs"); // eslint-disable-line no-var
+          logsElement.textContent += arguments_;
+          logsElement.textContent += "\n";
+        };
+      }
+    );
   }
 
   async beforeAllTests() {}
 
-  async beforeTest() {}
+  async executeScript(script, ...arguments_) {
+    const code = `(${script}).apply(window, arguments)`;
+    const transformed = await (
+      await babel.transformAsync(code, babelConfig)
+    ).code.replace('"use strict";\n\n', "return ");
+    return this.driver.executeScript(transformed, ...arguments_);
+  }
+
+  async executeAsyncScript(script, ...arguments_) {
+    const code = `(${script}).apply(window, arguments)`;
+    // logger.debug({ code });
+    const transformed = await (
+      await babel.transformAsync(code, babelConfig)
+    ).code.replace('"use strict";\n\n', "return ");
+    logger.debug({ transformed });
+    const returnedFromBrowser = await this.driver.executeAsyncScript(
+      transformed,
+      ...arguments_
+    );
+    logger.debug({ returnedFromBrowser });
+    return returnedFromBrowser;
+  }
+
+  async beforeTest(scenario) {
+    await this.executeScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        window.testResults = [];
+        const element = document.querySelector("#test-name");
+        element.textContent = arguments[0].pickle.name;
+      },
+      scenario
+    );
+
+    logger.debug("set test name to '%s'", scenario.pickle.name);
+  }
 
   async afterTest() {
     await this.getBrowserLogs();
@@ -88,31 +127,44 @@ class WebdriverManager {
   async afterAllTests() {}
 
   async clearRemoteCoverage() {
-    await this.driver.executeScript(`var i = null;
-      var coverage = null;
-      var f = null;
-      if (typeof(window.__coverage__) !== "undefined" && window.__coverage__ !== null) {
-          for (f in window.__coverage__) {
+    if (process.env.COVERAGE) {
+      await this.executeScript(
+        /* istanbul ignore next: won't work in browser otherwise */
+        function () {
+          let index = null;
+          let coverage = null;
+          let f = null;
+          if (
+            typeof window.__coverage__ !== "undefined" &&
+            window.__coverage__ !== null
+          ) {
+            for (f in window.__coverage__) {
               coverage = window.__coverage__[f];
-              for (i in coverage.b) {
-                  coverage.b[i] = [0, 0];
+              for (index in coverage.b) {
+                coverage.b[index] = [0, 0];
               }
-              for (i in coverage.f) {
-                  coverage.f[i] = 0;
+              for (index in coverage.f) {
+                coverage.f[index] = 0;
               }
-              for (i in coverage.s) {
-                  coverage.s[i] = 0;
+              for (index in coverage.s) {
+                coverage.s[index] = 0;
               }
+            }
           }
-      }`);
+        }
+      );
+    }
   }
 
   async loadCoverage() {
     /* istanbul ignore else: only get's executed when there are fatal web driver issues  */
-    if (this.driver) {
+    if (this.driver && process.env.COVERAGE) {
       try {
-        const remoteCoverage = await this.driver.executeScript(
-          "return window.__coverage__;"
+        const remoteCoverage = await this.executeScript(
+          /* istanbul ignore next: won't work in browser otherwise */
+          function () {
+            return window.__coverage__;
+          }
         );
         mergeClientCoverage(remoteCoverage);
 

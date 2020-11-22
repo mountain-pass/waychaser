@@ -19,8 +19,31 @@ class WebdriverManagerLocal extends WebdriverManager {
       scenario.result.status === "failed" ||
       scenario.result.status === "pending"
     ) {
-      // logger.debug("waiting for browser debugging to complete...");
-      // await this.allowDebug(600000);
+      logger.debug("waiting for browser debugging to complete...");
+      await this.allowDebug(600000);
+    }
+  }
+
+  /* istanbul ignore next: only get's executed on test failure */
+  async allowDebug(timeout) {
+    if (this.driver && process.env.CI === undefined) {
+      this.executeScript(
+        /* istanbul ignore next: only get's executed on test failure */
+        function () {
+          window.alert(
+            `Window will remain for ${arguments[0]}ms for debugging purposes`
+          );
+        },
+        timeout
+      );
+      await this.driver.wait(
+        () =>
+          this.driver.getAllWindowHandles().then((handles) => {
+            // logger.debug(`${handles.length} handles still open`);
+            return handles.length === 0;
+          }),
+        timeout
+      );
     }
   }
 

@@ -1,32 +1,46 @@
+import logger from "../../util/logger";
+
 class WaychaserViaWebdriver {
   constructor(manager) {
     this.manager = manager;
   }
 
   async load(url) {
-    return this.manager.driver.executeAsyncScript(
+    const rval = await this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        console.log("in method");
-        console.log(window);
+      function (url, callback) {
+        // const callback = arguments[arguments.length - 1];
+        window.testLogger(`loading ${url}`);
         window.waychaser
-          .load(arguments[0])
+          .load(url)
           .then(function (resource) {
-            const id = uuidv4();
-            window[id] = resource;
-            callback({ success: true, id });
+            window.testLogger("success");
+            window.testResults.push(resource);
+            window.testLogger("calling back");
+            callback({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
-            const id = uuidv4();
-            window[id] = error;
-            console.log(window);
-            console.log(window.error);
-            callback({ success: false, id });
+            window.testLogger("error: " + error.toString());
+            window.testResults.push(error);
+            window.testLogger("calling back");
+            callback({
+              success: false,
+              id: window.testResults.length - 1,
+              error: error.toString(),
+              stackTrace: error.stack,
+            });
           });
       },
       url
     );
+    logger.debug({ rval });
+    await this.manager.driver.executeScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        window.testLogger("after");
+      }
+    );
+    return rval;
   }
 
   async getOperationsCount(result) {
@@ -35,7 +49,7 @@ class WaychaserViaWebdriver {
       function () {
         const callback = arguments[arguments.length - 1];
         const id = arguments[0];
-        callback(window[id.toString()].operations.count());
+        callback(window.testResults[id.toString()].operations.count());
       },
       result.id
     );
@@ -47,89 +61,84 @@ class WaychaserViaWebdriver {
       function () {
         const callback = arguments[arguments.length - 1];
         const id = arguments[0];
-        callback(window[id.toString()].ops.count());
+        callback(window.testResults[id.toString()].ops.count());
       },
       result.id
     );
   }
 
-  async findOneOperationByRel(result, relationship) {
+  async findOneByRel(property, result, relationship) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        const id = arguments[0];
-        const relationship = arguments[1];
-        console.log(relationship);
-        console.log(relationship === "self");
-        console.log(window[id.toString()].operations.count());
-        console.log(
+      function (property, id, relationship, callback) {
+        window.testLogger(relationship);
+        window.testLogger(relationship === "self");
+        window.testLogger(
+          window.testResults[id.toString()][property.toString()].count()
+        );
+        window.testLogger(
           "collection",
-          JSON.stringify(window[id.toString()].operations)
+          JSON.stringify(window.testResults[id.toString()][property.toString()])
         );
-        console.log(
+        window.testLogger(
           "findOne",
-          JSON.stringify(window[id.toString()].operations.findOne())
-        );
-        console.log(
-          "findOneByRel",
           JSON.stringify(
-            window[id.toString()].operations.findOneByRel(relationship)
+            window.testResults[id.toString()][property.toString()].findOne()
           )
         );
-        callback(window[id.toString()].operations.findOneByRel(relationship));
+        window.testLogger(
+          "findOneByRel",
+          JSON.stringify(
+            window.testResults[id.toString()][property.toString()].findOneByRel(
+              relationship
+            )
+          )
+        );
+        callback(
+          window.testResults[id.toString()][property.toString()].findOneByRel(
+            relationship
+          )
+        );
       },
+      property,
       result.id,
       relationship
     );
+  }
+
+  async findOneOperationByRel(result, relationship) {
+    return this.findOneByRel("operations", result, relationship);
   }
 
   async findOneOpByRel(result, relationship) {
-    return this.manager.driver.executeAsyncScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        const id = arguments[0];
-        const relationship = arguments[1];
-        console.log(relationship);
-        console.log(relationship === "self");
-        console.log(window[id.toString()].ops.count());
-        console.log("collection", JSON.stringify(window[id.toString()].ops));
-        console.log(
-          "findOne",
-          JSON.stringify(window[id.toString()].ops.findOne())
-        );
-        console.log(
-          "findOneByRel",
-          JSON.stringify(window[id.toString()].ops.findOneByRel(relationship))
-        );
-        callback(window[id.toString()].ops.findOneByRel(relationship));
-      },
-      result.id,
-      relationship
-    );
+    return this.findOneByRel("ops", result, relationship);
   }
 
   async invokeOperationByRel(result, relationship) {
-    return this.manager.driver.executeAsyncScript(
+    return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        const id = arguments[0];
-        const relationship = arguments[1];
-        window[id.toString()].operations
+      function (id, relationship, callback) {
+        window.testLogger("invokeOperationByRel");
+        window.testLogger(JSON.stringify(arguments, undefined, 2));
+        const ops = window.testResults[id.toString()].operations;
+        window.testLogger(JSON.stringify(ops, undefined, 2));
+        ops
           .invokeByRel(relationship)
           .then(function (resource) {
-            const id = uuidv4();
-            window[id] = resource;
-            callback({ success: true, id });
+            window.testLogger("huzzah!");
+            window.testResults.push(resource);
+            callback({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
-            const id = uuidv4();
-            window[id] = error;
-            console.log(window);
-            console.log(window.error);
-            callback({ success: false, id });
+            window.testLogger("doh!");
+            window.testResults.push(error);
+            callback({
+              success: false,
+              id: window.testResults.length - 1,
+              error: error.toString(),
+              stackTrace: error.stack,
+              logs: window.testLogs,
+            });
           });
       },
       result.id,
@@ -138,25 +147,25 @@ class WaychaserViaWebdriver {
   }
 
   async invokeOpByRel(result, relationship) {
-    return this.manager.driver.executeAsyncScript(
+    return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        const id = arguments[0];
-        const relationship = arguments[1];
-        window[id.toString()].ops
+      function (id, relationship, callback) {
+        window.testLogger({ arguments });
+        window.testResults[id.toString()].ops
           .invokeByRel(relationship)
           .then(function (resource) {
-            const id = uuidv4();
-            window[id] = resource;
-            callback({ success: true, id });
+            window.testResults.push(resource);
+            callback({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
-            const id = uuidv4();
-            window[id] = error;
-            console.log(window);
-            console.log(window.error);
-            callback({ success: false, id });
+            window.testResults.push(error);
+            window.testLogger(window.error);
+            callback({
+              success: false,
+              id: window.testResults.length - 1,
+              error: error.toString(),
+              stackTrace: error.stack,
+            });
           });
       },
       result.id,
@@ -171,19 +180,17 @@ class WaychaserViaWebdriver {
         const callback = arguments[arguments.length - 1];
         const id = arguments[0];
         const relationship = arguments[1];
-        window[id.toString()]
+        window.testResults[id.toString()]
           .invokeByRel(relationship)
           .then(function (resource) {
-            const id = uuidv4();
-            window[id] = resource;
-            callback({ success: true, id });
+            window.testResults.push(resource);
+            callback({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
-            const id = uuidv4();
-            window[id] = error;
-            console.log(window);
-            console.log(window.error);
-            callback({ success: false, id });
+            window.testResults.push(error);
+            window.testLogger(window);
+            window.testLogger(window.error);
+            callback({ success: false, id: window.testResults.length - 1 });
           });
       },
       result.id,
@@ -197,7 +204,7 @@ class WaychaserViaWebdriver {
       function () {
         const callback = arguments[arguments.length - 1];
         const id = arguments[0];
-        callback(window[id.toString()].url);
+        callback(window.testResults[id.toString()].url);
       },
       result.id
     );

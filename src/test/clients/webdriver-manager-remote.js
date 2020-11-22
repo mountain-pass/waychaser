@@ -22,7 +22,7 @@ class WebdriverManagerRemote extends WebdriverManager {
     logger.debug("driver built");
     await this.loadWaychaserTestPage();
 
-    super.beforeTest(scenario);
+    await super.beforeTest(scenario);
   }
 
   async afterTest(scenario) {
@@ -55,7 +55,9 @@ class WebdriverManagerRemote extends WebdriverManager {
       const capabilities = {
         "bstack:options": {
           os: "Any",
-          projectName: process.env.npm_package_name,
+          projectName:
+            process.env.npm_package_name +
+            (process.env.GITHUB_RUN_ID ? "" : "-LOCAL"),
           buildName: BUILD,
           sessionName: name,
           local: "true",

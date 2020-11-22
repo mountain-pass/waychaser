@@ -274,7 +274,7 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] switched to JS Standard format 
 - [x] split webdriver from waychaser-via
 - [x] split browser stack tunnel into seperate class
-- [ ] reduce webpacking of node_modules
+- [x] reduce webpacking of node_modules
 - [ ] try to use umd for both node and browser
 - [ ] fix struture of package so we get better jsdoc linting
 - [ ] clean up lining problems
@@ -287,6 +287,7 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [ ] add tests for non-get operations
 - [ ] add tests for validation
 - [ ] look at using standard instead of eslint
+- [ ] add method for running single scenario
 - [ ] expand code-climate analysis
 - [ ] create docs site
   - [ ] integrate Code coverage and code quality reporting
