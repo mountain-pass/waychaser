@@ -1,7 +1,7 @@
-import { Given, When, Then } from "cucumber";
+import { Given } from "cucumber";
 import logger from "../util/logger";
 import LinkHeader from "http-link-header";
-import { API_ACCESS_PORT, API_ACCESS_HOST } from "./config";
+import { API_ACCESS_HOST } from "./config";
 
 Given("a resource returning status code {int}", async function (status) {
   await this.router.route("/api").get(async (request, response) => {

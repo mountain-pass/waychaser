@@ -8,7 +8,7 @@ class WaychaserViaWebdriver {
   async load(url) {
     const rval = await this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (url, callback) {
+      function (url, done) {
         // const callback = arguments[arguments.length - 1];
         window.testLogger(`loading ${url}`);
         window.waychaser
@@ -17,13 +17,13 @@ class WaychaserViaWebdriver {
             window.testLogger("success");
             window.testResults.push(resource);
             window.testLogger("calling back");
-            callback({ success: true, id: window.testResults.length - 1 });
+            done({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
             window.testLogger("error: " + error.toString());
             window.testResults.push(error);
             window.testLogger("calling back");
-            callback({
+            done({
               success: false,
               id: window.testResults.length - 1,
               error: error.toString(),
@@ -117,7 +117,7 @@ class WaychaserViaWebdriver {
   async invokeOperationByRel(result, relationship) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, callback) {
+      function (id, relationship, done) {
         window.testLogger("invokeOperationByRel");
         window.testLogger(JSON.stringify(arguments, undefined, 2));
         const ops = window.testResults[id.toString()].operations;
@@ -127,12 +127,12 @@ class WaychaserViaWebdriver {
           .then(function (resource) {
             window.testLogger("huzzah!");
             window.testResults.push(resource);
-            callback({ success: true, id: window.testResults.length - 1 });
+            done({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
             window.testLogger("doh!");
             window.testResults.push(error);
-            callback({
+            done({
               success: false,
               id: window.testResults.length - 1,
               error: error.toString(),
@@ -149,18 +149,18 @@ class WaychaserViaWebdriver {
   async invokeOpByRel(result, relationship) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, callback) {
+      function (id, relationship, done) {
         window.testLogger({ arguments });
         window.testResults[id.toString()].ops
           .invokeByRel(relationship)
           .then(function (resource) {
             window.testResults.push(resource);
-            callback({ success: true, id: window.testResults.length - 1 });
+            done({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
             window.testResults.push(error);
             window.testLogger(window.error);
-            callback({
+            done({
               success: false,
               id: window.testResults.length - 1,
               error: error.toString(),
@@ -176,21 +176,18 @@ class WaychaserViaWebdriver {
   async invokeByRel(result, relationship) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        const id = arguments[0];
-        const relationship = arguments[1];
+      function (id, relationship, done) {
         window.testResults[id.toString()]
           .invokeByRel(relationship)
           .then(function (resource) {
             window.testResults.push(resource);
-            callback({ success: true, id: window.testResults.length - 1 });
+            done({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
             window.testResults.push(error);
             window.testLogger(window);
             window.testLogger(window.error);
-            callback({ success: false, id: window.testResults.length - 1 });
+            done({ success: false, id: window.testResults.length - 1 });
           });
       },
       result.id,

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Given, When, Then } from "cucumber";
+import { When, Then } from "cucumber";
 import logger from "../util/logger";
 
 Then("the loaded resource will have no operations", async function () {

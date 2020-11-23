@@ -1,7 +1,5 @@
 import { expect } from "chai";
-import { Given, When, Then } from "cucumber";
-import logger from "../util/logger";
-// eslint-disable-next-line no-unused-vars
+import { When, Then } from "cucumber";
 import { API_ACCESS_PORT, API_ACCESS_HOST } from "./config";
 
 When("waychaser loads that resource", async function () {

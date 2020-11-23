@@ -1,9 +1,5 @@
 import logger from "../../util/logger";
-import logging from "selenium-webdriver/lib/logging";
-import { BROWSER_PORT, BROWSER_HOST } from "../config";
-import { utils } from "istanbul";
 import { waychaser } from "../../waychaser";
-import { response } from "express";
 
 class WaychaserDirect {
   async load(url) {

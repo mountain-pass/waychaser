@@ -6,8 +6,14 @@ import logger from "./util/logger";
 polyfill();
 
 /**
- * @param url
- * @param options
+ * Loads the resouce at the provided url using fetch
+ *
+ * @param {URL} url url of the resource to load
+ * @param {object} options options to pass to fetch
+ *
+ * @returns {waychaser.ApiResourceObject} a ApiResourceObject representing the loaded resource
+ *
+ * @throws {Error} If the server returns with a status >= 400
  */
 function loadResource(url, options) {
   logger.waychaser(`loading ${url}`);
@@ -65,10 +71,10 @@ const waychaser = {
   /**
    * Loads an API
    *
-   * @param {string} url - the URL of the API to load
+   * @param {URL} url - the URL of the API to load
    * @param {object} options - options to pass to fetch
    *
-   * @returns {ApiResourceObject} a ApiResourceObject representing the loaded resource
+   * @returns {waychaser.ApiResourceObject} a ApiResourceObject representing the loaded resource
    *
    * @throws {Error} If the server returns with a status >= 400
    */
