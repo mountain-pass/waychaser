@@ -295,3 +295,4 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [ ] lots more 😂
 - [ ] help [
 eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security) and get better version of `security/detect-object-injectionn` that doesn't flag `for (const index in object) { object[index] = 0; }`
+- [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
