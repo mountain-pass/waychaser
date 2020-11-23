@@ -8,17 +8,25 @@ import babelConfig from "../../../babel.config";
 delete babelConfig.env.test;
 
 /* global __coverage__ */
-// based on https://github.com/gotwarlost/istanbul-middleware/blob/master/lib/core.js#L217
+// based on https://github.com/gotwarlost/istanbul-middleware/blob/dfbca20f361b9c2b79934e395fd266d95d9c5af5/lib/core.js#L217
 function mergeClientCoverage(object) {
   if (process.env.COVERAGE) {
-    Object.keys(object).forEach((filePath) => {
+    for (const [filePath, added] of Object.entries(object)) {
       const original = __coverage__[filePath.toString()];
-      const added = object[filePath.toString()];
+      if (added.s === null) {
+        added.s = {};
+      }
+      if (added.f === null) {
+        added.f = {};
+      }
+      if (added.b === null) {
+        added.b = {};
+      }
       __coverage__[filePath.toString()] = utils.mergeFileCoverage(
         original,
         added
       );
-    });
+    }
   }
 }
 
