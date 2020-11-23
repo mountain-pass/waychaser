@@ -275,7 +275,6 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] split webdriver from waychaser-via
 - [x] split browser stack tunnel into seperate class
 - [x] reduce webpacking of node_modules
-- [ ] try to use umd for both node and browser
 - [ ] fix struture of package so we get better jsdoc linting
 - [ ] clean up lining problems
 - [ ] refactor browserstack test run to use single tunnel when running locally
@@ -296,3 +295,5 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [ ] help [
 eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security) and get better version of `security/detect-object-injectionn` that doesn't flag `for (const index in object) { object[index] = 0; }`
 - [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
+- [ ] try to use umd for both node and browser. https://github.com/webpack/webpack/pull/8625
+  - [ ] investigate using https://rollupjs.org/guide/en/
