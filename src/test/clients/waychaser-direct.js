@@ -3,13 +3,17 @@ import logging from "selenium-webdriver/lib/logging";
 import { BROWSER_PORT, BROWSER_HOST } from "../config";
 import { utils } from "istanbul";
 import { waychaser } from "../../waychaser";
+import { response } from "express";
 
 class WaychaserDirect {
   async load(url) {
     try {
+      logger.test("loading %s", url);
       const resource = await waychaser.load(url);
+      logger.test("loaded %s: $s", url, resource);
       return { success: true, resource };
     } catch (error) {
+      logger.error("error loading %s", error);
       return { success: false, error };
     }
   }

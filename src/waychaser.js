@@ -10,37 +10,39 @@ polyfill();
  * @param options
  */
 function loadResource(url, options) {
-  window.testLogger(`loading ${url}`);
+  logger.waychaser(`loading ${url}`);
   return fetch(url, options).then((response) => {
     if (!response.ok) {
-      window.testLogger(`Bad response from server ${JSON.stringify(response)}`);
+      logger.waychaser(`Bad response from server ${JSON.stringify(response)}`);
       throw new Error("Bad response from server", response);
     }
-    window.testLogger(`Good response from server ${JSON.stringify(response)}`);
-    // in ie url is not being populated 🤷‍♂️
-    response.url = url;
+    logger.waychaser(`Good response from server ${JSON.stringify(response)}`);
+    if (response.url === undefined || response.url === "") {
+      // in ie url is not being populated 🤷‍♂️
+      response.url = url;
+    }
     return new waychaser.ApiResourceObject(response);
   });
 }
 
 class Operation {
   constructor(callingContext) {
-    window.testLogger(
+    logger.waychaser(
       `Operation callingContext ${JSON.stringify(this.callingContext)}`
     );
     this.callingContext = callingContext;
   }
 
   async invoke(context, options) {
-    window.testLogger(`invoke`);
+    logger.waychaser(`invoke`);
     //    logger.waychaser(this, context, options);
     const contextUrl = this.callingContext.url;
-    window.testLogger(`constext ${JSON.stringify(this.callingContext)}`);
-    window.testLogger(`constext ${this.callingContext.url}`);
-    window.testLogger(`constext ${contextUrl}`);
+    logger.waychaser(`constext ${JSON.stringify(this.callingContext)}`);
+    logger.waychaser(`constext ${this.callingContext.url}`);
+    logger.waychaser(`constext ${contextUrl}`);
     const invokeUrl = new URL(this.uri, contextUrl);
     //    logger.waychaser({ invokeUrl });
-    window.testLogger(`invoking ${invokeUrl}`);
+    logger.waychaser(`invoking ${invokeUrl}`);
     return loadResource(invokeUrl, options);
   }
 }
@@ -54,7 +56,7 @@ Loki.Collection.prototype.invokeByRel = async function (
   options
 ) {
   const operation = this.findOneByRel(relationship);
-  window.testLogger(JSON.stringify(operation, undefined, 2));
+  logger.waychaser(JSON.stringify(operation, undefined, 2));
   return operation.invoke(context, options);
 };
 
@@ -89,11 +91,11 @@ const waychaser = {
         this.operations.insert(
           links.refs.map((reference) => {
             logger.waychaser({ reference });
-            window.testLogger(JSON.stringify(response));
+            logger.waychaser(JSON.stringify(response));
 
             logger.waychaser("creating operation", response, reference);
             const operation = new Operation(response);
-            window.testLogger(JSON.stringify({ operation }));
+            logger.waychaser(JSON.stringify({ operation }));
             const operationX = Object.assign(operation, reference);
             logger.waychaser(JSON.stringify({ operation: operationX }));
             return operation;
