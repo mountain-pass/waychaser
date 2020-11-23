@@ -293,3 +293,5 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
   - [ ] integrate Code coverage and code quality reporting
   - [ ] integrate API docs
 - [ ] lots more 😂
+- [ ] help [
+eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security) and get better version of `security/detect-object-injectionn` that doesn't flag `for (const index in object) { object[index] = 0; }`

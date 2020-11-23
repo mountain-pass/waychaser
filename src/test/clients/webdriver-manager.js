@@ -139,22 +139,19 @@ class WebdriverManager {
       await this.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */
         function () {
-          let index = null;
-          let coverage = null;
-          let f = null;
           if (
             typeof window.__coverage__ !== "undefined" &&
             window.__coverage__ !== null
           ) {
-            for (f in window.__coverage__) {
-              coverage = window.__coverage__[f];
-              for (index in coverage.b) {
+            for (const f in window.__coverage__) {
+              const coverage = window.__coverage__[f];
+              for (const index in coverage.b) {
                 coverage.b[index] = [0, 0];
               }
-              for (index in coverage.f) {
+              for (const index in coverage.f) {
                 coverage.f[index] = 0;
               }
-              for (index in coverage.s) {
+              for (const index in coverage.s) {
                 coverage.s[index] = 0;
               }
             }
