@@ -1,7 +1,9 @@
 import logger from "../../util/logger";
+import { WaychaserProxy } from "./waychaser-proxy";
 
-class WaychaserViaWebdriver {
+class WaychaserViaWebdriver extends WaychaserProxy {
   constructor(manager) {
+    super();
     this.manager = manager;
   }
 
@@ -45,15 +47,7 @@ class WaychaserViaWebdriver {
     );
   }
 
-  async getOperationsCount(result) {
-    return this.getOCount("operations", result);
-  }
-
-  async getOpsCount(result) {
-    return this.getOCount("ops", result);
-  }
-
-  async findOneByRel(property, result, relationship) {
+  async findOneOByRel(property, result, relationship) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (property, id, relationship, done) {
@@ -63,14 +57,6 @@ class WaychaserViaWebdriver {
       result.id,
       relationship
     );
-  }
-
-  async findOneOperationByRel(result, relationship) {
-    return this.findOneByRel("operations", result, relationship);
-  }
-
-  async findOneOpByRel(result, relationship) {
-    return this.findOneByRel("ops", result, relationship);
   }
 
   async invokeOByRel(property, result, relationship) {
@@ -96,14 +82,6 @@ class WaychaserViaWebdriver {
       relationship,
       property
     );
-  }
-
-  async invokeOperationByRel(result, relationship) {
-    return this.invokeOByRel("operations", result, relationship);
-  }
-
-  async invokeOpByRel(result, relationship) {
-    return this.invokeOByRel("ops", result, relationship);
   }
 
   async invokeByRel(result, relationship) {
