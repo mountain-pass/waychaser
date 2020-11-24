@@ -2,17 +2,18 @@ import logger from "../../util/logger";
 import { waychaser } from "../../waychaser";
 import { WaychaserProxy } from "./waychaser-proxy";
 
+async function handleResponse(promise) {
+  try {
+    const resource = await promise;
+    return { success: true, resource };
+  } catch (error) {
+    logger.error("error loading %s", error);
+    return { success: false, error };
+  }
+}
 class WaychaserDirect extends WaychaserProxy {
   async load(url) {
-    try {
-      logger.test("loading %s", url);
-      const resource = await waychaser.load(url);
-      logger.test("loaded %s: $s", url, resource);
-      return { success: true, resource };
-    } catch (error) {
-      logger.error("error loading %s", error);
-      return { success: false, error };
-    }
+    return handleResponse(waychaser.load(url));
   }
 
   async getOCount(property, result) {
@@ -24,24 +25,11 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async invokeOByRel(property, result, relationship) {
-    try {
-      const resource = await result.resource[property].invokeByRel(
-        relationship
-      );
-      logger.debug({ resource });
-      return { success: true, resource };
-    } catch (error) {
-      return { success: false, error };
-    }
+    return handleResponse(result.resource[property].invokeByRel(relationship));
   }
 
   async invokeByRel(result, relationship) {
-    try {
-      const resource = await result.resource.invokeByRel(relationship);
-      return { success: true, resource };
-    } catch (error) {
-      return { success: false, error };
-    }
+    return handleResponse(result.resource.invokeByRel(relationship));
   }
 
   async getUrl(result) {
