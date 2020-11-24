@@ -60,6 +60,17 @@ class WebdriverManager {
           logsElement.textContent += arguments_;
           logsElement.textContent += "\n";
         };
+
+        window.callbackWithError = (done, error) => {
+          window.testLogger("error: " + error.toString());
+          window.testResults.push(error);
+          done({
+            success: false,
+            id: window.testResults.length - 1,
+            error: error.toString(),
+            stackTrace: error.stack,
+          });
+        };
       }
     );
   }

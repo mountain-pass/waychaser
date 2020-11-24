@@ -9,7 +9,6 @@ class WaychaserViaWebdriver {
     const rval = await this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (url, done) {
-        // const callback = arguments[arguments.length - 1];
         window.testLogger(`loading ${url}`);
         window.waychaser
           .load(url)
@@ -19,16 +18,8 @@ class WaychaserViaWebdriver {
             window.testLogger("calling back");
             done({ success: true, id: window.testResults.length - 1 });
           })
-          .catch(function (error) {
-            window.testLogger("error: " + error.toString());
-            window.testResults.push(error);
-            window.testLogger("calling back");
-            done({
-              success: false,
-              id: window.testResults.length - 1,
-              error: error.toString(),
-              stackTrace: error.stack,
-            });
+          .catch((error) => {
+            window.callbackWithError(done, error);
           });
       },
       url
@@ -46,10 +37,8 @@ class WaychaserViaWebdriver {
   async getOperationsCount(result) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        const id = arguments[0];
-        callback(window.testResults[id.toString()].operations.count());
+      function (id, done) {
+        done(window.testResults[id.toString()].operations.count());
       },
       result.id
     );
@@ -58,10 +47,8 @@ class WaychaserViaWebdriver {
   async getOpsCount(result) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        const id = arguments[0];
-        callback(window.testResults[id.toString()].ops.count());
+      function (id, done) {
+        done(window.testResults[id.toString()].ops.count());
       },
       result.id
     );
@@ -70,7 +57,7 @@ class WaychaserViaWebdriver {
   async findOneByRel(property, result, relationship) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (property, id, relationship, callback) {
+      function (property, id, relationship, done) {
         window.testLogger(relationship);
         window.testLogger(relationship === "self");
         window.testLogger(
@@ -94,7 +81,7 @@ class WaychaserViaWebdriver {
             )
           )
         );
-        callback(
+        done(
           window.testResults[id.toString()][property.toString()].findOneByRel(
             relationship
           )
@@ -130,15 +117,7 @@ class WaychaserViaWebdriver {
             done({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
-            window.testLogger("doh!");
-            window.testResults.push(error);
-            done({
-              success: false,
-              id: window.testResults.length - 1,
-              error: error.toString(),
-              stackTrace: error.stack,
-              logs: window.testLogs,
-            });
+            window.callbackWithError(done, error);
           });
       },
       result.id,
@@ -158,14 +137,7 @@ class WaychaserViaWebdriver {
             done({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
-            window.testResults.push(error);
-            window.testLogger(window.error);
-            done({
-              success: false,
-              id: window.testResults.length - 1,
-              error: error.toString(),
-              stackTrace: error.stack,
-            });
+            window.callbackWithError(done, error);
           });
       },
       result.id,
@@ -184,10 +156,7 @@ class WaychaserViaWebdriver {
             done({ success: true, id: window.testResults.length - 1 });
           })
           .catch(function (error) {
-            window.testResults.push(error);
-            window.testLogger(window);
-            window.testLogger(window.error);
-            done({ success: false, id: window.testResults.length - 1 });
+            window.callbackWithError(done, error);
           });
       },
       result.id,
@@ -198,10 +167,8 @@ class WaychaserViaWebdriver {
   async getUrl(result) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        const callback = arguments[arguments.length - 1];
-        const id = arguments[0];
-        callback(window.testResults[id.toString()].url);
+      function (id, done) {
+        done(window.testResults[id.toString()].url);
       },
       result.id
     );

@@ -30,9 +30,9 @@ class WaychaserDirect {
     return result.resource.ops.findOneByRel(relationship);
   }
 
-  async invokeOperationByRel(result, relationship) {
+  async invokeOByRel(property, result, relationship) {
     try {
-      const resource = await result.resource.operations.invokeByRel(
+      const resource = await result.resource[property].invokeByRel(
         relationship
       );
       logger.debug({ resource });
@@ -42,15 +42,12 @@ class WaychaserDirect {
     }
   }
 
+  async invokeOperationByRel(result, relationship) {
+    return this.invokeOByRel("operations", result, relationship);
+  }
+
   async invokeOpByRel(result, relationship) {
-    try {
-      logger.debug("invokeOpByRel", result.resource, relationship);
-      const resource = await result.resource.ops.invokeByRel(relationship);
-      logger.debug({ resource });
-      return { success: true, resource };
-    } catch (error) {
-      return { success: false, error };
-    }
+    return this.invokeOByRel("ops", result, relationship);
   }
 
   async invokeByRel(result, relationship) {
