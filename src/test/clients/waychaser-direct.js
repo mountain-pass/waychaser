@@ -1,7 +1,8 @@
 import logger from "../../util/logger";
 import { waychaser } from "../../waychaser";
+import { WaychaserProxy } from "./waychaser-proxy";
 
-class WaychaserDirect {
+class WaychaserDirect extends WaychaserProxy {
   async load(url) {
     try {
       logger.test("loading %s", url);
@@ -14,20 +15,12 @@ class WaychaserDirect {
     }
   }
 
-  async getOperationsCount(result) {
-    return result.resource.operations.count();
+  async getOCount(property, result) {
+    return result.resource[property].count();
   }
 
-  async getOpsCount(result) {
-    return result.resource.ops.count();
-  }
-
-  async findOneOperationByRel(result, relationship) {
-    return result.resource.operations.findOneByRel(relationship);
-  }
-
-  async findOneOpByRel(result, relationship) {
-    return result.resource.ops.findOneByRel(relationship);
+  async findOneOByRel(property, result, relationship) {
+    return result.resource[property].findOneByRel(relationship);
   }
 
   async invokeOByRel(property, result, relationship) {
@@ -40,14 +33,6 @@ class WaychaserDirect {
     } catch (error) {
       return { success: false, error };
     }
-  }
-
-  async invokeOperationByRel(result, relationship) {
-    return this.invokeOByRel("operations", result, relationship);
-  }
-
-  async invokeOpByRel(result, relationship) {
-    return this.invokeOByRel("ops", result, relationship);
   }
 
   async invokeByRel(result, relationship) {
