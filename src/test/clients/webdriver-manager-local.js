@@ -63,31 +63,24 @@ class WebdriverManagerLocal extends WebdriverManager {
     await super.afterAllTests();
   }
 
-  async buildDriver() {
-    try {
-      const prefs = new logging.Preferences();
-      prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
+  async doBuildDriver() {
+    const prefs = new logging.Preferences();
+    prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      const caps = Capabilities[this.browser]();
-      caps.setLoggingPrefs(prefs);
+    const caps = Capabilities[this.browser]();
+    caps.setLoggingPrefs(prefs);
 
-      const builder = new Builder()
-        .withCapabilities(caps)
-        .forBrowser(this.browser);
+    const builder = new Builder()
+      .withCapabilities(caps)
+      .forBrowser(this.browser);
 
-      /* istanbul ignore next: only get's executed on CI server */
-      if (process.env.CI) {
-        builder.setChromeOptions(new chrome.Options().headless());
-      }
-      this.driver = builder.build();
-
-      return this.driver;
-    } catch (error) {
-      /* istanbul ignore next: only get's executed when there are web driver issues */
-      logger.error("error getting browser", error);
-      /* istanbul ignore next: only get's executed when there are web driver issues */
-      throw error;
+    /* istanbul ignore next: only get's executed on CI server */
+    if (process.env.CI) {
+      builder.setChromeOptions(new chrome.Options().headless());
     }
+    this.driver = builder.build();
+
+    return this.driver;
   }
 }
 

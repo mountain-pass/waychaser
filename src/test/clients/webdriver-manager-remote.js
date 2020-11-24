@@ -41,53 +41,46 @@ class WebdriverManagerRemote extends WebdriverManager {
     delete this.driver;
   }
 
-  async buildDriver(name) {
-    try {
-      assert(
-        process.env.BROWSERSTACK_USERNAME,
-        "process.env.BROWSERSTACK_USERNAME not set"
-      );
-      assert(
-        process.env.BROWSERSTACK_ACCESS_KEY,
-        "process.env.BROWSERSTACK_ACCESS_KEY not set"
-      );
+  async doBuildDriver(name) {
+    assert(
+      process.env.BROWSERSTACK_USERNAME,
+      "process.env.BROWSERSTACK_USERNAME not set"
+    );
+    assert(
+      process.env.BROWSERSTACK_ACCESS_KEY,
+      "process.env.BROWSERSTACK_ACCESS_KEY not set"
+    );
 
-      const capabilities = {
-        "bstack:options": {
-          os: "Any",
-          projectName:
-            process.env.npm_package_name +
-            (process.env.GITHUB_RUN_ID ? "" : "-LOCAL"),
-          buildName: BUILD,
-          sessionName: name,
-          local: "true",
-          ...(process.env.BROWSERSTACK_LOCAL_IDENTIFIER && {
-            localIdentifier: process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-          }),
-          debug: "true",
-          consoleLogs: "verbose",
-          networkLogs: "true",
-          seleniumVersion: "3.14.0",
-          userName: process.env.BROWSERSTACK_USERNAME,
-          accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
-        },
-        browserName: this.browser,
-        ...(this.browser !== "iphone" &&
-          this.browser !== "android" && { browserVersion: "latest" }),
-      };
+    const capabilities = {
+      "bstack:options": {
+        os: "Any",
+        projectName:
+          process.env.npm_package_name +
+          (process.env.GITHUB_RUN_ID ? "" : "-LOCAL"),
+        buildName: BUILD,
+        sessionName: name,
+        local: "true",
+        ...(process.env.BROWSERSTACK_LOCAL_IDENTIFIER && {
+          localIdentifier: process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+        }),
+        debug: "true",
+        consoleLogs: "verbose",
+        networkLogs: "true",
+        seleniumVersion: "3.14.0",
+        userName: process.env.BROWSERSTACK_USERNAME,
+        accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+      },
+      browserName: this.browser,
+      ...(this.browser !== "iphone" &&
+        this.browser !== "android" && { browserVersion: "latest" }),
+    };
 
-      this.driver = new webdriver.Builder()
-        .usingServer("https://hub-cloud.browserstack.com/wd/hub")
-        .withCapabilities(capabilities)
-        .build();
-      await this.driver.manage().setTimeouts({ script: 40000 });
-      return this.driver;
-    } catch (error) {
-      /* istanbul ignore next: only get's executed when there are web driver issues */
-      logger.error("error getting browser", error);
-      /* istanbul ignore next: only get's executed when there are web driver issues */
-      throw error;
-    }
+    this.driver = new webdriver.Builder()
+      .usingServer("https://hub-cloud.browserstack.com/wd/hub")
+      .withCapabilities(capabilities)
+      .build();
+    await this.driver.manage().setTimeouts({ script: 40000 });
+    return this.driver;
   }
 
   async sendTestResult(status) {

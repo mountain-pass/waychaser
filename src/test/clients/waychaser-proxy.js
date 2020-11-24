@@ -1,9 +1,6 @@
 import logger from "../../util/logger";
 import { waychaser } from "../../waychaser";
-
-function abstract() {
-  throw new Error("You have to implement the method!");
-}
+import { abstract } from "../../util/abstract";
 
 class WaychaserProxy {
   async load(url) {

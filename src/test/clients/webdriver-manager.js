@@ -4,6 +4,7 @@ import { BROWSER_PORT, BROWSER_HOST } from "../config";
 import { utils } from "istanbul";
 import * as babel from "@babel/core";
 import babelConfig from "../../../babel.config";
+import { abstract } from "../../util/abstract";
 
 delete babelConfig.env.test;
 
@@ -192,6 +193,21 @@ class WebdriverManager {
         /* istanbul ignore next: only get's executed when there are instanbul issues */
         throw error;
       }
+    }
+  }
+
+  async doBuildDriver() {
+    abstract();
+  }
+
+  async buildDriver() {
+    try {
+      return this.doBuildDriver();
+    } catch (error) {
+      /* istanbul ignore next: only get's executed when there are web driver issues */
+      logger.error("error getting browser", error);
+      /* istanbul ignore next: only get's executed when there are web driver issues */
+      throw error;
     }
   }
 }
