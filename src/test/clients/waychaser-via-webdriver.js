@@ -34,58 +34,30 @@ class WaychaserViaWebdriver {
     return rval;
   }
 
-  async getOperationsCount(result) {
+  async getOCount(property, result) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, done) {
-        done(window.testResults[id.toString()].operations.count());
+      function (id, property, done) {
+        done(window.testResults[id][property].count());
       },
-      result.id
+      result.id,
+      property
     );
   }
 
+  async getOperationsCount(result) {
+    return this.getOCount("operations", result);
+  }
+
   async getOpsCount(result) {
-    return this.manager.driver.executeAsyncScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function (id, done) {
-        done(window.testResults[id.toString()].ops.count());
-      },
-      result.id
-    );
+    return this.getOCount("ops", result);
   }
 
   async findOneByRel(property, result, relationship) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (property, id, relationship, done) {
-        window.testLogger(relationship);
-        window.testLogger(relationship === "self");
-        window.testLogger(
-          window.testResults[id.toString()][property.toString()].count()
-        );
-        window.testLogger(
-          "collection",
-          JSON.stringify(window.testResults[id.toString()][property.toString()])
-        );
-        window.testLogger(
-          "findOne",
-          JSON.stringify(
-            window.testResults[id.toString()][property.toString()].findOne()
-          )
-        );
-        window.testLogger(
-          "findOneByRel",
-          JSON.stringify(
-            window.testResults[id.toString()][property.toString()].findOneByRel(
-              relationship
-            )
-          )
-        );
-        done(
-          window.testResults[id.toString()][property.toString()].findOneByRel(
-            relationship
-          )
-        );
+        done(window.testResults[id][property].findOneByRel(relationship));
       },
       property,
       result.id,
@@ -101,13 +73,13 @@ class WaychaserViaWebdriver {
     return this.findOneByRel("ops", result, relationship);
   }
 
-  async invokeOperationByRel(result, relationship) {
+  async invokeOByRel(property, result, relationship) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, done) {
+      function (id, relationship, property, done) {
         window.testLogger("invokeOperationByRel");
         window.testLogger(JSON.stringify(arguments, undefined, 2));
-        const ops = window.testResults[id.toString()].operations;
+        const ops = window.testResults[id][property];
         window.testLogger(JSON.stringify(ops, undefined, 2));
         ops
           .invokeByRel(relationship)
@@ -121,35 +93,24 @@ class WaychaserViaWebdriver {
           });
       },
       result.id,
-      relationship
+      relationship,
+      property
     );
   }
 
+  async invokeOperationByRel(result, relationship) {
+    return this.invokeOByRel("operations", result, relationship);
+  }
+
   async invokeOpByRel(result, relationship) {
-    return this.manager.executeAsyncScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, done) {
-        window.testLogger({ arguments });
-        window.testResults[id.toString()].ops
-          .invokeByRel(relationship)
-          .then(function (resource) {
-            window.testResults.push(resource);
-            done({ success: true, id: window.testResults.length - 1 });
-          })
-          .catch(function (error) {
-            window.callbackWithError(done, error);
-          });
-      },
-      result.id,
-      relationship
-    );
+    return this.invokeOByRel("ops", result, relationship);
   }
 
   async invokeByRel(result, relationship) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, relationship, done) {
-        window.testResults[id.toString()]
+        window.testResults[id]
           .invokeByRel(relationship)
           .then(function (resource) {
             window.testResults.push(resource);
@@ -168,7 +129,7 @@ class WaychaserViaWebdriver {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, done) {
-        done(window.testResults[id.toString()].url);
+        done(window.testResults[id].url);
       },
       result.id
     );
