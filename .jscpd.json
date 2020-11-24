@@ -1,0 +1,7 @@
+{
+  "threshold": 0,
+  "mode": "strict",
+  "reporters": ["html", "consoleFull", "console"],
+  "gitignore": true,
+  "pattern": "src/**/*"
+}

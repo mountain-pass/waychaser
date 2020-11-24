@@ -10,7 +10,7 @@ When("waychaser loads that resource", async function () {
 
 When("waychaser loads a resource that's not available", async function () {
   this.result = await this.waychaserProxy.load(
-    `http://${API_ACCESS_HOST}:0/api`
+    `http://${API_ACCESS_HOST}:33556/api`
   );
 });
 

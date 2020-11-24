@@ -275,10 +275,11 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] split webdriver from waychaser-via
 - [x] split browser stack tunnel into seperate class
 - [x] reduce webpacking of node_modules
+- [x] clean up lining problems
+- [ ] clean up logging
 - [ ] fix struture of package so we get better jsdoc linting
-- [ ] clean up lining problems
 - [ ] refactor browserstack test run to use single tunnel when running locally
-- [ ] add code duplication checks
+- [x] add code duplication checks
 - [ ] add tests for abort
 - [ ] add tests for different types of error responses
 - [ ] add tests for authenticated requests

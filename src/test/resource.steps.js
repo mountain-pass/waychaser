@@ -17,45 +17,43 @@ Given("a resource with no operations", async function () {
 });
 
 Given("a resource with a {string} operation", async function (relationship) {
-  await this.router.route("/api").get(async (request, response) => {
-    const links = new LinkHeader();
-    links.set({
-      rel: relationship,
-    });
-    response.header("link", links.toString()).status(200).send({ status: 200 });
-  });
+  await createRoute(this.router, relationship);
 });
 
 Given(
   "a resource with a {string} operation that returns itself",
   async function (relationship) {
-    await this.router.route("/api").get(async (request, response) => {
-      const links = new LinkHeader();
-      links.set({
-        rel: relationship,
-        uri: "/api",
-      });
-      response
-        .header("link", links.toString())
-        .status(200)
-        .send({ status: 200 });
-    });
+    await createRoute(this.router, relationship, "/api");
   }
 );
 
 Given(
   "a resource with a {string} operation that returns an error",
   async function (relationship) {
-    await this.router.route("/api").get(async (request, response) => {
-      const links = new LinkHeader();
-      links.set({
-        rel: relationship,
-        uri: `http://${API_ACCESS_HOST}:0/api`,
-      });
-      response
-        .header("link", links.toString())
-        .status(200)
-        .send({ status: 200 });
-    });
+    await createRoute(
+      this.router,
+      relationship,
+      `http://${API_ACCESS_HOST}:0/api`
+    );
   }
 );
+
+async function createRoute(router, relationship, linkPath) {
+  const links = createLinks(relationship, linkPath);
+  await router.route("/api").get(async (request, response) => {
+    send200response(response, links);
+  });
+}
+
+function createLinks(relationship, uri) {
+  const links = new LinkHeader();
+  links.set({
+    rel: relationship,
+    uri: uri,
+  });
+  return links;
+}
+
+function send200response(response, links) {
+  response.header("link", links.toString()).status(200).send({ status: 200 });
+}

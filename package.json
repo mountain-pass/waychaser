@@ -93,9 +93,10 @@
     "json:list-github-actions-browser-matrix": "scripts/list-cover-browsers.js",
     "sync-readme-version": "scripts/sync-readme-version.sh",
     "eslint-check": "eslint --print-config src/server/index.js | eslint-config-prettier-check",
-    "precommit": "lint-staged && npm run test:node-api",
+    "precommit": "lint-staged && npm run test:node-api && npm run cpd",
     "npm-check-unused": "depcheck",
-    "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public"
+    "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public",
+    "duplication": "jscpd"
   },
   "files": [
     "/dist/*.js",
@@ -168,6 +169,7 @@
     "husky": "^4.2.5",
     "imagemin-lint-staged": "^0.4.0",
     "istanbul": "^0.4.5",
+    "jscpd": "^3.3.21",
     "jsdoc": "^3.6.6",
     "lint-staged": "^10.2.11",
     "markdownlint": "^0.21.1",
