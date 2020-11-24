@@ -72,6 +72,18 @@ class WebdriverManager {
             stackTrace: error.stack,
           });
         };
+
+        window.handleResponse = function (promise, done) {
+          return promise
+            .then(function (resource) {
+              window.testLogger("huzzah!");
+              window.testResults.push(resource);
+              done({ success: true, id: window.testResults.length - 1 });
+            })
+            .catch(function (error) {
+              window.callbackWithError(done, error);
+            });
+        };
       }
     );
   }

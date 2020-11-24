@@ -67,16 +67,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
         window.testLogger(JSON.stringify(arguments, undefined, 2));
         const ops = window.testResults[id][property];
         window.testLogger(JSON.stringify(ops, undefined, 2));
-        ops
-          .invokeByRel(relationship)
-          .then(function (resource) {
-            window.testLogger("huzzah!");
-            window.testResults.push(resource);
-            done({ success: true, id: window.testResults.length - 1 });
-          })
-          .catch(function (error) {
-            window.callbackWithError(done, error);
-          });
+        window.handleResponse(ops.invokeByRel(relationship), done);
       },
       result.id,
       relationship,
