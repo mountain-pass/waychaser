@@ -145,6 +145,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     - run: npm config set script-shell $(which bash)
     - run: npm ci
     - run: npm run security

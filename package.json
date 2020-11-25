@@ -97,7 +97,7 @@
     "npm-check-unused": "depcheck",
     "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public",
     "duplication": "jscpd",
-    "security": "snyk test"
+    "security": "snyk auth ${SNYK_TOKEN} && snyk test"
   },
   "files": [
     "/dist/*.js",
