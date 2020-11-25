@@ -278,6 +278,7 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] clean up lining problems
 - [x] add code duplication checks
 - [ ] clean up logging
+- [ ] upgrade webpack
 - [ ] investigate mega-lint
 - [ ] fix struture of package so we get better jsdoc linting
 - [ ] refactor browserstack test run to use single tunnel when running locally
