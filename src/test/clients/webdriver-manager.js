@@ -11,16 +11,19 @@ delete babelConfig.env.test;
 /* global __coverage__ */
 // based on https://github.com/gotwarlost/istanbul-middleware/blob/dfbca20f361b9c2b79934e395fd266d95d9c5af5/lib/core.js#L217
 function mergeClientCoverage(object) {
-  /* instanbul ignore else: else is only taken if coverage is off */
+  /* istanbul ignore else: else is only taken if coverage is off */
   if (process.env.COVERAGE) {
     for (const [filePath, added] of Object.entries(object)) {
       const original = __coverage__[filePath.toString()];
+      /* istanbul ignore if: needed for IE but IE doesn't give is coverage */
       if (added.s === null) {
         added.s = {};
       }
+      /* istanbul ignore if: needed for IE but IE doesn't give is coverage */
       if (added.f === null) {
         added.f = {};
       }
+      /* istanbul ignore if: needed for IE but IE doesn't give is coverage */
       if (added.b === null) {
         added.b = {};
       }
@@ -160,6 +163,7 @@ class WebdriverManager {
   async afterAllTests() {}
 
   async clearRemoteCoverage() {
+    /* istanbul ignore else: else is only taken if coverage is off */
     if (process.env.COVERAGE) {
       await this.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */

@@ -1,4 +1,3 @@
-/* istanbul ignore next: only get's executed if we stuffed up */
 /**
  *
  */
