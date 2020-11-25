@@ -129,13 +129,25 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Run Snyk to check for vulnerabilities
-      uses: snyk/actions/node@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    - uses: actions/checkout@v2
+
+    - name: Cache NPM dependencies
+      uses: actions/cache@v1
       with:
-        args: "--dev --fail-on=upgradable"
+        path: |
+           ~/.npm
+           node_modules
+        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache-
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm config set script-shell $(which bash)
+    - run: npm ci
+    - run: npm run security
 
   build:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
