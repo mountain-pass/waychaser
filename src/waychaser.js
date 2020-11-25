@@ -23,6 +23,7 @@ function loadResource(url, options) {
       throw new Error("Bad response from server", response);
     }
     logger.waychaser(`Good response from server ${JSON.stringify(response)}`);
+    /* istanbul ignore next: IE fails without this, but IE doesn't report coverage */
     if (response.url === undefined || response.url === "") {
       // in ie url is not being populated 🤷‍♂️
       response.url = url;

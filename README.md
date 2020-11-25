@@ -276,10 +276,11 @@ library.load(“https://api-addressr.mountain-pass.com.au”)
 - [x] split browser stack tunnel into seperate class
 - [x] reduce webpacking of node_modules
 - [x] clean up lining problems
+- [x] add code duplication checks
 - [ ] clean up logging
+- [ ] investigate mega-lint
 - [ ] fix struture of package so we get better jsdoc linting
 - [ ] refactor browserstack test run to use single tunnel when running locally
-- [x] add code duplication checks
 - [ ] add tests for abort
 - [ ] add tests for different types of error responses
 - [ ] add tests for authenticated requests

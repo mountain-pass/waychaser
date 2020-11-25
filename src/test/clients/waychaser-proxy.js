@@ -3,10 +3,12 @@ import { waychaser } from "../../waychaser";
 import { abstract } from "../../util/abstract";
 
 class WaychaserProxy {
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
   async load(url) {
     abstract();
   }
 
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
   async getOCount(property, result) {
     abstract();
   }
@@ -19,6 +21,7 @@ class WaychaserProxy {
     return this.getOCount("ops", result);
   }
 
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
   async findOneOByRel(property, result, relationship) {
     abstract();
   }
@@ -31,6 +34,7 @@ class WaychaserProxy {
     return this.findOneOByRel("ops", result, relationship);
   }
 
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
   async invokeOByRel(property, result, relationship) {
     abstract();
   }
@@ -43,10 +47,12 @@ class WaychaserProxy {
     return this.invokeOByRel("ops", result, relationship);
   }
 
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
   async invokeByRel(result, relationship) {
     abstract();
   }
 
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
   async getUrl(result) {
     abstract();
   }

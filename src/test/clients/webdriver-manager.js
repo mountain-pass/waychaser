@@ -11,6 +11,7 @@ delete babelConfig.env.test;
 /* global __coverage__ */
 // based on https://github.com/gotwarlost/istanbul-middleware/blob/dfbca20f361b9c2b79934e395fd266d95d9c5af5/lib/core.js#L217
 function mergeClientCoverage(object) {
+  /* instanbul ignore else: else is only taken if coverage is off */
   if (process.env.COVERAGE) {
     for (const [filePath, added] of Object.entries(object)) {
       const original = __coverage__[filePath.toString()];
@@ -208,6 +209,7 @@ class WebdriverManager {
     }
   }
 
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
   async doBuildDriver() {
     abstract();
   }

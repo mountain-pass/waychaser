@@ -51,17 +51,21 @@ class WebdriverManagerRemote extends WebdriverManager {
       "process.env.BROWSERSTACK_ACCESS_KEY not set"
     );
 
+    /* istanbul ignore next: branching depends on if running on CI or not */
+    const projectName =
+      process.env.npm_package_name +
+      (process.env.GITHUB_RUN_ID ? "" : "-LOCAL");
+    /* istanbul ignore next: branching depends on if running on CI or not */
+    const localIdentifier = process.env.BROWSERSTACK_LOCAL_IDENTIFIER;
     const capabilities = {
       "bstack:options": {
         os: "Any",
-        projectName:
-          process.env.npm_package_name +
-          (process.env.GITHUB_RUN_ID ? "" : "-LOCAL"),
+        projectName,
         buildName: BUILD,
         sessionName: name,
         local: "true",
-        ...(process.env.BROWSERSTACK_LOCAL_IDENTIFIER && {
-          localIdentifier: process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+        ...(localIdentifier && {
+          localIdentifier,
         }),
         debug: "true",
         consoleLogs: "verbose",
