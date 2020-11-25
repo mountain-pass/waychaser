@@ -1,5 +1,3 @@
-import logger from "../../util/logger";
-import { waychaser } from "../../waychaser";
 import { abstract } from "../../util/abstract";
 
 class WaychaserProxy {
