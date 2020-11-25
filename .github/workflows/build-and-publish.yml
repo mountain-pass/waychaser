@@ -128,6 +128,10 @@ jobs:
        ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     runs-on: ubuntu-latest
+
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
     steps:
     - uses: actions/checkout@v2
 
@@ -145,8 +149,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     - run: npm config set script-shell $(which bash)
     - run: npm ci
     - run: npm run security
