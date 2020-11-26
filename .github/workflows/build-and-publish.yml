@@ -501,7 +501,8 @@ jobs:
 
     needs:
       - test-node-api
-      - test-browser-api
+      - test-browser-api-1
+      - test-browser-api-2
 
     runs-on: ubuntu-latest
 
