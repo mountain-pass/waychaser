@@ -72,8 +72,9 @@ class WebdriverManager {
           done({
             success: false,
             id: window.testResults.length - 1,
-            error: error.toString(),
-            stackTrace: error.stack,
+            // uncomenting these causes the andriod tests to fail
+            // error: error.toString(),
+            // stackTrace: error.stack,
           });
         };
 
