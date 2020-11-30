@@ -14,7 +14,7 @@ This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, 
 
 [![source code vulnerabilties](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?label=source%20code%20vulnerabilities)](https://snyk.io/test/github/mountain-pass/waychaser) [![source code dependencies](https://img.shields.io/librariesio/github/mountain-pass/waychaser?label=source%20code%20dependencies)](https://libraries.io/github/mountain-pass/waychaser#dependencies)
 
-[![npm package vulnerabilties](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@1.36.0?label=npm%20package%20vulnerabilties)](https://snyk.io/test/npm/@mountainpass/waychaser/1.36.0) [![npm package dependencies](https://img.shields.io/librariesio/release/npm/@mountainpass/waychaser/1.36.0)](https://libraries.io/npm/@mountainpass/waychaser/1.36.0)
+[![npm package vulnerabilties](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@1.37.0?label=npm%20package%20vulnerabilties)](https://snyk.io/test/npm/@mountainpass/waychaser/1.37.0) [![npm package dependencies](https://img.shields.io/librariesio/release/npm/@mountainpass/waychaser/1.37.0)](https://libraries.io/npm/@mountainpass/waychaser/1.37.0)
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
@@ -104,7 +104,7 @@ try {
 ## Browser
 
 ```html
-<script type="text/javascript" src="https://unpkg.com/@mountainpass/waychaser@1.36.0"></script>
+<script type="text/javascript" src="https://unpkg.com/@mountainpass/waychaser@1.37.0"></script>
 
 ...
 <script type="text/javascript">
