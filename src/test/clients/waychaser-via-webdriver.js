@@ -47,7 +47,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     );
   }
 
-  async findOneOByRel(property, result, relationship) {
+  async findOneO(property, result, relationship) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (property, id, relationship, done) {
@@ -59,11 +59,11 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     );
   }
 
-  async invokeOByRel(property, result, relationship) {
+  async invokeO(property, result, relationship) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, relationship, property, done) {
-        window.testLogger("invokeOperationByRel");
+        window.testLogger("invokeOperation");
         window.testLogger(JSON.stringify(arguments, undefined, 2));
         const ops = window.testResults[id][property];
         window.testLogger(JSON.stringify(ops, undefined, 2));

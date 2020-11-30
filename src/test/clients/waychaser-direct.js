@@ -20,11 +20,11 @@ class WaychaserDirect extends WaychaserProxy {
     return result.resource[property].count();
   }
 
-  async findOneOByRel(property, result, relationship) {
+  async findOneO(property, result, relationship) {
     return result.resource[property].findOne(relationship);
   }
 
-  async invokeOByRel(property, result, relationship) {
+  async invokeO(property, result, relationship) {
     return handleResponse(result.resource[property].invoke(relationship));
   }
 

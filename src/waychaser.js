@@ -57,11 +57,13 @@ class Operation {
 Loki.Collection.prototype.findOne_ = Loki.Collection.prototype.findOne;
 
 Loki.Collection.prototype.findOne = function (...arguments_) {
-  return this.findOne_(
+  logger.waychaser({ arguments_, this_: this });
+  const rval =
     arguments_.length === 1 && typeof arguments_[0] === "string"
-      ? { rel: arguments_[0] }
-      : arguments_
-  );
+      ? this.findOne_({ rel: arguments_[0] })
+      : this.findOne_(...arguments_);
+  logger.waychaser({ rval });
+  return rval;
 };
 
 Loki.Collection.prototype.invoke = async function (

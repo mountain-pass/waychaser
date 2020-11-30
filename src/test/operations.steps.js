@@ -25,31 +25,55 @@ Then("the loaded resource will have {int} operation(s)", async function (
 Then("the loaded resource will have {string} operation", async function (
   relationship
 ) {
-  const foundOperation = await this.waychaserProxy.findOneOperationByRel(
+  const foundOperation = await this.waychaserProxy.findOneOperation(
     this.result,
     relationship
   );
   expect(foundOperation).to.be.not.null;
-  const foundOp = await this.waychaserProxy.findOneOpByRel(
+
+  const foundOperationLokiStyle = await this.waychaserProxy.findOneOperation(
+    this.result,
+    { rel: relationship }
+  );
+  expect(foundOperationLokiStyle).to.be.not.null;
+
+  const foundOp = await this.waychaserProxy.findOneOp(
     this.result,
     relationship
   );
   expect(foundOp).to.be.not.null;
+
+  const foundOpLokiStyle = await this.waychaserProxy.findOneOp(this.result, {
+    rel: relationship,
+  });
+  expect(foundOpLokiStyle).to.be.not.null;
 });
 
 Then("it won't have a(n) {string} operation", async function (relationship) {
   logger.debug({ relationship });
-  const foundOperation = await this.waychaserProxy.findOneOperationByRel(
+  const foundOperation = await this.waychaserProxy.findOneOperation(
     this.result,
     relationship
   );
   logger.debug({ foundOperation });
   expect(foundOperation).to.be.null;
-  const foundOp = await this.waychaserProxy.findOneOpByRel(
+
+  const foundOperationLokiStyle = await this.waychaserProxy.findOneOperation(
+    this.result,
+    { rel: relationship }
+  );
+  expect(foundOperationLokiStyle).to.be.null;
+
+  const foundOp = await this.waychaserProxy.findOneOp(
     this.result,
     relationship
   );
   expect(foundOp).to.be.null;
+
+  const foundOpLokiStyle = await this.waychaserProxy.findOneOp(this.result, {
+    rel: relationship,
+  });
+  expect(foundOpLokiStyle).to.be.null;
 });
 
 When("we successfully invoke the {string} operation", async function (
@@ -57,50 +81,95 @@ When("we successfully invoke the {string} operation", async function (
 ) {
   this.previousResult = this.result;
 
-  this.operationResult = await this.waychaserProxy.invokeOperationByRel(
+  this.operationResult = await this.waychaserProxy.invokeOperation(
     this.result,
     relationship
   );
   expect(this.operationResult.success).to.be.true;
 
-  this.opResult = await this.waychaserProxy.invokeOpByRel(
+  this.operationResultLokiStyle = await this.waychaserProxy.invokeOperation(
     this.result,
-    relationship
+    { rel: relationship }
   );
+  expect(this.operationResultLokiStyle.success).to.be.true;
+
+  this.opResult = await this.waychaserProxy.invokeOp(this.result, relationship);
   logger.debug("this.opResult", this.opResult);
   expect(this.opResult.success).to.be.true;
 
+  this.opResultLokiStyle = await this.waychaserProxy.invokeOp(this.result, {
+    rel: relationship,
+  });
+  expect(this.opResultLokiStyle.success).to.be.true;
+
   this.result = await this.waychaserProxy.invoke(this.result, relationship);
   expect(this.result.success).to.be.true;
+
+  this.resultLokiStyle = await this.waychaserProxy.invoke(this.result, {
+    rel: relationship,
+  });
+  expect(this.resultLokiStyle.success).to.be.true;
 });
 
 When("we invoke the {string} operation", async function (relationship) {
   this.previousResult = this.result;
 
-  this.operationResult = await this.waychaserProxy.invokeOperationByRel(
-    this.result,
+  this.operationResult = await this.waychaserProxy.invokeOperation(
+    this.previousResult,
     relationship
   );
 
-  this.opResult = await this.waychaserProxy.invokeOpByRel(
-    this.result,
+  this.operationResultLokiStyle = await this.waychaserProxy.invokeOperation(
+    this.previousResult,
+    { rel: relationship }
+  );
+
+  this.opResult = await this.waychaserProxy.invokeOp(
+    this.previousResult,
     relationship
   );
 
-  this.result = await this.waychaserProxy.invoke(this.result, relationship);
+  this.opResultLokiStyle = await this.waychaserProxy.invokeOp(
+    this.previousResult,
+    {
+      rel: relationship,
+    }
+  );
+
+  this.result = await this.waychaserProxy.invoke(
+    this.previousResult,
+    relationship
+  );
+
+  this.resultLokiStyle = await this.waychaserProxy.invoke(this.previousResult, {
+    rel: relationship,
+  });
 });
 
 Then("the same resource will be returned", async function () {
+  const previousResultUrl = await this.waychaserProxy.getUrl(
+    this.previousResult
+  );
   const operationResultUrl = await this.waychaserProxy.getUrl(
     this.operationResult
   );
   logger.debug({ opResult: this.opResult });
-  const opResultUrl = await this.waychaserProxy.getUrl(this.opResult);
-  const resultUrl = await this.waychaserProxy.getUrl(this.result);
-  const previousResultUrl = await this.waychaserProxy.getUrl(
-    this.previousResult
-  );
   expect(operationResultUrl).to.deep.equal(previousResultUrl);
+
+  const operationResultLokiStyleUrl = await this.waychaserProxy.getUrl(
+    this.operationResultLokiStyle
+  );
+  expect(operationResultLokiStyleUrl).to.deep.equal(previousResultUrl);
+
+  const opResultUrl = await this.waychaserProxy.getUrl(this.opResult);
   expect(opResultUrl).to.deep.equal(previousResultUrl);
+
+  const opResultLokiStyleUrl = await this.waychaserProxy.getUrl(this.opResult);
+  expect(opResultLokiStyleUrl).to.deep.equal(previousResultUrl);
+
+  const resultUrl = await this.waychaserProxy.getUrl(this.result);
   expect(resultUrl).to.deep.equal(previousResultUrl);
+
+  const resultLokiStyleUrl = await this.waychaserProxy.getUrl(this.result);
+  expect(resultLokiStyleUrl).to.deep.equal(previousResultUrl);
 });

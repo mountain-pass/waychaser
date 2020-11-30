@@ -20,29 +20,29 @@ class WaychaserProxy {
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async findOneOByRel(property, result, relationship) {
+  async findOneO(property, result, relationship) {
     abstract();
   }
 
-  async findOneOperationByRel(result, relationship) {
-    return this.findOneOByRel("operations", result, relationship);
+  async findOneOperation(result, relationship) {
+    return this.findOneO("operations", result, relationship);
   }
 
-  async findOneOpByRel(result, relationship) {
-    return this.findOneOByRel("ops", result, relationship);
+  async findOneOp(result, relationship) {
+    return this.findOneO("ops", result, relationship);
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async invokeOByRel(property, result, relationship) {
+  async invokeO(property, result, relationship) {
     abstract();
   }
 
-  async invokeOperationByRel(result, relationship) {
-    return this.invokeOByRel("operations", result, relationship);
+  async invokeOperation(result, relationship) {
+    return this.invokeO("operations", result, relationship);
   }
 
-  async invokeOpByRel(result, relationship) {
-    return this.invokeOByRel("ops", result, relationship);
+  async invokeOp(result, relationship) {
+    return this.invokeO("ops", result, relationship);
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
