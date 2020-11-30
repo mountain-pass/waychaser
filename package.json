@@ -94,7 +94,7 @@
     "json:list-github-actions-browser-matrix:2": "scripts/list-cover-browsers.js",
     "sync-readme-version": "scripts/sync-readme-version.sh",
     "eslint-check": "eslint --print-config src/server/index.js | eslint-config-prettier-check",
-    "precommit": "lint-staged && npm run test:node-api && npm run cpd",
+    "precommit": "lint-staged && npm run test:node-api && npm run duplication",
     "npm-check-unused": "depcheck",
     "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public",
     "duplication": "jscpd",
