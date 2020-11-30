@@ -153,7 +153,7 @@ const describedByResource = await apiResource.invoke("describedby");
 - [x] reduce webpacking of node_modules
 - [x] clean up lining problems
 - [x] add code duplication checks
-- [ ] clean up logging
+- [x] clean up logging
 - [ ] upgrade webpack
 - [ ] investigate mega-lint
 - [ ] fix struture of package so we get better jsdoc linting

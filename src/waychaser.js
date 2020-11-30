@@ -41,14 +41,8 @@ class Operation {
   }
 
   async invoke(context, options) {
-    logger.waychaser(`invoke`);
-    //    logger.waychaser(this, context, options);
     const contextUrl = this.callingContext.url;
-    logger.waychaser(`constext ${JSON.stringify(this.callingContext)}`);
-    logger.waychaser(`constext ${this.callingContext.url}`);
-    logger.waychaser(`constext ${contextUrl}`);
     const invokeUrl = new URL(this.uri, contextUrl);
-    //    logger.waychaser({ invokeUrl });
     logger.waychaser(`invoking ${invokeUrl}`);
     return loadResource(invokeUrl, options);
   }
@@ -57,13 +51,9 @@ class Operation {
 Loki.Collection.prototype.findOne_ = Loki.Collection.prototype.findOne;
 
 Loki.Collection.prototype.findOne = function (...arguments_) {
-  logger.waychaser({ arguments_, this_: this });
-  const rval =
-    arguments_.length === 1 && typeof arguments_[0] === "string"
-      ? this.findOne_({ rel: arguments_[0] })
-      : this.findOne_(...arguments_);
-  logger.waychaser({ rval });
-  return rval;
+  return arguments_.length === 1 && typeof arguments_[0] === "string"
+    ? this.findOne_({ rel: arguments_[0] })
+    : this.findOne_(...arguments_);
 };
 
 Loki.Collection.prototype.invoke = async function (
@@ -106,14 +96,8 @@ const waychaser = {
 
         this.operations.insert(
           links.refs.map((reference) => {
-            logger.waychaser({ reference });
-            logger.waychaser(JSON.stringify(response));
-
-            logger.waychaser("creating operation", response, reference);
             const operation = new Operation(response);
-            logger.waychaser(JSON.stringify({ operation }));
-            const operationX = Object.assign(operation, reference);
-            logger.waychaser(JSON.stringify({ operation: operationX }));
+            Object.assign(operation, reference);
             return operation;
           })
         );
