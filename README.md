@@ -39,15 +39,7 @@ This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, 
 - [Usage](#usage)
   - [Node.js](#nodejs)
   - [Browser](#browser)
-- [API Design Notes](#api-design-notes)
-  - [Get root API](#get-root-api)
-  - [Get list of operations](#get-list-of-operations)
-  - [Get specific operation](#get-specific-operation)
-  - [Has operation](#has-operation)
-  - [Get list of parameters](#get-list-of-parameters)
-  - [Has parameter](#has-parameter)
-  - [invoke operation](#invoke-operation)
-  - [Draft Examples](#draft-examples)
+  - [Requesting linked resources](#requesting-linked-resources)
 - [TO DO](#to-do)
 
 # Product
@@ -101,8 +93,8 @@ import { waychaser } from "@mountainpass/waychaser";
 //...
 
 try {
-  const api = await waychaser.load(apiUrl);
-  // do something with `api`
+  const apiResource = await waychaser.load(apiUrl);
+  // do something with `apiResource`
 } catch (error) {
   // do something with `error`
 }
@@ -116,8 +108,8 @@ try {
 
 ...
 <script type="text/javascript">
-waychaser.load(apiUrl).then(api => {
-  // do something with `api`
+waychaser.load(apiUrl).then(apiResource => {
+  // do something with `apiResource`
 }).catch(error => {
   // do something with `error`
 });
@@ -125,129 +117,13 @@ waychaser.load(apiUrl).then(api => {
 </script>
 ```
 
-Where `VERSION` is the version of waychaser you would like to use.
+## Requesting linked resources 
 
-# API Design Notes
+Level 3 REST APIs are expected to return links to related resources. Waychaser expects to find these links via [RFC 8288](https://tools.ietf.org/html/rfc8288) `link` headers. Waychaser provides methods to simplify requesting these linked resources.
 
-Some of the different API options that were considered and what we ended up picking.
-
-NOTE: just because it's here, doesn't mean it's implemented. It's just what we're planning.
-
-## Get root API
-
-- `async library.getRoot(url)`
-- `async library.root(url)`
-- `async library.init(url)`
-- `async library.load(url)` ✅
-- `async library.loadApi(url)`
-- `async library.getApi(url)`
-- `async library.api(url)`
-- `new API(url) - non async` ❌
-
-returns an API Resource Object (ARO)
-
-## Get list of operations
-
-- `ARO.operations` ✅
-- `ARO.ops` ✅ (shorthand)
-- `ARO.operations()`
-- `ARO.getOperations()`
-
-
-so the plan was to return a map of API operation objects (AOO), with the key being the rel. However it's perfectly fine to have
-multiple operations with the same rel. So, we either need to:
- - return a map of arrays,
- - return a map with each value either being a AOO or an Array of AOO.
-
-The former sucks from a refencing point of view. e.g., `ARO.ops[rel][0]()`
-The later sucks because we need to test if AOO or array. e.g. `Array.isArray(ARO.ops[rel]) ? ARO.ops[rel][0]() : ARO.ops[rel]()`
-The later sucks even more because most of the time, users would just do `ARO.ops[rel]()`, which will be fine until the day that
-resource returns multiple links with the same rel.
-
-For instance if you have a ARO that is a list, you can have multiple links with  `rel=item` with different `anchor`s, which tells 
-you where to get each item in the data.
-
-You could also have and ARO that has links with the same rel, that take a different number of parameters.
-
-It's worth noting that the `http-link-header` library's `link.get(attr, value)` method returns an array.
-
-Maybe if the ARO is a list, we can treat each item as a ARO. e.g. `ARO.data[9].operations` will return the operations just for that item. For more complexe structures `ARO.data.foo.bar.operations` will do the same. Doesn't feel ideal, because the data structre is not just a JSON. Also, things got to crap if the JSON has a field called `operations`
-
-Instead, mayb we can use the anchor structure for the operations. e.g. for a list, `ARO.operations[9][rel]` would get the link with the rel for the 9th item in the list. Whereas `ARO.operations.foo.bar[rel]` would get the link with the rel for the item at `foo.bar`. Again this will fail if the data has a field with the same name as a rel. 😭
-
-We probably need to be explicit about the anchor. Something like `ARO.operations[anchor][rel]`.e.g., For root links it might look like `ARO.operations['#'][rel]`. 
-
-What of `operations` returns a function? Then we could go `ARO.operations(rel)` for root and `ARO.operations(rel, {anchor="foo.bar})` or whatever other attribute we want to get it by.
-
-If we do that, what should happen if `ARO.operations(rel, {anchor="foo.bar})` still finds multiple links? We'd still have the same problem that we started with, so we're going to have to always return an array, in order to not break clients when the server adds an extra link with the same rel. 
-
-So let's go with `ARO.operations(rel)` and `ARO.operations(rel, {anchor="foo.bar})` and `ARO.operations({anchor="foo.bar})` as all valid options. And they all return a set of operations, so `ARO.operations(rel, {anchor="foo.bar})[0]` is the same as `ARO.operations(rel)({anchor="foo.bar})[0]`
-
-## Get specific operation
-
-- `ARO.getOperation(rel)`
-- `ARO[rel]`
-- `ARO.operation(rel)`
-- `ARO.operations[rel]` ✅
-- `ARO.ops[rel]` ✅
-
-returns an API operation or an array of API operations
-
-## Has operation
-
-- `ARO.hasOperation(rel)`
-- `ARO.hasOperation(rel, parameters)`
-- `ARO.has(rel)` modeled on map.prototype.has()
-- `ARO.op.has(reg)` ✅ actually map.prototype.has()
-
-returns boolean
-
-## Get list of parameters
-
-- `AOO.parameters` ✅
-- `AOO.param` ✅ (shorthand)
-- `AOO.p` ✅ (shorthand)
-- `AOO.parameters()`
-- `AOO.getParameters()`
-
-returns a map of API operation parameter objects (AOPO)
-
-## Has parameter
-
-- `AOO.p.has(varBase)` ✅ actually map.prototype.has()
-
-returns boolean
-
-## invoke operation
-
-- `async AOO.invoke(context, options)`
-- `async AOO(context, options)`
-
-`context` is the data we have available to submit or are willing to submit
-`options` are options for the underlying HTTP request
-
-returns an API Resource Object (ARO)
-
-## Draft Examples
-
-```
-ARO.op[rel](context)
-```
-
-```
-const root = waychaser.load(“https://api-addressr.mountain-pass.com.au”);
-const addresses = await root.op[“https://addressr.mountain-pass.com.au/rels/address-search”]({q: “8 Arthur St”});
-const nextAddresses = await addresses.op.next();
-const address = await nextAddresses.op.item[0]();
-```
-
-```
-library.load(“https://api-addressr.mountain-pass.com.au”)
-.then(root => root.op[“https://addressr.mountain-pass.com.au/rels/address-search”]({q: “8 Arthur St”}))
-.then(addresses => addresses.op.next())
-.then(nextAddresses => nextAddresses.op.item[0]())
-.then(address => console.log(address.data));
-
+For instance, if the `apiResource` loaded above has a `link` with a relationship (`rel`) of `describedby`, then that resource can be retrieve using the following code
+```js
+const describedByResource = await apiResource.invoke("describedby");
 ```
 
 # TO DO
