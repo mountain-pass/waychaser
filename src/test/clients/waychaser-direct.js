@@ -21,15 +21,15 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async findOneOByRel(property, result, relationship) {
-    return result.resource[property].findOneByRel(relationship);
+    return result.resource[property].findOne(relationship);
   }
 
   async invokeOByRel(property, result, relationship) {
-    return handleResponse(result.resource[property].invokeByRel(relationship));
+    return handleResponse(result.resource[property].invoke(relationship));
   }
 
-  async invokeByRel(result, relationship) {
-    return handleResponse(result.resource.invokeByRel(relationship));
+  async invoke(result, relationship) {
+    return handleResponse(result.resource.invoke(relationship));
   }
 
   async getUrl(result) {

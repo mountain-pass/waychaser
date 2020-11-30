@@ -51,7 +51,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (property, id, relationship, done) {
-        done(window.testResults[id][property].findOneByRel(relationship));
+        done(window.testResults[id][property].findOne(relationship));
       },
       property,
       result.id,
@@ -67,7 +67,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
         window.testLogger(JSON.stringify(arguments, undefined, 2));
         const ops = window.testResults[id][property];
         window.testLogger(JSON.stringify(ops, undefined, 2));
-        window.handleResponse(ops.invokeByRel(relationship), done);
+        window.handleResponse(ops.invoke(relationship), done);
       },
       result.id,
       relationship,
@@ -75,12 +75,12 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     );
   }
 
-  async invokeByRel(result, relationship) {
+  async invoke(result, relationship) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, relationship, done) {
         window.testResults[id]
-          .invokeByRel(relationship)
+          .invoke(relationship)
           .then(function (resource) {
             window.testResults.push(resource);
             done({ success: true, id: window.testResults.length - 1 });

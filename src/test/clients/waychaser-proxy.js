@@ -46,7 +46,7 @@ class WaychaserProxy {
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async invokeByRel(result, relationship) {
+  async invoke(result, relationship) {
     abstract();
   }
 

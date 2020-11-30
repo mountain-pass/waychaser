@@ -70,10 +70,7 @@ When("we successfully invoke the {string} operation", async function (
   logger.debug("this.opResult", this.opResult);
   expect(this.opResult.success).to.be.true;
 
-  this.result = await this.waychaserProxy.invokeByRel(
-    this.result,
-    relationship
-  );
+  this.result = await this.waychaserProxy.invoke(this.result, relationship);
   expect(this.result.success).to.be.true;
 });
 
@@ -90,10 +87,7 @@ When("we invoke the {string} operation", async function (relationship) {
     relationship
   );
 
-  this.result = await this.waychaserProxy.invokeByRel(
-    this.result,
-    relationship
-  );
+  this.result = await this.waychaserProxy.invoke(this.result, relationship);
 });
 
 Then("the same resource will be returned", async function () {

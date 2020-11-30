@@ -53,16 +53,23 @@ class Operation {
     return loadResource(invokeUrl, options);
   }
 }
-Loki.Collection.prototype.findOneByRel = function (relationship) {
-  return this.findOne({ rel: relationship });
+
+Loki.Collection.prototype.findOne_ = Loki.Collection.prototype.findOne;
+
+Loki.Collection.prototype.findOne = function (...arguments_) {
+  return this.findOne_(
+    arguments_.length === 1 && typeof arguments_[0] === "string"
+      ? { rel: arguments_[0] }
+      : arguments_
+  );
 };
 
-Loki.Collection.prototype.invokeByRel = async function (
+Loki.Collection.prototype.invoke = async function (
   relationship,
   context,
   options
 ) {
-  const operation = this.findOneByRel(relationship);
+  const operation = this.findOne(relationship);
   logger.waychaser(JSON.stringify(operation, undefined, 2));
   return operation.invoke(context, options);
 };
@@ -115,8 +122,8 @@ const waychaser = {
       return this.operations;
     }
 
-    async invokeByRel(relationship) {
-      return this.operations.invokeByRel(relationship);
+    async invoke(relationship) {
+      return this.operations.invoke(relationship);
     }
   },
 };
