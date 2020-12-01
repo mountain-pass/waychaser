@@ -58,13 +58,13 @@ When("we successfully invoke the {string} operation", async function (
   });
   expect(this.opResultLokiStyle.success).to.be.true;
 
-  this.result = await this.waychaserProxy.invoke(this.result, relationship);
-  expect(this.result.success).to.be.true;
-
   this.resultLokiStyle = await this.waychaserProxy.invoke(this.result, {
     rel: relationship,
   });
   expect(this.resultLokiStyle.success).to.be.true;
+
+  this.result = await this.waychaserProxy.invoke(this.result, relationship);
+  expect(this.result.success).to.be.true;
 });
 
 When("we invoke the {string} operation", async function (relationship) {
@@ -103,32 +103,34 @@ When("we invoke the {string} operation", async function (relationship) {
 });
 
 Then("the same resource will be returned", async function () {
+  await checkUrls.bind(this)();
+});
+
+Then("the former resource will be returned", async function () {
+  await checkUrls.bind(this)();
+});
+
+async function checkUrls() {
   const previousResultUrl = await this.waychaserProxy.getUrl(
     this.previousResult
   );
   const operationResultUrl = await this.waychaserProxy.getUrl(
     this.operationResult
   );
-  logger.debug({ opResult: this.opResult });
-  expect(operationResultUrl).to.deep.equal(previousResultUrl);
-
   const operationResultLokiStyleUrl = await this.waychaserProxy.getUrl(
     this.operationResultLokiStyle
   );
-  expect(operationResultLokiStyleUrl).to.deep.equal(previousResultUrl);
-
   const opResultUrl = await this.waychaserProxy.getUrl(this.opResult);
-  expect(opResultUrl).to.deep.equal(previousResultUrl);
-
   const opResultLokiStyleUrl = await this.waychaserProxy.getUrl(this.opResult);
-  expect(opResultLokiStyleUrl).to.deep.equal(previousResultUrl);
-
   const resultUrl = await this.waychaserProxy.getUrl(this.result);
-  expect(resultUrl).to.deep.equal(previousResultUrl);
-
   const resultLokiStyleUrl = await this.waychaserProxy.getUrl(this.result);
+  expect(operationResultUrl).to.deep.equal(previousResultUrl);
+  expect(operationResultLokiStyleUrl).to.deep.equal(previousResultUrl);
+  expect(opResultUrl).to.deep.equal(previousResultUrl);
+  expect(opResultLokiStyleUrl).to.deep.equal(previousResultUrl);
+  expect(resultUrl).to.deep.equal(previousResultUrl);
   expect(resultLokiStyleUrl).to.deep.equal(previousResultUrl);
-});
+}
 
 async function expectFindOne(relationship, expectation) {
   const {

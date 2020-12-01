@@ -5,7 +5,7 @@ Feature: Invoke Operation
     As a developer
     I want to be able to invoke operations
 
-    Scenario: Invoke operation
+    Scenario: Invoke operation - self
         Given a resource with a "self" operation that returns itself
         When waychaser successfully loads that resource
         And we successfully invoke the "self" operation
@@ -16,3 +16,10 @@ Feature: Invoke Operation
         When waychaser successfully loads that resource
         When we invoke the "error" operation
         Then it will NOT have loaded successfully
+
+    Scenario: Invoke operation - next
+        Given a resource returning status code 200
+        And a resource with a "next" operation that returns that resource
+        When waychaser successfully loads the latter resource
+        And we successfully invoke the "next" operation
+        Then the former resource will be returned

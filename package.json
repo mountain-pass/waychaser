@@ -186,6 +186,7 @@
     "shellcheck": "^0.4.4",
     "snyk": "^1.431.1",
     "start-server-and-test": "^1.10.6",
+    "unique-names-generator": "^4.3.1",
     "utf-8-validate": "^5.0.3",
     "webpack": "^4.5.0",
     "webpack-bundle-analyzer": "^4.1.0",

@@ -1,59 +1,111 @@
-import { Given } from "cucumber";
+import { Given, Before } from "cucumber";
 import logger from "../util/logger";
 import LinkHeader from "http-link-header";
 import { API_ACCESS_HOST } from "./config";
 
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from "unique-names-generator";
+
+const randomApiPath = () => {
+  return (
+    "/api/" +
+    uniqueNamesGenerator({
+      dictionaries: [adjectives, colors, animals],
+    })
+  );
+};
+
 Given("a resource returning status code {int}", async function (status) {
-  await this.router.route("/api").get(async (request, response) => {
-    response.status(status).send({ status });
-  });
-  logger.debug("/api route setup");
+  this.currentResourceRoute = await this.createRoute(randomApiPath(), status);
 });
 
 Given("a resource with no operations", async function () {
-  await this.router.route("/api").get(async (request, response) => {
-    response.status(200).send({ status: 200 });
-  });
+  this.currentResourceRoute = randomApiPath();
+  await this.router
+    .route(this.currentResourceRoute)
+    .get(async (request, response) => {
+      response.status(200).send({ status: 200 });
+    });
 });
 
 Given("a resource with a {string} operation", async function (relationship) {
-  await createRoute(this.router, relationship);
+  this.currentResourceRoute = await this.createRoute(
+    randomApiPath(),
+    200,
+    relationship
+  );
 });
 
 Given(
   "a resource with a {string} operation that returns itself",
   async function (relationship) {
-    await createRoute(this.router, relationship, "/api");
+    this.currentResourceRoute = randomApiPath();
+    await this.createRoute(
+      this.currentResourceRoute,
+      200,
+      relationship,
+      this.currentResourceRoute
+    );
   }
 );
 
 Given(
   "a resource with a {string} operation that returns an error",
   async function (relationship) {
-    await createRoute(
-      this.router,
+    this.currentResourceRoute = await this.createRoute(
+      randomApiPath(),
+      200,
       relationship,
-      `http://${API_ACCESS_HOST}:0/api`
+      `http://${API_ACCESS_HOST}:33556/api`
     );
   }
 );
 
-async function createRoute(router, relationship, linkPath) {
-  const links = createLinks(relationship, linkPath);
-  await router.route("/api").get(async (request, response) => {
-    send200response(response, links);
-  });
-}
+Given(
+  "a resource with a {string} operation that returns that resource",
+  async function (relationship) {
+    this.currentResourceRoute = await this.createRoute(
+      randomApiPath(),
+      200,
+      relationship,
+      this.currentResourceRoute
+    );
+  }
+);
 
-function createLinks(relationship, uri) {
-  const links = new LinkHeader();
-  links.set({
-    rel: relationship,
-    uri: uri,
-  });
-  return links;
-}
+Before(async function () {
+  this.createRoute = async function (route, status, relationship, linkPath) {
+    if (relationship) {
+      const links = this.createLinks(relationship, linkPath);
+      await this.router.route(route).get(async (request, response) => {
+        this.sendResponse(response, status, links);
+      });
+    } else {
+      await this.router.route(route).get(async (request, response) => {
+        this.sendResponse(response, status);
+      });
+    }
+    return route;
+  };
 
-function send200response(response, links) {
-  response.header("link", links.toString()).status(200).send({ status: 200 });
-}
+  this.createLinks = function (relationship, uri) {
+    const links = new LinkHeader();
+    links.set({
+      rel: relationship,
+      uri: uri,
+    });
+    return links;
+  };
+
+  this.sendResponse = function (response, status, links) {
+    if (links) {
+      response.header("link", links.toString()).status(200).send({ status });
+    } else {
+      response.status(status).send({ status });
+    }
+  };
+});
