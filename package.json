@@ -144,7 +144,7 @@
     "core-js": "^3.7.0",
     "cucumber": "^5.1.0",
     "cucumber-junit-formatter": "^0.2.2",
-    "dateformat": "^3.0.3",
+    "dateformat": "^4.0.0",
     "depcheck": "^1.2.0",
     "eslint": "^7.13.0",
     "eslint-config-prettier": "^6.5.0",
