@@ -1,5 +1,4 @@
 import { Given, Before } from "cucumber";
-import logger from "../util/logger";
 import LinkHeader from "http-link-header";
 import { API_ACCESS_HOST } from "./config";
 
