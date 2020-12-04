@@ -1,11 +1,11 @@
-extends: '@istanbuljs/nyc-config-babel'
+extends: "@istanbuljs/nyc-config-babel"
 all: true
 skip-full: false
 exclude:
-  - 'lib/**/*.js'
-  - 'dist/**/*.js'
-  - 'scripts/**/*.js'
-  - 'coverage/**/*.js'
+  - "lib/**/*.js"
+  - "dist/**/*.js"
+  - "scripts/**/*.js"
+  - "coverage/**/*.js"
 check-coverage: true
 statements: 100
 lines: 100

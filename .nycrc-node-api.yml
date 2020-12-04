@@ -1,15 +1,15 @@
-extends: '@istanbuljs/nyc-config-babel'
+extends: "@istanbuljs/nyc-config-babel"
 all: true
 skip-full: false
 exclude:
-  - 'lib/**/*.js'
-  - 'dist/**/*.js'
-  - 'scripts/**/*.js'
-  - 'coverage/**/*.js'
-  - 'src/test/clients/remote-tunneler.js'
-  - 'src/test/clients/waychaser-via-webdriver.js'          
-  - 'src/test/clients/webdriver-*.js'
-  - 'src/util/abstract.js'
+  - "lib/**/*.js"
+  - "dist/**/*.js"
+  - "scripts/**/*.js"
+  - "coverage/**/*.js"
+  - "src/test/clients/remote-tunneler.js"
+  - "src/test/clients/waychaser-via-webdriver.js"
+  - "src/test/clients/webdriver-*.js"
+  - "src/util/abstract.js"
 check-coverage: false
 reporter:
   - text-summary

@@ -1,20 +1,20 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-module.exports = (environment) => ({
-  mode: "development",
-  entry: ["babel-polyfill", "core-js/web", "./src/waychaser.js"],
+module.exports = environment => ({
+  mode: 'development',
+  entry: ['babel-polyfill', 'core-js/web', './src/waychaser.js'],
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, 'dist'),
     filename: environment.OUTPUT_FILENAME,
-    libraryTarget: "umd",
+    libraryTarget: 'umd'
   },
-  devtool: "source-map",
+  devtool: 'source-map',
   optimization: {
-    runtimeChunk: true,
+    runtimeChunk: true
   },
   node: {
-    fs: "empty",
+    fs: 'empty'
   },
   module: {
     rules: [
@@ -27,14 +27,14 @@ module.exports = (environment) => ({
           /out/,
           /scripts/,
           /test-results/,
-          /cucumber\.js/,
+          /cucumber\.js/
         ],
-        use: ["babel-loader"],
-      },
-    ],
+        use: ['babel-loader']
+      }
+    ]
   },
   resolve: {
-    extensions: [".js"],
+    extensions: ['.js']
   },
   devServer: {
     port: environment.BROWSER_PORT,
@@ -42,15 +42,15 @@ module.exports = (environment) => ({
     liveReload: false,
     open: true,
     proxy: {
-      "/api": {
-        target: `http://localhost:${environment.API_PORT}`,
-      },
-    },
+      '/api': {
+        target: `http://localhost:${environment.API_PORT}`
+      }
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      filename: "./index.html",
-    }),
-  ],
-});
+      template: './public/index.html',
+      filename: './index.html'
+    })
+  ]
+})

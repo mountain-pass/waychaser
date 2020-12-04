@@ -1,4 +1,3 @@
-
 # Contributing
 
 waychaser is released under the non-restrictive Apache 2.0 licenses and follows a very standard Github development process, using Github tracker for issues and merging pull requests into master. Contributions of all form to this repository is acceptable, as long as it follows the prescribed community guidelines enumerated below.
@@ -49,11 +48,11 @@ The normal development cycle against a new backend API is:
 2. run `npm run watch:test:node-api`
 3. write code until the scenario passes
 4. commit
-5.  run `npm run watch:test:browser-api`
-6.  write code until the scenario passes
-7.  commit
-8.  run `npm run test` to make you didn't break anything else along the way
-9.  run `npm run cover` and remove dead code
+5. run `npm run watch:test:browser-api`
+6. write code until the scenario passes
+7. commit
+8. run `npm run test` to make you didn't break anything else along the way
+9. run `npm run cover` and remove dead code
 10. commit and push
 
 ### 🚫💩
@@ -103,18 +102,20 @@ Babel requires plugins to do the transformation. Presets are the set of plugins 
 
 1.  Install [VSCode](https://code.visualstudio.com/)
 2.  Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-3.  Install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-4.  Install [Cover extension](https://marketplace.visualstudio.com/items?itemName=hindlemail.cover)
+3.  Install [StandardJS extension](https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs)
+4.  Install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+5.  Install [Cover extension](https://marketplace.visualstudio.com/items?itemName=hindlemail.cover)
 
 ### Contribution flow
 
 A rough outline of an ideal contributors' workflow is as follows:
 
-* Fork the current repository
-* Create a topic branch from where to base the contribution. Mostly, it's the main branch.
-* Make commits of logical units.
-* Push changes in a topic branch to your forked repository.
-* Before sending out the pull request, please sync your forked repository with the remote repository to ensure that your PR is elegant, concise. Reference the guide below:
+- Fork the current repository
+- Create a topic branch from where to base the contribution. Mostly, it's the main branch.
+- Make commits of logical units.
+- Push changes in a topic branch to your forked repository.
+- Before sending out the pull request, please sync your forked repository with the remote repository to ensure that your PR is elegant, concise. Reference the guide below:
+
 ```
 git remote add upstream git@github.com:mountain-pass/waychaser.git
 git fetch upstream
@@ -123,13 +124,15 @@ git checkout -b your_awesome_patch
 ... add some work
 git push origin your_awesome_patch
 ```
-* Submit a pull request to mountain-pass/waychaser and wait for the reply.
+
+- Submit a pull request to mountain-pass/waychaser and wait for the reply.
 
 Thanks for contributing!
 
 ## Contributor agreement
 
 By submitting changes to this repository, you are accepting:
+
 1. To adhear to our [code of conduct](./CODE_OF_CONDUCT.md), and
 2. You are transfering copyright of your change to the waychaser project.
 

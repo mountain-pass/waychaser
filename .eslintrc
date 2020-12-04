@@ -1,0 +1,81 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": [
+    "security",
+    "unicorn",
+    "promise",
+    "istanbul",
+    "jsdoc",
+    "markdown"
+  ],
+  "extends": [
+    "standard",
+    "plugin:security/recommended",
+    "plugin:unicorn/recommended",
+    "plugin:jsdoc/recommended",
+    "plugin:md/recommended",
+    "plugin:json/recommended"
+  ],
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "globals": {
+    "Promise": true
+  },
+  "rules": {
+    "node/shebang": [
+      "error",
+      {
+        "convertPath": {
+          "bin/**/*.js": ["^bin/(.+?)\\.js$", "lib/bin/$1.js"]
+        }
+      }
+    ],
+    "node/no-unsupported-features/es-syntax": [
+      "error",
+      {
+        "ignores": ["modules"]
+      }
+    ],
+    "istanbul/no-ignore-file": "error",
+    "istanbul/prefer-ignore-reason": "error",
+    "promise/no-callback-in-promise": "off",
+    "security/detect-object-injection": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/test/**", "cucumber.js"],
+      "plugins": ["chai-friendly"],
+      "extends": ["plugin:chai-friendly/recommended"],
+      "globals": {
+        "expect": true,
+        "PendingError": true
+      },
+      "rules": {
+        "security/detect-non-literal-fs-filename": "off",
+        "jsdoc/require-jsdoc": "off"
+      }
+    },
+    {
+      "files": ["scripts/**"],
+      "parserOptions": {
+        "sourceType": "module",
+        "allowImportExportEverywhere": true
+      },
+      "rules": {
+        "node/shebang": "off"
+      }
+    },
+    {
+      "files": ["*.md"],
+      "parser": "markdown-eslint-parser",
+      "rules": {
+        "unicorn/filename-case": "off"
+      }
+    }
+  ]
+}

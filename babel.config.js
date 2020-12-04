@@ -1,48 +1,48 @@
 module.exports = {
   presets: [
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
         corejs: {
-          version: "3",
-          proposals: true,
+          version: '3',
+          proposals: true
         },
-        useBuiltIns: "entry",
+        useBuiltIns: 'entry',
         targets: {
-          ie: "11",
+          ie: '11',
           browsers: [
-            "ie >= 11",
-            "last 2 versions",
-            "> 0.2%",
-            "maintained node versions",
-          ],
-        },
-      },
-    ],
+            'ie >= 11',
+            'last 2 versions',
+            '> 0.2%',
+            'maintained node versions'
+          ]
+        }
+      }
+    ]
   ],
   plugins: [
-    "add-module-exports",
-    "@babel/plugin-transform-arrow-functions",
-    "@babel/plugin-proposal-class-properties",
+    'add-module-exports',
+    '@babel/plugin-transform-arrow-functions',
+    '@babel/plugin-proposal-class-properties',
     [
-      "@babel/transform-runtime",
+      '@babel/transform-runtime',
       {
-        regenerator: true,
-      },
+        regenerator: true
+      }
     ],
-    "dynamic-import-webpack",
+    'dynamic-import-webpack',
     [
-      "@babel/plugin-transform-modules-commonjs",
+      '@babel/plugin-transform-modules-commonjs',
       {
-        allowTopLevelThis: true,
-      },
-    ],
+        allowTopLevelThis: true
+      }
+    ]
   ],
   env: {
     test: {
-      plugins: ["istanbul"],
-      sourceMaps: "inline",
-      retainLines: true,
-    },
-  },
-};
+      plugins: ['istanbul'],
+      sourceMaps: 'inline',
+      retainLines: true
+    }
+  }
+}

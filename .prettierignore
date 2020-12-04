@@ -1,0 +1,12 @@
+.nyc_output
+node_modules
+target
+coverage
+test-results
+lib
+dist
+.env
+out
+report
+.vscode
+*.js

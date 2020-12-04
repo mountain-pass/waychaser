@@ -1,5 +1,5 @@
 ---
-version: '2'
+version: "2"
 checks:
   argument-count:
     enabled: false
@@ -26,7 +26,7 @@ plugins:
     enabled: true
     config:
       config: .eslintrc.json
-    channel: 'eslint-7'
+    channel: "eslint-7"
   # git-legal:
   #   enabled: true
   duplication:
@@ -40,7 +40,7 @@ plugins:
   #   enabled: true
 exclude_patterns:
   - dist/
-  - '**/node_modules/'
+  - "**/node_modules/"
   - coverage/
   - test-results/
   - scripts/

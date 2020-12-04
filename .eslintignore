@@ -1,3 +1,4 @@
+.nyc_output/**/*
 node_modules/**/*
 target/**/*
 coverage/**
@@ -6,3 +7,4 @@ lib/**/*
 dist/**
 .env
 out
+report/**/*

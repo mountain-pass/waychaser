@@ -13,5 +13,10 @@
     "**/dist": true,
     "**/lib": true,
     "**/test-results": true
-  }
+  },
+  "standard.engine": "standardx",
+  "standard.usePackageJson": true,
+  "standard.workingDirectories": [
+  
+  ]
 }

@@ -1,25 +1,25 @@
-const debug = require("debug");
+const debug = require('debug')
 const logger = {
-  debug: debug("debug"),
-  info: debug("info"),
-  error: debug("error"),
-  browser: debug("browser"),
-  remote: debug("remote"),
-  waychaser: debug("waychaser"),
-  test: debug("test"),
-};
+  debug: debug('debug'),
+  info: debug('info'),
+  error: debug('error'),
+  browser: debug('browser'),
+  remote: debug('remote'),
+  waychaser: debug('waychaser'),
+  test: debug('test')
+}
 
-logger.debug.log = console.log.bind(console);
-logger.info.log = console.log.bind(console);
-logger.error.log = console.log.bind(console);
-logger.browser.log = console.log.bind(console);
-logger.remote.log = console.log.bind(console);
-logger.waychaser.log = console.log.bind(console);
-logger.test.log = console.log.bind(console);
+logger.debug.log = console.log.bind(console)
+logger.info.log = console.log.bind(console)
+logger.error.log = console.log.bind(console)
+logger.browser.log = console.log.bind(console)
+logger.remote.log = console.log.bind(console)
+logger.waychaser.log = console.log.bind(console)
+logger.test.log = console.log.bind(console)
 
-debug.enable("debug,info,error,browser,remote,waychaser,test");
+debug.enable('debug,info,error,browser,remote,waychaser,test')
 
-export default logger;
+export default logger
 
 /*
 import getLogger from "webpack-log";
