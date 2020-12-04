@@ -172,7 +172,7 @@
     "jscpd": "^3.3.21",
     "jsdoc": "^3.6.6",
     "lint-staged": "^10.2.11",
-    "markdownlint": "^0.21.1",
+    "markdownlint": "^0.22.0",
     "moment-timezone": "^0.5.31",
     "ngrok": "^3.2.2",
     "nodemon": "^2.0.4",
