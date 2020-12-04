@@ -95,7 +95,7 @@
     "json:list-github-actions-browser-matrix:1": "scripts/list-cover-browsers.js",
     "json:list-github-actions-browser-matrix:2": "scripts/list-cover-browsers.js",
     "sync-readme-version": "scripts/sync-readme-version.sh",
-    "pre-push": "lint-staged && npm run test:node-api && npm run duplication",
+    "pre-push": "npm run test:node-api && npm run duplication",
     "npm-check-unused": "depcheck",
     "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public",
     "duplication": "jscpd",
@@ -211,6 +211,7 @@
   },
   "husky": {
     "hooks": {
+      "pre-commit": "lint-staged",
       "pre-push": "npm run pre-push"
     }
   }
