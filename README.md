@@ -162,9 +162,9 @@ const describedByResource = await apiResource.invoke("describedby");
 - [x] add tests for follow to different resource
 - [x] fix linting
 - [x] fix husky & lint-staged
-- [ ] add tests for multiple follows
+- [x] add tests for multiple follows
 - [ ] add tests for authenticated requests
-- [ ] switch to github's builtin dependabot
+- [x] switch to github's builtin dependabot
 - [ ] upgrade webpack
 - [ ] investigate mega-lint
 - [ ] fix struture of package so we get better jsdoc linting

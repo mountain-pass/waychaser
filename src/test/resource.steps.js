@@ -1,6 +1,6 @@
 import { Given, Before } from 'cucumber'
 import LinkHeader from 'http-link-header'
-import { API_ACCESS_HOST } from './config'
+import { API_ACCESS_HOST, API_ACCESS_PORT } from './config'
 
 import {
   uniqueNamesGenerator,
@@ -9,17 +9,56 @@ import {
   animals
 } from 'unique-names-generator'
 
+let pathCount = 0
+
 const randomApiPath = () => {
   return (
-    '/api/' +
+    `/api/${pathCount++}-${
     uniqueNamesGenerator({
       dictionaries: [adjectives, colors, animals]
-    })
+    })}`
   )
 }
 
+Before(async function () {
+  this.createRoute = async function (route, status, relationship, linkPath) {
+    if (relationship) {
+      const links = this.createLinks(relationship, linkPath)
+      await this.router.route(route).get(async (request, response) => {
+        this.sendResponse(response, status, links)
+      })
+    } else {
+      await this.router.route(route).get(async (request, response) => {
+        this.sendResponse(response, status)
+      })
+    }
+    return route
+  }
+
+  this.createLinks = function (relationship, uri) {
+    const links = new LinkHeader()
+    links.set({
+      rel: relationship,
+      uri: uri
+    })
+    return links
+  }
+
+  this.sendResponse = function (response, status, links) {
+    if (links) {
+      response
+        .header('link', links.toString())
+        .status(200)
+        .send({ status })
+    } else {
+      response.status(status).send({ status })
+    }
+  }
+})
+
 Given('a resource returning status code {int}', async function (status) {
   this.currentResourceRoute = await this.createRoute(randomApiPath(), status)
+  this.firstResourceRoute = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
 })
 
 Given('a resource with no operations', async function () {
@@ -76,38 +115,21 @@ Given(
   }
 )
 
-Before(async function () {
-  this.createRoute = async function (route, status, relationship, linkPath) {
-    if (relationship) {
-      const links = this.createLinks(relationship, linkPath)
-      await this.router.route(route).get(async (request, response) => {
-        this.sendResponse(response, status, links)
-      })
-    } else {
-      await this.router.route(route).get(async (request, response) => {
-        this.sendResponse(response, status)
-      })
-    }
-    return route
+Given('a list of {int} resources linked with {string} operations', async function (count, relationship) {
+  // we add the last one first
+  this.currentResourceRoute = await this.createRoute(
+    randomApiPath(),
+    200
+  )
+  this.lastOnList = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
+  for (let index = 1; index < count; index++) {
+    // and then point each on to the previously created resource
+    this.currentResourceRoute = await this.createRoute(
+      randomApiPath(),
+      200,
+      relationship,
+      this.currentResourceRoute
+    )
   }
-
-  this.createLinks = function (relationship, uri) {
-    const links = new LinkHeader()
-    links.set({
-      rel: relationship,
-      uri: uri
-    })
-    return links
-  }
-
-  this.sendResponse = function (response, status, links) {
-    if (links) {
-      response
-        .header('link', links.toString())
-        .status(200)
-        .send({ status })
-    } else {
-      response.status(status).send({ status })
-    }
-  }
+  // POST: this.currentResourceRoute points to the first resource in the list
 })

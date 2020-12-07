@@ -98,7 +98,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, done) {
-        done(window.testResults[id].url)
+        done(window.testResults[id].response.url)
       },
       result.id
     )

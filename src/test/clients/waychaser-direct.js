@@ -33,7 +33,7 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async getUrl (result) {
-    return result.resource.url
+    return result.resource.response.url
   }
 }
 

@@ -3,6 +3,23 @@ import { When, Then, Before } from 'cucumber'
 import logger from '../util/logger'
 import { API_ACCESS_PORT, API_ACCESS_HOST } from './config'
 
+Before(async function () {
+  this.loadCurrentResource = async function () {
+    return this.loadResourceByPath(this.currentResourceRoute)
+  }
+
+  this.loadResourceByPath = async function (path) {
+    return this.loadResourceByUrl(
+      `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${path}`
+    )
+  }
+
+  this.loadResourceByUrl = async function (url) {
+    logger.debug(`loading ${url}`)
+    this.result = await this.waychaserProxy.load(url)
+  }
+})
+
 When('waychaser loads that resource', async function () {
   await this.loadCurrentResource()
 })
@@ -29,19 +46,7 @@ When('waychaser successfully loads the latter resource', async function () {
   expect(this.result.success).to.be.true
 })
 
-Before(async function () {
-  this.loadCurrentResource = async function () {
-    return this.loadResourceByPath(this.currentResourceRoute)
-  }
-
-  this.loadResourceByPath = async function (path) {
-    return this.loadResourceByUrl(
-      `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${path}`
-    )
-  }
-
-  this.loadResourceByUrl = async function (url) {
-    logger.debug(`loading ${url}`)
-    this.result = await this.waychaserProxy.load(url)
-  }
+When('waychaser successfully loads the first resource in the list', async function () {
+  await this.loadCurrentResource()
+  expect(this.result.success).to.be.true
 })

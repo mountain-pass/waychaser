@@ -44,7 +44,11 @@ class Operation {
     const contextUrl = this.callingContext.url
     const invokeUrl = new URL(this.uri, contextUrl)
     logger.waychaser(`invoking ${invokeUrl}`)
-    return loadResource(invokeUrl, options)
+    const resource = await loadResource(invokeUrl, options)
+    logger.waychaser(`RESOURCE ${JSON.stringify(resource, undefined, 2)}`)
+    logger.waychaser(`RESOURCE RESPONSE ${JSON.stringify(resource.response, undefined, 2)}`)
+    logger.waychaser(`RESOURCE RESPONSE URL ${JSON.stringify(resource.response.url, undefined, 2)}`)
+    return resource
   }
 }
 
