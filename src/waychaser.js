@@ -26,7 +26,7 @@ function loadResource (url, options) {
     /* istanbul ignore next: IE fails without this, but IE doesn't report coverage */
     if (response.url === undefined || response.url === '') {
       // in ie url is not being populated 🤷‍♂️
-      response.url = url
+      response.url = url.toString()
     }
     return new waychaser.ApiResourceObject(response)
   })
@@ -44,11 +44,7 @@ class Operation {
     const contextUrl = this.callingContext.url
     const invokeUrl = new URL(this.uri, contextUrl)
     logger.waychaser(`invoking ${invokeUrl}`)
-    const resource = await loadResource(invokeUrl, options)
-    logger.waychaser(`RESOURCE ${JSON.stringify(resource, undefined, 2)}`)
-    logger.waychaser(`RESOURCE RESPONSE ${JSON.stringify(resource.response, undefined, 2)}`)
-    logger.waychaser(`RESOURCE RESPONSE URL ${JSON.stringify(resource.response.url, undefined, 2)}`)
-    return resource
+    return loadResource(invokeUrl, options)
   }
 }
 
