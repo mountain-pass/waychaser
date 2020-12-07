@@ -141,10 +141,9 @@ Then('the former resource will be returned', async function () {
   await this.checkUrls(this.firstResourceRoute)
 })
 
-When('invokes each of the {string} operations in turn {int} times', async function (relationship, count) {
+When('invokes each of the {string} operations in turn {int} times', { timeout: 40000 }, async function (relationship, count) {
   for (let index = 0; index < count; index++) {
     await this.invoke(relationship, this.result)
-    logger.debug('RESULT2', this.result)
   }
 })
 
