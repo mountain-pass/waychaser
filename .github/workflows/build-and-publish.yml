@@ -533,39 +533,6 @@ jobs:
           ls -l coverage
       - run: npm run report:cover
 
-  report-cover-to-codeclimate:
-    needs:
-      - checksecret
-      - check-coverage
-    if: |
-      needs.checksecret.outputs.SECRETS_SET == 'true' &&
-      github.ref == 'refs/heads/main' && 
-      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
-
-    env:
-      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-      - run: ls code-coverage-report-chrome
-      - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-      - run: chmod +x ./cc-test-reporter
-      - run: |
-          for directory in $(ls -d code-coverage-report-*); do
-            ./cc-test-reporter format-coverage -t lcov -o ${directory}-codeclimate.json ${directory}/lcov.info
-          done
-      - run: ./cc-test-reporter sum-coverage *-codeclimate.json -o code-coverage-report-full-codeclimate.json
-      - run: ./cc-test-reporter upload-coverage -i code-coverage-report-full-codeclimate.json
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-
   publish-reports:
     if: "false"
 
