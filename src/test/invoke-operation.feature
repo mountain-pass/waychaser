@@ -73,3 +73,19 @@ Feature: Invoke Operation
             | POST   |
             | PUT    |
             | PATCH  |
+
+    Scenario Outline: Invoke operation - methods parameterised with extra params
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" parameter
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | ping  | pong    |
+            | other | notUsed |
+        Then resource returned will contain only
+            | ping | pong |
+
+        Examples:
+            | METHOD |
+            | DELETE |
+            | POST   |
+            | PUT    |
+            | PATCH  |
