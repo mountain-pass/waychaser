@@ -46,14 +46,15 @@ Feature: Invoke Operation
         Then resource returned will contain only
             | ping | pong |
 
-    Scenario: Invoke operation - delete
-        Given a resource with a "delete" operation with the "DELETE" method returning status code 204
+    Scenario Outline: Invoke operation - methods
+        Given a resource with a "https://waychaser.io/rel/do-it" operation with the "<METHOD>" method returning status code <CODE>
         When waychaser successfully loads that resource
-        And we invoke the "delete" operation
-        Then resource returned will have the status code 204
+        And we invoke the "https://waychaser.io/rel/do-it" operation
+        Then resource returned will have the status code <CODE>
 
-    Scenario: Invoke operation - post
-        Given a resource with a "https://waychaser.io/rel/create" operation with the "POST" method returning status code 201
-        When waychaser successfully loads that resource
-        And we invoke the "https://waychaser.io/rel/create" operation
-        Then resource returned will have the status code 201
+        Examples:
+            | METHOD | CODE |
+            | DELETE | 204  |
+            | POST   | 201  |
+            | PUT    | 204  |
+            | PATCH  | 204  |
