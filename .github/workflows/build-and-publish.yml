@@ -369,9 +369,9 @@ jobs:
       # the pipeline have a few cracks at it
       - uses: nick-invision/retry@v2
         with:
-          timeout_seconds: 600
+          timeout_seconds: 1200
           max_attempts: 3
-          retry_wait_seconds: 30
+          retry_wait_seconds: 60
           command: npm run cover:browser-api:${{ matrix.browser }}:remote
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
@@ -436,7 +436,7 @@ jobs:
       # the pipeline have a few cracks at it
       - uses: nick-invision/retry@v2
         with:
-          timeout_seconds: 300
+          timeout_seconds: 1200
           max_attempts: 3
           retry_wait_seconds: 30
           command: npm run cover:browser-api:${{ matrix.browser }}:remote
@@ -503,7 +503,7 @@ jobs:
       # the pipeline have a few cracks at it
       - uses: nick-invision/retry@v2
         with:
-          timeout_seconds: 300
+          timeout_seconds: 1200
           max_attempts: 3
           retry_wait_seconds: 30
           command: npm run cover:browser-api:${{ matrix.browser }}:remote
