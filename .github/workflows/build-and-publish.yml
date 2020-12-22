@@ -322,7 +322,6 @@ jobs:
     needs:
       - checksecret
       - get-browser-list
-      - test-browser-api-local
     if: |
       needs.checksecret.outputs.SECRETS_SET == 'true' &&
        ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
@@ -641,6 +640,7 @@ jobs:
   publish:
     needs:
       - checksecret
+      - check-coverage-local
       - check-coverage
       - lint
       - audit
