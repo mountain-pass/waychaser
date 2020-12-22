@@ -26,7 +26,9 @@ class WaychaserDirect extends WaychaserProxy {
 
   async invokeO (property, result, relationship, context) {
     logger.debug('invokeO CONTEXT', context)
-    return handleResponse(result.resource[property].invoke(relationship, context))
+    return handleResponse(
+      result.resource[property].invoke(relationship, context)
+    )
   }
 
   async invoke (result, relationship, context) {
@@ -42,6 +44,10 @@ class WaychaserDirect extends WaychaserProxy {
     const json = await result.resource.response.json()
     logger.debug('response body', result.resource.response.url, json)
     return json
+  }
+
+  async getStatusCode (result) {
+    return result.resource.response.status
   }
 }
 

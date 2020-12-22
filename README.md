@@ -2,7 +2,8 @@
 
 Client library for level 3 RESTful APIs.
 
-This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE. <img alt="aw yeah!" src="./docs/images/aw_yeah.gif" width="20" height="20" />
+This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE.
+<img alt="aw yeah!" src="./docs/images/aw_yeah.gif" width="20" height="20" />
 
 [![GitHub license](https://img.shields.io/github/license/mountain-pass/waychaser)](https://github.com/mountain-pass/waychaser/blob/master/LICENSE) [![npm](https://img.shields.io/npm/v/@mountainpass/waychaser)](https://www.npmjs.com/package/@mountainpass/waychaser) [![npm downloads](https://img.shields.io/npm/dm/@mountainpass/waychaser)](https://www.npmjs.com/package/@mountainpass/waychaser)
 
@@ -40,6 +41,7 @@ This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, 
   - [Node.js](#nodejs)
   - [Browser](#browser)
   - [Requesting linked resources](#requesting-linked-resources)
+    - [Requesting parameterised linked resources](#requesting-parameterised-linked-resources)
 - [TO DO](#to-do)
 
 # Product
@@ -88,12 +90,12 @@ _None_
 `npm install @mountainpass/waychaser`
 
 ```js
-import { waychaser } from "@mountainpass/waychaser";
+import { waychaser } from '@mountainpass/waychaser'
 
 //...
 
 try {
-  const apiResource = await waychaser.load(apiUrl);
+  const apiResource = await waychaser.load(apiUrl)
   // do something with `apiResource`
 } catch (error) {
   // do something with `error`
@@ -128,7 +130,15 @@ Level 3 REST APIs are expected to return links to related resources. Waychaser e
 For instance, if the `apiResource` loaded above has a `link` with a relationship (`rel`) of `describedby`, then that resource can be retrieve using the following code
 
 ```js
-const describedByResource = await apiResource.invoke("describedby");
+const describedByResource = await apiResource.invoke('describedby')
+```
+
+### Requesting parameterised linked resources
+
+```js
+const searchResultsResource = await apiResource.invoke('search', {
+  q: 'waychaser'
+})
 ```
 
 # TO DO
@@ -164,7 +174,14 @@ const describedByResource = await apiResource.invoke("describedby");
 - [x] fix husky & lint-staged
 - [x] add tests for multiple follows
 - [x] switch to github's builtin dependabot
-- [ ] add tests for parameterised links
+- [x] add tests for parameterised links
+- [x] add tests for DELETE
+- [ ] add tests for parameterised DELETE
+- [ ] add tests for POST forms
+- [ ] add tests for PUT forms
+- [ ] add tests for PATCH forms
+- [ ] add support for HAL
+- [ ] add support for Siren
 - [ ] add tests for authenticated requests
 - [ ] upgrade webpack
 - [ ] investigate mega-lint

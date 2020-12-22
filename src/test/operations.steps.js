@@ -4,7 +4,10 @@ import logger from '../util/logger'
 
 Before(async function () {
   this.checkUrls = async function (expectedUrl) {
-    const previousResultUrl = expectedUrl === undefined ? await this.waychaserProxy.getUrl(this.previousResult) : expectedUrl
+    const previousResultUrl =
+      expectedUrl === undefined
+        ? await this.waychaserProxy.getUrl(this.previousResult)
+        : expectedUrl
     const resultUrl = await this.waychaserProxy.getUrl(this.result)
     expect(resultUrl).to.equal(previousResultUrl, 'resultUrl')
 
@@ -19,13 +22,19 @@ Before(async function () {
     const operationResultLokiStyleUrl = await this.waychaserProxy.getUrl(
       this.operationResultLokiStyle
     )
-    expect(operationResultLokiStyleUrl).to.equal(previousResultUrl, 'operationResultLokiStyleUrl')
+    expect(operationResultLokiStyleUrl).to.equal(
+      previousResultUrl,
+      'operationResultLokiStyleUrl'
+    )
 
     const opResultUrl = await this.waychaserProxy.getUrl(this.opResult)
     expect(opResultUrl).to.equal(previousResultUrl, 'opResultUrl')
 
     const opResultLokiStyleUrl = await this.waychaserProxy.getUrl(this.opResult)
-    expect(opResultLokiStyleUrl).to.equal(previousResultUrl, 'opResultLokiStyleUrl')
+    expect(opResultLokiStyleUrl).to.equal(
+      previousResultUrl,
+      'opResultLokiStyleUrl'
+    )
   }
 
   this.expectFindOne = async function (relationship, expectation) {
@@ -52,12 +61,20 @@ Before(async function () {
       { rel: relationship }
     )
 
-    const foundOp = await this.waychaserProxy.findOneOp(this.result, relationship)
+    const foundOp = await this.waychaserProxy.findOneOp(
+      this.result,
+      relationship
+    )
 
     const foundOpLokiStyle = await this.waychaserProxy.findOneOp(this.result, {
       rel: relationship
     })
-    return { foundOperation, foundOperationLokiStyle, foundOp, foundOpLokiStyle }
+    return {
+      foundOperation,
+      foundOperationLokiStyle,
+      foundOp,
+      foundOpLokiStyle
+    }
   }
 
   this.invoke = async function (relationship, previousResult, context) {
@@ -73,15 +90,30 @@ Before(async function () {
       { rel: relationship },
       context
     )
-    this.opResult = await this.waychaserProxy.invokeOp(this.previousResult, relationship, context)
-    this.opResultLokiStyle = await this.waychaserProxy.invokeOp(this.previousResult, {
-      rel: relationship
-    }, context)
-    this.resultLokiStyle = await this.waychaserProxy.invoke(this.previousResult, {
-      rel: relationship
-    }, context)
-    this.result = await this.waychaserProxy.invoke(this.previousResult, relationship,
-      context)
+    this.opResult = await this.waychaserProxy.invokeOp(
+      this.previousResult,
+      relationship,
+      context
+    )
+    this.opResultLokiStyle = await this.waychaserProxy.invokeOp(
+      this.previousResult,
+      {
+        rel: relationship
+      },
+      context
+    )
+    this.resultLokiStyle = await this.waychaserProxy.invoke(
+      this.previousResult,
+      {
+        rel: relationship
+      },
+      context
+    )
+    this.result = await this.waychaserProxy.invoke(
+      this.previousResult,
+      relationship,
+      context
+    )
     logger.debug('RESULT', this.result)
   }
 
@@ -107,6 +139,23 @@ Before(async function () {
     this.checkBodySingle(expectedBody, this.opResultLokiStyle)
     this.checkBodySingle(expectedBody, this.resultLokiStyle)
     this.checkBodySingle(expectedBody, this.result)
+  }
+
+  this.checkStatusCodeSingle = async function (expectedStatusCode, result) {
+    const actualStatusCode = await this.waychaserProxy.getStatusCode(result)
+    expect(actualStatusCode).to.deep.equal(expectedStatusCode)
+  }
+
+  this.checkStatusCode = async function (expectedStatusCode) {
+    this.checkStatusCodeSingle(expectedStatusCode, this.operationResult)
+    this.checkStatusCodeSingle(
+      expectedStatusCode,
+      this.operationResultLokiStyle
+    )
+    this.checkStatusCodeSingle(expectedStatusCode, this.opResult)
+    this.checkStatusCodeSingle(expectedStatusCode, this.opResultLokiStyle)
+    this.checkStatusCodeSingle(expectedStatusCode, this.resultLokiStyle)
+    this.checkStatusCodeSingle(expectedStatusCode, this.result)
   }
 })
 
@@ -158,17 +207,27 @@ Then('the former resource will be returned', async function () {
   await this.checkUrls(this.firstResourceRoute)
 })
 
-When('invokes each of the {string} operations in turn {int} times', { timeout: 40000 }, async function (relationship, count) {
-  for (let index = 0; index < count; index++) {
-    await this.invoke(relationship, this.result)
+When(
+  'invokes each of the {string} operations in turn {int} times',
+  { timeout: 40000 },
+  async function (relationship, count) {
+    for (let index = 0; index < count; index++) {
+      await this.invoke(relationship, this.result)
+    }
   }
-})
+)
 
-Then('the last resource returned will be the last item in the list', async function () {
-  await this.checkUrls(this.lastOnList)
-})
+Then(
+  'the last resource returned will be the last item in the list',
+  async function () {
+    await this.checkUrls(this.lastOnList)
+  }
+)
 
-When('we invoke the {string} operation with the input', async function (relationship, dataTable) {
+When('we invoke the {string} operation with the input', async function (
+  relationship,
+  dataTable
+) {
   // we store it in expectedBody, because we use in in the next step
   this.expectedBody = dataTable.rowsHash()
   await this.invoke(relationship, this.result, this.expectedBody)
@@ -181,4 +240,10 @@ Then('resource returned will contain those values', async function () {
 Then('resource returned will contain only', async function (dataTable) {
   const expectedBody = dataTable.rowsHash()
   await this.checkBody(expectedBody)
+})
+
+Then('resource returned will have the status code {int}', async function (
+  statusCode
+) {
+  await this.checkStatusCode(statusCode)
 })

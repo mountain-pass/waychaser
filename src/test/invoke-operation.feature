@@ -45,3 +45,9 @@ Feature: Invoke Operation
             | other | notUsed |
         Then resource returned will contain only
             | ping | pong |
+
+    Scenario: Invoke operation - delete
+        Given a resource with a "delete" operation with the "DELETE" method returning status code 204
+        When waychaser successfully loads that resource
+        And we invoke the "delete" operation
+        Then resource returned will have the status code 204

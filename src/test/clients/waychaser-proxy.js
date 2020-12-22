@@ -34,39 +34,37 @@ class WaychaserProxy {
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async invokeO (property, result, relationship,
-    context) {
+  async invokeO (property, result, relationship, context) {
     abstract()
   }
 
-  async invokeOperation (result, relationship,
-    context) {
+  async invokeOperation (result, relationship, context) {
     logger.debug('OPERATION CONTEXT', context)
-    return this.invokeO('operations', result, relationship,
-      context)
+    return this.invokeO('operations', result, relationship, context)
   }
 
-  async invokeOp (result, relationship,
-    context) {
+  async invokeOp (result, relationship, context) {
     logger.debug('OP CONTEXT', context)
-    return this.invokeO('ops', result, relationship,
-      context)
+    return this.invokeO('ops', result, relationship, context)
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async invoke (result, relationship,
-    context) {
+  async invoke (result, relationship, context) {
     abstract()
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async getUrl (result,
-    context) {
+  async getUrl (result, context) {
     abstract()
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
   async getBody (result) {
+    abstract()
+  }
+
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  async getStatusCode (result) {
     abstract()
   }
 }

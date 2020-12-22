@@ -27,7 +27,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       url
     )
     logger.debug({ rval })
-    await this.manager.driver.executeScript(
+    await this.manager.executeScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function () {
         window.testLogger('after')
@@ -37,7 +37,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async getOCount (property, result) {
-    return this.manager.driver.executeAsyncScript(
+    return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, property, done) {
         done(window.testResults[id][property].count())
@@ -48,7 +48,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async findOneO (property, result, relationship) {
-    return this.manager.driver.executeAsyncScript(
+    return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (property, id, relationship, done) {
         done(window.testResults[id][property].findOne(relationship))
@@ -77,7 +77,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async invoke (result, relationship, context) {
-    return this.manager.driver.executeAsyncScript(
+    return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, relationship, context, done) {
         window.testResults[id]
@@ -97,7 +97,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async getUrl (result) {
-    return this.manager.driver.executeAsyncScript(
+    return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, done) {
         done(window.testResults[id].response.url)
@@ -107,13 +107,23 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async getBody (result) {
-    return this.manager.driver.executeAsyncScript(
+    return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, done) {
         window.testResults[id].response.json().then(json => {
           console.log('JSON', JSON.stringify(json))
           done(json)
         })
+      },
+      result.id
+    )
+  }
+
+  async getStatusCode (result) {
+    return this.manager.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (id, done) {
+        done(window.testResults[id].response.status)
       },
       result.id
     )

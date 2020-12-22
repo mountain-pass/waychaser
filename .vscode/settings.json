@@ -18,5 +18,8 @@
   "standard.usePackageJson": true,
   "standard.workingDirectories": [
   
+  ],
+  "editor.rulers": [
+    120
   ]
 }

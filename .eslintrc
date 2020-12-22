@@ -12,7 +12,7 @@
     "markdown"
   ],
   "extends": [
-    "standard",
+    "prettier-standard",
     "plugin:security/recommended",
     "plugin:unicorn/recommended",
     "plugin:jsdoc/recommended",
@@ -74,7 +74,15 @@
       "files": ["*.md"],
       "parser": "markdown-eslint-parser",
       "rules": {
-        "unicorn/filename-case": "off"
+        "unicorn/filename-case": "off",
+        "md/remark": [
+          "error",
+          {
+            "plugins": {
+              "remark-lint-maximum-line-length": ["error", 80]
+            }
+          }
+        ]
       }
     }
   ]
