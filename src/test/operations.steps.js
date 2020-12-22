@@ -171,11 +171,14 @@ Then('the last resource returned will be the last item in the list', async funct
 When('we invoke the {string} operation with the input', async function (relationship, dataTable) {
   // we store it in expectedBody, because we use in in the next step
   this.expectedBody = dataTable.rowsHash()
-  logger.debug('DATA TABLE', this.expectedBody)
   await this.invoke(relationship, this.result, this.expectedBody)
 })
 
 Then('resource returned will contain those values', async function () {
-  logger.debug('DYNAMIC RESPONSE', this.result)
   await this.checkBody(this.expectedBody)
+})
+
+Then('resource returned will contain only', async function (dataTable) {
+  const expectedBody = dataTable.rowsHash()
+  await this.checkBody(expectedBody)
 })

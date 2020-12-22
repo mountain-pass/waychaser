@@ -36,3 +36,12 @@ Feature: Invoke Operation
         And we invoke the "pong" operation with the input
             | ping | pong |
         Then resource returned will contain those values
+
+    Scenario: Invoke operation - parameterised with extra params
+        Given a resource with a "pong" operation that returns the provided "ping" parameter
+        When waychaser successfully loads that resource
+        And we invoke the "pong" operation with the input
+            | ping  | pong    |
+            | other | notUsed |
+        Then resource returned will contain only
+            | ping | pong |
