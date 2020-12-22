@@ -1,4 +1,5 @@
 import { abstract } from '../../util/abstract'
+import logger from '../../util/logger'
 
 class WaychaserProxy {
   /* istanbul ignore next: only get's executed if we didn't overload this method */
@@ -33,25 +34,39 @@ class WaychaserProxy {
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async invokeO (property, result, relationship) {
+  async invokeO (property, result, relationship,
+    context) {
     abstract()
   }
 
-  async invokeOperation (result, relationship) {
-    return this.invokeO('operations', result, relationship)
+  async invokeOperation (result, relationship,
+    context) {
+    logger.debug('OPERATION CONTEXT', context)
+    return this.invokeO('operations', result, relationship,
+      context)
   }
 
-  async invokeOp (result, relationship) {
-    return this.invokeO('ops', result, relationship)
+  async invokeOp (result, relationship,
+    context) {
+    logger.debug('OP CONTEXT', context)
+    return this.invokeO('ops', result, relationship,
+      context)
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async invoke (result, relationship) {
+  async invoke (result, relationship,
+    context) {
     abstract()
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async getUrl (result) {
+  async getUrl (result,
+    context) {
+    abstract()
+  }
+
+  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  async getBody (result) {
     abstract()
   }
 }

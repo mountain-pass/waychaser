@@ -60,25 +60,28 @@ Before(async function () {
     return { foundOperation, foundOperationLokiStyle, foundOp, foundOpLokiStyle }
   }
 
-  this.invoke = async function (relationship, previousResult) {
+  this.invoke = async function (relationship, previousResult, context) {
     this.previousResult = previousResult
 
     this.operationResult = await this.waychaserProxy.invokeOperation(
       this.previousResult,
-      relationship
+      relationship,
+      context
     )
     this.operationResultLokiStyle = await this.waychaserProxy.invokeOperation(
       this.previousResult,
-      { rel: relationship }
+      { rel: relationship },
+      context
     )
-    this.opResult = await this.waychaserProxy.invokeOp(this.previousResult, relationship)
+    this.opResult = await this.waychaserProxy.invokeOp(this.previousResult, relationship, context)
     this.opResultLokiStyle = await this.waychaserProxy.invokeOp(this.previousResult, {
       rel: relationship
-    })
+    }, context)
     this.resultLokiStyle = await this.waychaserProxy.invoke(this.previousResult, {
       rel: relationship
-    })
-    this.result = await this.waychaserProxy.invoke(this.previousResult, relationship)
+    }, context)
+    this.result = await this.waychaserProxy.invoke(this.previousResult, relationship,
+      context)
     logger.debug('RESULT', this.result)
   }
 
@@ -90,6 +93,20 @@ Before(async function () {
     expect(this.opResultLokiStyle.success).to.be.true
     expect(this.resultLokiStyle.success).to.be.true
     expect(this.result.success).to.be.true
+  }
+
+  this.checkBodySingle = async function (expectedBody, result) {
+    const actualBody = await this.waychaserProxy.getBody(result)
+    expect(actualBody).to.deep.equal(expectedBody)
+  }
+
+  this.checkBody = async function (expectedBody) {
+    this.checkBodySingle(expectedBody, this.operationResult)
+    this.checkBodySingle(expectedBody, this.operationResultLokiStyle)
+    this.checkBodySingle(expectedBody, this.opResult)
+    this.checkBodySingle(expectedBody, this.opResultLokiStyle)
+    this.checkBodySingle(expectedBody, this.resultLokiStyle)
+    this.checkBodySingle(expectedBody, this.result)
   }
 })
 
@@ -149,4 +166,16 @@ When('invokes each of the {string} operations in turn {int} times', { timeout: 4
 
 Then('the last resource returned will be the last item in the list', async function () {
   await this.checkUrls(this.lastOnList)
+})
+
+When('we invoke the {string} operation with the input', async function (relationship, dataTable) {
+  // we store it in expectedBody, because we use in in the next step
+  this.expectedBody = dataTable.rowsHash()
+  logger.debug('DATA TABLE', this.expectedBody)
+  await this.invoke(relationship, this.result, this.expectedBody)
+})
+
+Then('resource returned will contain those values', async function () {
+  logger.debug('DYNAMIC RESPONSE', this.result)
+  await this.checkBody(this.expectedBody)
 })

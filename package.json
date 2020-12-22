@@ -98,7 +98,7 @@
     "pre-push": "npm run test:node-api && npm run duplication",
     "npm-check-unused": "depcheck",
     "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public",
-    "duplication": "jscpd",
+    "duplication": "jscpd .",
     "security": "snyk auth ${SNYK_TOKEN} && snyk test",
     "security:fix": "snyk auth ${SNYK_TOKEN} && snyk wizard"
   },
@@ -111,7 +111,8 @@
     "es6-promise": "^4.2.8",
     "http-link-header": "^1.0.2",
     "isomorphic-fetch": "^3.0.0",
-    "lokijs": "^1.5.11"
+    "lokijs": "^1.5.11",
+    "uri-template-lite": "^20.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",

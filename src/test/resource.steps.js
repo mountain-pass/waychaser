@@ -8,6 +8,7 @@ import {
   colors,
   animals
 } from 'unique-names-generator'
+import logger from '../util/logger'
 
 let pathCount = 0
 
@@ -44,15 +45,17 @@ Before(async function () {
     return links
   }
 
-  this.sendResponse = function (response, status, links) {
+  this.sendResponse = function (response, status, links, linkTemplates) {
     if (links) {
       response
         .header('link', links.toString())
-        .status(200)
-        .send({ status })
-    } else {
-      response.status(status).send({ status })
     }
+    if (linkTemplates) {
+      response
+        .header('link-template', linkTemplates.toString())
+    }
+    response.status(status)
+      .send({ status })
   }
 })
 
@@ -132,4 +135,24 @@ Given('a list of {int} resources linked with {string} operations', async functio
     )
   }
   // POST: this.currentResourceRoute points to the first resource in the list
+})
+
+Given('a resource with a {string} operation that returns the provided {string} parameter', async function (relationship, parameter) {
+  const dynamicResourceRoute = randomApiPath()
+  await this.router.route(dynamicResourceRoute).get(async (request, response) => {
+    logger.debug('SENDING', dynamicResourceRoute, { ...request.query })
+    response
+      .status(200)
+      .send({ ...request.query })
+  })
+  const links = new LinkHeader()
+  links.set({
+    rel: relationship,
+    uri: `${dynamicResourceRoute}{?${parameter}}`
+  })
+
+  this.currentResourceRoute = randomApiPath()
+  await this.router.route(this.currentResourceRoute).get(async (request, response) => {
+    this.sendResponse(response, 200, undefined, links)
+  })
 })

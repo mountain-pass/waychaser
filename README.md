@@ -163,15 +163,15 @@ const describedByResource = await apiResource.invoke("describedby");
 - [x] fix linting
 - [x] fix husky & lint-staged
 - [x] add tests for multiple follows
-- [ ] add tests for authenticated requests
 - [x] switch to github's builtin dependabot
+- [ ] add tests for parameterised links
+- [ ] add tests for authenticated requests
 - [ ] upgrade webpack
 - [ ] investigate mega-lint
 - [ ] fix struture of package so we get better jsdoc linting
 - [ ] refactor browserstack test run to use single tunnel when running locally
 - [ ] add tests for abort
 - [ ] add tests for different types of error responses
-- [ ] add tests for parameterised links
 - [ ] add tests for non-get operations
 - [ ] add tests for validation
 - [ ] look at using standard instead of eslint

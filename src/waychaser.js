@@ -3,6 +3,7 @@ import { polyfill } from 'es6-promise'
 import LinkHeader from 'http-link-header'
 import Loki from 'lokijs'
 import logger from './util/logger'
+import { URI } from 'uri-template-lite'
 polyfill()
 
 /**
@@ -32,6 +33,24 @@ function loadResource (url, options) {
   })
 }
 
+/**
+ * @param operations
+ * @param linkHeader
+ * @param response
+ */
+function loadOperations (operations, linkHeader, response) {
+  if (linkHeader) {
+    const links = LinkHeader.parse(linkHeader)
+
+    operations.insert(
+      links.refs.map(reference => {
+        const operation = new Operation(response)
+        Object.assign(operation, reference)
+        return operation
+      })
+    )
+  }
+}
 class Operation {
   constructor (callingContext) {
     logger.waychaser(
@@ -42,7 +61,10 @@ class Operation {
 
   async invoke (context, options) {
     const contextUrl = this.callingContext.url
-    const invokeUrl = new URL(this.uri, contextUrl)
+    const expandedUri = URI.expand(this.uri, context || {})
+    logger.waychaser(`loading ${expandedUri}`)
+
+    const invokeUrl = new URL(expandedUri, contextUrl)
     logger.waychaser(`invoking ${invokeUrl}`)
     return loadResource(invokeUrl, options)
   }
@@ -62,7 +84,9 @@ Loki.Collection.prototype.invoke = async function (
   options
 ) {
   const operation = this.findOne(relationship)
-  logger.waychaser(JSON.stringify(operation, undefined, 2))
+  logger.waychaser('collection:', JSON.stringify(this, undefined, 2))
+  logger.waychaser(`operation ${relationship}:`, JSON.stringify(operation, undefined, 2))
+  logger.waychaser('context:', JSON.stringify(context, undefined, 2))
   return operation.invoke(context, options)
 }
 
@@ -89,27 +113,20 @@ const waychaser = {
       logger.waychaser('creating ARO', response)
       this.response = response
       const linkHeader = response.headers.get('link')
+      const linkTemplateHeader = response.headers.get('link-template')
       const linkDatabase = new Loki()
       this.operations = linkDatabase.addCollection()
-      if (linkHeader) {
-        const links = LinkHeader.parse(linkHeader)
-
-        this.operations.insert(
-          links.refs.map(reference => {
-            const operation = new Operation(response)
-            Object.assign(operation, reference)
-            return operation
-          })
-        )
-      }
+      loadOperations(this.operations, linkHeader, response)
+      loadOperations(this.operations, linkTemplateHeader, response)
+      logger.waychaser('created ARO', this)
     }
 
     get ops () {
       return this.operations
     }
 
-    async invoke (relationship) {
-      return this.operations.invoke(relationship)
+    async invoke (relationship, context) {
+      return this.operations.invoke(relationship, context)
     }
   }
 }

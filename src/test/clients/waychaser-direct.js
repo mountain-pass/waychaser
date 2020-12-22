@@ -24,16 +24,24 @@ class WaychaserDirect extends WaychaserProxy {
     return result.resource[property].findOne(relationship)
   }
 
-  async invokeO (property, result, relationship) {
-    return handleResponse(result.resource[property].invoke(relationship))
+  async invokeO (property, result, relationship, context) {
+    logger.debug('invokeO CONTEXT', context)
+    return handleResponse(result.resource[property].invoke(relationship, context))
   }
 
-  async invoke (result, relationship) {
-    return handleResponse(result.resource.invoke(relationship))
+  async invoke (result, relationship, context) {
+    logger.debug('invoke CONTEXT', context)
+    return handleResponse(result.resource.invoke(relationship, context))
   }
 
   async getUrl (result) {
     return result.resource.response.url
+  }
+
+  async getBody (result) {
+    const json = await result.resource.response.json()
+    logger.debug('response body', result.resource.response.url, json)
+    return json
   }
 }
 

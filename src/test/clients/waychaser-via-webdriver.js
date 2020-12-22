@@ -59,28 +59,29 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     )
   }
 
-  async invokeO (property, result, relationship) {
+  async invokeO (property, result, relationship, context) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, property, done) {
+      function (id, relationship, property, context, done) {
         window.testLogger('invokeOperation')
         window.testLogger(JSON.stringify(arguments, undefined, 2))
         const ops = window.testResults[id][property]
         window.testLogger(JSON.stringify(ops, undefined, 2))
-        window.handleResponse(ops.invoke(relationship), done)
+        window.handleResponse(ops.invoke(relationship, context), done)
       },
       result.id,
       relationship,
-      property
+      property,
+      context
     )
   }
 
-  async invoke (result, relationship) {
+  async invoke (result, relationship, context) {
     return this.manager.driver.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, done) {
+      function (id, relationship, context, done) {
         window.testResults[id]
-          .invoke(relationship)
+          .invoke(relationship, context)
           .then(function (resource) {
             window.testResults.push(resource)
             done({ success: true, id: window.testResults.length - 1 })
@@ -90,7 +91,8 @@ class WaychaserViaWebdriver extends WaychaserProxy {
           })
       },
       result.id,
-      relationship
+      relationship,
+      context
     )
   }
 
@@ -99,6 +101,19 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, done) {
         done(window.testResults[id].response.url)
+      },
+      result.id
+    )
+  }
+
+  async getBody (result) {
+    return this.manager.driver.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (id, done) {
+        window.testResults[id].response.json().then(json => {
+          console.log('JSON', JSON.stringify(json))
+          done(json)
+        })
       },
       result.id
     )

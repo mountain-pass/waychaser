@@ -14,7 +14,7 @@ Feature: Invoke Operation
     Scenario: Invoke operation error
         Given a resource with a "error" operation that returns an error
         When waychaser successfully loads that resource
-        When we invoke the "error" operation
+        And we invoke the "error" operation
         Then it will NOT have loaded successfully
 
     Scenario: Invoke operation - next
@@ -29,3 +29,10 @@ Feature: Invoke Operation
         When waychaser successfully loads the first resource in the list
         And invokes each of the "next" operations in turn 9 times
         Then the last resource returned will be the last item in the list
+
+    Scenario: Invoke operation - parameterised
+        Given a resource with a "pong" operation that returns the provided "ping" parameter
+        When waychaser successfully loads that resource
+        And we invoke the "pong" operation with the input
+            | ping | pong |
+        Then resource returned will contain those values
