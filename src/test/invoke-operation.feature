@@ -31,16 +31,16 @@ Feature: Invoke Operation
         Then the last resource returned will be the last item in the list
 
     Scenario: Invoke operation - parameterised
-        Given a resource with a "pong" operation that returns the provided "ping" parameter
+        Given a resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" parameter
         When waychaser successfully loads that resource
-        And we invoke the "pong" operation with the input
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
         Then resource returned will contain those values
 
     Scenario: Invoke operation - parameterised with extra params
-        Given a resource with a "pong" operation that returns the provided "ping" parameter
+        Given a resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" parameter
         When waychaser successfully loads that resource
-        And we invoke the "pong" operation with the input
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping  | pong    |
             | other | notUsed |
         Then resource returned will contain only
@@ -58,3 +58,18 @@ Feature: Invoke Operation
             | POST   | 201  |
             | PUT    | 204  |
             | PATCH  | 204  |
+
+
+    Scenario Outline: Invoke operation - methods parameterised
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" parameter
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | ping | pong |
+        Then resource returned will contain those values
+
+        Examples:
+            | METHOD |
+            | DELETE |
+            | POST   |
+            | PUT    |
+            | PATCH  |

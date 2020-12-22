@@ -41,6 +41,35 @@ Before(async function () {
     }
   }
 
+  this.createDynamicResourceRoute = async function (
+    route,
+    relationship,
+    method,
+    parameter
+  ) {
+    await this.router
+      .route(route)
+      [method.toLowerCase()](async (request, response) => {
+        logger.debug('SENDING', method, route, { ...request.query })
+        response.status(200).send({ ...request.query })
+      })
+
+    const links = new LinkHeader()
+    links.set({
+      rel: relationship,
+      uri: `${route}{?${parameter}}`,
+      method: method
+    })
+
+    this.currentResourceRoute = randomApiPath()
+    await this.createRouteWithLinks(
+      this.currentResourceRoute,
+      200,
+      undefined,
+      links
+    )
+  }
+
   this.createLinks = function (relationship, uri) {
     const links = new LinkHeader()
     links.set({
@@ -142,25 +171,11 @@ Given(
 Given(
   'a resource with a {string} operation that returns the provided {string} parameter',
   async function (relationship, parameter) {
-    const dynamicResourceRoute = randomApiPath()
-    await this.router
-      .route(dynamicResourceRoute)
-      .get(async (request, response) => {
-        logger.debug('SENDING', dynamicResourceRoute, { ...request.query })
-        response.status(200).send({ ...request.query })
-      })
-    const links = new LinkHeader()
-    links.set({
-      rel: relationship,
-      uri: `${dynamicResourceRoute}{?${parameter}}`
-    })
-
-    this.currentResourceRoute = randomApiPath()
-    await this.createRouteWithLinks(
-      this.currentResourceRoute,
-      200,
-      undefined,
-      links
+    await this.createDynamicResourceRoute(
+      randomApiPath(),
+      relationship,
+      'GET',
+      parameter
     )
   }
 )
@@ -185,5 +200,17 @@ Given(
         this.sendResponse(response, statusCode)
       })
     })
+  }
+)
+
+Given(
+  'a resource with a {string} operation with the {string} method that returns the provided {string} parameter',
+  async function (relationship, method, parameter) {
+    await this.createDynamicResourceRoute(
+      randomApiPath(),
+      relationship,
+      method,
+      parameter
+    )
   }
 )

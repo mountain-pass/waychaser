@@ -179,7 +179,7 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [x] add tests for POST
 - [x] add tests for PUT
 - [x] add tests for PATCH
-- [ ] add tests for parameterised DELETE
+- [x] add tests for parameterised DELETE, POST, PUT, PATCH
 - [ ] add tests for POST forms
 - [ ] add tests for PUT forms
 - [ ] add tests for PATCH forms
