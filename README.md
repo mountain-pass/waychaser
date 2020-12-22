@@ -176,6 +176,9 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [x] switch to github's builtin dependabot
 - [x] add tests for parameterised links
 - [x] add tests for DELETE
+- [x] add tests for POST
+- [ ] add tests for PUT
+- [ ] add tests for PATCH
 - [ ] add tests for parameterised DELETE
 - [ ] add tests for POST forms
 - [ ] add tests for PUT forms

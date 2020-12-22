@@ -181,7 +181,7 @@ Given(
       undefined,
       links
     ).then(route => {
-      route.delete(async (request, response) => {
+      route[method.toLowerCase()](async (request, response) => {
         this.sendResponse(response, statusCode)
       })
     })

@@ -51,3 +51,9 @@ Feature: Invoke Operation
         When waychaser successfully loads that resource
         And we invoke the "delete" operation
         Then resource returned will have the status code 204
+
+    Scenario: Invoke operation - post
+        Given a resource with a "https://waychaser.io/rel/create" operation with the "POST" method returning status code 201
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/create" operation
+        Then resource returned will have the status code 201
