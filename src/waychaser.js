@@ -66,7 +66,10 @@ class Operation {
 
     const invokeUrl = new URL(expandedUri, contextUrl)
     logger.waychaser(`invoking ${invokeUrl}`)
-    return loadResource(invokeUrl, options)
+    return loadResource(
+      invokeUrl,
+      Object.assign({ method: this.method }, options)
+    )
   }
 }
 
@@ -85,7 +88,10 @@ Loki.Collection.prototype.invoke = async function (
 ) {
   const operation = this.findOne(relationship)
   logger.waychaser('collection:', JSON.stringify(this, undefined, 2))
-  logger.waychaser(`operation ${relationship}:`, JSON.stringify(operation, undefined, 2))
+  logger.waychaser(
+    `operation ${relationship}:`,
+    JSON.stringify(operation, undefined, 2)
+  )
   logger.waychaser('context:', JSON.stringify(context, undefined, 2))
   return operation.invoke(context, options)
 }

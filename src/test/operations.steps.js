@@ -133,29 +133,29 @@ Before(async function () {
   }
 
   this.checkBody = async function (expectedBody) {
-    this.checkBodySingle(expectedBody, this.operationResult)
-    this.checkBodySingle(expectedBody, this.operationResultLokiStyle)
-    this.checkBodySingle(expectedBody, this.opResult)
-    this.checkBodySingle(expectedBody, this.opResultLokiStyle)
-    this.checkBodySingle(expectedBody, this.resultLokiStyle)
-    this.checkBodySingle(expectedBody, this.result)
+    await this.checkBodySingle(expectedBody, this.operationResult)
+    await this.checkBodySingle(expectedBody, this.operationResultLokiStyle)
+    await this.checkBodySingle(expectedBody, this.opResult)
+    await this.checkBodySingle(expectedBody, this.opResultLokiStyle)
+    await this.checkBodySingle(expectedBody, this.resultLokiStyle)
+    await this.checkBodySingle(expectedBody, this.result)
   }
 
   this.checkStatusCodeSingle = async function (expectedStatusCode, result) {
     const actualStatusCode = await this.waychaserProxy.getStatusCode(result)
-    expect(actualStatusCode).to.deep.equal(expectedStatusCode)
+    expect(actualStatusCode).to.equal(expectedStatusCode)
   }
 
   this.checkStatusCode = async function (expectedStatusCode) {
-    this.checkStatusCodeSingle(expectedStatusCode, this.operationResult)
-    this.checkStatusCodeSingle(
+    await this.checkStatusCodeSingle(expectedStatusCode, this.operationResult)
+    await this.checkStatusCodeSingle(
       expectedStatusCode,
       this.operationResultLokiStyle
     )
-    this.checkStatusCodeSingle(expectedStatusCode, this.opResult)
-    this.checkStatusCodeSingle(expectedStatusCode, this.opResultLokiStyle)
-    this.checkStatusCodeSingle(expectedStatusCode, this.resultLokiStyle)
-    this.checkStatusCodeSingle(expectedStatusCode, this.result)
+    await this.checkStatusCodeSingle(expectedStatusCode, this.opResult)
+    await this.checkStatusCodeSingle(expectedStatusCode, this.opResultLokiStyle)
+    await this.checkStatusCodeSingle(expectedStatusCode, this.resultLokiStyle)
+    await this.checkStatusCodeSingle(expectedStatusCode, this.result)
   }
 })
 
