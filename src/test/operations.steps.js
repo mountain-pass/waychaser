@@ -209,7 +209,7 @@ Then('the former resource will be returned', async function () {
 
 When(
   'invokes each of the {string} operations in turn {int} times',
-  { timeout: 40000 },
+  { timeout: 60000 },
   async function (relationship, count) {
     for (let index = 0; index < count; index++) {
       await this.invoke(relationship, this.result)

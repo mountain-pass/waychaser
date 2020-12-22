@@ -25,9 +25,9 @@ Feature: Invoke Operation
         Then the former resource will be returned
 
     Scenario: Invoke operation - list
-        Given a list of 10 resources linked with "next" operations
+        Given a list of 4 resources linked with "next" operations
         When waychaser successfully loads the first resource in the list
-        And invokes each of the "next" operations in turn 9 times
+        And invokes each of the "next" operations in turn 3 times
         Then the last resource returned will be the last item in the list
 
     Scenario: Invoke operation - parameterised
