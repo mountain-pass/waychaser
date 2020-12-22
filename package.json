@@ -94,6 +94,7 @@
     "report:cover": "scripts/report-cover.sh",
     "json:list-github-actions-browser-matrix:1": "scripts/list-cover-browsers.js",
     "json:list-github-actions-browser-matrix:2": "scripts/list-cover-browsers.js",
+    "json:list-github-actions-browser-matrix:3": "scripts/list-cover-browsers.js",
     "sync-readme-version": "scripts/sync-readme-version.sh",
     "pre-push": "npm run test:node-api && npm run duplication",
     "npm-check-unused": "depcheck",

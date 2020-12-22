@@ -235,6 +235,7 @@ jobs:
     outputs:
       matrix-1: ${{ steps.set-matrix-1.outputs.matrix-1 }}
       matrix-2: ${{ steps.set-matrix-2.outputs.matrix-2 }}
+      matrix-3: ${{ steps.set-matrix-3.outputs.matrix-3 }}
 
     defaults:
       run:
@@ -271,6 +272,9 @@ jobs:
       - run: npm run --silent json:list-github-actions-browser-matrix:2 > browser-matrix-2.json
       - id: set-matrix-2
         run: echo "::set-output name=matrix-2::$(cat browser-matrix-2.json)"
+      - run: npm run --silent json:list-github-actions-browser-matrix:3 > browser-matrix-3.json
+      - id: set-matrix-3
+        run: echo "::set-output name=matrix-3::$(cat browser-matrix-3.json)"
 
   test-browser-api-local:
     if: |
@@ -448,6 +452,73 @@ jobs:
           name: test-report-${{ matrix.browser }}
           path: test-results/browser-api-${{ matrix.browser }}-remote
 
+  test-browser-api-3:
+    needs:
+      - checksecret
+      - get-browser-list
+      - test-browser-api-2
+    if: |
+      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    runs-on: ubuntu-latest
+
+    name: test-${{ matrix.browser }}-remote
+    strategy:
+      matrix: ${{fromJson(needs.get-browser-list.outputs.matrix-3)}}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - uses: "browserstack/github-actions/setup-env@v1.0.1"
+        with:
+          username: ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      - uses: "browserstack/github-actions/setup-local@v1.0.1"
+        with:
+          local-testing: start
+          local-identifier: random
+      # browserstack can be moody at times, so let
+      # the pipeline have a few cracks at it
+      - uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 300
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: npm run cover:browser-api:${{ matrix.browser }}:remote
+      - uses: "browserstack/github-actions/setup-local@v1.0.1"
+        with:
+          local-testing: stop
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-${{ matrix.browser }}
+          path: coverage/browser-api-${{ matrix.browser }}-remote
+      - uses: actions/upload-artifact@v2
+        with:
+          name: test-report-${{ matrix.browser }}
+          path: test-results/browser-api-${{ matrix.browser }}-remote
+
   check-coverage-local:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
 
@@ -497,6 +568,7 @@ jobs:
       - test-node-api
       - test-browser-api-1
       - test-browser-api-2
+      - test-browser-api-3
 
     runs-on: ubuntu-latest
 
@@ -574,6 +646,7 @@ jobs:
       - audit
       - security
       - build
+      - duplication
     if: |
       needs.checksecret.outputs.SECRETS_SET == 'true' &&
       github.ref == 'refs/heads/main' && 
