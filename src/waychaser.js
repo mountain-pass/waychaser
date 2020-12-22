@@ -34,17 +34,19 @@ function loadResource (url, options) {
 }
 
 /**
- * @param operations
- * @param linkHeader
- * @param response
+ * Creates operations from each linkHeader and inserts into the operations collection
+ *
+ * @param {Loki.Collection} operations the target loki collection to load the operations into
+ * @param {string} linkHeader the link header to load the operations from
+ * @param {fetch.Response} callingContext the reponse object that the links in link header are relative to.
  */
-function loadOperations (operations, linkHeader, response) {
+function loadOperations (operations, linkHeader, callingContext) {
   if (linkHeader) {
     const links = LinkHeader.parse(linkHeader)
 
     operations.insert(
       links.refs.map(reference => {
-        const operation = new Operation(response)
+        const operation = new Operation(callingContext)
         Object.assign(operation, reference)
         return operation
       })
