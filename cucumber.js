@@ -8,6 +8,10 @@ const outputDirectory = 'test-results'
 fs.mkdirSync(outputDirectory, { recursive: true })
 
 function getFeatureGlob (RERUN, profile) {
+  /* istanbul ignore next: :wip is not used for full test runs */
+  if (process.env.npm_lifecycle_event.endsWith(':wip')) {
+    return `src/test/**/*.feature --tags '@wip'`
+  }
   /* istanbul ignore next: RERUN is not set for full test runs */
   return fs.existsSync(RERUN) && fs.statSync(RERUN).size !== 0
     ? RERUN
@@ -18,6 +22,7 @@ function generateConfig () {
   const profile = process.env.npm_lifecycle_event
     .replace('test:', '')
     .replace(/:/g, '-')
+    .replace(/-wip$/, '')
 
   const resultsDirectory = `${outputDirectory}/${profile}`
   fs.mkdirSync(resultsDirectory, { recursive: true })
@@ -36,37 +41,10 @@ function generateConfig () {
     FORMAT_OPTIONS
   )}' ${MODULES} --require ${REQUIRE_GLOB} ${NO_STRICT} --format rerun:${RERUN} --format json:${resultsDirectory}/results.cucumber -f node_modules/cucumber-junit-formatter:${resultsDirectory}/results.xml ${FAIL_FAST}`
 
+  console.log(CONFIG)
   return CONFIG
 }
 
 module.exports = {
   default: generateConfig()
-  // 'browser-api-chrome-local': generateConfig('browser-api-chrome-local'),
-  // 'browser-api-chrome-remote': generateConfig(
-  //   'browser-api-chrome-remote',
-  //   'browser-api-remote',
-  //   'chrome'
-  // ),
-  // 'browser-api-firefox-local': generateConfig('browser-api-firefox-local'),
-  // 'browser-api-firefox-remote': generateConfig(
-  //   'browser-api-firefox-remote',
-  //   'browser-api-remote',
-  //   'firefox'
-  // ),
-  // 'browser-api-safari-local': generateConfig('browser-api-safari-local'),
-  // 'browser-api-safari-remote': generateConfig(
-  //   'browser-api-safari-remote',
-  //   'browser-api-remote',
-  //   'safari'
-  // ),
-  // 'browser-api-edge-remote': generateConfig(
-  //   'browser-api-edge-remote',
-  //   'browser-api-remote',
-  //   'MicrosoftEdge'
-  // ),
-  // 'browser-api-ie-remote': generateConfig(
-  //   'browser-api-ie-remote',
-  //   'browser-api-remote',
-  //   'internet explorer'
-  // ),
 }

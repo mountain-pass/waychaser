@@ -30,21 +30,31 @@ Feature: Invoke Operation
         And invokes each of the "next" operations in turn 3 times
         Then the last resource returned will be the last item in the list
 
-    Scenario: Invoke operation - parameterised
-        Given a resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" parameter
+    Scenario Outline: Invoke operation - parameterised
+        Given a resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" "<TYPE>" parameter
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
         Then resource returned will contain those values
 
-    Scenario: Invoke operation - parameterised with extra params
-        Given a resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" parameter
+        Examples:
+            | TYPE  |
+            | query |
+
+    Scenario Outline: Invoke operation - parameterised with extra params
+        Given a resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" "<TYPE>" parameter
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping  | pong    |
             | other | notUsed |
         Then resource returned will contain only
             | ping | pong |
+
+        Examples:
+            | TYPE  |
+            | query |
+            | path  |
+
 
     Scenario Outline: Invoke operation - methods
         Given a resource with a "https://waychaser.io/rel/do-it" operation with the "<METHOD>" method returning status code <CODE>
@@ -61,21 +71,25 @@ Feature: Invoke Operation
 
 
     Scenario Outline: Invoke operation - methods parameterised
-        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" parameter
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "<TYPE>" parameter
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
         Then resource returned will contain those values
 
         Examples:
-            | METHOD |
-            | DELETE |
-            | POST   |
-            | PUT    |
-            | PATCH  |
+            | METHOD | TYPE  |
+            | DELETE | query |
+            | POST   | query |
+            | PUT    | query |
+            | PATCH  | query |
+            | DELETE | path  |
+            | POST   | path  |
+            | PUT    | path  |
+            | PATCH  | path  |
 
     Scenario Outline: Invoke operation - methods parameterised with extra params
-        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" parameter
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "<TYPE>" parameter
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping  | pong    |
@@ -84,8 +98,13 @@ Feature: Invoke Operation
             | ping | pong |
 
         Examples:
-            | METHOD |
-            | DELETE |
-            | POST   |
-            | PUT    |
-            | PATCH  |
+            | METHOD | TYPE  |
+            | DELETE | query |
+            | POST   | query |
+            | PUT    | query |
+            | PATCH  | query |
+            | DELETE | path  |
+            | POST   | path  |
+            | PUT    | path  |
+            | PATCH  | path  |
+

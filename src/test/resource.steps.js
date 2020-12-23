@@ -8,7 +8,6 @@ import {
   colors,
   animals
 } from 'unique-names-generator'
-import logger from '../util/logger'
 
 let pathCount = 0
 
@@ -45,19 +44,32 @@ Before(async function () {
     route,
     relationship,
     method,
-    parameter
+    parameter,
+    parameterType
   ) {
+    const dynamicRoute =
+      parameterType === 'query' ? route : `${route}/:${parameter}`
+    const dynamicUri =
+      parameterType === 'query'
+        ? `${route}{?${parameter}}`
+        : `${route}{/${parameter}}`
     await this.router
-      .route(route)
+      .route(dynamicRoute)
       [method.toLowerCase()](async (request, response) => {
-        logger.debug('SENDING', method, route, { ...request.query })
-        response.status(200).send({ ...request.query })
+        // logger.debug('SENDING', method, route, { ...request.query })
+        response
+          .status(200)
+          .send(
+            parameterType === 'query'
+              ? { ...request.query }
+              : { ...request.params }
+          )
       })
 
     const links = new LinkHeader()
     links.set({
       rel: relationship,
-      uri: `${route}{?${parameter}}`,
+      uri: dynamicUri,
       method: method
     })
 
@@ -169,13 +181,14 @@ Given(
 )
 
 Given(
-  'a resource with a {string} operation that returns the provided {string} parameter',
-  async function (relationship, parameter) {
+  'a resource with a {string} operation that returns the provided {string} {string} parameter',
+  async function (relationship, parameter, parameterType) {
     await this.createDynamicResourceRoute(
       randomApiPath(),
       relationship,
       'GET',
-      parameter
+      parameter,
+      parameterType
     )
   }
 )
@@ -204,13 +217,14 @@ Given(
 )
 
 Given(
-  'a resource with a {string} operation with the {string} method that returns the provided {string} parameter',
-  async function (relationship, method, parameter) {
+  'a resource with a {string} operation with the {string} method that returns the provided {string} {string} parameter',
+  async function (relationship, method, parameter, parameterType) {
     await this.createDynamicResourceRoute(
       randomApiPath(),
       relationship,
       method,
-      parameter
+      parameter,
+      parameterType
     )
   }
 )

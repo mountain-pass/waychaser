@@ -1,6 +1,5 @@
 import { assert, expect } from 'chai'
 import { When, Then, Before } from 'cucumber'
-import logger from '../util/logger'
 
 Before(async function () {
   this.checkUrls = async function (expectedUrl) {
@@ -114,7 +113,6 @@ Before(async function () {
       relationship,
       context
     )
-    logger.debug('RESULT', this.result)
   }
 
   this.invokeSuccessfully = async function (relationship, previousResult) {

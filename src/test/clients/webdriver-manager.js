@@ -109,7 +109,6 @@ class WebdriverManager {
     const transformed = await (
       await babel.transformAsync(code, babelConfig)
     ).code.replace('"use strict";\n\n', 'return ')
-    logger.debug({ transformed })
     const returnedFromBrowser = await this.driver.executeAsyncScript(
       transformed,
       ...arguments_

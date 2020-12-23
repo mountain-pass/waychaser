@@ -118,7 +118,6 @@ const waychaser = {
 
   ApiResourceObject: class {
     constructor (response) {
-      logger.waychaser('creating ARO', response)
       this.response = response
       const linkHeader = response.headers.get('link')
       const linkTemplateHeader = response.headers.get('link-template')
@@ -126,7 +125,6 @@ const waychaser = {
       this.operations = linkDatabase.addCollection()
       loadOperations(this.operations, linkHeader, response)
       loadOperations(this.operations, linkTemplateHeader, response)
-      logger.waychaser('created ARO', this)
     }
 
     get ops () {
