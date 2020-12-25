@@ -23,7 +23,8 @@
     "hateoas",
     "hateoas-client",
     "client",
-    "hypermedia"
+    "hypermedia",
+    "hypermedia-client"
   ],
   "main": "dist/waychaser.js",
   "unpkg": "dist/waychaser.umd.min.js",
