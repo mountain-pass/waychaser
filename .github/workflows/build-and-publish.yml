@@ -242,11 +242,6 @@ jobs:
         shell: bash
 
     steps:
-      # wait here so we don't overload our browserstack quota
-      - uses: softprops/turnstyle@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: actions/checkout@v2
 
       - name: Cache NPM dependencies
