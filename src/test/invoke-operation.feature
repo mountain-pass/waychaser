@@ -40,6 +40,7 @@ Feature: Invoke Operation
         Examples:
             | TYPE  |
             | query |
+            | path  |
 
     Scenario Outline: Invoke operation - parameterised with extra params
         Given a resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" "<TYPE>" parameter

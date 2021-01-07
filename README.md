@@ -188,7 +188,7 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests
 - [ ] upgrade webpack
-- [ ] investigate mega-lint
+- [ ] investigate mega-linter
 - [ ] fix struture of package so we get better jsdoc linting
 - [ ] refactor browserstack test run to use single tunnel when running locally
 - [ ] add tests for abort
