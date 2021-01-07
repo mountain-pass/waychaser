@@ -5,6 +5,7 @@ import Loki from 'lokijs'
 import logger from './util/logger'
 import { URI } from 'uri-template-lite'
 import qsStringify from 'qs-stringify'
+import Accept from '@hapi/accept'
 polyfill()
 
 /**
@@ -82,6 +83,10 @@ class Operation {
         this['params*']?.value ? JSON.stringify(body) : undefined
       }`
     )
+    const contentType = Accept.mediaType(
+      this['accept*']?.value || 'application/x-www-form-urlencoded',
+      ['application/x-www-form-urlencoded', 'application/json']
+    )
     return loadResource(
       invokeUrl,
       Object.assign(
@@ -89,15 +94,13 @@ class Operation {
           method: this.method,
           ...(this['params*']?.value && {
             headers: {
-              // 'Content-Type': 'application/json'
-              'Content-Type':
-                this['accept*']?.value || 'application/x-www-form-urlencoded'
+              'Content-Type': contentType
             }
           }),
 
           ...(this['params*']?.value && {
             body:
-              this['accept*']?.value === 'application/json'
+              contentType === 'application/json'
                 ? JSON.stringify(body)
                 : qsStringify(body)
           })

@@ -47,7 +47,7 @@ Before(async function () {
     method,
     parameter,
     parameterType,
-    contentType
+    contentTypes
   ) {
     const dynamicRoute =
       parameterType === 'query' || parameterType === 'body'
@@ -66,7 +66,11 @@ Before(async function () {
         // logger.debug('SENDING', method, route, { ...request.query })
         logger.debug('RECEIVED BODY', method, route, { ...request.body })
         let responseBody = Object.assign(
-          { 'content-type': request.headers['content-type'] },
+          {
+            ...(contentTypes !== undefined && {
+              'content-type': request.headers['content-type']
+            })
+          },
           request.body
         )
         if (parameterType === 'query') {
@@ -74,9 +78,13 @@ Before(async function () {
         } else if (parameterType === 'path') {
           responseBody = request.params
         }
-        response.status(200).send(responseBody || {})
+        response.status(200).send(responseBody)
       })
 
+    const accept = (Array.isArray(contentTypes)
+      ? contentTypes
+      : [contentTypes]
+    ).join()
     const links = new LinkHeader()
     links.set({
       rel: relationship,
@@ -85,9 +93,9 @@ Before(async function () {
       ...(parameterType === 'body' && {
         'params*': { value: JSON.stringify({ [parameter]: {} }) }
       }),
-      ...(contentType !== undefined &&
-        contentType !== 'application/x-www-form-urlencoded' && {
-          'accept*': { value: contentType }
+      ...(contentTypes !== undefined &&
+        contentTypes !== 'application/x-www-form-urlencoded' && {
+          'accept*': { value: accept }
         })
     })
 
@@ -257,6 +265,26 @@ Given(
       parameter,
       parameterType,
       contentType
+    )
+  }
+)
+
+Given(
+  'a resource with a {string} operation with the {string} method that returns the provided {string} {string} parameter and the content type, accepting:',
+  async function (
+    relationship,
+    method,
+    parameter,
+    parameterType,
+    contentTypes
+  ) {
+    await this.createDynamicResourceRoute(
+      randomApiPath(),
+      relationship,
+      method,
+      parameter,
+      parameterType,
+      contentTypes.rows()
     )
   }
 )
