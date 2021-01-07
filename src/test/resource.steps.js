@@ -8,6 +8,7 @@ import {
   colors,
   animals
 } from 'unique-names-generator'
+import logger from '../util/logger'
 
 let pathCount = 0
 
@@ -45,32 +46,49 @@ Before(async function () {
     relationship,
     method,
     parameter,
-    parameterType
+    parameterType,
+    contentType
   ) {
     const dynamicRoute =
-      parameterType === 'query' ? route : `${route}/:${parameter}`
-    const dynamicUri =
-      parameterType === 'query'
-        ? `${route}{?${parameter}}`
-        : `${route}{/${parameter}}`
+      parameterType === 'query' || parameterType === 'body'
+        ? route
+        : `${route}/:${parameter}`
+    let dynamicUri = route
+    if (parameterType === 'query') {
+      dynamicUri = `${route}{?${parameter}}`
+    } else if (parameterType === 'path') {
+      dynamicUri = `${route}{/${parameter}}`
+    }
+
     await this.router
       .route(dynamicRoute)
       [method.toLowerCase()](async (request, response) => {
         // logger.debug('SENDING', method, route, { ...request.query })
-        response
-          .status(200)
-          .send(
-            parameterType === 'query'
-              ? { ...request.query }
-              : { ...request.params }
-          )
+        logger.debug('RECEIVED BODY', method, route, { ...request.body })
+        let responseBody = Object.assign(
+          { 'content-type': request.headers['content-type'] },
+          request.body
+        )
+        if (parameterType === 'query') {
+          responseBody = request.query
+        } else if (parameterType === 'path') {
+          responseBody = request.params
+        }
+        response.status(200).send(responseBody || {})
       })
 
     const links = new LinkHeader()
     links.set({
       rel: relationship,
       uri: dynamicUri,
-      method: method
+      method: method,
+      ...(parameterType === 'body' && {
+        'params*': { value: JSON.stringify({ [parameter]: {} }) }
+      }),
+      ...(contentType !== undefined &&
+        contentType !== 'application/x-www-form-urlencoded' && {
+          'accept*': { value: contentType }
+        })
     })
 
     this.currentResourceRoute = randomApiPath()
@@ -225,6 +243,20 @@ Given(
       method,
       parameter,
       parameterType
+    )
+  }
+)
+
+Given(
+  'a resource with a {string} operation with the {string} method that returns the {string} provided {string} {string} parameter and the content type',
+  async function (relationship, method, contentType, parameter, parameterType) {
+    await this.createDynamicResourceRoute(
+      randomApiPath(),
+      relationship,
+      method,
+      parameter,
+      parameterType,
+      contentType
     )
   }
 )

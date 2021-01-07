@@ -4,6 +4,7 @@ import LinkHeader from 'http-link-header'
 import Loki from 'lokijs'
 import logger from './util/logger'
 import { URI } from 'uri-template-lite'
+import qsStringify from 'qs-stringify'
 polyfill()
 
 /**
@@ -17,7 +18,8 @@ polyfill()
  * @throws {Error} If the server returns with a status >= 400
  */
 function loadResource (url, options) {
-  logger.waychaser(`loading ${url}`)
+  logger.waychaser(`loading ${url} with:`)
+  logger.waychaser(JSON.stringify(options, undefined, 2))
   return fetch(url, options).then(response => {
     if (!response.ok) {
       logger.waychaser(`Bad response from server ${JSON.stringify(response)}`)
@@ -62,15 +64,46 @@ class Operation {
   }
 
   async invoke (context, options) {
+    const parameters = this['params*']?.value
+      ? JSON.parse(this['params*']?.value)
+      : {}
+    logger.waychaser(parameters)
     const contextUrl = this.callingContext.url
     const expandedUri = URI.expand(this.uri, context || {})
     logger.waychaser(`loading ${expandedUri}`)
 
     const invokeUrl = new URL(expandedUri, contextUrl)
-    logger.waychaser(`invoking ${invokeUrl}`)
+    const body = {}
+    Object.keys(parameters).forEach(key => {
+      body[key] = context[key]
+    })
+    logger.waychaser(
+      `invoking ${invokeUrl} with body ${
+        this['params*']?.value ? JSON.stringify(body) : undefined
+      }`
+    )
     return loadResource(
       invokeUrl,
-      Object.assign({ method: this.method }, options)
+      Object.assign(
+        {
+          method: this.method,
+          ...(this['params*']?.value && {
+            headers: {
+              // 'Content-Type': 'application/json'
+              'Content-Type':
+                this['accept*']?.value || 'application/x-www-form-urlencoded'
+            }
+          }),
+
+          ...(this['params*']?.value && {
+            body:
+              this['accept*']?.value === 'application/json'
+                ? JSON.stringify(body)
+                : qsStringify(body)
+          })
+        },
+        options
+      )
     )
   }
 }
@@ -89,7 +122,6 @@ Loki.Collection.prototype.invoke = async function (
   options
 ) {
   const operation = this.findOne(relationship)
-  logger.waychaser('collection:', JSON.stringify(this, undefined, 2))
   logger.waychaser(
     `operation ${relationship}:`,
     JSON.stringify(operation, undefined, 2)

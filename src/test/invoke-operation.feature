@@ -89,6 +89,7 @@ Feature: Invoke Operation
             | PUT    | path  |
             | PATCH  | path  |
 
+
     Scenario Outline: Invoke operation - methods parameterised with extra params
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "<TYPE>" parameter
         When waychaser successfully loads that resource
@@ -108,4 +109,35 @@ Feature: Invoke Operation
             | POST   | path  |
             | PUT    | path  |
             | PATCH  | path  |
+
+    Scenario Outline: Invoke operation - POST body
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the "<CONTENT-TYPE>" provided "ping" "<TYPE>" parameter and the content type
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | ping | pong |
+        Then resource returned will contain
+            | content-type | <CONTENT-TYPE> |
+            | ping         | pong           |
+
+        @wip
+        Examples:
+            | METHOD | TYPE | CONTENT-TYPE                      |
+            | POST   | body | application/x-www-form-urlencoded |
+            | POST   | body | application/json                  |
+
+    Scenario Outline: Invoke operation - POST body with extra context
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the "<CONTENT-TYPE>" provided "ping" "<TYPE>" parameter and the content type
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | ping  | pong    |
+            | other | notUsed |
+        Then resource returned will contain only
+            | content-type | <CONTENT-TYPE> |
+            | ping         | pong           |
+
+        @wip
+        Examples:
+            | METHOD | TYPE | CONTENT-TYPE                      |
+            | POST   | body | application/x-www-form-urlencoded |
+            | POST   | body | application/json                  |
 

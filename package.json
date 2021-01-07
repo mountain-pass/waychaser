@@ -75,6 +75,7 @@
     "test:browser-api": "scripts/for-all-browsers.sh",
     "test": "npm-run-all --sequential ${npm_lifecycle_event}:*",
     "watch:test:node-api": "nodemon -V -x npm -- run ${npm_lifecycle_event#watch:}",
+    "watch:test:node-api:wip": "nodemon -V -x npm -- run ${npm_lifecycle_event#watch:}",
     "watch:headless:test:browser-api:chrome:local": "nodemon -V -x npm -- run ${npm_lifecycle_event#watch:}",
     "watch:test:browser-api:chrome:local": "nodemon -V -x npm -- run ${npm_lifecycle_event#watch:}",
     "watch:test:browser-api:firefox:local": "nodemon -V -x npm -- run ${npm_lifecycle_event#watch:}",
@@ -116,6 +117,7 @@
     "http-link-header": "^1.0.2",
     "isomorphic-fetch": "^3.0.0",
     "lokijs": "^1.5.11",
+    "qs-stringify": "^1.2.1",
     "uri-template-lite": "^20.5.0"
   },
   "devDependencies": {
@@ -139,6 +141,7 @@
     "babel-plugin-transform-imports": "^2.0.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "body-parser": "^1.19.0",
     "browserstack-local": "^1.4.8",
     "bufferutil": "^4.0.2",
     "chai": "^4.2.0",

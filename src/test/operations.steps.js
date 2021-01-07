@@ -235,7 +235,7 @@ Then('resource returned will contain those values', async function () {
   await this.checkBody(this.expectedBody)
 })
 
-Then('resource returned will contain only', async function (dataTable) {
+Then('resource returned will contain( only)', async function (dataTable) {
   const expectedBody = dataTable.rowsHash()
   await this.checkBody(expectedBody)
 })
