@@ -60,31 +60,32 @@ Before(async function () {
       dynamicUri = `${route}{/${parameter}}`
     }
 
-    await this.router
-      .route(dynamicRoute)
-      [method.toLowerCase()](async (request, response) => {
-        // logger.debug('SENDING', method, route, { ...request.query })
-        logger.debug('RECEIVED BODY', method, route, { ...request.body })
-        let responseBody = Object.assign(
-          {
-            ...(contentTypes !== undefined && {
-              'content-type': request.headers['content-type']
-            })
-          },
-          request.body
-        )
-        if (parameterType === 'query') {
-          responseBody = request.query
-        } else if (parameterType === 'path') {
-          responseBody = request.params
-        }
-        response.status(200).send(responseBody)
-      })
+    await this.router.route(dynamicRoute)[method](async (request, response) => {
+      // logger.debug('SENDING', method, route, { ...request.query })
+      logger.debug('RECEIVED BODY', method, route, { ...request.body })
+      let responseBody = Object.assign(
+        {
+          ...(contentTypes !== undefined && {
+            'content-type': request.headers['content-type']
+          })
+        },
+        request.body
+      )
+      if (parameterType === 'query') {
+        responseBody = request.query
+      } else if (parameterType === 'path') {
+        responseBody = request.params
+      }
+      response.status(200).send(responseBody)
+    })
 
-    const accept = (Array.isArray(contentTypes)
+    const acceptArray = Array.isArray(contentTypes)
       ? contentTypes
       : [contentTypes]
-    ).join()
+    const accept =
+      acceptArray.length > 1 || acceptArray[0] !== ''
+        ? acceptArray.join()
+        : undefined
     const links = new LinkHeader()
     links.set({
       rel: relationship,
@@ -93,10 +94,9 @@ Before(async function () {
       ...(parameterType === 'body' && {
         'params*': { value: JSON.stringify({ [parameter]: {} }) }
       }),
-      ...(contentTypes !== undefined &&
-        contentTypes !== 'application/x-www-form-urlencoded' && {
-          'accept*': { value: accept }
-        })
+      ...(accept !== undefined && {
+        'accept*': { value: accept }
+      })
     })
 
     this.currentResourceRoute = randomApiPath()

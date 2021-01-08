@@ -115,7 +115,7 @@ Feature: Invoke Operation
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
-        Then resource returned will contain
+        Then resource returned will contain only
             | content-type | <CONTENT-TYPE> |
             | ping         | pong           |
 
@@ -148,7 +148,7 @@ Feature: Invoke Operation
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
-        Then resource returned will contain
+        Then resource returned will contain only
             | content-type | application/x-www-form-urlencoded |
             | ping         | pong                              |
 
@@ -160,7 +160,7 @@ Feature: Invoke Operation
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
-        Then resource returned will contain
+        Then resource returned will contain only
             | content-type | application/json |
             | ping         | pong             |
 

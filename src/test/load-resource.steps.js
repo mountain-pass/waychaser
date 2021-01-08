@@ -29,24 +29,27 @@ When("waychaser loads a resource that's not available", async function () {
 })
 
 Then('it will have loaded successfully', async function () {
-  expect(this.result.success).to.be.true
+  expect(this.result.success).to.be.true()
 })
 
 Then('it will NOT have loaded successfully', async function () {
-  expect(this.result.success).to.be.false
+  expect(this.result.success).to.be.false()
 })
 
 When('waychaser successfully loads that resource', async function () {
   await this.loadCurrentResource()
-  expect(this.result.success).to.be.true
+  expect(this.result.success).to.be.true()
 })
 
 When('waychaser successfully loads the latter resource', async function () {
   await this.loadCurrentResource()
-  expect(this.result.success).to.be.true
+  expect(this.result.success).to.be.true()
 })
 
-When('waychaser successfully loads the first resource in the list', async function () {
-  await this.loadCurrentResource()
-  expect(this.result.success).to.be.true
-})
+When(
+  'waychaser successfully loads the first resource in the list',
+  async function () {
+    await this.loadCurrentResource()
+    expect(this.result.success).to.be.true()
+  }
+)

@@ -54,6 +54,7 @@
     "start:dev": "concurrently \"npm run watch:server:${npm_lifecycle_event#start:}\" \"npm run browser:${npm_lifecycle_event#start:}\"",
     "start-no-hot:dev": "concurrently \"npm run server:${npm_lifecycle_event#start-no-hot:}\" \"npm run browser:${npm_lifecycle_event#start-no-hot:} -- --no-hot\"",
     "lint:sh": "shellcheck **/*.sh",
+    "lint:standardjs": "standard --verbose",
     "lint:js": "eslint .",
     "lint:js:fix": "npm run ${npm_lifecycle_event%:fix} -- --fix",
     "lint:json+": "prettier --check .",
@@ -155,6 +156,7 @@
     "cucumber-junit-formatter": "^0.2.2",
     "dateformat": "^3.0.3",
     "depcheck": "^1.2.0",
+    "dirty-chai": "^2.0.1",
     "eslint": "^7.13.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-config-prettier-standard": "^3.0.1",
@@ -195,6 +197,7 @@
     "selenium-webdriver": "^4.0.0-alpha.5",
     "shellcheck": "^0.4.4",
     "snyk": "^1.431.1",
+    "standard": "^16.0.3",
     "start-server-and-test": "^1.11.7",
     "unique-names-generator": "^4.3.1",
     "utf-8-validate": "^5.0.3",
@@ -226,5 +229,18 @@
       "pre-commit": "lint-staged",
       "pre-push": "npm run pre-push"
     }
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "plugins": [
+      "security",
+      "unicorn",
+      "promise",
+      "istanbul",
+      "jsdoc"
+    ]
   }
 }

@@ -12,6 +12,7 @@
     "markdown"
   ],
   "extends": [
+    "standard",
     "prettier-standard",
     "plugin:security/recommended",
     "plugin:unicorn/recommended",
@@ -49,15 +50,31 @@
   "overrides": [
     {
       "files": ["src/test/**", "cucumber.js"],
-      "plugins": ["chai-friendly"],
-      "extends": ["plugin:chai-friendly/recommended"],
+      "plugins": [
+        "chai-friendly",
+        "security",
+        "unicorn",
+        "promise",
+        "istanbul",
+        "jsdoc"
+      ],
+      "extends": [
+        "plugin:chai-friendly/recommended",
+        "prettier-standard",
+        "plugin:security/recommended",
+        "plugin:unicorn/recommended",
+        "plugin:jsdoc/recommended",
+        "plugin:md/recommended",
+        "plugin:json/recommended"
+      ],
       "globals": {
         "expect": true,
         "PendingError": true
       },
       "rules": {
         "security/detect-non-literal-fs-filename": "off",
-        "jsdoc/require-jsdoc": "off"
+        "jsdoc/require-jsdoc": "off",
+        "security/detect-object-injection": "off"
       }
     },
     {
