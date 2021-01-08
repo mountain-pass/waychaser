@@ -3,6 +3,7 @@ const fs = require('fs')
 
 const FAIL_FAST = process.env.FAIL_FAST || '--fail-fast'
 const NO_STRICT = process.env.NO_STRICT || ''
+const RETRY = process.env.CI ? '--retry 5' : ''
 
 const outputDirectory = 'test-results'
 fs.mkdirSync(outputDirectory, { recursive: true })
@@ -39,7 +40,7 @@ function generateConfig () {
   const REQUIRE_GLOB = 'src/test/**/*.js'
   const CONFIG = `${FEATURE_GLOB} --format-options '${JSON.stringify(
     FORMAT_OPTIONS
-  )}' ${MODULES} --require ${REQUIRE_GLOB} ${NO_STRICT} --format rerun:${RERUN} --format json:${resultsDirectory}/results.cucumber -f node_modules/cucumber-junit-formatter:${resultsDirectory}/results.xml ${FAIL_FAST}`
+  )}' ${MODULES} --require ${REQUIRE_GLOB} ${NO_STRICT} --format rerun:${RERUN} --format json:${resultsDirectory}/results.cucumber -f node_modules/cucumber-junit-formatter:${resultsDirectory}/results.xml ${RETRY} ${FAIL_FAST}`
 
   console.log(CONFIG)
   return CONFIG
