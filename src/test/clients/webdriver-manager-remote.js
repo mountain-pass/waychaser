@@ -71,7 +71,26 @@ class WebdriverManagerRemote extends WebdriverManager {
         networkLogs: 'true',
         seleniumVersion: '3.14.0',
         userName: process.env.BROWSERSTACK_USERNAME,
-        accessKey: process.env.BROWSERSTACK_ACCESS_KEY
+        accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+        ...(this.browser === 'android' && {
+          deviceName: 'Samsung Galaxy S20',
+          realMobile: 'true'
+        }),
+        ...(this.browser === 'iphone' && {
+          deviceName: 'iPhone 12',
+          realMobile: 'true'
+        }),
+        ...((this.browser === 'ie' ||
+          this.browser === 'edge' ||
+          this.browser === 'chrome' ||
+          this.browser === 'firefox') && {
+          os: 'Windows',
+          osVersion: '10'
+        }),
+        ...(this.browser === 'safari' && {
+          os: 'OS X',
+          osVersion: 'Big Sur'
+        })
       },
       browserName: this.browser,
       ...(this.browser !== 'iphone' &&
