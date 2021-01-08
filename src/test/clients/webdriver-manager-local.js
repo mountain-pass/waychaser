@@ -53,12 +53,9 @@ class WebdriverManagerLocal extends WebdriverManager {
     // firefox to quit.
     // Since webdriver closes the browsers when the process terminates
     // we rely on that instead.
-    /* istanbul ignore else: only happens on test setup failure */
-    if (this.driver) {
-      /* istanbul ignore next: only firefox */
-      if (this.browser !== 'firefox') {
-        await this.driver.quit()
-      }
+    /* istanbul ignore next: only firefox */
+    if (this.driver && this.browser !== 'firefox') {
+      await this.driver.quit()
     }
     await super.afterAllTests()
   }
