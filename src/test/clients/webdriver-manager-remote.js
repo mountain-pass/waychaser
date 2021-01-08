@@ -10,38 +10,25 @@ class WebdriverManagerRemote extends WebdriverManager {
   constructor () {
     super()
     this.tunneler = remoteTunneler
+    this.status = 'passed'
   }
 
   async beforeAllTests () {
     await this.tunneler.startTunnel()
-    await super.beforeAllTests()
-  }
-
-  async beforeTest (scenario) {
-    this.driver = await this.buildDriver(scenario.pickle.name)
+    this.driver = await this.buildDriver()
     logger.debug('driver built')
     await this.loadWaychaserTestPage()
-
-    await super.beforeTest(scenario)
+    await super.beforeAllTests()
   }
 
   async afterTest (scenario) {
     await super.afterTest(scenario)
-
-    try {
-      logger.debug('sending test results...', scenario.result.status)
-      await this.sendTestResult(scenario.result.status)
-    } catch (error) {
-      /* istanbul ignore next: only get's executed on test framework failure */
-      logger.error('coverage', error)
+    if (scenario.result.status === 'failed') {
+      this.status = 'failed'
     }
-    logger.debug('...sent')
-
-    await this.driver.quit()
-    delete this.driver
   }
 
-  async doBuildDriver (name) {
+  async doBuildDriver () {
     assert(
       process.env.BROWSERSTACK_USERNAME,
       'process.env.BROWSERSTACK_USERNAME not set'
@@ -61,7 +48,6 @@ class WebdriverManagerRemote extends WebdriverManager {
         os: 'Any',
         projectName,
         buildName: BUILD,
-        sessionName: name,
         local: 'true',
         ...(localIdentifier && {
           localIdentifier
@@ -115,6 +101,18 @@ class WebdriverManagerRemote extends WebdriverManager {
   }
 
   async afterAllTests () {
+    try {
+      logger.debug('sending test results...', this.status)
+      await this.sendTestResult(this.status)
+    } catch (error) {
+      /* istanbul ignore next: only get's executed on test framework failure */
+      logger.error('error sending test results', error)
+    }
+    logger.debug('...sent')
+
+    await this.driver.quit()
+    delete this.driver
+
     super.afterAllTests()
     await this.tunneler.stopTunnel()
   }
