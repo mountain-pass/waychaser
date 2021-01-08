@@ -8,6 +8,7 @@ async function handleResponse (promise) {
     return { success: true, resource }
   } catch (error) {
     logger.error('error loading %s', error)
+    logger.error(error)
     return { success: false, error }
   }
 }

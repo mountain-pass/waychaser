@@ -49,7 +49,7 @@ Before(async function () {
     parameterType,
     contentTypes
   ) {
-    const dynamicRoute =
+    const dynamicRoutePath =
       parameterType === 'query' || parameterType === 'body'
         ? route
         : `${route}/:${parameter}`
@@ -59,8 +59,8 @@ Before(async function () {
     } else if (parameterType === 'path') {
       dynamicUri = `${route}{/${parameter}}`
     }
-
-    await this.router.route(dynamicRoute)[method](async (request, response) => {
+    const dynamicRoute = await this.router.route(dynamicRoutePath)
+    await dynamicRoute[method.toLowerCase()](async (request, response) => {
       // logger.debug('SENDING', method, route, { ...request.query })
       logger.debug('RECEIVED BODY', method, route, { ...request.body })
       let responseBody = Object.assign(
@@ -83,9 +83,12 @@ Before(async function () {
       ? contentTypes
       : [contentTypes]
     const accept =
-      acceptArray.length > 1 || acceptArray[0] !== ''
-        ? acceptArray.join()
-        : undefined
+      acceptArray.length === 0 ||
+      // the default is application/x-www-form-urlencoded, so don't send it if that's what it's set to
+      (acceptArray.length === 1 && acceptArray[0]) ===
+        'application/x-www-form-urlencoded'
+        ? undefined
+        : acceptArray.join()
     const links = new LinkHeader()
     links.set({
       rel: relationship,
@@ -94,7 +97,7 @@ Before(async function () {
       ...(parameterType === 'body' && {
         'params*': { value: JSON.stringify({ [parameter]: {} }) }
       }),
-      ...(accept !== undefined && {
+      ...(accept && {
         'accept*': { value: accept }
       })
     })

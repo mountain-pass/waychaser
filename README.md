@@ -182,8 +182,10 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [x] add tests for POST forms
 - [x] fix badges
 - [x] add js standard liniting to make sure our eslint confirm is conforming
-- [ ] add tests for PUT forms
-- [ ] add tests for PATCH forms
+- [x] add tests for PUT forms
+- [x] add tests for PATCH forms
+- [ ] add tests for multiple parameters
+- [ ] add tests for multipart
 - [ ] add support for HAL
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests
