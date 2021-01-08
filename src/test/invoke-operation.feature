@@ -123,12 +123,15 @@ Feature: Invoke Operation
             | METHOD | TYPE | CONTENT-TYPE                      |
             | POST   | body | application/x-www-form-urlencoded |
             | POST   | body | application/json                  |
+            | POST   | body | multipart/form-data               |
             | PUT    | body | application/x-www-form-urlencoded |
             | PUT    | body | application/json                  |
+            | PUT    | body | multipart/form-data               |
             | PATCH  | body | application/x-www-form-urlencoded |
             | PATCH  | body | application/json                  |
+            | PATCH  | body | multipart/form-data               |
 
-    Scenario Outline: Invoke operation - POST body with extra context
+    Scenario Outline: Invoke operation - body with extra context
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the "<CONTENT-TYPE>" provided "ping" "<TYPE>" parameter and the content type
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
@@ -142,16 +145,20 @@ Feature: Invoke Operation
             | METHOD | TYPE | CONTENT-TYPE                      |
             | POST   | body | application/x-www-form-urlencoded |
             | POST   | body | application/json                  |
+            | POST   | body | multipart/form-data               |
             | PUT    | body | application/x-www-form-urlencoded |
             | PUT    | body | application/json                  |
+            | PUT    | body | multipart/form-data               |
             | PATCH  | body | application/x-www-form-urlencoded |
             | PATCH  | body | application/json                  |
+            | PATCH  | body | multipart/form-data               |
 
     Scenario Outline: Invoke operation -  body x-www-form-urlencoded prefered
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "body" parameter and the content type, accepting:
             | CONENT-TYPE                       |
             | application/x-www-form-urlencoded |
             | application/json;q=0.5            |
+            | multipart/form-data;q=0.5         |
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
@@ -165,11 +172,12 @@ Feature: Invoke Operation
             | PUT    |
             | PATCH  |
 
-    Scenario Outline: Invoke operation - POST body json prefered
+    Scenario Outline: Invoke operation - body json prefered
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "body" parameter and the content type, accepting:
             | CONENT-TYPE                             |
             | application/x-www-form-urlencoded;q=0.5 |
             | application/json                        |
+            | multipart/form-data;q=0.5               |
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
@@ -183,7 +191,25 @@ Feature: Invoke Operation
             | PUT    |
             | PATCH  |
 
-    @wip
+    Scenario Outline: Invoke operation - body multi-part prefered
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "body" parameter and the content type, accepting:
+            | CONENT-TYPE                             |
+            | application/x-www-form-urlencoded;q=0.5 |
+            | application/json;q=0.5                  |
+            | multipart/form-data                     |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | ping | pong |
+        Then resource returned will contain only
+            | content-type | multipart/form-data |
+            | ping         | pong                |
+
+        Examples:
+            | METHOD |
+            | POST   |
+            | PUT    |
+            | PATCH  |
+
     Scenario Outline: Invoke operation - body no preference
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "body" parameter
         When waychaser successfully loads that resource

@@ -63,14 +63,14 @@ Before(async function () {
     await dynamicRoute[method.toLowerCase()](async (request, response) => {
       // logger.debug('SENDING', method, route, { ...request.query })
       logger.debug('RECEIVED BODY', method, route, { ...request.body })
-      let responseBody = Object.assign(
-        {
-          ...(contentTypes !== undefined && {
-            'content-type': request.headers['content-type']
-          })
-        },
-        request.body
-      )
+      let responseBody = Object.assign({}, request.body)
+      if (contentTypes !== undefined) {
+        if (request.headers['content-type'].startsWith('multipart/form-data')) {
+          responseBody['content-type'] = 'multipart/form-data'
+        } else {
+          responseBody['content-type'] = request.headers['content-type']
+        }
+      }
       if (parameterType === 'query') {
         responseBody = request.query
       } else if (parameterType === 'path') {
