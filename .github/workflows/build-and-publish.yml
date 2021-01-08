@@ -365,12 +365,13 @@ jobs:
           local-identifier: random
       # browserstack can be moody at times, so let
       # the pipeline have a few cracks at it
-      - uses: nick-invision/retry@v2
-        with:
-          timeout_seconds: 1200
-          max_attempts: 10
-          retry_wait_seconds: 60
-          command: npm run cover:browser-api:${{ matrix.browser }}:remote
+      # - uses: nick-invision/retry@v2
+      #   with:
+      #     timeout_seconds: 1200
+      #     max_attempts: 10
+      #     retry_wait_seconds: 60
+      #     command: npm run cover:browser-api:${{ matrix.browser }}:remote
+      - run: npm run cover:browser-api:${{ matrix.browser }}:remote
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
           local-testing: stop
@@ -436,12 +437,13 @@ jobs:
           local-identifier: random
       # browserstack can be moody at times, so let
       # the pipeline have a few cracks at it
-      - uses: nick-invision/retry@v2
-        with:
-          timeout_seconds: 1200
-          max_attempts: 10
-          retry_wait_seconds: 60
-          command: npm run cover:browser-api:${{ matrix.browser }}:remote
+      # - uses: nick-invision/retry@v2
+      #   with:
+      #     timeout_seconds: 1200
+      #     max_attempts: 10
+      #     retry_wait_seconds: 60
+      #     command: npm run cover:browser-api:${{ matrix.browser }}:remote
+      - run: npm run cover:browser-api:${{ matrix.browser }}:remote
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
           local-testing: stop
@@ -507,12 +509,13 @@ jobs:
           local-identifier: random
       # browserstack can be moody at times, so let
       # the pipeline have a few cracks at it
-      - uses: nick-invision/retry@v2
-        with:
-          timeout_seconds: 1200
-          max_attempts: 10
-          retry_wait_seconds: 60
-          command: npm run cover:browser-api:${{ matrix.browser }}:remote
+      # - uses: nick-invision/retry@v2
+      #   with:
+      #     timeout_seconds: 1200
+      #     max_attempts: 10
+      #     retry_wait_seconds: 60
+      #     command: npm run cover:browser-api:${{ matrix.browser }}:remote
+      - run: npm run cover:browser-api:${{ matrix.browser }}:remote
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
           local-testing: stop
