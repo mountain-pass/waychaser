@@ -45,6 +45,7 @@ function loadResource (url, options) {
  */
 function loadOperations (operations, linkHeader, callingContext) {
   if (linkHeader) {
+    logger.debug(linkHeader)
     const links = LinkHeader.parse(linkHeader)
 
     operations.insert(
