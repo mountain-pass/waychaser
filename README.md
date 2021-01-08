@@ -9,13 +9,9 @@ This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, 
 
 [![Build Status](https://github.com/mountain-pass/waychaser/workflows/Build/badge.svg)](https://github.com/mountain-pass/waychaser/actions?query=workflow%3ABuild) [![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25)](https://automate.browserstack.com/public-build/M2lUc2Q3VFJicFR2c0N6Y0JvZE5oSXAvYlpUQ1ZPMXgxalpUK2ZtNTdPcz0tLVR3QzU5TXllbEZnemhqK2Z5VEpVQ2c9PQ==--8a61c301655735baed333d4f305980a13ef32c25)
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/532f3a287fbffed6f295/maintainability)](https://codeclimate.com/github/mountain-pass/waychaser/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/532f3a287fbffed6f295/test_coverage)](https://codeclimate.com/github/mountain-pass/waychaser/test_coverage)
-
 [![GitHub issues](https://img.shields.io/github/issues/mountain-pass/waychaser)](https://github.com/mountain-pass/waychaser/issues) [![GitHub pull requests](https://img.shields.io/github/issues-pr/mountain-pass/waychaser)](https://github.com/mountain-pass/waychaser/pulls)
 
-[![source code vulnerabilties](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?label=source%20code%20vulnerabilities)](https://snyk.io/test/github/mountain-pass/waychaser) [![source code dependencies](https://img.shields.io/librariesio/github/mountain-pass/waychaser?label=source%20code%20dependencies)](https://libraries.io/github/mountain-pass/waychaser#dependencies)
-
-[![npm package vulnerabilties](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@1.50.0?label=npm%20package%20vulnerabilties)](https://snyk.io/test/npm/@mountainpass/waychaser/1.50.0) [![npm package dependencies](https://img.shields.io/librariesio/release/npm/@mountainpass/waychaser/1.50.0)](https://libraries.io/npm/@mountainpass/waychaser/1.50.0)
+[![source code vulnerabilties](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?label=source%20code%20vulnerabilities)](https://snyk.io/test/github/mountain-pass/waychaser) [![npm package vulnerabilties](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@1.50.0?label=npm%20package%20vulnerabilties)](https://snyk.io/test/npm/@mountainpass/waychaser/1.50.0)
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
