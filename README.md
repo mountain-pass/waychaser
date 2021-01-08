@@ -184,8 +184,8 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [x] add js standard liniting to make sure our eslint confirm is conforming
 - [x] add tests for PUT forms
 - [x] add tests for PATCH forms
+- [x] add tests for multipart
 - [ ] add tests for multiple parameters
-- [ ] add tests for multipart
 - [ ] add support for HAL
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests

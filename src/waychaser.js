@@ -6,6 +6,7 @@ import logger from './util/logger'
 import { URI } from 'uri-template-lite'
 import qsStringify from 'qs-stringify'
 import Accept from '@hapi/accept'
+import FormData from 'form-data'
 polyfill()
 
 /**
@@ -86,24 +87,42 @@ class Operation {
     )
     const contentType = Accept.mediaType(
       this['accept*']?.value || 'application/x-www-form-urlencoded',
-      ['application/x-www-form-urlencoded', 'application/json']
+      [
+        'application/x-www-form-urlencoded',
+        'application/json',
+        'multipart/form-data'
+      ]
     )
+    let encodedContent
+    switch (contentType) {
+      case 'application/x-www-form-urlencoded':
+        encodedContent = qsStringify(body)
+        break
+      case 'application/json':
+        encodedContent = JSON.stringify(body)
+        break
+      case 'multipart/form-data':
+        encodedContent = new FormData()
+        for (const name in body) {
+          encodedContent.append(name, body[name])
+        }
+        break
+    }
+    let headers
+    if (this['params*']?.value && contentType !== 'multipart/form-data') {
+      headers = {
+        'Content-Type': contentType
+      }
+    }
+
     return loadResource(
       invokeUrl,
       Object.assign(
         {
           method: this.method,
+          headers,
           ...(this['params*']?.value && {
-            headers: {
-              'Content-Type': contentType
-            }
-          }),
-
-          ...(this['params*']?.value && {
-            body:
-              contentType === 'application/json'
-                ? JSON.stringify(body)
-                : qsStringify(body)
+            body: encodedContent
           })
         },
         options
