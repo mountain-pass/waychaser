@@ -23,6 +23,7 @@ class WebdriverManagerRemote extends WebdriverManager {
 
   async afterTest (scenario) {
     await super.afterTest(scenario)
+    /* istanbul ignore next: only get's executed when there are test failures */
     if (scenario.result.status === 'failed') {
       this.status = 'failed'
     }
@@ -76,7 +77,8 @@ class WebdriverManagerRemote extends WebdriverManager {
         ...(this.browser === 'safari' && {
           os: 'OS X',
           osVersion: 'Big Sur'
-        })
+        }),
+        idleTimeout: 300
       },
       browserName: this.browser,
       ...(this.browser !== 'iphone' &&
