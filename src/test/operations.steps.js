@@ -117,12 +117,12 @@ Before(async function () {
 
   this.invokeSuccessfully = async function (relationship, previousResult) {
     await this.invoke(relationship, previousResult)
-    expect(this.operationResult.success).to.be.true
-    expect(this.operationResultLokiStyle.success).to.be.true
-    expect(this.opResult.success).to.be.true
-    expect(this.opResultLokiStyle.success).to.be.true
-    expect(this.resultLokiStyle.success).to.be.true
-    expect(this.result.success).to.be.true
+    expect(this.operationResult.success).to.be.true()
+    expect(this.operationResultLokiStyle.success).to.be.true()
+    expect(this.opResult.success).to.be.true()
+    expect(this.opResultLokiStyle.success).to.be.true()
+    expect(this.resultLokiStyle.success).to.be.true()
+    expect(this.result.success).to.be.true()
   }
 
   this.checkBodySingle = async function (expectedBody, result) {
@@ -235,7 +235,7 @@ Then('resource returned will contain those values', async function () {
   await this.checkBody(this.expectedBody)
 })
 
-Then('resource returned will contain( only)', async function (dataTable) {
+Then('resource returned will contain only', async function (dataTable) {
   const expectedBody = dataTable.rowsHash()
   await this.checkBody(expectedBody)
 })

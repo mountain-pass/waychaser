@@ -10,7 +10,7 @@ fs.mkdirSync(outputDirectory, { recursive: true })
 function getFeatureGlob (RERUN, profile) {
   /* istanbul ignore next: :wip is not used for full test runs */
   if (process.env.npm_lifecycle_event.endsWith(':wip')) {
-    return `src/test/**/*.feature --tags '@wip'`
+    return "src/test/**/*.feature --tags '@wip'"
   }
   /* istanbul ignore next: RERUN is not set for full test runs */
   return fs.existsSync(RERUN) && fs.statSync(RERUN).size !== 0

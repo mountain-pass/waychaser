@@ -12,6 +12,7 @@ import {
   setDefaultTimeout
 } from 'cucumber'
 import chai from 'chai'
+import dirtyChai from 'dirty-chai'
 import logger from '../util/logger'
 import chaiAsPromised from 'chai-as-promised'
 
@@ -23,6 +24,7 @@ import { webdriverManagerRemote } from './clients/webdriver-manager-remote'
 import { startServer, app, stopServer, getNewRouter } from './fakes/server'
 
 chai.use(chaiAsPromised)
+chai.use(dirtyChai)
 
 global.expect = chai.expect
 global.PendingError = PendingError
