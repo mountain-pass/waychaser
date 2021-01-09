@@ -10,7 +10,7 @@ import {
   After,
   AfterAll,
   setDefaultTimeout
-} from 'cucumber'
+} from '@cucumber/cucumber'
 import chai from 'chai'
 import dirtyChai from 'dirty-chai'
 import logger from '../util/logger'

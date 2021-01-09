@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai'
-import { When, Then, Before } from 'cucumber'
+import { When, Then, Before } from '@cucumber/cucumber'
 
 Before(async function () {
   this.checkUrls = async function (expectedUrl) {

@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { When, Then, Before } from 'cucumber'
+import { When, Then, Before } from '@cucumber/cucumber'
 import logger from '../util/logger'
 import { API_ACCESS_PORT, API_ACCESS_HOST } from './config'
 
