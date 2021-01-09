@@ -1,4 +1,4 @@
-import { Given, Before } from 'cucumber'
+import { Given, Before } from '@cucumber/cucumber'
 import LinkHeader from 'http-link-header'
 import { API_ACCESS_HOST, API_ACCESS_PORT } from './config'
 
