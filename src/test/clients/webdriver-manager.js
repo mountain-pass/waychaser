@@ -38,6 +38,7 @@ function mergeClientCoverage (object) {
 class WebdriverManager {
   async loadWaychaserTestPage () {
     logger.debug('loading page...')
+    await this.driver.get('https://google.com')
     await this.driver.get(`http://${BROWSER_HOST}:${BROWSER_PORT}`)
     logger.debug('...page loaded')
 
@@ -106,9 +107,15 @@ class WebdriverManager {
       return returnedFromBrowser
     } catch (error) {
       /* istanbul ignore next: only get's executed when there are webdriver issues */
-      logger.error(`error executing script: ${error.constructor.name}`)
+      logger.error(`error executing script: ${error.name}`)
       /* istanbul ignore next: only get's executed when there are webdriver issues */
-      logger.error(error)
+      if (
+        error.constructor.name === 'WebDriverError' &&
+        error.message === 'Session not started or terminated'
+      ) {
+        await this.buildDriver()
+        await this.loadWaychaserTestPage()
+      }
       /* istanbul ignore next: only get's executed when there are webdriver issues */
       throw error
     }
