@@ -105,8 +105,11 @@ class WebdriverManager {
       logger.debug({ returnedFromBrowser })
       return returnedFromBrowser
     } catch (error) {
+      /* istanbul ignore next: only get's executed when there are webdriver issues */
       logger.error(`error executing script: ${error.constructor.name}`)
+      /* istanbul ignore next: only get's executed when there are webdriver issues */
       logger.error(error)
+      /* istanbul ignore next: only get's executed when there are webdriver issues */
       throw error
     }
   }
