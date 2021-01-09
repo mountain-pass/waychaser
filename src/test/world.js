@@ -33,6 +33,8 @@ const profile = process.env.npm_lifecycle_event
   .replace('test:', '')
   .replace(/:/g, '-')
 
+const DEFAULT_STEP_TIMEOUT = 20 * 1000
+
 let waychaserProxy, webdriverManager
 
 // if testing via browser, setup web-driver
@@ -43,6 +45,7 @@ if (profile.startsWith('browser-api')) {
     remote: webdriverManagerRemote
   }
   webdriverManager = clients[mode.toString()]
+  webdriverManager.DEFAULT_STEP_TIMEOUT = DEFAULT_STEP_TIMEOUT
 
   /* istanbul ignore next: only get's executed when there are test config issues */
   if (webdriverManager === undefined) {
@@ -110,4 +113,4 @@ setWorldConstructor(world)
 
 setDefinitionFunctionWrapper(stepDefinitionWrapper)
 
-setDefaultTimeout(20 * 1000)
+setDefaultTimeout(DEFAULT_STEP_TIMEOUT)
