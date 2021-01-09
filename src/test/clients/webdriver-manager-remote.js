@@ -78,7 +78,7 @@ class WebdriverManagerRemote extends WebdriverManager {
           os: 'OS X',
           osVersion: 'Big Sur'
         }),
-        idleTimeout: 300
+        idleTimeout: this.DEFAULT_STEP_TIMEOUT / 1000 + 10
       },
       browserName: this.browser,
       ...(this.browser !== 'iphone' &&

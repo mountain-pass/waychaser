@@ -95,26 +95,36 @@ class WebdriverManager {
 
   async beforeAllTests () {}
 
-  async executeScript (script, ...arguments_) {
+  async doExecuteScript (executor, script, ...arguments_) {
     const code = `(${script}).apply(window, arguments)`
     const transformed = await (
       await babel.transformAsync(code, babelConfig)
     ).code.replace('"use strict";\n\n', 'return ')
-    return this.driver.executeScript(transformed, ...arguments_)
+    try {
+      const returnedFromBrowser = await executor(transformed, ...arguments_)
+      logger.debug({ returnedFromBrowser })
+      return returnedFromBrowser
+    } catch (error) {
+      logger.error(`error executing script: ${error.constructor.name}`)
+      logger.error(error)
+      throw error
+    }
+  }
+
+  async executeScript (script, ...arguments_) {
+    return this.doExecuteScript(
+      this.driver.executeScript.bind(this.driver),
+      script,
+      ...arguments_
+    )
   }
 
   async executeAsyncScript (script, ...arguments_) {
-    const code = `(${script}).apply(window, arguments)`
-    // logger.debug({ code });
-    const transformed = await (
-      await babel.transformAsync(code, babelConfig)
-    ).code.replace('"use strict";\n\n', 'return ')
-    const returnedFromBrowser = await this.driver.executeAsyncScript(
-      transformed,
+    return this.doExecuteScript(
+      this.driver.executeAsyncScript.bind(this.driver),
+      script,
       ...arguments_
     )
-    logger.debug({ returnedFromBrowser })
-    return returnedFromBrowser
   }
 
   async beforeTest (scenario) {
