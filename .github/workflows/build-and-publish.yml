@@ -367,7 +367,7 @@ jobs:
       # the pipeline have a few cracks at it
       - uses: nick-invision/retry@v2
         with:
-          timeout_seconds: 900
+          timeout_seconds: 1200
           max_attempts: 3
           retry_wait_seconds: 10
           command: npm run cover:browser-api:${{ matrix.browser }}:remote
@@ -438,7 +438,7 @@ jobs:
       # the pipeline have a few cracks at it
       - uses: nick-invision/retry@v2
         with:
-          timeout_seconds: 900
+          timeout_seconds: 1200
           max_attempts: 3
           retry_wait_seconds: 10
           command: npm run cover:browser-api:${{ matrix.browser }}:remote
@@ -509,7 +509,7 @@ jobs:
       # the pipeline have a few cracks at it
       - uses: nick-invision/retry@v2
         with:
-          timeout_seconds: 900
+          timeout_seconds: 1200
           max_attempts: 3
           retry_wait_seconds: 10
           command: npm run cover:browser-api:${{ matrix.browser }}:remote
