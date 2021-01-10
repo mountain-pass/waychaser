@@ -191,14 +191,14 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests
 - [ ] upgrade webpack
+  - [ ] or investigate using https://rollupjs.org/guide/en/ instead
 - [ ] fix struture of package so we get better jsdoc linting
 - [ ] refactor browserstack test run to use single tunnel when running locally
 - [ ] add tests for abort
-- [ ] add tests for different types of error responses
-- [ ] add tests for non-get operations
+- [ ] add tests for different types of error responses (maybe use https://hapi.dev/module/boom/api/?v=9.1.1)
 - [ ] add tests for validation
 - [ ] add method for running single scenario
-- [ ] expand code-climate analysis
+- [ ] expand codacy analysis
 - [ ] create docs site
   - [ ] integrate Code coverage and code quality reporting
   - [ ] integrate API docs
