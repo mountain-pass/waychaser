@@ -610,15 +610,6 @@ jobs:
           done
           ls -l coverage
       - run: npm run report:cover
-
-  codacy-coverage-reporter:
-    needs:
-      - check-coverage
-
-    continue-on-error: true
-    runs-on: ubuntu-latest
-    name: codacy-coverage-reporter
-    steps:
       - uses: codacy/codacy-coverage-reporter-action@master
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
