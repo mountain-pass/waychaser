@@ -37,6 +37,20 @@ function sendResponse (response, status, links, linkTemplates) {
   response.status(status).send({ status })
 }
 
+function filterParameters (parameters, type) {
+  return parameters.filter(parameter_ => {
+    return parameter_.TYPE === type
+  })
+}
+
+function joinParameters (parameters, separator) {
+  return parameters
+    .map(parameter_ => {
+      return parameter_.NAME
+    })
+    .join(separator)
+}
+
 async function createDynamicResourceRoute (
   rootRouter,
   route,
@@ -58,31 +72,15 @@ async function createDynamicResourceRoute (
     dynamicUri = `${route}{/${parameter}}`
   } else if (parameters) {
     // {/who,dub}
-    const pathParameters = parameters.filter(parameter_ => {
-      return parameter_.TYPE === 'path'
-    })
+    const pathParameters = filterParameters(parameters, 'path')
     if (pathParameters.length > 0) {
-      dynamicUri += `{/${pathParameters
-        .map(parameter_ => {
-          return parameter_.NAME
-        })
-        .join()}}`
-      dynamicRoutePath += pathParameters
-        .map(parameter_ => {
-          return `/:${parameter_.NAME}`
-        })
-        .join('')
+      dynamicUri += `{/${joinParameters(pathParameters)}}`
+      dynamicRoutePath += `/:${joinParameters(pathParameters, '/:')}`
     }
     // {?x,y}
-    const queryParameters = parameters.filter(parameter_ => {
-      return parameter_.TYPE === 'query'
-    })
+    const queryParameters = filterParameters(parameters, 'query')
     if (queryParameters.length > 0) {
-      dynamicUri += `{?${queryParameters
-        .map(parameter_ => {
-          return parameter_.NAME
-        })
-        .join()}}`
+      dynamicUri += `{?${joinParameters(queryParameters)}}`
     }
   }
   const dynamicRoute = await rootRouter.route(dynamicRoutePath)
@@ -129,10 +127,9 @@ async function createDynamicResourceRoute (
   })
 
   const currentResourceRoute = randomApiPath()
-  await createRouteWithLinks(
+  await createOkRouteWithLinks(
     rootRouter,
     currentResourceRoute,
-    200,
     undefined,
     links
   )
@@ -153,41 +150,44 @@ async function createRouteWithLinks (
   return router
 }
 
-async function createRoute (rootRouter, route, status, relationship, linkPath) {
-  if (relationship) {
-    const links = createLinks(relationship, linkPath)
-    return createRouteWithLinks(rootRouter, route, status, links)
-  } else {
-    return createRouteWithLinks(rootRouter, route, status)
-  }
+async function createOkRouteWithLinks (
+  rootRouter,
+  route,
+  links,
+  linkTemplates
+) {
+  return createRouteWithLinks(rootRouter, route, 200, links, linkTemplates)
 }
 
 Given('a resource returning status code {int}', async function (status) {
   this.currentResourceRoute = randomApiPath()
-  await createRoute(this.router, this.currentResourceRoute, status)
+  await createRouteWithLinks(this.router, this.currentResourceRoute, status)
   this.firstResourceRoute = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
 })
 
 Given('a resource with no operations', async function () {
   this.currentResourceRoute = randomApiPath()
-  await createRouteWithLinks(this.router, this.currentResourceRoute, 200)
+  await createOkRouteWithLinks(this.router, this.currentResourceRoute)
 })
 
 Given('a resource with a {string} operation', async function (relationship) {
   this.currentResourceRoute = randomApiPath()
-  await createRoute(this.router, this.currentResourceRoute, 200, relationship)
+  await createOkRouteWithLinks(
+    this.router,
+    this.currentResourceRoute,
+    createLinks(relationship)
+  )
 })
 
 Given(
   'a resource with a {string} operation that returns itself',
   async function (relationship) {
     this.currentResourceRoute = randomApiPath()
-    await createRoute(
+    const to = this.currentResourceRoute
+    await createOkRouteWithLinks(
       this.router,
       this.currentResourceRoute,
-      200,
-      relationship,
-      this.currentResourceRoute
+      createLinks(relationship, to)
     )
   }
 )
@@ -196,12 +196,11 @@ Given(
   'a resource with a {string} operation that returns an error',
   async function (relationship) {
     this.currentResourceRoute = randomApiPath()
-    await createRoute(
+    const to = `http://${API_ACCESS_HOST}:33556/api`
+    await createOkRouteWithLinks(
       this.router,
       this.currentResourceRoute,
-      200,
-      relationship,
-      `http://${API_ACCESS_HOST}:33556/api`
+      createLinks(relationship, to)
     )
   }
 )
@@ -211,12 +210,10 @@ Given(
   async function (relationship) {
     const previousResourceRoute = this.currentResourceRoute
     this.currentResourceRoute = randomApiPath()
-    await createRoute(
+    await createOkRouteWithLinks(
       this.router,
       this.currentResourceRoute,
-      200,
-      relationship,
-      previousResourceRoute
+      createLinks(relationship, previousResourceRoute)
     )
   }
 )
@@ -226,18 +223,16 @@ Given(
   async function (count, relationship) {
     // we add the last one first
     this.currentResourceRoute = randomApiPath()
-    await createRoute(this.router, this.currentResourceRoute, 200)
+    await createOkRouteWithLinks(this.router, this.currentResourceRoute)
     this.lastOnList = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
     for (let index = 1; index < count; index++) {
       // and then point each on to the previously created resource
       const previousResourceRoute = this.currentResourceRoute
       this.currentResourceRoute = randomApiPath()
-      await createRoute(
+      await createOkRouteWithLinks(
         this.router,
         this.currentResourceRoute,
-        200,
-        relationship,
-        previousResourceRoute
+        createLinks(relationship, previousResourceRoute)
       )
     }
     // POST: this.currentResourceRoute points to the first resource in the list
@@ -268,10 +263,9 @@ Given(
       uri: this.currentResourceRoute,
       method
     })
-    await createRouteWithLinks(
+    await createOkRouteWithLinks(
       this.router,
       this.currentResourceRoute,
-      200,
       undefined,
       links
     ).then(route => {
