@@ -229,7 +229,8 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm run pre-push"
+      "pre-push": "npm run pre-push",
+      "post-pull": "npm install"
     }
   },
   "standard": {
