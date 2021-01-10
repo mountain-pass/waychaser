@@ -152,15 +152,17 @@ class WebdriverManager {
 
   async afterTest () {
     await this.getBrowserLogs()
-
-    logger.debug('downloading coverage from browser...')
-    try {
-      await this.loadCoverage()
-    } catch (error) {
-      /* istanbul ignore next: only get's executed on test framework failure */
-      logger.error('coverage', error)
+    /* istanbul ignore else: IE has issues returning the coverage */
+    if (this.browser !== 'ie') {
+      logger.debug('downloading coverage from browser...')
+      try {
+        await this.loadCoverage()
+      } catch (error) {
+        /* istanbul ignore next: only get's executed on test framework failure */
+        logger.error('coverage', error)
+      }
+      logger.debug('...coverage downloaded')
     }
-    logger.debug('...coverage downloaded')
   }
 
   async getBrowserLogs () {
