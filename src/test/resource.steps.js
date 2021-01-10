@@ -38,7 +38,7 @@ function sendResponse (response, status, links, linkTemplates) {
 }
 
 function filterParameters (parameters, type) {
-  return parameters.filter(parameter_ => {
+  return parameters?.filter(parameter_ => {
     return parameter_.TYPE === type
   })
 }
@@ -56,21 +56,12 @@ async function createDynamicResourceRoute (
   route,
   relationship,
   method,
-  parameter,
-  parameterType,
-  contentTypes,
-  parameters
+  parameters,
+  contentTypes
 ) {
   let dynamicRoutePath = route
-  if (parameterType === 'path') {
-    dynamicRoutePath = `${route}/:${parameter}`
-  }
   let dynamicUri = route
-  if (parameterType === 'query') {
-    dynamicUri = `${route}{?${parameter}}`
-  } else if (parameterType === 'path') {
-    dynamicUri = `${route}{/${parameter}}`
-  } else if (parameters) {
+  if (parameters) {
     // {/who,dub}
     const pathParameters = filterParameters(parameters, 'path')
     if (pathParameters.length > 0) {
@@ -103,6 +94,14 @@ async function createDynamicResourceRoute (
     response.status(200).send(responseBody)
   })
 
+  const bodyParameters = {}
+  const filteredBodyParameters = filterParameters(parameters, 'body')
+  if (filteredBodyParameters) {
+    filteredBodyParameters.forEach(parameter_ => {
+      bodyParameters[parameter_.NAME] = {}
+    })
+  }
+
   const acceptArray = Array.isArray(contentTypes)
     ? contentTypes
     : [contentTypes]
@@ -118,8 +117,8 @@ async function createDynamicResourceRoute (
     rel: relationship,
     uri: dynamicUri,
     method: method,
-    ...(parameterType === 'body' && {
-      'params*': { value: JSON.stringify({ [parameter]: {} }) }
+    ...(Object.keys(bodyParameters).length > 0 && {
+      'params*': { value: JSON.stringify(bodyParameters) }
     }),
     ...(accept && {
       'accept*': { value: accept }
@@ -157,6 +156,23 @@ async function createOkRouteWithLinks (
   linkTemplates
 ) {
   return createRouteWithLinks(rootRouter, route, 200, links, linkTemplates)
+}
+
+async function createRandomDynamicResourceRoute (
+  rootRouter,
+  relationship,
+  method,
+  parameters,
+  contentTypes
+) {
+  return createDynamicResourceRoute(
+    rootRouter,
+    randomApiPath(),
+    relationship,
+    method,
+    parameters,
+    contentTypes
+  )
 }
 
 Given('a resource returning status code {int}', async function (status) {
@@ -242,13 +258,11 @@ Given(
 Given(
   'a resource with a {string} operation that returns the provided {string} {string} parameter',
   async function (relationship, parameter, parameterType) {
-    this.currentResourceRoute = await createDynamicResourceRoute(
+    this.currentResourceRoute = await createRandomDynamicResourceRoute(
       this.router,
-      randomApiPath(),
       relationship,
       'GET',
-      parameter,
-      parameterType
+      [{ NAME: parameter, TYPE: parameterType }]
     )
   }
 )
@@ -279,28 +293,11 @@ Given(
 Given(
   'a resource with a {string} operation with the {string} method that returns the provided {string} {string} parameter',
   async function (relationship, method, parameter, parameterType) {
-    this.currentResourceRoute = await createDynamicResourceRoute(
+    this.currentResourceRoute = await createRandomDynamicResourceRoute(
       this.router,
-      randomApiPath(),
       relationship,
       method,
-      parameter,
-      parameterType
-    )
-  }
-)
-
-Given(
-  'a resource with a {string} operation with the {string} method that returns the {string} provided {string} {string} parameter and the content type',
-  async function (relationship, method, contentType, parameter, parameterType) {
-    this.currentResourceRoute = await createDynamicResourceRoute(
-      this.router,
-      randomApiPath(),
-      relationship,
-      method,
-      parameter,
-      parameterType,
-      contentType
+      [{ NAME: parameter, TYPE: parameterType }]
     )
   }
 )
@@ -314,13 +311,11 @@ Given(
     parameterType,
     contentTypes
   ) {
-    this.currentResourceRoute = await createDynamicResourceRoute(
+    this.currentResourceRoute = await createRandomDynamicResourceRoute(
       this.router,
-      randomApiPath(),
       relationship,
       method,
-      parameter,
-      parameterType,
+      [{ NAME: parameter, TYPE: parameterType }],
       contentTypes.rows()
     )
   }
@@ -329,16 +324,24 @@ Given(
 Given(
   'a resource with a {string} operation with the {string} method that returns the following provided parameters',
   async function (relationship, method, dataTable) {
-    const parameters = dataTable.hashes()
-    this.currentResourceRoute = await createDynamicResourceRoute(
+    this.currentResourceRoute = await createRandomDynamicResourceRoute(
       this.router,
-      randomApiPath(),
       relationship,
       method,
-      undefined,
-      undefined,
-      undefined,
-      parameters
+      dataTable.hashes()
+    )
+  }
+)
+
+Given(
+  'a resource with a {string} operation with the {string} method that returns the following {string} provided parameters and the content type',
+  async function (relationship, method, contentType, dataTable) {
+    this.currentResourceRoute = await createRandomDynamicResourceRoute(
+      this.router,
+      relationship,
+      method,
+      dataTable.hashes(),
+      contentType
     )
   }
 )
