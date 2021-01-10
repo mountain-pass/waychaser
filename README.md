@@ -1,6 +1,6 @@
 # waychaser
 
-Client library for level 3 RESTful APIs.
+Client library for HATEOAS level 3 RESTful APIs that provide hypermedia controls using Link ([RFC8288](https://tools.ietf.org/html/rfc8288)) and [Link-Template](https://mnot.github.io/I-D/link-template/) headers.
 
 This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE.
 <img alt="aw yeah!" src="./docs/images/aw_yeah.gif" width="20" height="20" />
@@ -25,61 +25,12 @@ This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, 
 
 - [waychaser](#waychaser)
 - [ToC](#toc)
-- [Product](#product)
-  - [Problem](#problem)
-    - [Eureka moment](#eureka-moment)
-  - [Customer](#customer)
-  - [Solution](#solution)
-  - [Assumptions](#assumptions)
-    - [Unvalidated](#unvalidated)
-    - [Validating](#validating)
-    - [Validated](#validated)
-    - [Invalidated](#invalidated)
 - [Usage](#usage)
   - [Node.js](#nodejs)
   - [Browser](#browser)
   - [Requesting linked resources](#requesting-linked-resources)
     - [Requesting parameterised linked resources](#requesting-parameterised-linked-resources)
 - [TO DO](#to-do)
-
-# Product
-
-## Problem
-
-REST APIs that use HATEOAS allow for extreamly loose coupling, which is awesome, but actualy using them can be quite hard when your starting out. This library makes it easier.
-
-### Eureka moment
-
-Whenever I get a good base client working, it's awesome, but getting to that first step is quite hard and get's in the way of getting the functionality your are trying to build working, which is why it's often easier to just tightly couple on the operation you need to use.
-
-The biggest eureka moment for me, was when I was asked to create a simple demo using a HATEOAS API I had written, and rather
-than "doing it right", it was just easier to tightly couple and call it done.
-
-## Customer
-
-Developers using REST APIs that use HATEOAS
-
-## Solution
-
-Simple interface that abstracted the details of navigating a REST APIs that uses HATEOAS
-
-## Assumptions
-
-### Unvalidated
-
-- Developers still care about REST and HATEOAS
-
-### Validating
-
-_None_
-
-### Validated
-
-_None_
-
-### Invalidated
-
-_None_
 
 # Usage
 
@@ -208,3 +159,4 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
 - [ ] try to use umd for both node and browser. https://github.com/webpack/webpack/pull/8625
   - [ ] investigate using https://rollupjs.org/guide/en/
+
