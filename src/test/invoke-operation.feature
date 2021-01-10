@@ -237,8 +237,12 @@ Feature: Invoke Operation
         Examples:
             | METHOD | TYPE  |
             | GET    | query |
-
-        @wip
-        Examples:
-            | METHOD | TYPE |
-            | GET    | path |
+            | DELETE | query |
+            | POST   | query |
+            | PUT    | query |
+            | PATCH  | query |
+            | GET    | path  |
+            | DELETE | path  |
+            | POST   | path  |
+            | PUT    | path  |
+            | PATCH  | path  |
