@@ -18,6 +18,87 @@ const randomApiPath = () => {
   })}`
 }
 
+async function createDynamicResourceRoute (
+  route,
+  relationship,
+  method,
+  parameter,
+  parameterType,
+  contentTypes,
+  parameters
+) {
+  let dynamicRoutePath = route
+  if (parameterType === 'path') {
+    dynamicRoutePath = `${route}/:${parameter}`
+  }
+  let dynamicUri = route
+  if (parameterType === 'query') {
+    dynamicUri = `${route}{?${parameter}}`
+  } else if (parameterType === 'path') {
+    dynamicUri = `${route}{/${parameter}}`
+  } else if (parameters) {
+    // {?x,y}
+    dynamicUri = `${route}{?${parameters
+      .filter(parameter_ => {
+        return parameter_.TYPE === 'query'
+      })
+      .map(parameter_ => {
+        return parameter_.NAME
+      })
+      .join()}}`
+  }
+  const dynamicRoute = await this.router.route(dynamicRoutePath)
+  await dynamicRoute[method.toLowerCase()](async (request, response) => {
+    // logger.debug('SENDING', method, route, { ...request.query })
+    logger.debug('RECEIVED BODY', method, route, { ...request.body })
+    const responseBody = Object.assign(
+      {},
+      request.body,
+      request.query,
+      request.params
+    )
+    if (contentTypes !== undefined) {
+      if (request.headers['content-type'].startsWith('multipart/form-data')) {
+        responseBody['content-type'] = 'multipart/form-data'
+      } else {
+        responseBody['content-type'] = request.headers['content-type']
+      }
+    }
+    response.status(200).send(responseBody)
+  })
+
+  const acceptArray = Array.isArray(contentTypes)
+    ? contentTypes
+    : [contentTypes]
+  const accept =
+    acceptArray.length === 0 ||
+    // the default is application/x-www-form-urlencoded, so don't send it if that's what it's set to
+    (acceptArray.length === 1 && acceptArray[0]) ===
+      'application/x-www-form-urlencoded'
+      ? undefined
+      : acceptArray.join()
+  const links = new LinkHeader()
+  links.set({
+    rel: relationship,
+    uri: dynamicUri,
+    method: method,
+    ...(parameterType === 'body' && {
+      'params*': { value: JSON.stringify({ [parameter]: {} }) }
+    }),
+    ...(accept && {
+      'accept*': { value: accept }
+    })
+  })
+
+  this.currentResourceRoute = randomApiPath()
+  await this.createRouteWithLinks(
+    this.currentResourceRoute,
+    200,
+    undefined,
+    links
+  )
+}
+
 Before(async function () {
   this.createRouteWithLinks = async function (
     route,
@@ -41,75 +122,7 @@ Before(async function () {
     }
   }
 
-  this.createDynamicResourceRoute = async function (
-    route,
-    relationship,
-    method,
-    parameter,
-    parameterType,
-    contentTypes
-  ) {
-    const dynamicRoutePath =
-      parameterType === 'query' || parameterType === 'body'
-        ? route
-        : `${route}/:${parameter}`
-    let dynamicUri = route
-    if (parameterType === 'query') {
-      dynamicUri = `${route}{?${parameter}}`
-    } else if (parameterType === 'path') {
-      dynamicUri = `${route}{/${parameter}}`
-    }
-    const dynamicRoute = await this.router.route(dynamicRoutePath)
-    await dynamicRoute[method.toLowerCase()](async (request, response) => {
-      // logger.debug('SENDING', method, route, { ...request.query })
-      logger.debug('RECEIVED BODY', method, route, { ...request.body })
-      let responseBody = Object.assign({}, request.body)
-      if (contentTypes !== undefined) {
-        if (request.headers['content-type'].startsWith('multipart/form-data')) {
-          responseBody['content-type'] = 'multipart/form-data'
-        } else {
-          responseBody['content-type'] = request.headers['content-type']
-        }
-      }
-      if (parameterType === 'query') {
-        responseBody = request.query
-      } else if (parameterType === 'path') {
-        responseBody = request.params
-      }
-      response.status(200).send(responseBody)
-    })
-
-    const acceptArray = Array.isArray(contentTypes)
-      ? contentTypes
-      : [contentTypes]
-    const accept =
-      acceptArray.length === 0 ||
-      // the default is application/x-www-form-urlencoded, so don't send it if that's what it's set to
-      (acceptArray.length === 1 && acceptArray[0]) ===
-        'application/x-www-form-urlencoded'
-        ? undefined
-        : acceptArray.join()
-    const links = new LinkHeader()
-    links.set({
-      rel: relationship,
-      uri: dynamicUri,
-      method: method,
-      ...(parameterType === 'body' && {
-        'params*': { value: JSON.stringify({ [parameter]: {} }) }
-      }),
-      ...(accept && {
-        'accept*': { value: accept }
-      })
-    })
-
-    this.currentResourceRoute = randomApiPath()
-    await this.createRouteWithLinks(
-      this.currentResourceRoute,
-      200,
-      undefined,
-      links
-    )
-  }
+  this.createDynamicResourceRoute = createDynamicResourceRoute.bind(this)
 
   this.createLinks = function (relationship, uri) {
     const links = new LinkHeader()
@@ -288,6 +301,22 @@ Given(
       parameter,
       parameterType,
       contentTypes.rows()
+    )
+  }
+)
+
+Given(
+  'a resource with a {string} operation with the {string} method that returns the following provided parameters',
+  async function (relationship, method, dataTable) {
+    const parameters = dataTable.hashes()
+    await this.createDynamicResourceRoute(
+      randomApiPath(),
+      relationship,
+      method,
+      undefined,
+      undefined,
+      undefined,
+      parameters
     )
   }
 )
