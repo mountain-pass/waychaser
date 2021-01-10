@@ -214,14 +214,6 @@ jobs:
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run cover:node-api
-      - uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-node-${{ matrix.node-version }}
-          path: coverage/node-api
-      - uses: actions/upload-artifact@v2
-        with:
-          name: test-report-node-${{ matrix.node-version }}
-          path: test-results/node-api
 
   get-browser-list:
     needs:
@@ -304,14 +296,6 @@ jobs:
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run cover:browser-api:chrome:local
-      - uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-chrome-local
-          path: coverage/browser-api-chrome-local
-      - uses: actions/upload-artifact@v2
-        with:
-          name: test-report-chrome-local
-          path: test-results/browser-api-chrome-local
 
   test-browser-api-1:
     needs:
@@ -374,14 +358,6 @@ jobs:
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
           local-testing: stop
-      - uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-${{ matrix.browser }}
-          path: coverage/browser-api-${{ matrix.browser }}-remote
-      - uses: actions/upload-artifact@v2
-        with:
-          name: test-report-${{ matrix.browser }}
-          path: test-results/browser-api-${{ matrix.browser }}-remote
 
   test-browser-api-2:
     needs:
@@ -445,14 +421,6 @@ jobs:
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
           local-testing: stop
-      - uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-${{ matrix.browser }}
-          path: coverage/browser-api-${{ matrix.browser }}-remote
-      - uses: actions/upload-artifact@v2
-        with:
-          name: test-report-${{ matrix.browser }}
-          path: test-results/browser-api-${{ matrix.browser }}-remote
 
   test-browser-api-3:
     needs:
@@ -516,14 +484,6 @@ jobs:
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
           local-testing: stop
-      - uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-${{ matrix.browser }}
-          path: coverage/browser-api-${{ matrix.browser }}-remote
-      - uses: actions/upload-artifact@v2
-        with:
-          name: test-report-${{ matrix.browser }}
-          path: test-results/browser-api-${{ matrix.browser }}-remote
 
   check-coverage-local:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
@@ -614,39 +574,6 @@ jobs:
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage/full/lcov.info
-
-  publish-reports:
-    if: "false"
-
-    continue-on-error: true
-
-    needs:
-      - check-coverage
-
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - name: Publish Cover Report
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: coverage/full # The folder the action should deploy.
-          TARGET_FOLDER: /builds/${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}/coverage
-          CLEAN: true # Automatically remove deleted files from the deploy branch
-
-      - name: Publish Test Results
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: test-results/full # The folder the action should deploy.
-          TARGET_FOLDER: /builds/${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}/test-results
-          CLEAN: true # Automatically remove deleted files from the deploy branch
 
   publish:
     needs:
