@@ -111,7 +111,9 @@ Feature: Invoke Operation
             | PATCH  | path  |
 
     Scenario Outline: Invoke operation - body
-        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the "<CONTENT-TYPE>" provided "ping" "<TYPE>" parameter and the content type
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
+            | NAME | TYPE   |
+            | ping | <TYPE> |
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping | pong |
@@ -132,7 +134,9 @@ Feature: Invoke Operation
             | PATCH  | body | multipart/form-data               |
 
     Scenario Outline: Invoke operation - body with extra context
-        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the "<CONTENT-TYPE>" provided "ping" "<TYPE>" parameter and the content type
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
+            | NAME | TYPE   |
+            | ping | <TYPE> |
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input
             | ping  | pong    |
@@ -279,8 +283,7 @@ Feature: Invoke Operation
             | PUT    | path  |
             | PATCH  | path  |
 
-    @wip
-    Scenario Outline: Invoke operation - multiple parameters of same different type
+    Scenario Outline: Invoke operation - multiple parameters of different type
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following provided parameters
             | NAME    | TYPE    |
             | alpha   | <TYPE1> |
@@ -305,3 +308,33 @@ Feature: Invoke Operation
             | POST   | path  | query |
             | PUT    | path  | query |
             | PATCH  | path  | query |
+
+    @wip
+    Scenario Outline: Invoke operation - multiple body parameters
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
+            | NAME    | TYPE |
+            | alpha   | body |
+            | bravo   | body |
+            | charlie | body |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | alpha   | one   |
+            | bravo   | two   |
+            | charlie | three |
+        Then resource returned will contain only
+            | content-type | <CONTENT-TYPE> |
+            | alpha        | one            |
+            | bravo        | two            |
+            | charlie      | three          |
+
+        Examples:
+            | METHOD | CONTENT-TYPE                      |
+            | POST   | application/x-www-form-urlencoded |
+            | POST   | application/json                  |
+            | POST   | multipart/form-data               |
+            | PUT    | application/x-www-form-urlencoded |
+            | PUT    | application/json                  |
+            | PUT    | multipart/form-data               |
+            | PATCH  | application/x-www-form-urlencoded |
+            | PATCH  | application/json                  |
+            | PATCH  | multipart/form-data               |
