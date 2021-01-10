@@ -60,11 +60,11 @@ class WebdriverManager {
         window.testLogs = []
         window.testLogger = function (arguments_) {
           console.log(arguments_)
-          window.testLogs.push(arguments_)
-          // eslint-disable-next-line unicorn/prefer-query-selector
-          var logsElement = document.getElementById('logs') // eslint-disable-line no-var
-          logsElement.textContent += arguments_
-          logsElement.textContent += '\n'
+          // window.testLogs.push(arguments_)
+          // // eslint-disable-next-line unicorn/prefer-query-selector
+          // var logsElement = document.getElementById('logs') // eslint-disable-line no-var
+          // logsElement.textContent += arguments_
+          // logsElement.textContent += '\n'
         }
 
         window.callbackWithError = (done, error) => {
@@ -138,17 +138,16 @@ class WebdriverManager {
   }
 
   async beforeTest (scenario) {
-    await this.executeScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        window.testResults = []
-        const element = document.querySelector('#test-name')
-        element.textContent = arguments[0].pickle.name
-      },
-      scenario
-    )
-
-    logger.debug("set test name to '%s'", scenario.pickle.name)
+    // await this.executeScript(
+    //   /* istanbul ignore next: won't work in browser otherwise */
+    //   function () {
+    //     window.testResults = []
+    //     const element = document.querySelector('#test-name')
+    //     element.textContent = arguments[0].pickle.name
+    //   },
+    //   scenario
+    // )
+    // logger.debug("set test name to '%s'", scenario.pickle.name)
   }
 
   async afterTest () {
