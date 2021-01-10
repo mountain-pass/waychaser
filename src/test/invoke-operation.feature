@@ -222,3 +222,19 @@ Feature: Invoke Operation
             | POST   |
             | PUT    |
             | PATCH  |
+
+    @wip
+    Scenario Outline: Invoke operation - multiple parameters of same type
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following provided parameters
+            | NAME  | TYPE   |
+            | alpha | <TYPE> |
+            | bravo | <TYPE> |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | alpha | one |
+            | bravo | two |
+        Then resource returned will contain those values
+
+        Examples:
+            | METHOD | TYPE  |
+            | GET    | query |
