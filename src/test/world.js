@@ -33,7 +33,7 @@ const profile = process.env.npm_lifecycle_event
   .replace('test:', '')
   .replace(/:/g, '-')
 
-const DEFAULT_STEP_TIMEOUT = 40 * 1000
+const DEFAULT_STEP_TIMEOUT = 60 * 1000
 
 let waychaserProxy, webdriverManager
 
