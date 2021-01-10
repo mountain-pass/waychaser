@@ -249,7 +249,6 @@ Feature: Invoke Operation
             | PUT    | path  |
             | PATCH  | path  |
 
-    @wip
     Scenario Outline: Invoke operation - multiple parameters of same type with extra params
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following provided parameters
             | NAME    | TYPE   |
@@ -279,3 +278,30 @@ Feature: Invoke Operation
             | POST   | path  |
             | PUT    | path  |
             | PATCH  | path  |
+
+    @wip
+    Scenario Outline: Invoke operation - multiple parameters of same different type
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following provided parameters
+            | NAME    | TYPE    |
+            | alpha   | <TYPE1> |
+            | bravo   | <TYPE2> |
+            | charlie | <TYPE1> |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | alpha   | one   |
+            | bravo   | two   |
+            | charlie | three |
+        Then resource returned will contain those values
+
+        Examples:
+            | METHOD | TYPE1 | TYPE2 |
+            | GET    | query | path  |
+            | DELETE | query | path  |
+            | POST   | query | path  |
+            | PUT    | query | path  |
+            | PATCH  | query | path  |
+            | GET    | path  | query |
+            | DELETE | path  | query |
+            | POST   | path  | query |
+            | PUT    | path  | query |
+            | PATCH  | path  | query |
