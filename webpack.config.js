@@ -21,7 +21,7 @@ module.exports = environment => ({
       {
         test: [/\.(js)$/],
         exclude: [
-          /node_modules\/(?!debug|ms|http-link-header|lokijs|\/).*/,
+          /node_modules\/(?!debug|ms|http-link-header|lokijs|@hapi\/accept|@hapi\/boom|@hapi\/hoek|\/).*/,
           /coverage/,
           /docs/,
           /out/,
