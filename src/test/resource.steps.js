@@ -57,15 +57,33 @@ async function createDynamicResourceRoute (
   } else if (parameterType === 'path') {
     dynamicUri = `${route}{/${parameter}}`
   } else if (parameters) {
+    // {/who,dub}
+    const pathParameters = parameters.filter(parameter_ => {
+      return parameter_.TYPE === 'path'
+    })
+    if (pathParameters.length > 0) {
+      dynamicUri += `{/${pathParameters
+        .map(parameter_ => {
+          return parameter_.NAME
+        })
+        .join()}}`
+      dynamicRoutePath += pathParameters
+        .map(parameter_ => {
+          return `/:${parameter_.NAME}`
+        })
+        .join('')
+    }
     // {?x,y}
-    dynamicUri = `${route}{?${parameters
-      .filter(parameter_ => {
-        return parameter_.TYPE === 'query'
-      })
-      .map(parameter_ => {
-        return parameter_.NAME
-      })
-      .join()}}`
+    const queryParameters = parameters.filter(parameter_ => {
+      return parameter_.TYPE === 'query'
+    })
+    if (queryParameters.length > 0) {
+      dynamicUri += `{?${queryParameters
+        .map(parameter_ => {
+          return parameter_.NAME
+        })
+        .join()}}`
+    }
   }
   const dynamicRoute = await rootRouter.route(dynamicRoutePath)
   await dynamicRoute[method.toLowerCase()](async (request, response) => {

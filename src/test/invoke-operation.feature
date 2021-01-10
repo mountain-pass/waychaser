@@ -223,7 +223,6 @@ Feature: Invoke Operation
             | PUT    |
             | PATCH  |
 
-    @wip
     Scenario Outline: Invoke operation - multiple parameters of same type
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following provided parameters
             | NAME  | TYPE   |
@@ -238,3 +237,8 @@ Feature: Invoke Operation
         Examples:
             | METHOD | TYPE  |
             | GET    | query |
+
+        @wip
+        Examples:
+            | METHOD | TYPE |
+            | GET    | path |
