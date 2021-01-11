@@ -221,6 +221,10 @@ jobs:
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run cover:node-api
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-node-${{ matrix.node-version }}
+          path: coverage/node-api
 
   get-browser-list:
     needs:
@@ -295,6 +299,10 @@ jobs:
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run cover:browser-api:chrome:local
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-chrome-local
+          path: coverage/browser-api-chrome-local
 
   test-browser-api-1:
     needs:
@@ -363,6 +371,10 @@ jobs:
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
           local-testing: stop
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-${{ matrix.browser }}
+          path: coverage/browser-api-${{ matrix.browser }}-remote
 
   check-coverage-local:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
@@ -447,10 +459,10 @@ jobs:
           done
           ls -l coverage
       - run: npm run report:cover
-      # - uses: codacy/codacy-coverage-reporter-action@master
-      #   with:
-      #     project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-      #     coverage-reports: coverage/full/lcov.info
+      - uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage/full/lcov.info
 
   publish:
     needs:
