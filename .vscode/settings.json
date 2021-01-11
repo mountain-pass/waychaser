@@ -20,5 +20,13 @@
   ],
   "editor.rulers": [
     120
+  ],
+  "commit-message-editor.view.defaultView": "form",
+  "commit-message-editor.staticTemplate": [
+    "<type>[(scope)]: <description>",
+    "",
+    "[optional body]",
+    "",
+    "[[BREAKING CHANGE: ]optional footer(s)]"
   ]
 }
