@@ -209,6 +209,19 @@ Given(
 )
 
 Given(
+  'a HAL resource with a {string} link that returns itself',
+  async function (relationship) {
+    this.currentResourceRoute = randomApiPath()
+    const to = this.currentResourceRoute
+    const router = await this.router.route(this.currentResourceRoute)
+    await router.get(async (request, response) => {
+      response.header('content-type', 'application/hal+json')
+      response.status(200).send({ status: 200, _links: { self: { href: to } } })
+    })
+  }
+)
+
+Given(
   'a resource with a {string} operation that returns an error',
   async function (relationship) {
     this.currentResourceRoute = randomApiPath()

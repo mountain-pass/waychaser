@@ -1,8 +1,10 @@
 # waychaser
 
-Client library for HATEOAS level 3 RESTful APIs that provide hypermedia controls using Link ([RFC8288](https://tools.ietf.org/html/rfc8288)) and [Link-Template](https://mnot.github.io/I-D/link-template/) headers.
+Client library for HATEOAS level 3 RESTful APIs that provide hypermedia controls using:
+  - Link ([RFC8288](https://tools.ietf.org/html/rfc8288)) and [Link-Template](https://mnot.github.io/I-D/link-template/) headers.
+  - [HAL](http://stateless.co/hal_specification.html) 
 
-This isomorphic library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE.
+This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE.
 <img alt="aw yeah!" src="./docs/images/aw_yeah.gif" width="20" height="20" />
 
 [![GitHub license](https://img.shields.io/github/license/mountain-pass/waychaser)](https://github.com/mountain-pass/waychaser/blob/master/LICENSE) [![npm](https://img.shields.io/npm/v/@mountainpass/waychaser)](https://www.npmjs.com/package/@mountainpass/waychaser) [![npm downloads](https://img.shields.io/npm/dm/@mountainpass/waychaser)](https://www.npmjs.com/package/@mountainpass/waychaser)
@@ -140,6 +142,10 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [x] add tests for multiple parameters
 - [x] add automate CHANGELOG.md 
 - [ ] add support for HAL
+  - [x] add support for simple self `_links`
+  - [ ] add support for more general `_links`
+  - [ ] add support for curies and curied `_links`
+  - [ ] add support for `_links` in `_embedded` resources
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests
 - [ ] upgrade webpack

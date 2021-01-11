@@ -19,22 +19,32 @@ polyfill()
  *
  * @throws {Error} If the server returns with a status >= 400
  */
-function loadResource (url, options) {
+async function loadResource (url, options) {
   logger.waychaser(`loading ${url} with:`)
   logger.waychaser(JSON.stringify(options, undefined, 2))
-  return fetch(url, options).then(response => {
-    if (!response.ok) {
-      logger.waychaser(`Bad response from server ${JSON.stringify(response)}`)
-      throw new Error('Bad response from server', response)
-    }
-    logger.waychaser(`Good response from server ${JSON.stringify(response)}`)
-    /* istanbul ignore next: IE fails without this, but IE doesn't report coverage */
-    if (response.url === undefined || response.url === '') {
-      // in ie url is not being populated 🤷‍♂️
-      response.url = url.toString()
-    }
+  const response = await fetch(url, options)
+  if (!response.ok) {
+    logger.waychaser(`Bad response from server ${JSON.stringify(response)}`)
+    throw new Error('Bad response from server', response)
+  }
+  logger.waychaser(
+    `Good response from server ${JSON.stringify(
+      response
+    )}, ${response.headers.get('content-type')}`
+  )
+  /* istanbul ignore next: IE fails without this, but IE doesn't report coverage */
+  if (response.url === undefined || response.url === '') {
+    // in ie url is not being populated 🤷‍♂️
+    response.url = url.toString()
+  }
+  const contentType = response.headers.get('content-type')?.split(';')
+  if (contentType?.[0] === 'application/hal+json') {
+    // only consume the body if the content type tells us that the response body will have operations
+    const body = await response.json()
+    return new waychaser.ApiResourceObject(response, body, contentType[0])
+  } else {
     return new waychaser.ApiResourceObject(response)
-  })
+  }
 }
 
 /**
@@ -46,18 +56,32 @@ function loadResource (url, options) {
  */
 function loadOperations (operations, linkHeader, callingContext) {
   if (linkHeader) {
-    logger.debug(linkHeader)
     const links = LinkHeader.parse(linkHeader)
-
-    operations.insert(
-      links.refs.map(reference => {
-        const operation = new Operation(callingContext)
-        Object.assign(operation, reference)
-        return operation
-      })
-    )
+    addLinksToOperations(operations, links, callingContext)
   }
 }
+
+/**
+ * Creates operations from each link in a HAL `_links` and inserts into the operations collection
+ *
+ * @param {Loki.Collection} operations the target loki collection to load the operations into
+ * @param {object} _links HAL links within the response
+ * @param {fetch.Response} callingContext the reponse object that the links in link header are relative to.
+ */
+function loadHalOperations (operations, _links, callingContext) {
+  if (_links) {
+    const links = new LinkHeader()
+    Object.keys(_links).forEach(key => {
+      links.set({
+        rel: key,
+        uri: _links[key].href
+      })
+    })
+
+    addLinksToOperations(operations, links, callingContext)
+  }
+}
+
 class Operation {
   constructor (callingContext) {
     logger.waychaser(
@@ -172,7 +196,7 @@ const waychaser = {
   logger: logger.waychaser,
 
   ApiResourceObject: class {
-    constructor (response) {
+    constructor (response, body, contentType) {
       this.response = response
       const linkHeader = response.headers.get('link')
       const linkTemplateHeader = response.headers.get('link-template')
@@ -180,6 +204,9 @@ const waychaser = {
       this.operations = linkDatabase.addCollection()
       loadOperations(this.operations, linkHeader, response)
       loadOperations(this.operations, linkTemplateHeader, response)
+      if (contentType === 'application/hal+json') {
+        loadHalOperations(this.operations, body._links, response)
+      }
     }
 
     get ops () {
@@ -193,3 +220,17 @@ const waychaser = {
 }
 
 export { waychaser }
+/**
+ * @param operations
+ * @param links
+ * @param callingContext
+ */
+function addLinksToOperations (operations, links, callingContext) {
+  operations.insert(
+    links.refs.map(reference => {
+      const operation = new Operation(callingContext)
+      Object.assign(operation, reference)
+      return operation
+    })
+  )
+}
