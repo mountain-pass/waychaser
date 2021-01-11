@@ -175,7 +175,7 @@
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-istanbul": "^0.1.2",
-    "eslint-plugin-jsdoc": "^30.7.7",
+    "eslint-plugin-jsdoc": "^31.0.1",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-markdown": "^1.0.2",
     "eslint-plugin-md": "^1.0.19",
