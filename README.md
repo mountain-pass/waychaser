@@ -143,6 +143,7 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [x] add automate CHANGELOG.md 
 - [ ] add support for HAL
   - [x] add support for simple self `_links`
+  - [ ] add methods for getting consumed body
   - [ ] add support for more general `_links`
   - [ ] add support for curies and curied `_links`
   - [ ] add support for `_links` in `_embedded` resources
