@@ -103,6 +103,7 @@ class WebdriverManagerRemote extends WebdriverManager {
   }
 
   async afterAllTests () {
+    setTimeout(takeTheWin, 60 * 1000, this.status)
     try {
       logger.debug('sending test results...', this.status)
       await this.sendTestResult(this.status)
@@ -118,6 +119,11 @@ class WebdriverManagerRemote extends WebdriverManager {
     super.afterAllTests()
     await this.tunneler.stopTunnel()
   }
+}
+
+function takeTheWin (status) {
+  // eslint-disable-next-line unicorn/no-process-exit
+  process.exit(status === 'passed' ? 0 : 1)
 }
 
 const instance = new WebdriverManagerRemote()
