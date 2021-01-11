@@ -49,8 +49,8 @@ function getRandomInt (min, max) {
 
 const MAX_WAIT = 10 * 60 * 60 // 10hr
 const RESERVED_SESSIONS = 1
-const MIN_WAIT_TIME = 40
-const MAX_WAIT_TIME = 80
+const MIN_WAIT_TIME = 30
+const MAX_WAIT_TIME = 120
 const MAX_INIT_WAIT_TIME = Number.parseInt(
   process.env.MAX_INIT_WAIT_TIME || '300'
 )
