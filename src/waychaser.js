@@ -69,17 +69,15 @@ function loadOperations (operations, linkHeader, callingContext) {
  * @param {fetch.Response} callingContext the reponse object that the links in link header are relative to.
  */
 function loadHalOperations (operations, _links, callingContext) {
-  if (_links) {
-    const links = new LinkHeader()
-    Object.keys(_links).forEach(key => {
-      links.set({
-        rel: key,
-        uri: _links[key].href
-      })
+  const links = new LinkHeader()
+  Object.keys(_links).forEach(key => {
+    links.set({
+      rel: key,
+      uri: _links[key].href
     })
+  })
 
-    addLinksToOperations(operations, links, callingContext)
-  }
+  addLinksToOperations(operations, links, callingContext)
 }
 
 class Operation {

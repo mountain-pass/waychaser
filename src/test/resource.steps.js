@@ -61,18 +61,16 @@ async function createDynamicResourceRoute (
 ) {
   let dynamicRoutePath = route
   let dynamicUri = route
-  if (parameters) {
-    // {/who,dub}
-    const pathParameters = filterParameters(parameters, 'path')
-    if (pathParameters.length > 0) {
-      dynamicUri += `{/${joinParameters(pathParameters)}}`
-      dynamicRoutePath += `/:${joinParameters(pathParameters, '/:')}`
-    }
-    // {?x,y}
-    const queryParameters = filterParameters(parameters, 'query')
-    if (queryParameters.length > 0) {
-      dynamicUri += `{?${joinParameters(queryParameters)}}`
-    }
+  // {/who,dub}
+  const pathParameters = filterParameters(parameters, 'path')
+  if (pathParameters.length > 0) {
+    dynamicUri += `{/${joinParameters(pathParameters)}}`
+    dynamicRoutePath += `/:${joinParameters(pathParameters, '/:')}`
+  }
+  // {?x,y}
+  const queryParameters = filterParameters(parameters, 'query')
+  if (queryParameters.length > 0) {
+    dynamicUri += `{?${joinParameters(queryParameters)}}`
   }
   const dynamicRoute = await rootRouter.route(dynamicRoutePath)
   await dynamicRoute[method.toLowerCase()](async (request, response) => {
@@ -96,11 +94,9 @@ async function createDynamicResourceRoute (
 
   const bodyParameters = {}
   const filteredBodyParameters = filterParameters(parameters, 'body')
-  if (filteredBodyParameters) {
-    filteredBodyParameters.forEach(parameter_ => {
-      bodyParameters[parameter_.NAME] = {}
-    })
-  }
+  filteredBodyParameters.forEach(parameter_ => {
+    bodyParameters[parameter_.NAME] = {}
+  })
 
   const acceptArray = Array.isArray(contentTypes)
     ? contentTypes
