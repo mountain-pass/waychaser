@@ -339,6 +339,7 @@ jobs:
         with:
           local-testing: start
           local-identifier: random
+
       # browserstack can be moody at times, so let
       # the pipeline have a few cracks at it
       - uses: nick-invision/retry@v2
@@ -346,7 +347,12 @@ jobs:
           timeout_seconds: 1500
           max_attempts: 3
           retry_wait_seconds: 10
-          command: npm run cover:browser-api:${{ matrix.browser }}:remote
+          command: npm run wait-for-browser-stack && npm run cover:browser-api:${{ matrix.browser }}:remote
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          MAX_INIT_WAIT_TIME: 0
+
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
           local-testing: stop
