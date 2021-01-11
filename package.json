@@ -134,6 +134,8 @@
     "@babel/preset-env": "^7.6.2",
     "@babel/register": "^7.7.0",
     "@babel/runtime": "^7.5.0",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
     "@cucumber/cucumber": "^7.0.0",
     "@istanbuljs/nyc-config-babel": "^3.0.0",
     "@windyroad/cucumber-js-throwables": "^1.0.4",
@@ -230,7 +232,7 @@
     "hooks": {
       "pre-commit": "lint-staged",
       "pre-push": "npm run pre-push",
-      "post-pull": "npm install"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "standard": {
