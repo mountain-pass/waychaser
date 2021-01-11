@@ -365,8 +365,8 @@ jobs:
       - id: attempt-1
         run: |
           npm run cover:browser-api:${{ matrix.browser }}:remote \
-          && echo "::set-output name=result::sucesss\n" || 
-          && echo "::set-output name=result::failed\n"
+          && echo "::set-output name=result::success\n" \
+          || echo "::set-output name=result::failed\n"
         timeout-minutes: 25
         continue-on-error: true
       # stop tunnel
@@ -392,8 +392,8 @@ jobs:
         if: steps.attempt-1.outputs.result == 'failed'
         run: |
           npm run cover:browser-api:${{ matrix.browser }}:remote \
-          && echo "::set-output name=result::success\n" || 
-          && echo "::set-output name=result::failed\n"
+          && echo "::set-output name=result::success\n" \
+          || echo "::set-output name=result::failed\n"
         timeout-minutes: 25
         continue-on-error: true
       # stop tunnel
@@ -420,8 +420,8 @@ jobs:
         if: steps.attempt-1.outputs.result == 'failed' && steps.attempt-2.outputs.result == 'failed'
         run: |
           npm run cover:browser-api:${{ matrix.browser }}:remote \
-          && echo "::set-output name=result::success\n" || 
-          && echo "::set-output name=result::failed\n"
+          && echo "::set-output name=result::success\n" \
+          || echo "::set-output name=result::failed\n"
         timeout-minutes: 25
         continue-on-error: true
       # stop tunnel
