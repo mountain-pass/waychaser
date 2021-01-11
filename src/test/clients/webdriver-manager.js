@@ -113,6 +113,12 @@ class WebdriverManager {
         error.constructor.name === 'WebDriverError' &&
         error.message === 'Session not started or terminated'
       ) {
+        try {
+          await this.driver.quit()
+        } catch (error) {
+          logger.error('error quitting browser')
+          logger.error(error)
+        }
         await this.buildDriver()
         await this.loadWaychaserTestPage()
       }
