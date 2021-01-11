@@ -358,7 +358,7 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-          MAX_INIT_WAIT_TIME: 0
+          MAX_INIT_WAIT_TIME: 60
 
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
