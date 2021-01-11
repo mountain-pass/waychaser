@@ -368,3 +368,76 @@ Feature: Invoke Operation
             | PATCH  | application/x-www-form-urlencoded |
             | PATCH  | application/json                  |
             | PATCH  | multipart/form-data               |
+
+    Scenario Outline: Invoke operation - multiple parameters of differnent type, including body
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
+            | NAME    | TYPE    |
+            | alpha   | <TYPE1> |
+            | bravo   | <TYPE2> |
+            | charlie | <TYPE3> |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | alpha   | one   |
+            | bravo   | two   |
+            | charlie | three |
+        Then resource returned will contain only
+            | content-type | <CONTENT-TYPE> |
+            | alpha        | one            |
+            | bravo        | two            |
+            | charlie      | three          |
+
+        Examples:
+            | METHOD | CONTENT-TYPE                      | TYPE1 | TYPE2 | TYPE3 |
+            | POST   | application/x-www-form-urlencoded | query | path  | body  |
+            | POST   | application/json                  | query | path  | body  |
+            | POST   | multipart/form-data               | query | path  | body  |
+            | PUT    | application/x-www-form-urlencoded | query | path  | body  |
+            | PUT    | application/json                  | query | path  | body  |
+            | PUT    | multipart/form-data               | query | path  | body  |
+            | PATCH  | application/x-www-form-urlencoded | query | path  | body  |
+            | PATCH  | application/json                  | query | path  | body  |
+            | PATCH  | multipart/form-data               | query | path  | body  |
+            | POST   | application/x-www-form-urlencoded | body  | path  | query |
+            | POST   | application/json                  | body  | path  | query |
+            | POST   | multipart/form-data               | body  | path  | query |
+            | PUT    | application/x-www-form-urlencoded | path  | query | body  |
+            | PUT    | application/json                  | path  | query | body  |
+            | PUT    | multipart/form-data               | path  | query | body  |
+
+    @wip
+    Scenario Outline: Invoke operation - multiple parameters of differnent type, including body with extra params
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
+            | NAME    | TYPE    |
+            | alpha   | <TYPE1> |
+            | bravo   | <TYPE2> |
+            | charlie | <TYPE3> |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | alpha   | one     |
+            | bravo   | two     |
+            | other   | notUsed |
+            | charlie | three   |
+        Then resource returned will contain only
+            | content-type | <CONTENT-TYPE> |
+            | alpha        | one            |
+            | bravo        | two            |
+            | charlie      | three          |
+
+        Examples:
+            | METHOD | CONTENT-TYPE                      | TYPE1 | TYPE2 | TYPE3 |
+            | POST   | application/x-www-form-urlencoded | query | path  | body  |
+            | POST   | application/json                  | query | path  | body  |
+            | POST   | multipart/form-data               | query | path  | body  |
+            | PUT    | application/x-www-form-urlencoded | query | path  | body  |
+            | PUT    | application/json                  | query | path  | body  |
+            | PUT    | multipart/form-data               | query | path  | body  |
+            | PATCH  | application/x-www-form-urlencoded | query | path  | body  |
+            | PATCH  | application/json                  | query | path  | body  |
+            | PATCH  | multipart/form-data               | query | path  | body  |
+            | POST   | application/x-www-form-urlencoded | body  | path  | query |
+            | POST   | application/json                  | body  | path  | query |
+            | POST   | multipart/form-data               | body  | path  | query |
+            | PUT    | application/x-www-form-urlencoded | path  | query | body  |
+            | PUT    | application/json                  | path  | query | body  |
+            | PUT    | multipart/form-data               | path  | query | body  |
+
