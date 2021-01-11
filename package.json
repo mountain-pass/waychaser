@@ -106,7 +106,9 @@
     "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public",
     "duplication": "jscpd .",
     "security": "snyk auth ${SNYK_TOKEN} && snyk test",
-    "security:fix": "snyk auth ${SNYK_TOKEN} && snyk wizard"
+    "security:fix": "snyk auth ${SNYK_TOKEN} && snyk wizard",
+    "change-log": "conventional-changelog -i CHANGELOG.md -s",
+    "release-notes": "conventional-changelog -u -o RELEASE.md"
   },
   "files": [
     "/dist/*.js",
@@ -155,6 +157,7 @@
     "chromedriver": "^87.0.5",
     "clean-webpack-plugin": "^3.0.0",
     "concurrently": "^5.3.0",
+    "conventional-changelog-cli": "^2.1.1",
     "core-js": "^3.7.0",
     "cucumber-junit-formatter": "^0.2.2",
     "dateformat": "^3.0.3",
