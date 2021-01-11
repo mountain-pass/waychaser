@@ -14,7 +14,7 @@ assert(
 )
 
 /**
- *
+ * @returns {object} the json containing the plan information
  */
 async function getPlanInfo () {
   const response = await fetch(
@@ -33,15 +33,22 @@ async function getPlanInfo () {
 }
 
 /**
- * @param since
+ * Provides the number of seconds since {@param since}
+ *
+ * @param {number} since the unix timestamp to meausre the time from
+ *
+ * @returns {number} the number of seconds that have elapsed since {@param since}
  */
 function secondsSince (since) {
   return (Date.now() - since) / 1000
 }
 
 /**
- * @param min
- * @param max
+ * Provides a random number between {@param min} and {@param max}
+ *
+ * @param {number} min lower bound
+ * @param {number} max upper bound
+ * @returns {number} a random number between {@param min} and {@param max}
  */
 function getRandomInt (min, max) {
   return Math.floor(Math.random() * Math.floor(max - min)) + min

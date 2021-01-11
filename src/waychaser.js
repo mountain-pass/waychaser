@@ -46,6 +46,20 @@ async function loadResource (url, options) {
     return new waychaser.ApiResourceObject(response)
   }
 }
+/**
+ * @param {Loki.Collection} operations the target loki collection to load the operations into
+ * @param {LinkHeader} links the links to load
+ * @param {fetch.Response} callingContext the reponse object that the {@param links} are relative to.
+ */
+function addLinksToOperations (operations, links, callingContext) {
+  operations.insert(
+    links.refs.map(reference => {
+      const operation = new Operation(callingContext)
+      Object.assign(operation, reference)
+      return operation
+    })
+  )
+}
 
 /**
  * Creates operations from each linkHeader and inserts into the operations collection
@@ -218,17 +232,3 @@ const waychaser = {
 }
 
 export { waychaser }
-/**
- * @param operations
- * @param links
- * @param callingContext
- */
-function addLinksToOperations (operations, links, callingContext) {
-  operations.insert(
-    links.refs.map(reference => {
-      const operation = new Operation(callingContext)
-      Object.assign(operation, reference)
-      return operation
-    })
-  )
-}
