@@ -1,5 +1,7 @@
 ## 1.55.0 (2021-01-11)
 
+## 1.55.0 (2021-01-11)
+
 * test(body parameters): tests for body, query and path parameters at same time ([899a4a9](https://github.com/mountain-pass/waychaser/commit/899a4a9))
 * style(lint): added commit comment linting ([ae374e2](https://github.com/mountain-pass/waychaser/commit/ae374e2))
 * added support for multiple body parameters ([9247e26](https://github.com/mountain-pass/waychaser/commit/9247e26))
