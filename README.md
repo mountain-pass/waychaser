@@ -137,7 +137,7 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [x] add tests for PATCH forms
 - [x] add tests for multipart
 - [x] swtich to single session per browser test
-- [ ] add tests for multiple parameters
+- [x] add tests for multiple parameters
 - [ ] add support for HAL
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests
