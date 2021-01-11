@@ -149,7 +149,14 @@ jobs:
           node-version: 12.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
-      - run: npm run security
+      # We've seen situations where snyk is unavailable
+      # so do a bit of retry on failure
+      - uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 120
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: npm run security
 
   build:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
