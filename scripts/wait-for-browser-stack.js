@@ -39,9 +39,18 @@ function secondsSince (since) {
   return (Date.now() - since) / 1000
 }
 
+/**
+ * @param min
+ * @param max
+ */
+function getRandomInt (min, max) {
+  return Math.floor(Math.random() * Math.floor(max - min)) + min
+}
+
 const MAX_WAIT = 10 * 60 * 60 // 10hr
 const RESERVED_SESSIONS = 1
-const WAIT_TIME = 5
+const MIN_WAIT_TIME = 40
+const MAX_WAIT_TIME = 80
 /**
  *
  */
@@ -58,7 +67,9 @@ async function waitForSpareSession () {
     if (planInfo.parallel_sessions_running < maxAllowed) {
       return
     }
-    await new Promise(resolve => setTimeout(resolve, WAIT_TIME * 1000))
+    await new Promise(resolve =>
+      setTimeout(resolve, getRandomInt(MIN_WAIT_TIME, MAX_WAIT_TIME) * 1000)
+    )
   }
   console.error(`No available sessions after waiting ${MAX_WAIT / 60 / 60}hrs`)
   process.exit(1)
