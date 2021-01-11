@@ -338,7 +338,6 @@ Feature: Invoke Operation
             | PATCH  | application/json                  |
             | PATCH  | multipart/form-data               |
 
-    @wip
     Scenario Outline: Invoke operation - multiple body parameters with extra params
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
             | NAME    | TYPE |
@@ -404,7 +403,6 @@ Feature: Invoke Operation
             | PUT    | application/json                  | path  | query | body  |
             | PUT    | multipart/form-data               | path  | query | body  |
 
-    @wip
     Scenario Outline: Invoke operation - multiple parameters of differnent type, including body with extra params
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
             | NAME    | TYPE    |

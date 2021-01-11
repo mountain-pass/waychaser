@@ -46,6 +46,8 @@ Lots 😂
 
 Test: Create intial version of library, supporting HAL and Siten and pitch it on twitter.
 
+Info on popularity a features of different hypermedia types at https://www.fabernovel.com/en/article/tech-en/which-technologies-should-you-use-to-build-hypermedia-apis
+
 Success: At least 10 like, retweets or comments.
 
 ### Validated

@@ -24,7 +24,11 @@
     "hateoas-client",
     "client",
     "hypermedia",
-    "hypermedia-client"
+    "hypermedia-client",
+    "RFC8288",
+    "link-header",
+    "link-template-header",
+    "hal"
   ],
   "main": "dist/waychaser.js",
   "unpkg": "dist/waychaser.umd.min.js",
