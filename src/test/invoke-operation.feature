@@ -309,7 +309,6 @@ Feature: Invoke Operation
             | PUT    | path  | query |
             | PATCH  | path  | query |
 
-    @wip
     Scenario Outline: Invoke operation - multiple body parameters
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
             | NAME    | TYPE |
@@ -321,6 +320,37 @@ Feature: Invoke Operation
             | alpha   | one   |
             | bravo   | two   |
             | charlie | three |
+        Then resource returned will contain only
+            | content-type | <CONTENT-TYPE> |
+            | alpha        | one            |
+            | bravo        | two            |
+            | charlie      | three          |
+
+        Examples:
+            | METHOD | CONTENT-TYPE                      |
+            | POST   | application/x-www-form-urlencoded |
+            | POST   | application/json                  |
+            | POST   | multipart/form-data               |
+            | PUT    | application/x-www-form-urlencoded |
+            | PUT    | application/json                  |
+            | PUT    | multipart/form-data               |
+            | PATCH  | application/x-www-form-urlencoded |
+            | PATCH  | application/json                  |
+            | PATCH  | multipart/form-data               |
+
+    @wip
+    Scenario Outline: Invoke operation - multiple body parameters with extra params
+        Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
+            | NAME    | TYPE |
+            | alpha   | body |
+            | bravo   | body |
+            | charlie | body |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | alpha   | one     |
+            | bravo   | two     |
+            | other   | notUsed |
+            | charlie | three   |
         Then resource returned will contain only
             | content-type | <CONTENT-TYPE> |
             | alpha        | one            |
