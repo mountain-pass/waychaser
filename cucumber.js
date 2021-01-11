@@ -4,8 +4,7 @@ const fs = require('fs')
 const FAIL_FAST = process.env.FAIL_FAST || '--fail-fast'
 const NO_STRICT = process.env.NO_STRICT || ''
 
-/* istanbul ignore next: branch only taken when run from github */
-const PUBLISH = process.env.GITHUB_WORKFLOW ? '--publish' : '--publish-quiet'
+const PUBLISH = '--publish-quiet'
 
 /* istanbul ignore next: branch only taken when remote */
 const RETRY = process.env.npm_lifecycle_event.includes(':remote')
