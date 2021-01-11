@@ -51,12 +51,17 @@ const MAX_WAIT = 10 * 60 * 60 // 10hr
 const RESERVED_SESSIONS = 1
 const MIN_WAIT_TIME = 40
 const MAX_WAIT_TIME = 80
+const MAX_INIT_WAIT_TIME = 20
 /**
  *
  */
 async function waitForSpareSession () {
   const start = Date.now()
   while (secondsSince(start) < MAX_WAIT) {
+    // inital random sleep so all the different browserstack tests don't try to start at once
+    await new Promise(resolve =>
+      setTimeout(resolve, getRandomInt(0, MAX_INIT_WAIT_TIME) * 1000)
+    )
     const planInfo = await getPlanInfo()
     const maxAllowed =
       planInfo.parallel_sessions_max_allowed - RESERVED_SESSIONS
