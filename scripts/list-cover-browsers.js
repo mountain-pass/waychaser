@@ -3,7 +3,7 @@
 
 import { scripts } from '../package.json'
 
-const BATCH_SIZE = 3
+const BATCH_SIZE = 20
 
 const start =
   (process.env.npm_lifecycle_event.replace(/.*:/, '') - 1) * BATCH_SIZE
