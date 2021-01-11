@@ -112,7 +112,8 @@
     "security": "snyk auth ${SNYK_TOKEN} && snyk test",
     "security:fix": "snyk auth ${SNYK_TOKEN} && snyk wizard",
     "change-log": "conventional-changelog -i CHANGELOG.md -s",
-    "release-notes": "conventional-changelog -u -o RELEASE.md"
+    "release-notes": "conventional-changelog -u -o RELEASE.md",
+    "wait-for-browser-stack": "scripts/${npm_lifecycle_event}.js"
   },
   "files": [
     "/dist/*.js",
