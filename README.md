@@ -117,15 +117,15 @@ const json = await apiResource.body()
 - [x] archive test results
 - [x] have pull requests from fork run node-api and chrome local
 - [x] iOS Safari testing
-- [x] Andriod Chrome testing
+- [x] Android Chrome testing
 - [x] npm audit
-- [x] snky security scanning
+- [x] snyk security scanning
 - [x] api docs
 - [x] tags in npm
 - [x] markdown lint
 - [x] switched to JS Standard format
 - [x] split webdriver from waychaser-via
-- [x] split browser stack tunnel into seperate class
+- [x] split browser stack tunnel into separate class
 - [x] reduce webpacking of node_modules
 - [x] clean up lining problems
 - [x] add code duplication checks
@@ -144,11 +144,11 @@ const json = await apiResource.body()
 - [x] add tests for path parameterised DELETE, POST, PUT, PATCH
 - [x] add tests for POST forms
 - [x] fix badges
-- [x] add js standard liniting to make sure our eslint confirm is conforming
+- [x] add js standard linting to make sure our eslint confirm is conforming
 - [x] add tests for PUT forms
 - [x] add tests for PATCH forms
 - [x] add tests for multipart
-- [x] swtich to single session per browser test
+- [x] switch to single session per browser test
 - [x] add tests for multiple parameters
 - [x] add automate CHANGELOG.md 
 - [ ] add support for HAL
@@ -157,12 +157,13 @@ const json = await apiResource.body()
   - [ ] add support for more general `_links`
   - [ ] add support for curies and curied `_links`
   - [ ] add support for `_links` in `_embedded` resources
+- [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests
 - [ ] upgrade webpack
   - [ ] or investigate using https://rollupjs.org/guide/en/ instead
   - [ ] or https://github.com/parcel-bundler/parcel
-- [ ] fix struture of package so we get better jsdoc linting
+- [ ] fix structure of package so we get better jsdoc linting
 - [ ] refactor browserstack test run to use single tunnel when running locally
 - [ ] add tests for abort
 - [ ] add tests for different types of error responses (maybe use https://hapi.dev/module/boom/api/?v=9.1.1)
@@ -174,7 +175,7 @@ const json = await apiResource.body()
   - [ ] integrate API docs
 - [ ] lots more 😂
 - [ ] help [
-      eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security) and get better version of `security/detect-object-injectionn` that doesn't flag `for (const index in object) { object[index] = 0; }`
+      eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security) and get better version of `security/detect-object-injection` that doesn't flag `for (const index in object) { object[index] = 0; }`
 - [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
 - [ ] try to use umd for both node and browser. https://github.com/webpack/webpack/pull/8625
   - [ ] investigate using https://rollupjs.org/guide/en/

@@ -106,6 +106,7 @@ Babel requires plugins to do the transformation. Presets are the set of plugins 
 4.  Install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 5.  Install [Cover extension](https://marketplace.visualstudio.com/items?itemName=hindlemail.cover)
 6.  Install [Commit Message Editor](https://marketplace.visualstudio.com/items?itemName=adam-bender.commit-message-editor)
+7.  Install [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 
 ### Contribution flow
 

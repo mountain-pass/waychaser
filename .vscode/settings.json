@@ -28,5 +28,18 @@
     "[optional body]",
     "",
     "[[BREAKING CHANGE: ]optional footer(s)]"
-  ]
+  ],
+  "cSpell.words": [
+    "browserstack",
+    "codacy",
+    "curied",
+    "dependabot",
+    "github's",
+    "mountainpass",
+    "parameterised",
+    "snyk",
+    "waychaser",
+    "webpacking"
+  ],
+  "cSpell.language": "en-GB"
 }
