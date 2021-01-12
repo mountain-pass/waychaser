@@ -110,7 +110,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (id, done) {
-        window.testResults[id].response.json().then(json => {
+        window.testResults[id].body().then(json => {
           console.log('JSON', JSON.stringify(json))
           done(json)
         })
