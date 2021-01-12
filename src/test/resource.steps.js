@@ -212,13 +212,11 @@ Given(
     const router = await this.router.route(this.currentResourceRoute)
     await router.get(async (request, response) => {
       response.header('content-type', 'application/hal+json')
-      response
-        .status(200)
-        .send(
-          Object.assign(JSON.parse(responseBody), {
-            _links: { self: { href: to } }
-          })
-        )
+      response.status(200).send(
+        Object.assign(JSON.parse(responseBody), {
+          _links: { self: { href: to } }
+        })
+      )
     })
   }
 )
@@ -233,6 +231,21 @@ Given(
       this.currentResourceRoute,
       createLinks(relationship, to)
     )
+  }
+)
+
+Given(
+  'a HAL resource with a {string} operation that returns an error',
+  async function (relationship) {
+    this.currentResourceRoute = randomApiPath()
+    const to = `http://${API_ACCESS_HOST}:33556/api`
+    const router = await this.router.route(this.currentResourceRoute)
+    await router.get(async (request, response) => {
+      response.header('content-type', 'application/hal+json')
+      response.status(200).send({
+        _links: { [relationship]: { href: to } }
+      })
+    })
   }
 )
 

@@ -1,12 +1,11 @@
 
-Feature: Invoke Operation
+Feature: Invoke HAL Operation
 
     So that I can perform actions on a resource
     As a developer
-    I want to be able to invoke operations
+    I want to be able to invoke HAL operations
 
-    @wip
-    Scenario: Invoke operation - self
+    Scenario: Invoke HAL operation - self
         Given a HAL resource returing the following with a "self" link that returns itself
             """
             {
@@ -22,3 +21,10 @@ Feature: Invoke Operation
                 "status": 200
             }
             """
+
+    @wip
+    Scenario: Invoke operation error
+        Given a HAL resource with a "error" operation that returns an error
+        When waychaser successfully loads that resource
+        And we invoke the "error" operation
+        Then it will NOT have loaded successfully
