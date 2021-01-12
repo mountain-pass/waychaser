@@ -111,8 +111,8 @@
     "duplication": "jscpd .",
     "security": "snyk auth ${SNYK_TOKEN} && snyk test",
     "security:fix": "snyk auth ${SNYK_TOKEN} && snyk wizard",
-    "change-log": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s",
-    "release-notes": "conventional-changelog -u -p conventionalcommits -o RELEASE.md",
+    "change-log": "conventional-changelog -i CHANGELOG.md -s",
+    "release-notes": "conventional-changelog -u -o RELEASE.md",
     "get-release-type": "conventional-recommended-bump -p conventionalcommits",
     "wait-for-browser-stack": "scripts/${npm_lifecycle_event}.js"
   },
