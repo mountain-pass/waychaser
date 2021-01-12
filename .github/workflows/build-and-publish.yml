@@ -523,6 +523,8 @@ jobs:
           ls -l coverage
       - run: npm run report:cover
       - uses: codacy/codacy-coverage-reporter-action@master
+        if: always()
+        continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage/full/lcov.info
