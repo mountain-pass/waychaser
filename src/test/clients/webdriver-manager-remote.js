@@ -121,6 +121,7 @@ class WebdriverManagerRemote extends WebdriverManager {
   }
 }
 
+/* istanbul ignore next: only get's executed on test framework issues */
 function takeTheWin (status) {
   // eslint-disable-next-line unicorn/no-process-exit
   process.exit(status === 'passed' ? 0 : 1)
