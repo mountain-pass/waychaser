@@ -42,9 +42,14 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async getBody (result) {
-    const json = await result.resource.response.json()
-    logger.debug('response body', result.resource.response.url, json)
-    return json
+    logger.debug(
+      'response',
+      typeof result.resource,
+      result.resource.constructor.name
+    )
+    const body = await result.resource.body()
+    logger.debug('response body', result.resource.response.url, body)
+    return body
   }
 
   async getStatusCode (result) {

@@ -210,6 +210,7 @@ const waychaser = {
   ApiResourceObject: class {
     constructor (response, body, contentType) {
       this.response = response
+      this._body = body
       const linkHeader = response.headers.get('link')
       const linkTemplateHeader = response.headers.get('link-template')
       const linkDatabase = new Loki()
@@ -227,6 +228,13 @@ const waychaser = {
 
     async invoke (relationship, context) {
       return this.operations.invoke(relationship, context)
+    }
+
+    async body () {
+      if (!this.response.bodyUsed) {
+        this._body = await this.response.json()
+      }
+      return this._body
     }
   }
 }

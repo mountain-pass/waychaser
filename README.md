@@ -32,6 +32,7 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
   - [Browser](#browser)
   - [Requesting linked resources](#requesting-linked-resources)
     - [Requesting parameterised linked resources](#requesting-parameterised-linked-resources)
+  - [Getting the response body](#getting-the-response-body)
 - [TO DO](#to-do)
 
 # Usage
@@ -92,6 +93,13 @@ const searchResultsResource = await apiResource.invoke('search', {
 })
 ```
 
+## Getting the response body
+
+```js
+const json = await apiResource.body()
+```
+
+
 # TO DO
 
 - [x] CI/CD pipeline
@@ -143,7 +151,7 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [x] add automate CHANGELOG.md 
 - [ ] add support for HAL
   - [x] add support for simple self `_links`
-  - [ ] add methods for getting consumed body
+  - [x] add methods for getting consumed body
   - [ ] add support for more general `_links`
   - [ ] add support for curies and curied `_links`
   - [ ] add support for `_links` in `_embedded` resources
@@ -151,6 +159,7 @@ const searchResultsResource = await apiResource.invoke('search', {
 - [ ] add tests for authenticated requests
 - [ ] upgrade webpack
   - [ ] or investigate using https://rollupjs.org/guide/en/ instead
+  - [ ] or https://github.com/parcel-bundler/parcel
 - [ ] fix struture of package so we get better jsdoc linting
 - [ ] refactor browserstack test run to use single tunnel when running locally
 - [ ] add tests for abort

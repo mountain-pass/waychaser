@@ -1,6 +1,57 @@
 import { assert, expect } from 'chai'
 import { When, Then, Before } from '@cucumber/cucumber'
 
+async function checkBodySingle (
+  waychaserProxy,
+  expectedBody,
+  result,
+  bodyMutator = body => {
+    return body
+  }
+) {
+  const actualBody = await waychaserProxy.getBody(result)
+  expect(bodyMutator(actualBody)).to.deep.equal(expectedBody)
+}
+
+async function checkBody (world, expectedBody, bodyMutator) {
+  await checkBodySingle(
+    world.waychaserProxy,
+    expectedBody,
+    world.operationResult,
+    bodyMutator
+  )
+  await checkBodySingle(
+    world.waychaserProxy,
+    expectedBody,
+    world.operationResultLokiStyle,
+    bodyMutator
+  )
+  await checkBodySingle(
+    world.waychaserProxy,
+    expectedBody,
+    world.opResult,
+    bodyMutator
+  )
+  await checkBodySingle(
+    world.waychaserProxy,
+    expectedBody,
+    world.opResultLokiStyle,
+    bodyMutator
+  )
+  await checkBodySingle(
+    world.waychaserProxy,
+    expectedBody,
+    world.resultLokiStyle,
+    bodyMutator
+  )
+  await checkBodySingle(
+    world.waychaserProxy,
+    expectedBody,
+    world.result,
+    bodyMutator
+  )
+}
+
 Before(async function () {
   this.checkUrls = async function (expectedUrl) {
     const previousResultUrl =
@@ -125,20 +176,6 @@ Before(async function () {
     expect(this.result.success).to.be.true()
   }
 
-  this.checkBodySingle = async function (expectedBody, result) {
-    const actualBody = await this.waychaserProxy.getBody(result)
-    expect(actualBody).to.deep.equal(expectedBody)
-  }
-
-  this.checkBody = async function (expectedBody) {
-    await this.checkBodySingle(expectedBody, this.operationResult)
-    await this.checkBodySingle(expectedBody, this.operationResultLokiStyle)
-    await this.checkBodySingle(expectedBody, this.opResult)
-    await this.checkBodySingle(expectedBody, this.opResultLokiStyle)
-    await this.checkBodySingle(expectedBody, this.resultLokiStyle)
-    await this.checkBodySingle(expectedBody, this.result)
-  }
-
   this.checkStatusCodeSingle = async function (expectedStatusCode, result) {
     const actualStatusCode = await this.waychaserProxy.getStatusCode(result)
     expect(actualStatusCode).to.equal(expectedStatusCode)
@@ -232,16 +269,26 @@ When('we invoke the {string} operation with the input', async function (
 })
 
 Then('resource returned will contain those values', async function () {
-  await this.checkBody(this.expectedBody)
+  await checkBody(this, this.expectedBody)
 })
 
 Then('resource returned will contain only', async function (dataTable) {
   const expectedBody = dataTable.rowsHash()
-  await this.checkBody(expectedBody)
+  await checkBody(this, expectedBody)
 })
 
 Then('resource returned will have the status code {int}', async function (
   statusCode
 ) {
   await this.checkStatusCode(statusCode)
+})
+
+Then('the body without the links will contain', async function (
+  documentString
+) {
+  const expectedBody = JSON.parse(documentString)
+  await checkBody(this, expectedBody, actualBody => {
+    delete actualBody._links
+    return actualBody
+  })
 })
