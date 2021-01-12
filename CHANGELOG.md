@@ -1,3 +1,10 @@
+## 1.59.0 (2021-01-12)
+
+
+### Features
+
+* **response:** added method for getting the response body ([1bdec0e](https://github.com/mountain-pass/waychaser/commit/1bdec0e583f7b41f55a0ecfb3c41b7e45c6aa95e))
+
 ## 1.58.0 (2021-01-12)
 
 ## 1.57.0 (2021-01-11)
