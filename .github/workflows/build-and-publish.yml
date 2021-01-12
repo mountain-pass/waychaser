@@ -634,7 +634,7 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          npm --unsafe-perm --no-git-tag-version version minor -m "chore(release): Version minor to %s."
+          npm --unsafe-perm --no-git-tag-version version $(npm run --silent get-release-type)
           npm ci
           git add package.json
           git add package-lock.json
