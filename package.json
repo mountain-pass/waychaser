@@ -167,7 +167,7 @@
     "conventional-recommended-bump": "^6.1.0",
     "core-js": "^3.7.0",
     "cucumber-junit-formatter": "^0.2.2",
-    "dateformat": "^3.0.3",
+    "dateformat": "^4.4.1",
     "depcheck": "^1.2.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^7.13.0",
