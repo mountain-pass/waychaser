@@ -36,7 +36,7 @@ This software uses cucumber with different clients for interacting with the API,
 
 Each interface has the same behaviour as described by the [cucumber scenarios](./src/test). Different test clients are used to interact with each interface.
 
-The tests for these clients can be run using the `test:node-api` and `test:browser-api` npm scripts respectivly.
+The tests for these clients can be run using the `test:node-api` and `test:browser-api` npm scripts respectively.
 
 To run all the tests, run `npm run test`
 
@@ -135,7 +135,7 @@ Thanks for contributing!
 
 By submitting changes to this repository, you are accepting:
 
-1. To adhear to our [code of conduct](./CODE_OF_CONDUCT.md), and
-2. You are transfering copyright of your change to the waychaser project.
+1. To adhere to our [code of conduct](./CODE_OF_CONDUCT.md), and
+2. You are transferring copyright of your change to the waychaser project.
 
 You will get an author credit if we are able to accept your contribution. Active contributors may get invited to join the core team that will grant them privileges to merge existing PRs.
