@@ -196,7 +196,6 @@ async function createOkRouteWithLinks (
 }
 
 async function createRandomDynamicResourceRoute (
-  rootRouter,
   relationship,
   method,
   parameters,
@@ -204,7 +203,7 @@ async function createRandomDynamicResourceRoute (
   mediaType
 ) {
   return createDynamicResourceRoute(
-    rootRouter,
+    this.router,
     randomApiPath(),
     relationship,
     method,
@@ -357,20 +356,18 @@ Given(
 Given(
   'a resource with a {string} operation that returns the provided {string} {string} parameter',
   async function (relationship, parameter, parameterType) {
-    this.currentResourceRoute = await createRandomDynamicResourceRoute(
-      this.router,
-      relationship,
-      'GET',
-      [{ NAME: parameter, TYPE: parameterType }]
-    )
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(relationship, 'GET', [{ NAME: parameter, TYPE: parameterType }])
   }
 )
 
 Given(
   'a HAL resource with a {string} operation that returns the provided {string} {string} parameter',
   async function (relationship, parameter, parameterType) {
-    this.currentResourceRoute = await createRandomDynamicResourceRoute(
-      this.router,
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(
       relationship,
       'GET',
       [{ NAME: parameter, TYPE: parameterType }],
@@ -406,12 +403,9 @@ Given(
 Given(
   'a resource with a {string} operation with the {string} method that returns the provided {string} {string} parameter',
   async function (relationship, method, parameter, parameterType) {
-    this.currentResourceRoute = await createRandomDynamicResourceRoute(
-      this.router,
-      relationship,
-      method,
-      [{ NAME: parameter, TYPE: parameterType }]
-    )
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(relationship, method, [{ NAME: parameter, TYPE: parameterType }])
   }
 )
 
@@ -424,8 +418,9 @@ Given(
     parameterType,
     contentTypes
   ) {
-    this.currentResourceRoute = await createRandomDynamicResourceRoute(
-      this.router,
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(
       relationship,
       method,
       [{ NAME: parameter, TYPE: parameterType }],
@@ -437,24 +432,17 @@ Given(
 Given(
   'a resource with a {string} operation with the {string} method that returns the following provided parameters',
   async function (relationship, method, dataTable) {
-    this.currentResourceRoute = await createRandomDynamicResourceRoute(
-      this.router,
-      relationship,
-      method,
-      dataTable.hashes()
-    )
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(relationship, method, dataTable.hashes())
   }
 )
 
 Given(
   'a resource with a {string} operation with the {string} method that returns the following {string} provided parameters and the content type',
   async function (relationship, method, contentType, dataTable) {
-    this.currentResourceRoute = await createRandomDynamicResourceRoute(
-      this.router,
-      relationship,
-      method,
-      dataTable.hashes(),
-      contentType
-    )
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(relationship, method, dataTable.hashes(), contentType)
   }
 )
