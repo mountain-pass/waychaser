@@ -60,6 +60,8 @@ When('waychaser successfully loads the latter resource', async function () {
     this.waychaserProxy,
     this.currentResourceRoute
   )
+  const bodies = await this.waychaserProxy.getBodies([this.result])
+  logger.debug('BODY', bodies[0])
 })
 
 When(

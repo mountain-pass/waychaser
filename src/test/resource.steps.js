@@ -27,14 +27,25 @@ function createLinks (relationship, uri) {
   return links
 }
 
-function sendResponse (response, status, links, linkTemplates) {
-  if (links) {
+function sendResponse (response, status, links, linkTemplates, mode) {
+  if (links && mode === undefined) {
     response.header('link', links.toString())
   }
-  if (linkTemplates) {
+  if (linkTemplates && mode === undefined) {
     response.header('link-template', linkTemplates.toString())
   }
-  response.status(status).send({ status })
+  let halLinks
+  if (mode === 'application/hal+json') {
+    halLinks = {}
+    links.refs.forEach(link => {
+      halLinks[link.rel] = { href: link.uri }
+    })
+    response.header('content-type', mode)
+  }
+  response.status(status).send({
+    status,
+    ...(mode === 'application/hal+json' && { _links: halLinks })
+  })
 }
 
 function filterParameters (parameters, type) {
@@ -136,11 +147,12 @@ async function createRouteWithLinks (
   route,
   status,
   links,
-  linkTemplates
+  linkTemplates,
+  mode
 ) {
   const router = await rootRouter.route(route)
   await router.get(async (request, response) => {
-    sendResponse(response, status, links, linkTemplates)
+    sendResponse(response, status, links, linkTemplates, mode)
   })
   return router
 }
@@ -149,9 +161,17 @@ async function createOkRouteWithLinks (
   rootRouter,
   route,
   links,
-  linkTemplates
+  linkTemplates,
+  mode
 ) {
-  return createRouteWithLinks(rootRouter, route, 200, links, linkTemplates)
+  return createRouteWithLinks(
+    rootRouter,
+    route,
+    200,
+    links,
+    linkTemplates,
+    mode
+  )
 }
 
 async function createRandomDynamicResourceRoute (
@@ -252,12 +272,23 @@ Given(
 Given(
   'a resource with a {string} operation that returns that resource',
   async function (relationship) {
-    const previousResourceRoute = this.currentResourceRoute
+    const links = createLinks(relationship, this.currentResourceRoute)
+    this.currentResourceRoute = randomApiPath()
+    await createOkRouteWithLinks(this.router, this.currentResourceRoute, links)
+  }
+)
+
+Given(
+  'a HAL resource with a {string} operation that returns that resource',
+  async function (relationship) {
+    const links = createLinks(relationship, this.currentResourceRoute)
     this.currentResourceRoute = randomApiPath()
     await createOkRouteWithLinks(
       this.router,
       this.currentResourceRoute,
-      createLinks(relationship, previousResourceRoute)
+      links,
+      undefined,
+      'application/hal+json'
     )
   }
 )

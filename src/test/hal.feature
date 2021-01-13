@@ -5,7 +5,7 @@ Feature: Invoke HAL Operation
     As a developer
     I want to be able to invoke HAL operations
 
-    Scenario: Invoke HAL operation - self
+    Scenario: Invoke operation - self
         Given a HAL resource returning the following with a "self" link that returns itself
             """
             {
@@ -22,9 +22,16 @@ Feature: Invoke HAL Operation
             }
             """
 
-    @wip
     Scenario: Invoke operation error
         Given a HAL resource with a "error" operation that returns an error
         When waychaser successfully loads that resource
         And we invoke the "error" operation
         Then it will NOT have loaded successfully
+
+    @wip
+    Scenario: Invoke operation - next
+        Given a resource returning status code 200
+        And a HAL resource with a "next" operation that returns that resource
+        When waychaser successfully loads the latter resource
+        And we successfully invoke the "next" operation
+        Then the former resource will be returned
