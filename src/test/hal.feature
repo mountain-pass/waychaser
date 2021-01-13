@@ -35,9 +35,21 @@ Feature: Invoke HAL Operation
         And we successfully invoke the "next" operation
         Then the former resource will be returned
 
-    @wip
     Scenario: Invoke operation - list
         Given a list of 4 HAL resources linked with "next" operations
         When waychaser successfully loads the first resource in the list
         And invokes each of the "next" operations in turn 3 times
         Then the last resource returned will be the last item in the list
+
+    @wip
+    Scenario Outline: Invoke operation - parameterised
+        Given a HAL resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" "<TYPE>" parameter
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | ping | pong |
+        Then resource returned will contain those values
+
+        Examples:
+            | TYPE  |
+            | query |
+            | path  |

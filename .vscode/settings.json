@@ -55,6 +55,7 @@
     "parameterised",
     "prerelease",
     "refs",
+    "rels",
     "saucelabs",
     "shellcheck",
     "snyk",

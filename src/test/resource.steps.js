@@ -46,13 +46,20 @@ function sendResponse (
       break
     case 'application/hal+json':
       halLinks = {}
-      links.refs.forEach(link => {
-        halLinks[link.rel] = { href: link.uri }
-      })
-      response.header('content-type', mediaType)
+      if (links) {
+        links.refs.forEach(link => {
+          halLinks[link.rel] = { href: link.uri }
+        })
+      }
+      if (linkTemplates) {
+        linkTemplates.refs.forEach(link => {
+          halLinks[link.rel] = { href: link.uri, templated: true }
+        })
+      }
+
       break
   }
-
+  response.header('content-type', mediaType)
   response.status(status).send({
     status,
     ...(mediaType === 'application/hal+json' && { _links: halLinks })
@@ -79,7 +86,8 @@ async function createDynamicResourceRoute (
   relationship,
   method,
   parameters,
-  contentTypes
+  contentTypes,
+  mediaType = 'application/json'
 ) {
   let dynamicRoutePath = route
   let dynamicUri = route
@@ -111,6 +119,7 @@ async function createDynamicResourceRoute (
         responseBody['content-type'] = request.headers['content-type']
       }
     }
+    response.header('content-type', mediaType)
     response.status(200).send(responseBody)
   })
 
@@ -148,7 +157,8 @@ async function createDynamicResourceRoute (
     rootRouter,
     currentResourceRoute,
     undefined,
-    links
+    links,
+    mediaType
   )
   return currentResourceRoute
 }
@@ -190,7 +200,8 @@ async function createRandomDynamicResourceRoute (
   relationship,
   method,
   parameters,
-  contentTypes
+  contentTypes,
+  mediaType
 ) {
   return createDynamicResourceRoute(
     rootRouter,
@@ -198,7 +209,8 @@ async function createRandomDynamicResourceRoute (
     relationship,
     method,
     parameters,
-    contentTypes
+    contentTypes,
+    mediaType
   )
 }
 
@@ -350,6 +362,20 @@ Given(
       relationship,
       'GET',
       [{ NAME: parameter, TYPE: parameterType }]
+    )
+  }
+)
+
+Given(
+  'a HAL resource with a {string} operation that returns the provided {string} {string} parameter',
+  async function (relationship, parameter, parameterType) {
+    this.currentResourceRoute = await createRandomDynamicResourceRoute(
+      this.router,
+      relationship,
+      'GET',
+      [{ NAME: parameter, TYPE: parameterType }],
+      undefined,
+      'application/hal+json'
     )
   }
 )

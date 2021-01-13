@@ -2,7 +2,7 @@
 
 Client library for HATEOAS level 3 RESTful APIs that provide hypermedia controls using:
   - Link ([RFC8288](https://tools.ietf.org/html/rfc8288)) and [Link-Template](https://mnot.github.io/I-D/link-template/) headers.
-  - [HAL](http://stateless.co/hal_specification.html) 
+  - [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08) 
 
 This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE.
 <img alt="aw yeah!" src="./docs/images/aw_yeah.gif" width="20" height="20" />
@@ -160,8 +160,11 @@ const json = await apiResource.body()
   - [x] add support for simple self `_links`
   - [x] add methods for getting consumed body
   - [x] add support for more general `_links`
+  - [ ] add support for templated `_links`
+  - [ ] add support for `rels` with an array of links
   - [ ] add support for curies and curied `_links`
   - [ ] add support for `_links` in `_embedded` resources
+  - [ ] add support for warning about deprecated `_links`
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests

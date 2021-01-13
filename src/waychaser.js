@@ -10,7 +10,7 @@ import FormData from 'form-data'
 polyfill()
 
 /**
- * Loads the resouce at the provided url using fetch
+ * Loads the resource at the provided url using fetch
  *
  * @param {URL} url url of the resource to load
  * @param {object} options options to pass to fetch
@@ -49,7 +49,7 @@ async function loadResource (url, options) {
 /**
  * @param {Loki.Collection} operations the target loki collection to load the operations into
  * @param {LinkHeader} links the links to load
- * @param {fetch.Response} callingContext the reponse object that the {@param links} are relative to.
+ * @param {fetch.Response} callingContext the response object that the {@param links} are relative to.
  */
 function addLinksToOperations (operations, links, callingContext) {
   operations.insert(
@@ -66,7 +66,7 @@ function addLinksToOperations (operations, links, callingContext) {
  *
  * @param {Loki.Collection} operations the target loki collection to load the operations into
  * @param {string} linkHeader the link header to load the operations from
- * @param {fetch.Response} callingContext the reponse object that the links in link header are relative to.
+ * @param {fetch.Response} callingContext the response object that the links in link header are relative to.
  */
 function loadOperations (operations, linkHeader, callingContext) {
   if (linkHeader) {
@@ -80,16 +80,20 @@ function loadOperations (operations, linkHeader, callingContext) {
  *
  * @param {Loki.Collection} operations the target loki collection to load the operations into
  * @param {object} _links HAL links within the response
- * @param {fetch.Response} callingContext the reponse object that the links in link header are relative to.
+ * @param {fetch.Response} callingContext the response object that the links in link header are relative to.
  */
 function loadHalOperations (operations, _links, callingContext) {
   const links = new LinkHeader()
-  Object.keys(_links).forEach(key => {
-    links.set({
-      rel: key,
-      uri: _links[key].href
+  if (_links) {
+    Object.keys(_links).forEach(key => {
+      links.set({
+        rel: key,
+        uri: _links[key].href
+        // we don't need to copy `templated` across, because when we invoke an operation, we always
+        // assume it's a template and expand it with the passed parameters
+      })
     })
-  })
+  }
 
   addLinksToOperations(operations, links, callingContext)
 }
