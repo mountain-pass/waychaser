@@ -27,24 +27,35 @@ function createLinks (relationship, uri) {
   return links
 }
 
-function sendResponse (response, status, links, linkTemplates, mode) {
-  if (links && mode === undefined) {
-    response.header('link', links.toString())
-  }
-  if (linkTemplates && mode === undefined) {
-    response.header('link-template', linkTemplates.toString())
-  }
+function sendResponse (
+  response,
+  status,
+  links,
+  linkTemplates,
+  mediaType = 'application/json'
+) {
   let halLinks
-  if (mode === 'application/hal+json') {
-    halLinks = {}
-    links.refs.forEach(link => {
-      halLinks[link.rel] = { href: link.uri }
-    })
-    response.header('content-type', mode)
+  switch (mediaType) {
+    case 'application/json':
+      if (links) {
+        response.header('link', links.toString())
+      }
+      if (linkTemplates) {
+        response.header('link-template', linkTemplates.toString())
+      }
+      break
+    case 'application/hal+json':
+      halLinks = {}
+      links.refs.forEach(link => {
+        halLinks[link.rel] = { href: link.uri }
+      })
+      response.header('content-type', mediaType)
+      break
   }
+
   response.status(status).send({
     status,
-    ...(mode === 'application/hal+json' && { _links: halLinks })
+    ...(mediaType === 'application/hal+json' && { _links: halLinks })
   })
 }
 
@@ -148,11 +159,11 @@ async function createRouteWithLinks (
   status,
   links,
   linkTemplates,
-  mode
+  mediaType
 ) {
   const router = await rootRouter.route(route)
   await router.get(async (request, response) => {
-    sendResponse(response, status, links, linkTemplates, mode)
+    sendResponse(response, status, links, linkTemplates, mediaType)
   })
   return router
 }
@@ -162,7 +173,7 @@ async function createOkRouteWithLinks (
   route,
   links,
   linkTemplates,
-  mode
+  mediaType
 ) {
   return createRouteWithLinks(
     rootRouter,
@@ -170,7 +181,7 @@ async function createOkRouteWithLinks (
     200,
     links,
     linkTemplates,
-    mode
+    mediaType
   )
 }
 
@@ -293,24 +304,41 @@ Given(
   }
 )
 
+async function createListOfResources (count, relationship, mediaType) {
+  // we add the last one first
+  this.currentResourceRoute = randomApiPath()
+  await createOkRouteWithLinks(this.router, this.currentResourceRoute)
+  this.lastOnList = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
+  for (let index = 1; index < count; index++) {
+    // and then point each on to the previously created resource
+    const previousResourceRoute = this.currentResourceRoute
+    this.currentResourceRoute = randomApiPath()
+    await createOkRouteWithLinks(
+      this.router,
+      this.currentResourceRoute,
+      createLinks(relationship, previousResourceRoute),
+      undefined,
+      mediaType
+    )
+  }
+  // POST: this.currentResourceRoute points to the first resource in the list
+}
+
 Given(
   'a list of {int} resources linked with {string} operations',
   async function (count, relationship) {
-    // we add the last one first
-    this.currentResourceRoute = randomApiPath()
-    await createOkRouteWithLinks(this.router, this.currentResourceRoute)
-    this.lastOnList = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
-    for (let index = 1; index < count; index++) {
-      // and then point each on to the previously created resource
-      const previousResourceRoute = this.currentResourceRoute
-      this.currentResourceRoute = randomApiPath()
-      await createOkRouteWithLinks(
-        this.router,
-        this.currentResourceRoute,
-        createLinks(relationship, previousResourceRoute)
-      )
-    }
-    // POST: this.currentResourceRoute points to the first resource in the list
+    createListOfResources.bind(this)(count, relationship)
+  }
+)
+
+Given(
+  'a list of {int} HAL resources linked with {string} operations',
+  async function (count, relationship) {
+    createListOfResources.bind(this)(
+      count,
+      relationship,
+      'application/hal+json'
+    )
   }
 )
 

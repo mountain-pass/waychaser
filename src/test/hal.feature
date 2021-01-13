@@ -28,10 +28,16 @@ Feature: Invoke HAL Operation
         And we invoke the "error" operation
         Then it will NOT have loaded successfully
 
-    @wip
     Scenario: Invoke operation - next
         Given a resource returning status code 200
         And a HAL resource with a "next" operation that returns that resource
         When waychaser successfully loads the latter resource
         And we successfully invoke the "next" operation
         Then the former resource will be returned
+
+    @wip
+    Scenario: Invoke operation - list
+        Given a list of 4 HAL resources linked with "next" operations
+        When waychaser successfully loads the first resource in the list
+        And invokes each of the "next" operations in turn 3 times
+        Then the last resource returned will be the last item in the list
