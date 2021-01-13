@@ -59,7 +59,7 @@ class WaychaserProxy {
   }
 
   /* istanbul ignore next: only get's executed if we didn't overload this method */
-  async getBody (result) {
+  async getBodies (results) {
     abstract()
   }
 

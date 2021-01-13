@@ -8,6 +8,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async load (url) {
+    logger.debug(`loading ${url}`)
     const rval = await this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (url, done) {
@@ -116,6 +117,22 @@ class WaychaserViaWebdriver extends WaychaserProxy {
         })
       },
       result.id
+    )
+  }
+
+  async getBodies (results) {
+    return this.manager.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (ids, done) {
+        Promise.all(
+          ids.map(id => {
+            return window.testResults[id].body()
+          })
+        ).then(bodies => {
+          done(bodies)
+        })
+      },
+      results.map(result => result.id)
     )
   }
 

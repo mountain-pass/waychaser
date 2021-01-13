@@ -7,9 +7,11 @@ const NO_STRICT = process.env.NO_STRICT || ''
 const PUBLISH = '--publish-quiet'
 
 /* istanbul ignore next: branch only taken when remote */
-const RETRY = process.env.npm_lifecycle_event.includes(':remote')
-  ? '--retry 5'
-  : ''
+const RETRY =
+  process.env.npm_lifecycle_event.includes(':remote') &&
+  process.env.GITHUB_WORKFLOW
+    ? '--retry 5'
+    : ''
 
 const outputDirectory = 'test-results'
 fs.mkdirSync(outputDirectory, { recursive: true })

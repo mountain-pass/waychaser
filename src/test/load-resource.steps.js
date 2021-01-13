@@ -20,6 +20,7 @@ async function loadAndCheckResourceByPath (
   currentResourceRoute
 ) {
   const result = await loadResourceByPath(waychaserProxy, currentResourceRoute)
+  logger.debug('result', result)
   expect(result.success).to.be.true()
   return result
 }
@@ -32,7 +33,8 @@ When('waychaser loads that resource', async function () {
 })
 
 When("waychaser loads a resource that's not available", async function () {
-  this.result = await loadResourceByUrl(this.waychaserProxy,
+  this.result = await loadResourceByUrl(
+    this.waychaserProxy,
     `http://${API_ACCESS_HOST}:33556/api`
   )
 })
@@ -46,6 +48,7 @@ Then('it will NOT have loaded successfully', async function () {
 })
 
 When('waychaser successfully loads that resource', async function () {
+  logger.debug('loading current resource', this.currentResourceRoute)
   this.result = await loadAndCheckResourceByPath(
     this.waychaserProxy,
     this.currentResourceRoute

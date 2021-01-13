@@ -1,55 +1,24 @@
 import { assert, expect } from 'chai'
 import { When, Then, Before } from '@cucumber/cucumber'
 
-async function checkBodySingle (
-  waychaserProxy,
+async function checkBody (
+  world,
   expectedBody,
-  result,
   bodyMutator = body => {
     return body
   }
 ) {
-  const actualBody = await waychaserProxy.getBody(result)
-  expect(bodyMutator(actualBody)).to.deep.equal(expectedBody)
-}
-
-async function checkBody (world, expectedBody, bodyMutator) {
-  await checkBodySingle(
-    world.waychaserProxy,
-    expectedBody,
+  const bodies = await world.waychaserProxy.getBodies([
     world.operationResult,
-    bodyMutator
-  )
-  await checkBodySingle(
-    world.waychaserProxy,
-    expectedBody,
     world.operationResultLokiStyle,
-    bodyMutator
-  )
-  await checkBodySingle(
-    world.waychaserProxy,
-    expectedBody,
     world.opResult,
-    bodyMutator
-  )
-  await checkBodySingle(
-    world.waychaserProxy,
-    expectedBody,
     world.opResultLokiStyle,
-    bodyMutator
-  )
-  await checkBodySingle(
-    world.waychaserProxy,
-    expectedBody,
     world.resultLokiStyle,
-    bodyMutator
-  )
-  await checkBodySingle(
-    world.waychaserProxy,
-    expectedBody,
-    world.result,
-    bodyMutator
-  )
+    world.result
+  ])
+  bodies.forEach(body => {
+    expect(bodyMutator(body)).to.deep.equal(expectedBody)
+  })
 }
 
 Before(async function () {
@@ -61,7 +30,9 @@ Before(async function () {
     const resultUrl = await this.waychaserProxy.getUrl(this.result)
     expect(resultUrl).to.equal(previousResultUrl, 'resultUrl')
 
-    const resultLokiStyleUrl = await this.waychaserProxy.getUrl(this.result)
+    const resultLokiStyleUrl = await this.waychaserProxy.getUrl(
+      this.resultLokiStyle
+    )
     expect(resultLokiStyleUrl).to.equal(previousResultUrl, 'resultLokiStyleUrl')
 
     const operationResultUrl = await this.waychaserProxy.getUrl(
