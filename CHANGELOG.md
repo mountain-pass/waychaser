@@ -1,3 +1,9 @@
+## <small>1.62.6 (2021-01-13)</small>
+
+* ci(publish): fixing versioning ([689f9a3](https://github.com/mountain-pass/waychaser/commit/689f9a3))
+
+
+
 ## <small>1.62.5 (2021-01-13)</small>
 
 * Merge pull request #98 from mountain-pass/dependabot/npm_and_yarn/dateformat-4.4.1 ([75c3341](https://github.com/mountain-pass/waychaser/commit/75c3341)), closes [#98](https://github.com/mountain-pass/waychaser/issues/98)
