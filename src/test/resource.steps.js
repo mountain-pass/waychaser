@@ -439,6 +439,21 @@ Given(
 )
 
 Given(
+  'a HAL resource with a {string} operation with the {string} method that returns the following provided parameters',
+  async function (relationship, method, dataTable) {
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(
+      relationship,
+      method,
+      dataTable.hashes(),
+      undefined,
+      'application/hal+json'
+    )
+  }
+)
+
+Given(
   'a resource with a {string} operation with the {string} method that returns the following {string} provided parameters and the content type',
   async function (relationship, method, contentType, dataTable) {
     this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(

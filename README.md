@@ -160,7 +160,7 @@ const json = await apiResource.body()
   - [x] add support for simple self `_links`
   - [x] add methods for getting consumed body
   - [x] add support for more general `_links`
-  - [ ] add support for templated `_links`
+  - [x] add support for templated `_links`
   - [ ] add support for `rels` with an array of links
   - [ ] add support for curies and curied `_links`
   - [ ] add support for `_links` in `_embedded` resources
