@@ -1,3 +1,9 @@
+## <small>1.62.3 (2021-01-13)</small>
+
+* Merge pull request #107 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-unicorn-26.0.1 ([27830d8](https://github.com/mountain-pass/waychaser/commit/27830d8)), closes [#107](https://github.com/mountain-pass/waychaser/issues/107)
+
+
+
 ## <small>1.62.2 (2021-01-13)</small>
 
 * ci(browserstack): fixing retry logic ([f344d24](https://github.com/mountain-pass/waychaser/commit/f344d24))
