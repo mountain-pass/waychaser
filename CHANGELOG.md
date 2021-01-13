@@ -1,3 +1,9 @@
+## <small>1.62.2 (2021-01-13)</small>
+
+* ci(browserstack): fixing retry logic ([f344d24](https://github.com/mountain-pass/waychaser/commit/f344d24))
+
+
+
 ## <small>1.62.2 (2021-01-12)</small>
 
 * ci(browserstack): fixing retry logic ([537cd04](https://github.com/mountain-pass/waychaser/commit/537cd04))
