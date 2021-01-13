@@ -12,12 +12,12 @@ on:
       - "**"
 
 jobs:
-  checksecret:
+  check-secret:
     runs-on: ubuntu-latest
     outputs:
-      SECRETS_SET: ${{ steps.checksecret.outputs.SECRETS_SET }}
+      SECRETS_SET: ${{ steps.check-secret.outputs.SECRETS_SET }}
     steps:
-      - id: checksecret
+      - id: check-secret
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
         run: |
@@ -120,9 +120,9 @@ jobs:
 
   security:
     needs:
-      - checksecret
+      - check-secret
     if: |
-      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+      needs.check-secret.outputs.SECRETS_SET == 'true' &&
        ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     runs-on: ubuntu-latest
@@ -228,9 +228,9 @@ jobs:
 
   get-browser-list:
     needs:
-      - checksecret
+      - check-secret
     if: |
-      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+      needs.check-secret.outputs.SECRETS_SET == 'true' &&
        ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     runs-on: ubuntu-latest
@@ -306,10 +306,10 @@ jobs:
 
   test-browser-api-1:
     needs:
-      - checksecret
+      - check-secret
       - get-browser-list
     if: |
-      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+      needs.check-secret.outputs.SECRETS_SET == 'true' &&
        ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
     runs-on: ubuntu-latest
@@ -396,7 +396,7 @@ jobs:
         with:
           local-testing: stop
 
-      ### THRID ATTEMPT ###
+      ### THIRD ATTEMPT ###
       # wait for availability
       - run: npm run wait-for-browser-stack
         if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
@@ -522,7 +522,7 @@ jobs:
 
   publish:
     needs:
-      - checksecret
+      - check-secret
       - check-coverage-local
       - check-coverage
       - lint
@@ -531,7 +531,7 @@ jobs:
       - build
       - duplication
     if: |
-      needs.checksecret.outputs.SECRETS_SET == 'true' &&
+      needs.check-secret.outputs.SECRETS_SET == 'true' &&
       github.ref == 'refs/heads/main' && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
@@ -583,7 +583,7 @@ jobs:
             git add CHANGELOG.md
             git commit -m "chore(release): updated CHANGELOG.md and version in README.md to $PACKAGE_VERSION [skip-ci]"
             npm pack
-            npm run dopublish
+            npm run do-publish
             git config user.name github-actions
             git config user.email github-actions@github.com
             git tag "v${PACKAGE_VERSION}"

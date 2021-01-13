@@ -18,7 +18,7 @@
   "keywords": [
     "rest",
     "rest-client",
-    "isomophic",
+    "isomorphic",
     "fetch",
     "hateoas",
     "hateoas-client",
@@ -107,7 +107,7 @@
     "sync-readme-version": "scripts/sync-readme-version.sh",
     "pre-push": "npm run test:node-api && npm run duplication",
     "npm-check-unused": "depcheck",
-    "dopublish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public",
+    "do-publish": "npm publish mountainpass-waychaser-${npm_package_version}.tgz --access public",
     "duplication": "jscpd .",
     "security": "snyk auth ${SNYK_TOKEN} && snyk test",
     "security:fix": "snyk auth ${SNYK_TOKEN} && snyk wizard",

@@ -47,7 +47,7 @@ if (profile.startsWith('browser-api')) {
   webdriverManager = clients[mode.toString()]
   webdriverManager.DEFAULT_STEP_TIMEOUT = DEFAULT_STEP_TIMEOUT
 
-  /* istanbul ignore next: only get's executed when there are test config issues */
+  /* istanbul ignore next: only gets executed when there are test config issues */
   if (webdriverManager === undefined) {
     throw new Error(`unknown mode: ${mode}`)
   }

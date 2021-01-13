@@ -205,7 +205,7 @@ Given(
 )
 
 Given(
-  'a HAL resource returing the following with a {string} link that returns itself',
+  'a HAL resource returning the following with a {string} link that returns itself',
   async function (relationship, responseBody) {
     this.currentResourceRoute = randomApiPath()
     const to = this.currentResourceRoute

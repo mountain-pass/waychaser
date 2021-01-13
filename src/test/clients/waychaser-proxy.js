@@ -2,12 +2,12 @@ import { abstract } from '../../util/abstract'
 import logger from '../../util/logger'
 
 class WaychaserProxy {
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async load (url) {
     abstract()
   }
 
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getOCount (property, result) {
     abstract()
   }
@@ -20,7 +20,7 @@ class WaychaserProxy {
     return this.getOCount('ops', result)
   }
 
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async findOneO (property, result, relationship) {
     abstract()
   }
@@ -33,7 +33,7 @@ class WaychaserProxy {
     return this.findOneO('ops', result, relationship)
   }
 
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async invokeO (property, result, relationship, context) {
     abstract()
   }
@@ -48,22 +48,22 @@ class WaychaserProxy {
     return this.invokeO('ops', result, relationship, context)
   }
 
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async invoke (result, relationship, context) {
     abstract()
   }
 
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getUrl (result, context) {
     abstract()
   }
 
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getBodies (results) {
     abstract()
   }
 
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getStatusCode (result) {
     abstract()
   }

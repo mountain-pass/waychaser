@@ -6,7 +6,7 @@ Feature: Invoke HAL Operation
     I want to be able to invoke HAL operations
 
     Scenario: Invoke HAL operation - self
-        Given a HAL resource returing the following with a "self" link that returns itself
+        Given a HAL resource returning the following with a "self" link that returns itself
             """
             {
                 "status": 200
