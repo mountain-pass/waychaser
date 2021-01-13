@@ -1,3 +1,9 @@
+## <small>1.62.4 (2021-01-13)</small>
+
+* Merge pull request #108 from mountain-pass/dependabot/npm_and_yarn/webpack-dev-server-3.11.2 ([d89b739](https://github.com/mountain-pass/waychaser/commit/d89b739)), closes [#108](https://github.com/mountain-pass/waychaser/issues/108)
+
+
+
 ## <small>1.62.3 (2021-01-13)</small>
 
 * Merge pull request #107 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-unicorn-26.0.1 ([27830d8](https://github.com/mountain-pass/waychaser/commit/27830d8)), closes [#107](https://github.com/mountain-pass/waychaser/issues/107)
