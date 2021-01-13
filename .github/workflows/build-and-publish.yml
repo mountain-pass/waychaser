@@ -363,7 +363,7 @@ jobs:
           local-identifier: random
       # run tests
       - id: attempt-1
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success\n"
+        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
         timeout-minutes: 25
         continue-on-error: true
       # stop tunnel
@@ -387,7 +387,7 @@ jobs:
       # run tests
       - id: attempt-2
         if: steps.attempt-1.outputs.result != 'success'
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success\n"
+        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
         timeout-minutes: 25
         continue-on-error: true
       # stop tunnel
@@ -412,7 +412,7 @@ jobs:
       # run tests
       - id: attempt-3
         if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success\n"
+        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
         timeout-minutes: 25
         continue-on-error: true
       # stop tunnel
