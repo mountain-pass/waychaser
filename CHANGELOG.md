@@ -1,3 +1,9 @@
+## <small>1.62.8 (2021-01-14)</small>
+
+* refactor(test): reducing number of calls to browser ([6985f2f](https://github.com/mountain-pass/waychaser/commit/6985f2f))
+
+
+
 ## <small>1.62.7 (2021-01-14)</small>
 
 * test(hal): additional tests for templated HAL links ([1d1e214](https://github.com/mountain-pass/waychaser/commit/1d1e214))
