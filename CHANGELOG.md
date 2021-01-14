@@ -1,3 +1,9 @@
+## <small>1.62.9 (2021-01-14)</small>
+
+* feat(hal): added support for curied relationships ([b089426](https://github.com/mountain-pass/waychaser/commit/b089426)), closes [/tools.ietf.org/html/draft-kelly-json-hal-08#section-8](https://github.com//tools.ietf.org/html/draft-kelly-json-hal-08/issues/section-8)
+
+
+
 ## <small>1.62.8 (2021-01-14)</small>
 
 * refactor(test): reducing number of calls to browser ([6985f2f](https://github.com/mountain-pass/waychaser/commit/6985f2f))
