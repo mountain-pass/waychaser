@@ -21,8 +21,15 @@ class WaychaserDirect extends WaychaserProxy {
     return result.resource[property].count()
   }
 
-  async findOneO (property, result, relationship) {
-    return result.resource[property].findOne(relationship)
+  async findOne (result, relationship) {
+    return {
+      foundOperation: result.resource.operations.findOne(relationship),
+      foundOperationLokiStyle: result.resource.operations.findOne({
+        rel: relationship
+      }),
+      foundOp: result.resource.ops.findOne(relationship),
+      foundOpLokiStyle: result.resource.ops.findOne({ rel: relationship })
+    }
   }
 
   async invokeO (property, result, relationship, context) {
@@ -37,8 +44,10 @@ class WaychaserDirect extends WaychaserProxy {
     return handleResponse(result.resource.invoke(relationship, context))
   }
 
-  async getUrl (result) {
-    return result.resource.response.url
+  async getUrls (results) {
+    return results.map(result => {
+      return result.resource.response.url
+    })
   }
 
   async getBodies (results) {

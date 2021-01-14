@@ -21,16 +21,8 @@ class WaychaserProxy {
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async findOneO (property, result, relationship) {
+  async findOne (result, relationship) {
     abstract()
-  }
-
-  async findOneOperation (result, relationship) {
-    return this.findOneO('operations', result, relationship)
-  }
-
-  async findOneOp (result, relationship) {
-    return this.findOneO('ops', result, relationship)
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
@@ -54,7 +46,7 @@ class WaychaserProxy {
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async getUrl (result, context) {
+  async getUrls (result, context) {
     abstract()
   }
 

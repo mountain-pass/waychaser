@@ -23,39 +23,25 @@ async function checkBody (
 }
 
 async function checkUrls (expectedUrl) {
-  const previousResultUrl =
-    expectedUrl === undefined
-      ? await this.waychaserProxy.getUrl(this.previousResult)
-      : expectedUrl
-  const resultUrl = await this.waychaserProxy.getUrl(this.result)
-  expect(resultUrl).to.equal(previousResultUrl, 'resultUrl')
-
-  const resultLokiStyleUrl = await this.waychaserProxy.getUrl(
-    this.resultLokiStyle
-  )
-  expect(resultLokiStyleUrl).to.equal(previousResultUrl, 'resultLokiStyleUrl')
-
-  const operationResultUrl = await this.waychaserProxy.getUrl(
-    this.operationResult
-  )
-  expect(operationResultUrl).to.equal(previousResultUrl, 'operationResultUrl')
-
-  const operationResultLokiStyleUrl = await this.waychaserProxy.getUrl(
-    this.operationResultLokiStyle
-  )
-  expect(operationResultLokiStyleUrl).to.equal(
-    previousResultUrl,
-    'operationResultLokiStyleUrl'
+  const results = [
+    this.operationResult,
+    this.operationResultLokiStyle,
+    this.opResult,
+    this.opResultLokiStyle,
+    this.resultLokiStyle,
+    this.result
+  ]
+  if (expectedUrl === undefined) {
+    results.push(this.previousResult)
+  }
+  const urls = await this.waychaserProxy.getUrls(
+    results.filter(result => result !== undefined)
   )
 
-  const opResultUrl = await this.waychaserProxy.getUrl(this.opResult)
-  expect(opResultUrl).to.equal(previousResultUrl, 'opResultUrl')
-
-  const opResultLokiStyleUrl = await this.waychaserProxy.getUrl(this.opResult)
-  expect(opResultLokiStyleUrl).to.equal(
-    previousResultUrl,
-    'opResultLokiStyleUrl'
-  )
+  const previousResultUrl = expectedUrl === undefined ? urls.pop() : expectedUrl
+  urls.forEach(url => {
+    expect(url).to.equal(previousResultUrl)
+  })
 }
 
 async function expectFindOne (relationship, expectation) {
@@ -72,27 +58,7 @@ async function expectFindOne (relationship, expectation) {
 }
 
 async function findOne (relationship) {
-  const foundOperation = await this.waychaserProxy.findOneOperation(
-    this.result,
-    relationship
-  )
-
-  const foundOperationLokiStyle = await this.waychaserProxy.findOneOperation(
-    this.result,
-    { rel: relationship }
-  )
-
-  const foundOp = await this.waychaserProxy.findOneOp(this.result, relationship)
-
-  const foundOpLokiStyle = await this.waychaserProxy.findOneOp(this.result, {
-    rel: relationship
-  })
-  return {
-    foundOperation,
-    foundOperationLokiStyle,
-    foundOp,
-    foundOpLokiStyle
-  }
+  return await this.waychaserProxy.findOne(this.result, relationship)
 }
 
 async function invoke (relationship, previousResult, context) {

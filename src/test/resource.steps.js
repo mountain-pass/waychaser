@@ -310,24 +310,29 @@ Given(
   }
 )
 
+async function createResourceToPrevious (relationship, mediaType) {
+  const links = createLinks(relationship, this.currentResourceRoute)
+  this.currentResourceRoute = randomApiPath()
+  await createOkRouteWithLinks.bind(this)(
+    this.currentResourceRoute,
+    links,
+    undefined,
+    mediaType
+  )
+}
+
 Given(
   'a resource with a {string} operation that returns that resource',
   async function (relationship) {
-    const links = createLinks(relationship, this.currentResourceRoute)
-    this.currentResourceRoute = randomApiPath()
-    await createOkRouteWithLinks.bind(this)(this.currentResourceRoute, links)
+    await createResourceToPrevious.bind(this)(relationship)
   }
 )
 
 Given(
   'a HAL resource with a {string} operation that returns that resource',
   async function (relationship) {
-    const links = createLinks(relationship, this.currentResourceRoute)
-    this.currentResourceRoute = randomApiPath()
-    await createOkRouteWithLinks.bind(this)(
-      this.currentResourceRoute,
-      links,
-      undefined,
+    await createResourceToPrevious.bind(this)(
+      relationship,
       'application/hal+json'
     )
   }

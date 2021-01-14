@@ -48,13 +48,23 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     )
   }
 
-  async findOneO (property, result, relationship) {
+  async findOne (result, relationship) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (property, id, relationship, done) {
-        done(window.testResults[id][property].findOne(relationship))
+      function (id, relationship, done) {
+        done({
+          foundOperation: window.testResults[id].operations.findOne(
+            relationship
+          ),
+          foundOperationLokiStyle: window.testResults[id].operations.findOne({
+            rel: relationship
+          }),
+          foundOp: window.testResults[id].ops.findOne(relationship),
+          foundOpLokiStyle: window.testResults[id].ops.findOne({
+            rel: relationship
+          })
+        })
       },
-      property,
       result.id,
       relationship
     )
@@ -97,13 +107,17 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     )
   }
 
-  async getUrl (result) {
+  async getUrls (results) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, done) {
-        done(window.testResults[id].response.url)
+      function (ids, done) {
+        done(
+          ids.map(id => {
+            return window.testResults[id].response.url
+          })
+        )
       },
-      result.id
+      results.map(result => result.id)
     )
   }
 
