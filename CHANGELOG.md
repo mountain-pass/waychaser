@@ -1,3 +1,9 @@
+## <small>1.62.7 (2021-01-14)</small>
+
+* test(hal): additional tests for templated HAL links ([1d1e214](https://github.com/mountain-pass/waychaser/commit/1d1e214))
+
+
+
 ## <small>1.62.6 (2021-01-13)</small>
 
 * ci(publish): fixing versioning ([689f9a3](https://github.com/mountain-pass/waychaser/commit/689f9a3))
