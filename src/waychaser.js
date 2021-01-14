@@ -86,12 +86,27 @@ function loadHalOperations (operations, _links, callingContext) {
   const links = new LinkHeader()
   if (_links) {
     Object.keys(_links).forEach(key => {
-      links.set({
-        rel: key,
-        uri: _links[key].href
+      if (Array.isArray(_links[key])) {
+        _links[key].forEach(link => {
+          // we don't need to copy `templated` across, because when we invoke an operation, we always
+          // assume it's a template and expand it with the passed parameters
+          const { href, templated, ...otherProperties } = link
+          links.set({
+            rel: key,
+            uri: href,
+            ...otherProperties
+          })
+        })
+      } else {
         // we don't need to copy `templated` across, because when we invoke an operation, we always
         // assume it's a template and expand it with the passed parameters
-      })
+        const { href, templated, ...otherProperties } = _links[key]
+        links.set({
+          rel: key,
+          uri: href,
+          ...otherProperties
+        })
+      }
     })
   }
 
@@ -186,7 +201,7 @@ Loki.Collection.prototype.invoke = async function (
 ) {
   const operation = this.findOne(relationship)
   logger.waychaser(
-    `operation ${relationship}:`,
+    `operation ${JSON.stringify(relationship)}:`,
     JSON.stringify(operation, undefined, 2)
   )
   logger.waychaser('context:', JSON.stringify(context, undefined, 2))

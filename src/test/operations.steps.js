@@ -2,20 +2,21 @@ import { assert, expect } from 'chai'
 import { When, Then, Before } from '@cucumber/cucumber'
 
 async function checkBody (
-  world,
   expectedBody,
   bodyMutator = body => {
     return body
   }
 ) {
-  const bodies = await world.waychaserProxy.getBodies([
-    world.operationResult,
-    world.operationResultLokiStyle,
-    world.opResult,
-    world.opResultLokiStyle,
-    world.resultLokiStyle,
-    world.result
-  ])
+  const bodies = await this.waychaserProxy.getBodies(
+    [
+      this.operationResult,
+      this.operationResultLokiStyle,
+      this.opResult,
+      this.opResultLokiStyle,
+      this.resultLokiStyle,
+      this.result
+    ].filter(result => result !== undefined)
+  )
   bodies.forEach(body => {
     expect(bodyMutator(body)).to.deep.equal(expectedBody)
   })
@@ -240,12 +241,12 @@ When('we invoke the {string} operation with the input', async function (
 })
 
 Then('resource returned will contain those values', async function () {
-  await checkBody(this, this.expectedBody)
+  await checkBody.bind(this)(this.expectedBody)
 })
 
 Then('resource returned will contain only', async function (dataTable) {
   const expectedBody = dataTable.rowsHash()
-  await checkBody(this, expectedBody)
+  await checkBody.bind(this)(expectedBody)
 })
 
 Then('resource returned will have the status code {int}', async function (
@@ -258,8 +259,56 @@ Then('the body without the links will contain', async function (
   documentString
 ) {
   const expectedBody = JSON.parse(documentString)
-  await checkBody(this, expectedBody, actualBody => {
+  await checkBody.bind(this)(expectedBody, actualBody => {
     delete actualBody._links
     return actualBody
   })
+})
+
+async function invokeWithName (relationship, name) {
+  this.operationResultLokiStyle = await this.waychaserProxy.invokeOperation(
+    this.rootResourceResult,
+    { rel: relationship, name: name }
+  )
+  // means we can use the same check body function as use in other invocations
+  this.operationResult = undefined
+
+  this.opResultLokiStyle = await this.waychaserProxy.invokeOp(
+    this.rootResourceResult,
+    {
+      rel: relationship,
+      name: name
+    }
+  )
+  // means we can use the same check body function as use in other invocations
+  this.opResult = undefined
+
+  this.resultLokiStyle = await this.waychaserProxy.invoke(
+    this.rootResourceResult,
+    {
+      rel: relationship,
+      name: name
+    }
+  )
+  // means we can use the same check body function as use in other invocations
+  this.result = undefined
+}
+
+When(
+  'we invoke the {string} operation for the link name {string}',
+  async function (relationship, name) {
+    await invokeWithName.bind(this)(relationship, name)
+  }
+)
+
+Then(
+  'when we invoke the {string} operation for the link name {string}',
+  async function (relationship, name) {
+    await invokeWithName.bind(this)(relationship, name)
+  }
+)
+
+Then('resource returned will contain', async function (documentString) {
+  const expectedBody = JSON.parse(documentString)
+  await checkBody.bind(this)(expectedBody)
 })

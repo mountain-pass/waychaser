@@ -107,7 +107,6 @@ Feature: Invoke HAL Operation
             | query |
             | path  |
 
-    @wip
     Scenario Outline: Invoke operation - multiple parameters of different type
         Given a HAL resource with a "https://waychaser.io/rel/pong" operation with the "GET" method that returns the following provided parameters
             | NAME    | TYPE    |
@@ -125,3 +124,35 @@ Feature: Invoke HAL Operation
             | TYPE1 | TYPE2 |
             | query | path  |
             | path  | query |
+
+    @wip
+    Scenario: Invoke operation - link array
+        Given a resource returning
+            """
+            {
+                "alpha": "one"
+            }
+            """
+        And a resource returning
+            """
+            {
+                "bravo": "two"
+            }
+            """
+        And a HAL resource with "item" links to the two previous resources named "alpha" and "bravo"
+        When waychaser successfully loads that resource
+        And we invoke the "item" operation for the link name "alpha"
+        Then resource returned will contain
+            """
+            {
+                "alpha": "one"
+            }
+            """
+        But when we invoke the "item" operation for the link name "bravo"
+        Then resource returned will contain
+            """
+            {
+                "bravo": "two"
+            }
+            """
+

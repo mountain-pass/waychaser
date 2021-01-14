@@ -263,6 +263,37 @@ Given(
   }
 )
 
+Given('a resource returning', async function (responseBody) {
+  this.previousResourceRoute = this.currentResourceRoute
+  this.currentResourceRoute = randomApiPath()
+  const router = await this.router.route(this.currentResourceRoute)
+  await router.get(async (request, response) => {
+    response.status(200).send(JSON.parse(responseBody))
+  })
+})
+
+Given(
+  'a HAL resource with {string} links to the two previous resources named {string} and {string}',
+  async function (relationship, nameOne, nameTwo) {
+    const _links = {
+      [relationship]: [
+        { href: this.previousResourceRoute, name: nameOne },
+        { href: this.currentResourceRoute, name: nameTwo }
+      ]
+    }
+    const halResourcePath = randomApiPath()
+    const router = await this.router.route(halResourcePath)
+    await router.get(async (request, response) => {
+      response.header('content-type', 'application/hal+json')
+      response.status(200).send({
+        _links
+      })
+    })
+    this.currentResourceRoute = halResourcePath
+    logger.debug('THIS IS WHERE IT STARTS', halResourcePath)
+  }
+)
+
 Given(
   'a resource with a {string} operation that returns an error',
   async function (relationship) {

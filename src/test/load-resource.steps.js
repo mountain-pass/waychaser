@@ -53,6 +53,7 @@ When('waychaser successfully loads that resource', async function () {
     this.waychaserProxy,
     this.currentResourceRoute
   )
+  this.rootResourceResult = this.result
 })
 
 When('waychaser successfully loads the latter resource', async function () {
