@@ -7,6 +7,7 @@ import { URI } from 'uri-template-lite'
 import qsStringify from 'qs-stringify'
 import Accept from '@hapi/accept'
 import FormData from 'form-data'
+import MediaTypes from './util/media-types'
 polyfill()
 
 /**
@@ -38,12 +39,15 @@ async function loadResource (url, options) {
     response.url = url.toString()
   }
   const contentType = response.headers.get('content-type')?.split(';')
-  if (contentType?.[0] === 'application/hal+json') {
-    // only consume the body if the content type tells us that the response body will have operations
-    const body = await response.json()
-    return new waychaser.ApiResourceObject(response, body, contentType[0])
-  } else {
-    return new waychaser.ApiResourceObject(response)
+  switch (contentType?.[0]) {
+    case MediaTypes.HAL:
+    case MediaTypes.SIREN: {
+      // only consume the body if the content type tells us that the response body will have operations
+      const body = await response.json()
+      return new waychaser.ApiResourceObject(response, body, contentType[0])
+    }
+    default:
+      return new waychaser.ApiResourceObject(response)
   }
 }
 /**
@@ -145,6 +149,38 @@ function loadHalOperations (operations, _links, callingContext) {
       }
     })
   }
+
+  addLinksToOperations(operations, links, callingContext)
+}
+
+/**
+ * @param relationship
+ * @param link
+ */
+function mapSirenLinkToLinkHeader (relationship, link) {
+  // we don't need to copy `rel` across, because we already have that from the {@param relationship}.
+  // Also `rel` in `link` is an array, which is not what we're after.
+  const { href, rel, ...otherProperties } = link
+  return {
+    rel: relationship,
+    uri: href,
+    ...otherProperties
+  }
+}
+
+/**
+ * @param operations
+ * @param _links
+ * @param callingContext
+ */
+function loadSirenOperations (operations, _links, callingContext) {
+  const links = new LinkHeader()
+  _links?.forEach(link => {
+    link.rel.forEach(relationship => {
+      const mappedLink = mapSirenLinkToLinkHeader(relationship, link)
+      links.set(mappedLink)
+    })
+  })
 
   addLinksToOperations(operations, links, callingContext)
 }
@@ -272,8 +308,15 @@ const waychaser = {
       this.operations = linkDatabase.addCollection()
       loadOperations(this.operations, linkHeader, response)
       loadOperations(this.operations, linkTemplateHeader, response)
-      if (contentType === 'application/hal+json') {
-        loadHalOperations(this.operations, body._links, response)
+      switch (contentType) {
+        case MediaTypes.HAL:
+          loadHalOperations(this.operations, body._links, response)
+          break
+        case MediaTypes.SIREN:
+          loadSirenOperations(this.operations, body.links, response)
+          break
+        default:
+          break
       }
     }
 

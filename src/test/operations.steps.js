@@ -230,6 +230,7 @@ Then('the body without the links will contain', async function (
   const expectedBody = JSON.parse(documentString)
   await checkBody.bind(this)(expectedBody, actualBody => {
     delete actualBody._links
+    delete actualBody.links
     return actualBody
   })
 })

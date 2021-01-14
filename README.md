@@ -154,7 +154,7 @@ const json = await apiResource.body()
 - [x] switch to single session per browser test
 - [x] add tests for multiple parameters
 - [x] add automate CHANGELOG.md 
-- [ ] add support for HAL
+- add support for HAL
   - [x] add support for simple self `_links`
   - [x] add methods for getting consumed body
   - [x] add support for more general `_links`
@@ -163,6 +163,11 @@ const json = await apiResource.body()
   - [x] add support for curies and curied `_links`
   - [ ] add support for `_links` in `_embedded` resources
   - [ ] add support for warning about deprecated `_links`
+- add support for Siren
+  - [x] add support for `links`
+  - [ ] add support for `actions`
+  - [ ] add support for sub-entities as embedded links
+  - [ ] add support for sub-entities as embedded representations
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests

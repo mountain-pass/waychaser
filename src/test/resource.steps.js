@@ -9,6 +9,7 @@ import {
   animals
 } from 'unique-names-generator'
 import logger from '../util/logger'
+import MediaTypes from '../util/media-types'
 
 let pathCount = 0
 
@@ -36,6 +37,7 @@ function sendResponse (
   curies
 ) {
   let halLinks
+  let sirenLinks
   switch (mediaType) {
     case 'application/json':
       if (links) {
@@ -45,7 +47,7 @@ function sendResponse (
         response.header('link-template', linkTemplates.toString())
       }
       break
-    case 'application/hal+json':
+    case MediaTypes.HAL:
       halLinks = {}
       if (links) {
         links.refs.forEach(link => {
@@ -67,11 +69,25 @@ function sendResponse (
         })
       }
       break
+    case MediaTypes.SIREN:
+      /*
+      "links": [
+        { "rel": [ "self" ], "href": "http://api.x.io/orders/42" },
+        { "rel": [ "previous" ], "href": "http://api.x.io/orders/41" },
+        { "rel": [ "next" ], "href": "http://api.x.io/orders/43" }
+      ]
+      */
+      sirenLinks = []
+      links.refs.forEach(link => {
+        sirenLinks.push({ rel: [link.rel], href: link.uri })
+      })
+      break
   }
   response.header('content-type', mediaType)
   response.status(status).send({
     status,
-    ...(mediaType === 'application/hal+json' && { _links: halLinks })
+    ...(mediaType === MediaTypes.HAL && { _links: halLinks }),
+    ...(mediaType === MediaTypes.SIREN && { links: sirenLinks })
   })
 }
 
@@ -256,16 +272,25 @@ Given(
   'a HAL resource returning the following with a {string} link that returns itself',
   async function (relationship, responseBody) {
     this.currentResourceRoute = randomApiPath()
-    const to = this.currentResourceRoute
-    const router = await this.router.route(this.currentResourceRoute)
-    await router.get(async (request, response) => {
-      response.header('content-type', 'application/hal+json')
-      response.status(200).send(
-        Object.assign(JSON.parse(responseBody), {
-          _links: { self: { href: to } }
-        })
-      )
-    })
+    const links = {
+      _links: { self: { href: this.currentResourceRoute } }
+    }
+    await createLinkingResource.bind(this)(responseBody, links, MediaTypes.HAL)
+  }
+)
+
+Given(
+  'a Siren resource returning the following with a {string} link that returns itself',
+  async function (relationship, responseBody) {
+    this.currentResourceRoute = randomApiPath()
+    const links = {
+      links: [{ rel: ['self'], href: this.currentResourceRoute }]
+    }
+    await createLinkingResource.bind(this)(
+      responseBody,
+      links,
+      MediaTypes.SIREN
+    )
   }
 )
 
@@ -290,7 +315,7 @@ Given(
     const halResourcePath = randomApiPath()
     const router = await this.router.route(halResourcePath)
     await router.get(async (request, response) => {
-      response.header('content-type', 'application/hal+json')
+      response.header('content-type', MediaTypes.HAL)
       response.status(200).send({
         _links
       })
@@ -316,16 +341,37 @@ Given(
   'a HAL resource with a {string} operation that returns an error',
   async function (relationship) {
     this.currentResourceRoute = randomApiPath()
-    const to = `http://${API_ACCESS_HOST}:33556/api`
-    const router = await this.router.route(this.currentResourceRoute)
-    await router.get(async (request, response) => {
-      response.header('content-type', 'application/hal+json')
-      response.status(200).send({
-        _links: { [relationship]: { href: to } }
-      })
-    })
+    const links = {
+      _links: {
+        [relationship]: { href: `http://${API_ACCESS_HOST}:33556/api` }
+      }
+    }
+    createLinkingResource.bind(this)(undefined, links, MediaTypes.HAL)
   }
 )
+
+Given(
+  'a Siren resource with a {string} operation that returns an error',
+  async function (relationship) {
+    this.currentResourceRoute = randomApiPath()
+    const links = {
+      links: [
+        { rel: [relationship], href: `http://${API_ACCESS_HOST}:33556/api` }
+      ]
+    }
+    createLinkingResource.bind(this)(undefined, links, MediaTypes.SIREN)
+  }
+)
+
+async function createLinkingResource (responseBody, links, mediaType) {
+  const router = await this.router.route(this.currentResourceRoute)
+  await router.get(async (request, response) => {
+    response.header('content-type', mediaType)
+    response
+      .status(200)
+      .send(Object.assign(JSON.parse(responseBody || '{}'), links))
+  })
+}
 
 async function createResourceToPrevious (relationship, mediaType, curies) {
   const links = createLinks(relationship, this.currentResourceRoute)
@@ -349,10 +395,14 @@ Given(
 Given(
   'a HAL resource with a {string} operation that returns that resource',
   async function (relationship) {
-    await createResourceToPrevious.bind(this)(
-      relationship,
-      'application/hal+json'
-    )
+    await createResourceToPrevious.bind(this)(relationship, MediaTypes.HAL)
+  }
+)
+
+Given(
+  'a Siren resource with a {string} operation that returns that resource',
+  async function (relationship) {
+    await createResourceToPrevious.bind(this)(relationship, MediaTypes.SIREN)
   }
 )
 
@@ -385,11 +435,14 @@ Given(
 Given(
   'a list of {int} HAL resources linked with {string} operations',
   async function (count, relationship) {
-    createListOfResources.bind(this)(
-      count,
-      relationship,
-      'application/hal+json'
-    )
+    createListOfResources.bind(this)(count, relationship, MediaTypes.HAL)
+  }
+)
+
+Given(
+  'a list of {int} Siren resources linked with {string} operations',
+  async function (count, relationship) {
+    createListOfResources.bind(this)(count, relationship, MediaTypes.SIREN)
   }
 )
 
@@ -412,7 +465,7 @@ Given(
       'GET',
       [{ NAME: parameter, TYPE: parameterType }],
       undefined,
-      'application/hal+json'
+      MediaTypes.HAL
     )
   }
 )
@@ -480,13 +533,7 @@ Given(
   async function (relationship, method, dataTable) {
     this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
       this
-    )(
-      relationship,
-      method,
-      dataTable.hashes(),
-      undefined,
-      'application/hal+json'
-    )
+    )(relationship, method, dataTable.hashes(), undefined, MediaTypes.HAL)
   }
 )
 
@@ -504,7 +551,7 @@ Given(
   async function (relationship, curies) {
     await createResourceToPrevious.bind(this)(
       relationship,
-      'application/hal+json',
+      MediaTypes.HAL,
       curies.hashes()
     )
   }
