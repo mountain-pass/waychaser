@@ -125,7 +125,6 @@ Feature: Invoke HAL Operation
             | query | path  |
             | path  | query |
 
-    @wip
     Scenario: Invoke operation - link array
         Given a resource returning
             """
@@ -156,3 +155,20 @@ Feature: Invoke HAL Operation
             }
             """
 
+    Scenario: Invoke operation - curied link
+        Given a resource returning status code 200
+        And a HAL resource with a "wc:alpha" operation that returns that resource and has the following curies
+            | NAME | HREF                           |
+            | wc   | https://waychaser.io/rel{/rel} |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/alpha" operation
+        Then the former resource will be returned
+
+    Scenario: Invoke operation - curied link with colon
+        Given a resource returning status code 200
+        And a HAL resource with a "wc:alpha:whyareyoudoingthis" operation that returns that resource and has the following curies
+            | NAME | HREF                           |
+            | wc   | https://waychaser.io/rel{/rel} |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/alpha%3Awhyareyoudoingthis" operation
+        Then the former resource will be returned

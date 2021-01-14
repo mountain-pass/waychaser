@@ -160,7 +160,7 @@ const json = await apiResource.body()
   - [x] add support for more general `_links`
   - [x] add support for templated `_links`
   - [x] add support for `rels` with an array of links
-  - [ ] add support for curies and curied `_links`
+  - [x] add support for curies and curied `_links`
   - [ ] add support for `_links` in `_embedded` resources
   - [ ] add support for warning about deprecated `_links`
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist

@@ -76,6 +76,48 @@ function loadOperations (operations, linkHeader, callingContext) {
 }
 
 /**
+ * @param relationship
+ * @param curies
+ */
+function deCurie (relationship, curies) {
+  // we can either look in the rel for ':' and try to convert if it exists, but then we'll be trying to covert almost
+  // everything because none standard rels typically start with 'http:' or 'https:'.
+  // otherwise we can iterate over all the curies and try to replace. Seems inefficient.
+  // Going with option 1 for now.
+  // ⚠️ NOTE TO SELF: never use 'http' or 'https' as a curie name or hilarity will not ensue 😬
+  // ⚠️ ALSO NOTE TO SELF: never use ':' in a curie name or hilarity will not ensue 😬
+
+  // I'm going to assume that if there are multiple ':' characters, then we ignore all but the first
+  const splitRelationship = relationship.split(/:(.+)/)
+  if (splitRelationship.length > 1) {
+    const [curieName, curieRemainder] = splitRelationship
+    const rval = curies[curieName]
+      ? URI.expand(curies[curieName], { rel: curieRemainder })
+      : relationship
+    return rval
+  } else {
+    return relationship
+  }
+}
+
+/**
+ * @param relationship
+ * @param link
+ * @param curies
+ */
+function mapHalLinkToLinkHeader (relationship, link, curies) {
+  // we don't need to copy `templated` across, because when we invoke an operation, we always
+  // assume it's a template and expand it with the passed parameters
+
+  const { href, templated, ...otherProperties } = link
+  return {
+    rel: deCurie(relationship, curies),
+    uri: href,
+    ...otherProperties
+  }
+}
+
+/**
  * Creates operations from each link in a HAL `_links` and inserts into the operations collection
  *
  * @param {Loki.Collection} operations the target loki collection to load the operations into
@@ -85,27 +127,21 @@ function loadOperations (operations, linkHeader, callingContext) {
 function loadHalOperations (operations, _links, callingContext) {
   const links = new LinkHeader()
   if (_links) {
+    // if there are curies in the Hal Links, we need to load them first, so we can expand them wherever they are used
+    // we also want to convert them to a map, for easy lookup
+    const curies = {}
+    if (_links.curies) {
+      _links.curies.forEach(curie => {
+        curies[curie.name] = curie.href
+      })
+    }
     Object.keys(_links).forEach(key => {
       if (Array.isArray(_links[key])) {
         _links[key].forEach(link => {
-          // we don't need to copy `templated` across, because when we invoke an operation, we always
-          // assume it's a template and expand it with the passed parameters
-          const { href, templated, ...otherProperties } = link
-          links.set({
-            rel: key,
-            uri: href,
-            ...otherProperties
-          })
+          links.set(mapHalLinkToLinkHeader(key, link, curies))
         })
       } else {
-        // we don't need to copy `templated` across, because when we invoke an operation, we always
-        // assume it's a template and expand it with the passed parameters
-        const { href, templated, ...otherProperties } = _links[key]
-        links.set({
-          rel: key,
-          uri: href,
-          ...otherProperties
-        })
+        links.set(mapHalLinkToLinkHeader(key, _links[key], curies))
       }
     })
   }

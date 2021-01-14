@@ -32,7 +32,8 @@ function sendResponse (
   status,
   links,
   linkTemplates,
-  mediaType = 'application/json'
+  mediaType = 'application/json',
+  curies
 ) {
   let halLinks
   switch (mediaType) {
@@ -56,7 +57,15 @@ function sendResponse (
           halLinks[link.rel] = { href: link.uri, templated: true }
         })
       }
-
+      if (curies) {
+        halLinks.curies = curies.map(curie => {
+          return {
+            name: curie.NAME,
+            href: curie.HREF,
+            templated: true
+          }
+        })
+      }
       break
   }
   response.header('content-type', mediaType)
@@ -167,23 +176,31 @@ async function createRouteWithLinks (
   status,
   links,
   linkTemplates,
-  mediaType
+  mediaType,
+  curies
 ) {
   const router = await rootRouter.route(route)
   await router.get(async (request, response) => {
-    sendResponse(response, status, links, linkTemplates, mediaType)
+    sendResponse(response, status, links, linkTemplates, mediaType, curies)
   })
   return router
 }
 
-async function createOkRouteWithLinks (route, links, linkTemplates, mediaType) {
+async function createOkRouteWithLinks (
+  route,
+  links,
+  linkTemplates,
+  mediaType,
+  curies
+) {
   return createRouteWithLinks(
     this.router,
     route,
     200,
     links,
     linkTemplates,
-    mediaType
+    mediaType,
+    curies
   )
 }
 
@@ -310,14 +327,15 @@ Given(
   }
 )
 
-async function createResourceToPrevious (relationship, mediaType) {
+async function createResourceToPrevious (relationship, mediaType, curies) {
   const links = createLinks(relationship, this.currentResourceRoute)
   this.currentResourceRoute = randomApiPath()
   await createOkRouteWithLinks.bind(this)(
     this.currentResourceRoute,
     links,
     undefined,
-    mediaType
+    mediaType,
+    curies
   )
 }
 
@@ -478,5 +496,16 @@ Given(
     this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
       this
     )(relationship, method, dataTable.hashes(), contentType)
+  }
+)
+
+Given(
+  'a HAL resource with a {string} operation that returns that resource and has the following curies',
+  async function (relationship, curies) {
+    await createResourceToPrevious.bind(this)(
+      relationship,
+      'application/hal+json',
+      curies.hashes()
+    )
   }
 )
