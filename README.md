@@ -13,11 +13,9 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
 
 [![GitHub issues](https://img.shields.io/github/issues/mountain-pass/waychaser?logo=github)](https://github.com/mountain-pass/waychaser/issues) [![GitHub pull requests](https://img.shields.io/github/issues-pr/mountain-pass/waychaser?logo=github)](https://github.com/mountain-pass/waychaser/pulls)
 
-[![source code vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?logo=snyk)](https://snyk.io/test/github/mountain-pass/waychaser) [![npm package vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@1.62.7?label=npm%20package%20vulnerabilties&logo=snyk)](https://snyk.io/test/npm/@mountainpass/waychaser/1.62.7)
-
 [![Quality](https://img.shields.io/codacy/grade/940768d54f7545f7b42f89b26c23c751?logo=codacy)](https://www.codacy.com/gh/mountain-pass/waychaser/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mountain-pass/waychaser&amp;utm_campaign=Badge_Grade) [![Coverage](https://img.shields.io/codacy/coverage/940768d54f7545f7b42f89b26c23c751?logo=codacy)](https://www.codacy.com/gh/mountain-pass/waychaser/dashboard?utm_source=github.com&utm_medium=referral&utm_content=mountain-pass/waychaser&utm_campaign=Badge_Coverage)
 
-[![source code vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?label=source%20code%20vulnerabilities)](https://snyk.io/test/github/mountain-pass/waychaser) [![npm package vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@1.62.7?label=npm%20package%20vulnerabilties)](https://snyk.io/test/npm/@mountainpass/waychaser/1.62.7)
+[![source code vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?label=source%20code%20vulnerabilities&logo=snyk)](https://snyk.io/test/github/mountain-pass/waychaser) [![npm package vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@1.62.7?label=npm%20package%20vulnerabilties&logo=snyk)](https://snyk.io/test/npm/@mountainpass/waychaser/1.62.7)
 
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org) 
