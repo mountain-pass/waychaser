@@ -81,7 +81,6 @@ function joinParameters (parameters, separator) {
 }
 
 async function createDynamicResourceRoute (
-  rootRouter,
   route,
   relationship,
   method,
@@ -102,7 +101,7 @@ async function createDynamicResourceRoute (
   if (queryParameters.length > 0) {
     dynamicUri += `{?${joinParameters(queryParameters)}}`
   }
-  const dynamicRoute = await rootRouter.route(dynamicRoutePath)
+  const dynamicRoute = await this.router.route(dynamicRoutePath)
   await dynamicRoute[method.toLowerCase()](async (request, response) => {
     // logger.debug('SENDING', method, route, { ...request.query })
     logger.debug('RECEIVED BODY', method, route, { ...request.body })
@@ -153,8 +152,7 @@ async function createDynamicResourceRoute (
   })
 
   const currentResourceRoute = randomApiPath()
-  await createOkRouteWithLinks(
-    rootRouter,
+  await createOkRouteWithLinks.bind(this)(
     currentResourceRoute,
     undefined,
     links,
@@ -178,15 +176,9 @@ async function createRouteWithLinks (
   return router
 }
 
-async function createOkRouteWithLinks (
-  rootRouter,
-  route,
-  links,
-  linkTemplates,
-  mediaType
-) {
+async function createOkRouteWithLinks (route, links, linkTemplates, mediaType) {
   return createRouteWithLinks(
-    rootRouter,
+    this.router,
     route,
     200,
     links,
@@ -202,8 +194,7 @@ async function createRandomDynamicResourceRoute (
   contentTypes,
   mediaType
 ) {
-  return createDynamicResourceRoute(
-    this.router,
+  return createDynamicResourceRoute.bind(this)(
     randomApiPath(),
     relationship,
     method,
@@ -221,13 +212,12 @@ Given('a resource returning status code {int}', async function (status) {
 
 Given('a resource with no operations', async function () {
   this.currentResourceRoute = randomApiPath()
-  await createOkRouteWithLinks(this.router, this.currentResourceRoute)
+  await createOkRouteWithLinks.bind(this)(this.currentResourceRoute)
 })
 
 Given('a resource with a {string} operation', async function (relationship) {
   this.currentResourceRoute = randomApiPath()
-  await createOkRouteWithLinks(
-    this.router,
+  await createOkRouteWithLinks.bind(this)(
     this.currentResourceRoute,
     createLinks(relationship)
   )
@@ -238,8 +228,7 @@ Given(
   async function (relationship) {
     this.currentResourceRoute = randomApiPath()
     const to = this.currentResourceRoute
-    await createOkRouteWithLinks(
-      this.router,
+    await createOkRouteWithLinks.bind(this)(
       this.currentResourceRoute,
       createLinks(relationship, to)
     )
@@ -299,8 +288,7 @@ Given(
   async function (relationship) {
     this.currentResourceRoute = randomApiPath()
     const to = `http://${API_ACCESS_HOST}:33556/api`
-    await createOkRouteWithLinks(
-      this.router,
+    await createOkRouteWithLinks.bind(this)(
       this.currentResourceRoute,
       createLinks(relationship, to)
     )
@@ -327,7 +315,7 @@ Given(
   async function (relationship) {
     const links = createLinks(relationship, this.currentResourceRoute)
     this.currentResourceRoute = randomApiPath()
-    await createOkRouteWithLinks(this.router, this.currentResourceRoute, links)
+    await createOkRouteWithLinks.bind(this)(this.currentResourceRoute, links)
   }
 )
 
@@ -336,8 +324,7 @@ Given(
   async function (relationship) {
     const links = createLinks(relationship, this.currentResourceRoute)
     this.currentResourceRoute = randomApiPath()
-    await createOkRouteWithLinks(
-      this.router,
+    await createOkRouteWithLinks.bind(this)(
       this.currentResourceRoute,
       links,
       undefined,
@@ -349,14 +336,13 @@ Given(
 async function createListOfResources (count, relationship, mediaType) {
   // we add the last one first
   this.currentResourceRoute = randomApiPath()
-  await createOkRouteWithLinks(this.router, this.currentResourceRoute)
+  await createOkRouteWithLinks.bind(this)(this.currentResourceRoute)
   this.lastOnList = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
   for (let index = 1; index < count; index++) {
     // and then point each on to the previously created resource
     const previousResourceRoute = this.currentResourceRoute
     this.currentResourceRoute = randomApiPath()
-    await createOkRouteWithLinks(
-      this.router,
+    await createOkRouteWithLinks.bind(this)(
       this.currentResourceRoute,
       createLinks(relationship, previousResourceRoute),
       undefined,
@@ -418,16 +404,13 @@ Given(
       uri: this.currentResourceRoute,
       method
     })
-    await createOkRouteWithLinks(
-      this.router,
-      this.currentResourceRoute,
-      undefined,
-      links
-    ).then(route => {
-      route[method.toLowerCase()](async (request, response) => {
-        sendResponse(response, statusCode)
+    await createOkRouteWithLinks
+      .bind(this)(this.currentResourceRoute, undefined, links)
+      .then(route => {
+        route[method.toLowerCase()](async (request, response) => {
+          sendResponse(response, statusCode)
+        })
       })
-    })
   }
 )
 
