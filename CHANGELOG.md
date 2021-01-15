@@ -1,3 +1,9 @@
+## <small>1.62.10 (2021-01-15)</small>
+
+* feat(siren): inital support for siren `links` ([70a5c79](https://github.com/mountain-pass/waychaser/commit/70a5c79))
+
+
+
 ## <small>1.62.9 (2021-01-14)</small>
 
 * feat(hal): added support for curied relationships ([b089426](https://github.com/mountain-pass/waychaser/commit/b089426)), closes [/tools.ietf.org/html/draft-kelly-json-hal-08#section-8](https://github.com//tools.ietf.org/html/draft-kelly-json-hal-08/issues/section-8)
