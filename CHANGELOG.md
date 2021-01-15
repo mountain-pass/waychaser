@@ -1,3 +1,9 @@
+## <small>1.62.12 (2021-01-15)</small>
+
+* docs(readme): added more details about how to use ([db457dc](https://github.com/mountain-pass/waychaser/commit/db457dc))
+
+
+
 ## <small>1.62.11 (2021-01-15)</small>
 
 * Merge pull request #117 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.0.5 ([24b5c58](https://github.com/mountain-pass/waychaser/commit/24b5c58)), closes [#117](https://github.com/mountain-pass/waychaser/issues/117)
