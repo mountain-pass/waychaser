@@ -1,3 +1,9 @@
+## <small>1.62.13 (2021-01-15)</small>
+
+* feat(siren): added support for Siren `actions` ([518c097](https://github.com/mountain-pass/waychaser/commit/518c097))
+
+
+
 ## <small>1.62.12 (2021-01-15)</small>
 
 * docs(readme): added more details about how to use ([db457dc](https://github.com/mountain-pass/waychaser/commit/db457dc))
