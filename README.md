@@ -36,10 +36,12 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
 - [Usage](#usage)
   - [Node.js](#nodejs)
   - [Browser](#browser)
+  - [Getting the response](#getting-the-response)
+    - [Getting the response body](#getting-the-response-body)
   - [Requesting linked resources](#requesting-linked-resources)
-    - [Requesting parameterised linked resources](#requesting-parameterised-linked-resources)
-  - [Getting the response body](#getting-the-response-body)
-- [TO DO](#to-do)
+    - [Multiple links with the same relationship](#multiple-links-with-the-same-relationship)
+    - [Forms](#forms)
+  - [DELETE, POST, PUT, PATCH](#delete-post-put-patch)
 
 # Usage
 
@@ -83,114 +85,144 @@ try {
 </script>
 ```
 
-## Requesting linked resources
+## Getting the response
 
-Level 3 REST APIs are expected to return links to related resources. Waychaser expects to find these links via [RFC 8288](https://tools.ietf.org/html/rfc8288) `link` headers. Waychaser provides methods to simplify requesting these linked resources.
+Waychaser makes it's http requests using `fetch` and the `Fetch.Response` is available via the `response` property.
 
-For instance, if the `apiResource` loaded above has a `link` with a relationship (`rel`) of `describedby`, then that resource can be retrieve using the following code
-
+For example
 ```js
-const describedByResource = await apiResource.invoke('describedby')
+const responseUrl = apiResource.response.url
 ```
 
-### Requesting parameterised linked resources
+### Getting the response body
+
+Waychaser makes the response body available via the `body()` async method.
+
+For example
+```js
+const responseUrl = await apiResource.body()
+```
+
+NOTE: The response body is also available via the `Fetch.Response`, however if the server is using HAL or Siren, then
+waychaser needs to consume the body in order to parse the links. If you then call `apiResource.response.json()`, you will get a `Body has already been consumed` error. Use `apiResource.body()` instead.
+
+## Requesting linked resources
+
+Level 3 REST APIs are expected to return links to related resources. Waychaser expects to find these links via [RFC 8288](https://tools.ietf.org/html/rfc8288) `link` headers, [`link-template`](https://mnot.github.io/I-D/link-template/) headers, [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08)  `_link` elements or [Siren](https://github.com/kevinswiber/siren) `link` elements.
+
+Waychaser provides methods to simplify requesting these linked resources.
+
+For instance, if the `apiResource` we loaded above has a `next`  `link` like any of the following:
+
+**Link header:**
+```
+Link: <https://waychaser.io/example?p=2>; rel="next";
+```
+**HAL**
+```json
+{
+  "_links": {
+    "next": { "href": "https://waychaser.io/example?p=2" }
+  }
+}
+```
+**Siren**
+```json
+{
+  "links": [
+    { "rel": [ "next" ], "href": "https://waychaser.io/example?p=2" },
+  ]
+}
+```
+
+then that `next` page can be retrieved using the following code
+
+```js
+const nextResource = await apiResource.invoke('next')
+```
+
+You don't need to tell waychaser whether to use Link headers, HAL `_links` or Siren `links`; it will figure it out 
+based on the resource's media-type. If the media-type is `application/hal+json` if will try to parse the links in the 
+`_link` property of the body.  If the media-type is `application/vnd.siren+json` if will try to parse the links in the 
+`link` property of the body.
+
+Regardless of the resource's media-type, it will always try to parse the links in the `Link` and `Link-Template` 
+headers.
+
+### Multiple links with the same relationship
+
+Resources can have multiple links with the same `rel`ationship, such as
+
+**HAL**
+```json
+{
+  "_links": {
+    "item": [{
+      "href": "/first_item",
+      "name": "first"
+    },{
+      "href": "/second_item",
+      "name": "second"
+    }]
+  }
+}
+```
+
+If you know the `name` of the resource, then waychaser can load it using the following code
+
+```js
+const firstResource = await apiResource.invoke({ rel: 'item', name: 'first' })
+```
+
+### Forms
+
+Support for forms is provided via [RFC6570](https://tools.ietf.org/html/rfc6570) URI Templates in [`link-template`](https://mnot.github.io/I-D/link-template/) headers, and [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08) `_link`s.
+
+NOTE: Siren action support is coming soon.
+
+For instance if our resource has either of the following links
+
+**Link header:**
+```
+Link-Template: <https://waychaser.io/search{?q}>; rel="search";
+```
+**HAL**
+```json
+{
+  "_links": {
+    "search": { "href": "https://waychaser.io/search{?q}" }
+  }
+}
+```
+
+Then waychaser can execute a search with the following code
 
 ```js
 const searchResultsResource = await apiResource.invoke('search', {
   q: 'waychaser'
 })
 ```
+## DELETE, POST, PUT, PATCH
 
-## Getting the response body
+Waychaser supports `Link` and `Link-Template` headers that include `method` properties, to specify the HTTP
+method the client must use to execute the relationship.
 
-```js
-const json = await apiResource.body()
+For instance if our resource has the following link
+
+**Link header:**
+```
+Link: <https://waychaser.io/example/some-resource>; rel="https://waychaser.io/rel/delete"; method="DELETE";
 ```
 
+Then the following code
 
-# TO DO
+```js
+const deletedResource = await apiResource.invoke('https://waychaser.io/rel/delete')
+```
 
-- [x] CI/CD pipeline
-- [x] dependabot
-- [x] Firefox testing
-- [x] Safari testing
-- [x] fix matrix testing for UI (don't nodejs need matrix for browser tests)
-- [x] dependency caching in CI pipeline
-- [x] Edge browser testing
-- [x] IE browser testing lol
-- [x] automatically update version number in README.md
-- [x] badges
-- [x] archive test results
-- [x] have pull requests from fork run node-api and chrome local
-- [x] iOS Safari testing
-- [x] Android Chrome testing
-- [x] npm audit
-- [x] snyk security scanning
-- [x] api docs
-- [x] tags in npm
-- [x] markdown lint
-- [x] switched to JS Standard format
-- [x] split webdriver from waychaser-via
-- [x] split browser stack tunnel into separate class
-- [x] reduce webpacking of node_modules
-- [x] clean up lining problems
-- [x] add code duplication checks
-- [x] clean up logging
-- [x] add tests for follow to different resource
-- [x] fix linting
-- [x] fix husky & lint-staged
-- [x] add tests for multiple follows
-- [x] switch to github's builtin dependabot
-- [x] add tests for parameterised links
-- [x] add tests for DELETE
-- [x] add tests for POST
-- [x] add tests for PUT
-- [x] add tests for PATCH
-- [x] add tests for query parameterised DELETE, POST, PUT, PATCH
-- [x] add tests for path parameterised DELETE, POST, PUT, PATCH
-- [x] add tests for POST forms
-- [x] fix badges
-- [x] add js standard linting to make sure our eslint confirm is conforming
-- [x] add tests for PUT forms
-- [x] add tests for PATCH forms
-- [x] add tests for multipart
-- [x] switch to single session per browser test
-- [x] add tests for multiple parameters
-- [x] add automate CHANGELOG.md 
-- add support for HAL
-  - [x] add support for simple self `_links`
-  - [x] add methods for getting consumed body
-  - [x] add support for more general `_links`
-  - [x] add support for templated `_links`
-  - [x] add support for `rels` with an array of links
-  - [x] add support for curies and curied `_links`
-  - [ ] add support for `_links` in `_embedded` resources
-  - [ ] add support for warning about deprecated `_links`
-- add support for Siren
-  - [x] add support for `links`
-  - [ ] add support for `actions`
-  - [ ] add support for sub-entities as embedded links
-  - [ ] add support for sub-entities as embedded representations
-- [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
-- [ ] add support for Siren
-- [ ] add tests for authenticated requests
-- [ ] upgrade webpack
-  - [ ] or investigate using https://rollupjs.org/guide/en/ instead
-  - [ ] or https://github.com/parcel-bundler/parcel
-- [ ] fix structure of package so we get better jsdoc linting
-- [ ] refactor browserstack test run to use single tunnel when running locally
-- [ ] add tests for abort
-- [ ] add tests for different types of error responses (maybe use https://hapi.dev/module/boom/api/?v=9.1.1)
-- [ ] add tests for validation
-- [ ] add method for running single scenario
-- [ ] expand codacy analysis
-- [ ] create docs site
-  - [ ] integrate Code coverage and code quality reporting
-  - [ ] integrate API docs
-- [ ] lots more 😂
-- [ ] help [
-      eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security) and get better version of `security/detect-object-injection` that doesn't flag `for (const index in object) { object[index] = 0; }`
-- [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
-- [ ] try to use umd for both node and browser. https://github.com/webpack/webpack/pull/8625
-  - [ ] investigate using https://rollupjs.org/guide/en/
+will send a HTTP `DELETE` to `https://waychaser.io/example/some-resource`.
 
+**NOTE**: The `method` property is not part of the specification for Link
+([RFC8288](https://tools.ietf.org/html/rfc8288)) or [Link-Template](https://mnot.github.io/I-D/link-template/) headers
+and waychaser's behaviour in relation to the `method` property will be incompatible with servers that use this property
+for another purpose.

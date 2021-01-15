@@ -1,0 +1,87 @@
+
+# TO DO
+
+- [x] CI/CD pipeline
+- [x] dependabot
+- [x] Firefox testing
+- [x] Safari testing
+- [x] fix matrix testing for UI (don't nodejs need matrix for browser tests)
+- [x] dependency caching in CI pipeline
+- [x] Edge browser testing
+- [x] IE browser testing lol
+- [x] automatically update version number in README.md
+- [x] badges
+- [x] archive test results
+- [x] have pull requests from fork run node-api and chrome local
+- [x] iOS Safari testing
+- [x] Android Chrome testing
+- [x] npm audit
+- [x] snyk security scanning
+- [x] api docs
+- [x] tags in npm
+- [x] markdown lint
+- [x] switched to JS Standard format
+- [x] split webdriver from waychaser-via
+- [x] split browser stack tunnel into separate class
+- [x] reduce webpacking of node_modules
+- [x] clean up lining problems
+- [x] add code duplication checks
+- [x] clean up logging
+- [x] add tests for follow to different resource
+- [x] fix linting
+- [x] fix husky & lint-staged
+- [x] add tests for multiple follows
+- [x] switch to github's builtin dependabot
+- [x] add tests for parameterised links
+- [x] add tests for DELETE
+- [x] add tests for POST
+- [x] add tests for PUT
+- [x] add tests for PATCH
+- [x] add tests for query parameterised DELETE, POST, PUT, PATCH
+- [x] add tests for path parameterised DELETE, POST, PUT, PATCH
+- [x] add tests for POST forms
+- [x] fix badges
+- [x] add js standard linting to make sure our eslint confirm is conforming
+- [x] add tests for PUT forms
+- [x] add tests for PATCH forms
+- [x] add tests for multipart
+- [x] switch to single session per browser test
+- [x] add tests for multiple parameters
+- [x] add automate CHANGELOG.md 
+- add support for HAL
+  - [x] add support for simple self `_links`
+  - [x] add methods for getting consumed body
+  - [x] add support for more general `_links`
+  - [x] add support for templated `_links`
+  - [x] add support for `rels` with an array of links
+  - [x] add support for curies and curied `_links`
+  - [ ] add support for `_links` in `_embedded` resources
+  - [ ] add support for warning about deprecated `_links`
+- add support for Siren
+  - [x] add support for `links`
+  - [ ] add support for `actions`
+  - [ ] add support for sub-entities as embedded links
+  - [ ] add support for sub-entities as embedded representations
+- [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
+- [ ] add support for Siren
+- [ ] add tests for authenticated requests
+- [ ] upgrade webpack
+  - [ ] or investigate using https://rollupjs.org/guide/en/ instead
+  - [ ] or https://github.com/parcel-bundler/parcel
+- [ ] fix structure of package so we get better jsdoc linting
+- [ ] refactor browserstack test run to use single tunnel when running locally
+- [ ] add tests for abort
+- [ ] add tests for different types of error responses (maybe use https://hapi.dev/module/boom/api/?v=9.1.1)
+- [ ] add tests for validation
+- [ ] add method for running single scenario
+- [ ] expand codacy analysis
+- [ ] create docs site
+  - [ ] integrate Code coverage and code quality reporting
+  - [ ] integrate API docs
+- [ ] lots more 😂
+- [ ] help [
+      eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security) and get better version of `security/detect-object-injection` that doesn't flag `for (const index in object) { object[index] = 0; }`
+- [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
+- [ ] try to use umd for both node and browser. https://github.com/webpack/webpack/pull/8625
+  - [ ] investigate using https://rollupjs.org/guide/en/
+
