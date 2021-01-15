@@ -3,6 +3,7 @@
 Client library for HATEOAS level 3 RESTful APIs that provide hypermedia controls using:
   - Link ([RFC8288](https://tools.ietf.org/html/rfc8288)) and [Link-Template](https://mnot.github.io/I-D/link-template/) headers.
   - [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08) 
+  - [Siren](https://github.com/kevinswiber/siren)
 
 This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library is compatible with Node.js 10.x, 12.x and 14.x, Chrome, Firefox, Safari, Edge and even IE.
 <img alt="aw yeah!" src="./docs/images/aw_yeah.gif" width="20" height="20" />
@@ -19,6 +20,8 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
 
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org) 
+
+![I love badges](https://img.shields.io/badge/%E2%99%A5%20i%20love-%20badges-green?logo=heart)
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
