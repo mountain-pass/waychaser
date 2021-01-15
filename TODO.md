@@ -59,7 +59,7 @@
   - [ ] add support for warning about deprecated `_links`
 - add support for Siren
   - [x] add support for `links`
-  - [ ] add support for `actions`
+  - [x] add support for `actions`
   - [ ] add support for sub-entities as embedded links
   - [ ] add support for sub-entities as embedded representations
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist

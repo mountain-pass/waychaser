@@ -169,6 +169,36 @@ function mapSirenLinkToLinkHeader (relationship, link) {
 }
 
 /**
+ * @param action
+ */
+function mapSirenActionToLinkHeader (action) {
+  const { name, href, fields, type, ...otherProperties } = action
+  const bodyParameters = {}
+  fields?.forEach(parameter => {
+    bodyParameters[parameter.name] = {}
+  })
+  return {
+    rel: name,
+    uri: href,
+    ...(fields && { 'params*': { value: JSON.stringify(bodyParameters) } }),
+    ...(type && {
+      'accept*': { value: type }
+    }),
+    ...otherProperties
+  }
+  /*
+  rel: relationship,
+    uri: dynamicUri,
+    method: method,
+    ...(Object.keys(bodyParameters).length > 0 && {
+      'params*': { value: JSON.stringify(bodyParameters) }
+    }),
+    ...(accept && {
+      'accept*': { value: accept }
+    }) */
+}
+
+/**
  * @param operations
  * @param _links
  * @param callingContext
@@ -185,6 +215,20 @@ function loadSirenOperations (operations, _links, callingContext) {
   addLinksToOperations(operations, links, callingContext)
 }
 
+/**
+ * @param operations
+ * @param actions
+ * @param callingContext
+ */
+function loadSirenActionOperations (operations, actions, callingContext) {
+  const links = new LinkHeader()
+  actions?.forEach(action => {
+    const mappedLink = mapSirenActionToLinkHeader(action)
+    links.set(mappedLink)
+  })
+
+  addLinksToOperations(operations, links, callingContext)
+}
 class Operation {
   constructor (callingContext) {
     logger.waychaser(
@@ -314,6 +358,7 @@ const waychaser = {
           break
         case MediaTypes.SIREN:
           loadSirenOperations(this.operations, body.links, response)
+          loadSirenActionOperations(this.operations, body.actions, response)
           break
         default:
           break

@@ -40,8 +40,11 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
     - [Getting the response body](#getting-the-response-body)
   - [Requesting linked resources](#requesting-linked-resources)
     - [Multiple links with the same relationship](#multiple-links-with-the-same-relationship)
-    - [Forms](#forms)
-  - [DELETE, POST, PUT, PATCH](#delete-post-put-patch)
+  - [Forms](#forms)
+    - [Query forms](#query-forms)
+    - [Path parameter forms](#path-parameter-forms)
+    - [Request body forms](#request-body-forms)
+    - [DELETE, POST, PUT, PATCH](#delete-post-put-patch)
 
 # Usage
 
@@ -116,13 +119,13 @@ For instance, if the `apiResource` we loaded above has a `next`  `link` like any
 
 **Link header:**
 ```
-Link: <https://waychaser.io/example?p=2>; rel="next";
+Link: <https://api.waychaser.io/example?p=2>; rel="next";
 ```
 **HAL**
 ```json
 {
   "_links": {
-    "next": { "href": "https://waychaser.io/example?p=2" }
+    "next": { "href": "https://api.waychaser.io/example?p=2" }
   }
 }
 ```
@@ -130,7 +133,7 @@ Link: <https://waychaser.io/example?p=2>; rel="next";
 ```json
 {
   "links": [
-    { "rel": [ "next" ], "href": "https://waychaser.io/example?p=2" },
+    { "rel": [ "next" ], "href": "https://api.waychaser.io/example?p=2" },
   ]
 }
 ```
@@ -174,55 +177,144 @@ If you know the `name` of the resource, then waychaser can load it using the fol
 const firstResource = await apiResource.invoke({ rel: 'item', name: 'first' })
 ```
 
-### Forms
+## Forms
 
-Support for forms is provided via [RFC6570](https://tools.ietf.org/html/rfc6570) URI Templates in [`link-template`](https://mnot.github.io/I-D/link-template/) headers, and [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08) `_link`s.
+### Query forms
 
-NOTE: Siren action support is coming soon.
+Support for query forms is provided via:
+- [RFC6570](https://tools.ietf.org/html/rfc6570) URI Templates in:
+  - [`link-template`](https://mnot.github.io/I-D/link-template/) headers, and
+  - [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08) `_link`s.
+ 
+For instance if our resource has either of the following
 
-For instance if our resource has either of the following links
-
-**Link header:**
+**Link-Template header:**
 ```
-Link-Template: <https://waychaser.io/search{?q}>; rel="search";
+Link-Template: <https://api.waychaser.io/search{?q}>; rel="search";
 ```
 **HAL**
 ```json
 {
   "_links": {
-    "search": { "href": "https://waychaser.io/search{?q}" }
+    "search": { "href": "https://api.waychaser.io/search{?q}" }
   }
 }
 ```
 
-Then waychaser can execute a search with the following code
+Then waychaser can execute a search for "waychaser" with the following code
 
 ```js
 const searchResultsResource = await apiResource.invoke('search', {
   q: 'waychaser'
 })
 ```
-## DELETE, POST, PUT, PATCH
 
-Waychaser supports `Link` and `Link-Template` headers that include `method` properties, to specify the HTTP
-method the client must use to execute the relationship.
+### Path parameter forms
+
+Support for query forms is provided via:
+- [RFC6570](https://tools.ietf.org/html/rfc6570) URI Templates in:
+  - [`link-template`](https://mnot.github.io/I-D/link-template/) headers, and
+  - [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08) `_link`s.
+ 
+For instance if our resource has either of the following
+
+**Link-Template header**
+```
+Link-Template: <https://api.waychaser.io/users{/username}>; rel="item";
+```
+**HAL**
+```json
+{
+  "_links": {
+    "item": { "href": "https://api.waychaser.io/users{/username}" }
+  }
+}
+```
+
+Then waychaser can retrieve the user with the `username` "waychaser" with the following code
+
+```js
+const userResource = await apiResource.invoke('item', {
+  username: 'waychaser'
+})
+```
+
+### Request body forms
+
+Support for request body forms is provided via:
+- An extended form of [`link-template`](https://mnot.github.io/I-D/link-template/) headers, and
+- Siren `actions`.
+
+To support request body forms with [`link-template`](https://mnot.github.io/I-D/link-template/) headers, waychaser
+supports three additional parameters in the `link-template` header:
+- `method` - used to specify the HTTP method to use
+- `params*` - used to specify the fields the form expects
+- `accept*` - used to specify the media-types that can be used to send the body as per,
+[RFC7231](https://tools.ietf.org/html/rfc7231) and defaulting to `application/x-www-form-urlencoded`
+
+If our resource has either of the following:
+
+**Link-Template header:**
+```
+Link-Template: <https://api.waychaser.io/users>; 
+  rel="https://waychaser.io/rels/create-user"; 
+  method="POST";
+  params*=UTF-8'en'%7B%22username%22%3A%7B%7D%7D'
+```
+
+If your wondering what the `UTF-8'en'%7B%22username%22%3A%7B%7D%7D'` part is, it's just the JSON `{"username":{}}`
+encoded as an [Extension Attribute](https://tools.ietf.org/html/rfc8288#section-3.4.2) as per
+ ([RFC8288](https://tools.ietf.org/html/rfc8288)) Link Headers. Don't worry, libraries like 
+ [http-link-header](https://www.npmjs.com/package/http-link-header) can do this encoding for you.
+
+**Siren**
+```json
+{
+  "actions": [
+    {
+      "name": "https://waychaser.io/rels/create-user",
+      "href": "https://api.waychaser.io/users",
+      "method": "POST",
+      "fields": [
+        { "name": "username" }
+      ]
+    }
+  ]
+}
+```
+Then waychaser can create a new user with the `username` "waychaser" with the following code
+
+```js
+const createUserResultsResource = await apiResource.invoke('https://waychaser.io/rels/create-user', {
+  username: 'waychaser'
+})
+```
+
+**NOTE:** The URL `https://waychaser.io/rels/create-user` in the above code is **NOT** the end-point the form is 
+posted to. That URL is a custom [Extension Relation](https://tools.ietf.org/html/rfc8288#section-2.1.2) that identifies
+the semantics of the operation. In the example above, the form will be posted to `https://api.waychaser.io/users`
+
+### DELETE, POST, PUT, PATCH
+
+As mentioned above, waychaser supports `Link` and `Link-Template` headers that include `method` properties, 
+to specify the HTTP method the client must use to execute the relationship.
 
 For instance if our resource has the following link
 
 **Link header:**
 ```
-Link: <https://waychaser.io/example/some-resource>; rel="https://waychaser.io/rel/delete"; method="DELETE";
+Link: <https://api.waychaser.io/example/some-resource>; rel="https://api.waychaser.io/rel/delete"; method="DELETE";
 ```
 
 Then the following code
 
 ```js
-const deletedResource = await apiResource.invoke('https://waychaser.io/rel/delete')
+const deletedResource = await apiResource.invoke('https://api.waychaser.io/rel/delete')
 ```
 
-will send a HTTP `DELETE` to `https://waychaser.io/example/some-resource`.
+will send a HTTP `DELETE` to `https://api.waychaser.io/example/some-resource`.
 
 **NOTE**: The `method` property is not part of the specification for Link
 ([RFC8288](https://tools.ietf.org/html/rfc8288)) or [Link-Template](https://mnot.github.io/I-D/link-template/) headers
-and waychaser's behaviour in relation to the `method` property will be incompatible with servers that use this property
+and waychaser's behaviour in relation to the `method` property will be incompatible with servers that use this parameter
 for another purpose.

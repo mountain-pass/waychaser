@@ -43,3 +43,26 @@ Feature: Invoke Siren Operation
         When waychaser successfully loads the first resource in the list
         And invokes each of the "next" operations in turn 3 times
         Then the last resource returned will be the last item in the list
+
+    Scenario Outline: Invoke operation - body
+        Given a Siren resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
+            | NAME | TYPE   |
+            | ping | <TYPE> |
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the input
+            | ping | pong |
+        Then resource returned will contain only
+            | content-type | <CONTENT-TYPE> |
+            | ping         | pong           |
+
+        Examples:
+            | METHOD | TYPE | CONTENT-TYPE                      |
+            | POST   | body | application/x-www-form-urlencoded |
+            | POST   | body | application/json                  |
+            | POST   | body | multipart/form-data               |
+            | PUT    | body | application/x-www-form-urlencoded |
+            | PUT    | body | application/json                  |
+            | PUT    | body | multipart/form-data               |
+            | PATCH  | body | application/x-www-form-urlencoded |
+            | PATCH  | body | application/json                  |
+            | PATCH  | body | multipart/form-data               |

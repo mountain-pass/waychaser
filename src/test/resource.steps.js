@@ -38,6 +38,8 @@ function sendResponse (
 ) {
   let halLinks
   let sirenLinks
+  let sirenActions
+
   switch (mediaType) {
     case 'application/json':
       if (links) {
@@ -77,18 +79,51 @@ function sendResponse (
         { "rel": [ "next" ], "href": "http://api.x.io/orders/43" }
       ]
       */
-      sirenLinks = []
-      links.refs.forEach(link => {
-        sirenLinks.push({ rel: [link.rel], href: link.uri })
-      })
+      if (links) {
+        sirenLinks = []
+        links.refs.forEach(link => {
+          sirenLinks.push({ rel: [link.rel], href: link.uri })
+        })
+      }
+      /*
+       rel: relationship,
+    uri: dynamicUri,
+    method: method,
+    ...(Object.keys(bodyParameters).length > 0 && {
+      'params*': { value: JSON.stringify(bodyParameters) }
+    }),
+    ...(accept && {
+      'accept*': { value: accept }
+    }) */
+      if (linkTemplates) {
+        sirenActions = []
+        linkTemplates.refs.forEach(link => {
+          const bodyParameters = JSON.parse(link['params*'].value)
+
+          const sirenBodyParameters = Object.keys(bodyParameters).map(key => {
+            return { name: key }
+          })
+          sirenActions.push({
+            name: link.rel,
+            href: link.uri,
+            method: link.method,
+            ...(link['accept*'] && { type: link['accept*'].value }),
+            ...(link['params*'] && { fields: sirenBodyParameters })
+          })
+        })
+      }
       break
   }
   response.header('content-type', mediaType)
-  response.status(status).send({
+  const responseBody = {
     status,
     ...(mediaType === MediaTypes.HAL && { _links: halLinks }),
-    ...(mediaType === MediaTypes.SIREN && { links: sirenLinks })
-  })
+    ...(mediaType === MediaTypes.SIREN && {
+      links: sirenLinks,
+      actions: sirenActions
+    })
+  }
+  response.status(status).send(responseBody)
 }
 
 function filterParameters (parameters, type) {
@@ -543,6 +578,15 @@ Given(
     this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
       this
     )(relationship, method, dataTable.hashes(), contentType)
+  }
+)
+
+Given(
+  'a Siren resource with a {string} operation with the {string} method that returns the following {string} provided parameters and the content type',
+  async function (relationship, method, contentType, dataTable) {
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(relationship, method, dataTable.hashes(), contentType, MediaTypes.SIREN)
   }
 )
 
