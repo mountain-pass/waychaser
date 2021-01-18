@@ -1,3 +1,9 @@
+## <small>1.62.16 (2021-01-18)</small>
+
+* Merge pull request #125 from mountain-pass/dependabot/npm_and_yarn/chromedriver-87.0.7 ([34bc4ff](https://github.com/mountain-pass/waychaser/commit/34bc4ff)), closes [#125](https://github.com/mountain-pass/waychaser/issues/125)
+
+
+
 ## <small>1.62.15 (2021-01-18)</small>
 
 * Merge pull request #123 from mountain-pass/dependabot/npm_and_yarn/eslint-config-prettier-7.2.0 ([b9b9fac](https://github.com/mountain-pass/waychaser/commit/b9b9fac)), closes [#123](https://github.com/mountain-pass/waychaser/issues/123)
