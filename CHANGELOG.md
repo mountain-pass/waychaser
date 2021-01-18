@@ -1,3 +1,9 @@
+## <small>1.62.14 (2021-01-18)</small>
+
+* Merge pull request #122 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.0.7 ([9a779e9](https://github.com/mountain-pass/waychaser/commit/9a779e9)), closes [#122](https://github.com/mountain-pass/waychaser/issues/122)
+
+
+
 ## <small>1.62.13 (2021-01-15)</small>
 
 * feat(siren): added support for Siren `actions` ([518c097](https://github.com/mountain-pass/waychaser/commit/518c097))
