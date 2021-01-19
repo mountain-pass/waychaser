@@ -1,3 +1,9 @@
+## <small>1.62.18 (2021-01-19)</small>
+
+* Merge pull request #128 from mountain-pass/dependabot/npm_and_yarn/fs-extra-9.1.0 ([5394a87](https://github.com/mountain-pass/waychaser/commit/5394a87)), closes [#128](https://github.com/mountain-pass/waychaser/issues/128)
+
+
+
 ## <small>1.62.17 (2021-01-19)</small>
 
 * Merge pull request #127 from mountain-pass/dependabot/npm_and_yarn/webpack-cli-4.4.0 ([1ed3ce2](https://github.com/mountain-pass/waychaser/commit/1ed3ce2)), closes [#127](https://github.com/mountain-pass/waychaser/issues/127)
