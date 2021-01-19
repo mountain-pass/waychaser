@@ -49,6 +49,9 @@ function sendResponse (
         response.header('link-template', linkTemplates.toString())
       }
       break
+    case 'application/custom+json':
+      response.header('custom-link', JSON.stringify(links.refs))
+      break
     case MediaTypes.HAL:
       halLinks = {}
       if (links) {
@@ -303,6 +306,19 @@ Given(
   }
 )
 
+Given(
+  'a custom resource with a {string} operation that returns itself',
+  async function (relationship) {
+    this.currentResourceRoute = randomApiPath()
+    const to = this.currentResourceRoute
+    await createOkRouteWithLinks.bind(this)(
+      this.currentResourceRoute,
+      createLinks(relationship, to),
+      undefined,
+      'application/custom+json'
+    )
+  }
+)
 Given(
   'a HAL resource returning the following with a {string} link that returns itself',
   async function (relationship, responseBody) {

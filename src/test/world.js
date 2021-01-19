@@ -39,7 +39,7 @@ let waychaserProxy, webdriverManager
 
 // if testing via browser, setup web-driver
 if (profile.startsWith('browser-api')) {
-  const mode = profile.replace(/browser-api-.*-(.*)/, '$1')
+  const mode = profile.split('-')[3]
   const clients = {
     local: webdriverManagerLocal,
     remote: webdriverManagerRemote
@@ -51,7 +51,7 @@ if (profile.startsWith('browser-api')) {
   if (webdriverManager === undefined) {
     throw new Error(`unknown mode: ${mode}`)
   }
-  webdriverManager.browser = profile.replace(/browser-api-(.*)-.*/, '$1')
+  webdriverManager.browser = profile.split('-')[2]
   waychaserProxy = new WaychaserViaWebdriver(webdriverManager)
 } else {
   // otherwise, direct
@@ -84,6 +84,7 @@ Before({ timeout: 240000 }, async function (scenario) {
   logger.debug('BEGIN Before')
   this.router = getNewRouter()
   this.waychaserProxy = waychaserProxy
+  await this.waychaserProxy.reset()
   if (webdriverManager) {
     await webdriverManager.beforeTest(scenario)
   }

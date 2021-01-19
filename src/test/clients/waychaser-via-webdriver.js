@@ -13,7 +13,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       /* istanbul ignore next: won't work in browser otherwise */
       function (url, done) {
         window.testLogger(`loading ${url}`)
-        window.waychaser
+        window.testWaychaser
           .load(url)
           .then(function (resource) {
             window.testLogger('success')
@@ -28,12 +28,12 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       url
     )
     logger.debug({ rval })
-    await this.manager.executeScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function () {
-        window.testLogger('after')
-      }
-    )
+    // await this.manager.executeScript(
+    //   /* istanbul ignore next: won't work in browser otherwise */
+    //   function () {
+    //     window.testLogger('after')
+    //   }
+    // )
     return rval
   }
 
@@ -144,6 +144,25 @@ class WaychaserViaWebdriver extends WaychaserProxy {
         done(window.testResults[id].response.status)
       },
       result.id
+    )
+  }
+
+  async use (handler) {
+    return this.manager.executeAsyncScript(
+      `function (done) {
+        window.testWaychaser = window.waychaser.use(${handler})
+        done()
+      }`
+    )
+  }
+
+  async reset () {
+    return this.manager.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (done) {
+        window.testWaychaser = window.waychaser
+        done()
+      }
     )
   }
 }

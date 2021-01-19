@@ -1,13 +1,16 @@
 import fetch from 'isomorphic-fetch'
 import { polyfill } from 'es6-promise'
-import LinkHeader from 'http-link-header'
 import Loki from 'lokijs'
 import logger from './util/logger'
 import { URI } from 'uri-template-lite'
 import qsStringify from 'qs-stringify'
 import Accept from '@hapi/accept'
 import FormData from 'form-data'
-import MediaTypes from './util/media-types'
+import { halHandler } from './handlers/hal/hal-handler'
+import { linkHeaderHandler } from './handlers/link-header/link-header-handler'
+import { linkTemplateHeaderHandler } from './handlers/link-template-header/link-template-header-handler'
+import { sirenLinkHandler } from './handlers/siren/siren-link-handler'
+import { sirenActionHandler } from './handlers/siren/siren-action-handler'
 polyfill()
 
 /**
@@ -16,11 +19,12 @@ polyfill()
  * @param {URL} url url of the resource to load
  * @param {object} options options to pass to fetch
  *
+ * @param handlers
  * @returns {waychaser.ApiResourceObject} a ApiResourceObject representing the loaded resource
  *
  * @throws {Error} If the server returns with a status >= 400
  */
-async function loadResource (url, options) {
+async function loadResource (url, options, handlers) {
   logger.waychaser(`loading ${url} with:`)
   logger.waychaser(JSON.stringify(options, undefined, 2))
   const response = await fetch(url, options)
@@ -38,203 +42,45 @@ async function loadResource (url, options) {
     // in ie url is not being populated 🤷‍♂️
     response.url = url.toString()
   }
-  const contentType = response.headers.get('content-type')?.split(';')
-  switch (contentType?.[0]) {
-    case MediaTypes.HAL:
-    case MediaTypes.SIREN: {
-      // only consume the body if the content type tells us that the response body will have operations
-      const body = await response.json()
-      return new waychaser.ApiResourceObject(response, body, contentType[0])
+  const links = []
+  let body
+  for (const handler of handlers) {
+    const handledLinks = await handler(response, async () => {
+      if (!body) {
+        body = await response.json()
+      }
+      return body
+    })
+    if (handledLinks) {
+      links.push(...handledLinks)
     }
-    default:
-      return new waychaser.ApiResourceObject(response)
   }
+  return new waychaser.ApiResourceObject(response, body, links, handlers)
 }
+
 /**
  * @param {Loki.Collection} operations the target loki collection to load the operations into
  * @param {LinkHeader} links the links to load
- * @param {fetch.Response} callingContext the response object that the {@param links} are relative to.
+ * @param {fetch.Response} baseUrl the response object that the {@param links} are relative to.
+ * @param handlers
  */
-function addLinksToOperations (operations, links, callingContext) {
+function addLinksToOperations (operations, links, baseUrl, handlers) {
   operations.insert(
-    links.refs.map(reference => {
-      const operation = new Operation(callingContext)
-      Object.assign(operation, reference)
+    links.map(link => {
+      const operation = new InvokableOperation(baseUrl, handlers)
+      // we want the link properties in the root of the Operation, so
+      // we can search loki for them using those properties
+      Object.assign(operation, link)
       return operation
     })
   )
 }
 
-/**
- * Creates operations from each linkHeader and inserts into the operations collection
- *
- * @param {Loki.Collection} operations the target loki collection to load the operations into
- * @param {string} linkHeader the link header to load the operations from
- * @param {fetch.Response} callingContext the response object that the links in link header are relative to.
- */
-function loadOperations (operations, linkHeader, callingContext) {
-  if (linkHeader) {
-    const links = LinkHeader.parse(linkHeader)
-    addLinksToOperations(operations, links, callingContext)
-  }
-}
-
-/**
- * @param relationship
- * @param curies
- */
-function deCurie (relationship, curies) {
-  // we can either look in the rel for ':' and try to convert if it exists, but then we'll be trying to covert almost
-  // everything because none standard rels typically start with 'http:' or 'https:'.
-  // otherwise we can iterate over all the curies and try to replace. Seems inefficient.
-  // Going with option 1 for now.
-  // ⚠️ NOTE TO SELF: never use 'http' or 'https' as a curie name or hilarity will not ensue 😬
-  // ⚠️ ALSO NOTE TO SELF: never use ':' in a curie name or hilarity will not ensue 😬
-
-  // I'm going to assume that if there are multiple ':' characters, then we ignore all but the first
-  const splitRelationship = relationship.split(/:(.+)/)
-  if (splitRelationship.length > 1) {
-    const [curieName, curieRemainder] = splitRelationship
-    const rval = curies[curieName]
-      ? URI.expand(curies[curieName], { rel: curieRemainder })
-      : relationship
-    return rval
-  } else {
-    return relationship
-  }
-}
-
-/**
- * @param relationship
- * @param link
- * @param curies
- */
-function mapHalLinkToLinkHeader (relationship, link, curies) {
-  // we don't need to copy `templated` across, because when we invoke an operation, we always
-  // assume it's a template and expand it with the passed parameters
-
-  const { href, templated, ...otherProperties } = link
-  return {
-    rel: deCurie(relationship, curies),
-    uri: href,
-    ...otherProperties
-  }
-}
-
-/**
- * Creates operations from each link in a HAL `_links` and inserts into the operations collection
- *
- * @param {Loki.Collection} operations the target loki collection to load the operations into
- * @param {object} _links HAL links within the response
- * @param {fetch.Response} callingContext the response object that the links in link header are relative to.
- */
-function loadHalOperations (operations, _links, callingContext) {
-  const links = new LinkHeader()
-  if (_links) {
-    // if there are curies in the Hal Links, we need to load them first, so we can expand them wherever they are used
-    // we also want to convert them to a map, for easy lookup
-    const curies = {}
-    if (_links.curies) {
-      _links.curies.forEach(curie => {
-        curies[curie.name] = curie.href
-      })
-    }
-    Object.keys(_links).forEach(key => {
-      if (Array.isArray(_links[key])) {
-        _links[key].forEach(link => {
-          links.set(mapHalLinkToLinkHeader(key, link, curies))
-        })
-      } else {
-        links.set(mapHalLinkToLinkHeader(key, _links[key], curies))
-      }
-    })
-  }
-
-  addLinksToOperations(operations, links, callingContext)
-}
-
-/**
- * @param relationship
- * @param link
- */
-function mapSirenLinkToLinkHeader (relationship, link) {
-  // we don't need to copy `rel` across, because we already have that from the {@param relationship}.
-  // Also `rel` in `link` is an array, which is not what we're after.
-  const { href, rel, ...otherProperties } = link
-  return {
-    rel: relationship,
-    uri: href,
-    ...otherProperties
-  }
-}
-
-/**
- * @param action
- */
-function mapSirenActionToLinkHeader (action) {
-  const { name, href, fields, type, ...otherProperties } = action
-  const bodyParameters = {}
-  fields?.forEach(parameter => {
-    bodyParameters[parameter.name] = {}
-  })
-  return {
-    rel: name,
-    uri: href,
-    ...(fields && { 'params*': { value: JSON.stringify(bodyParameters) } }),
-    ...(type && {
-      'accept*': { value: type }
-    }),
-    ...otherProperties
-  }
-  /*
-  rel: relationship,
-    uri: dynamicUri,
-    method: method,
-    ...(Object.keys(bodyParameters).length > 0 && {
-      'params*': { value: JSON.stringify(bodyParameters) }
-    }),
-    ...(accept && {
-      'accept*': { value: accept }
-    }) */
-}
-
-/**
- * @param operations
- * @param _links
- * @param callingContext
- */
-function loadSirenOperations (operations, _links, callingContext) {
-  const links = new LinkHeader()
-  _links?.forEach(link => {
-    link.rel.forEach(relationship => {
-      const mappedLink = mapSirenLinkToLinkHeader(relationship, link)
-      links.set(mappedLink)
-    })
-  })
-
-  addLinksToOperations(operations, links, callingContext)
-}
-
-/**
- * @param operations
- * @param actions
- * @param callingContext
- */
-function loadSirenActionOperations (operations, actions, callingContext) {
-  const links = new LinkHeader()
-  actions?.forEach(action => {
-    const mappedLink = mapSirenActionToLinkHeader(action)
-    links.set(mappedLink)
-  })
-
-  addLinksToOperations(operations, links, callingContext)
-}
-class Operation {
-  constructor (callingContext) {
-    logger.waychaser(
-      `Operation callingContext ${JSON.stringify(this.callingContext)}`
-    )
-    this.callingContext = callingContext
+class InvokableOperation {
+  constructor (baseUrl, handlers) {
+    logger.waychaser(`Operation callingContext ${JSON.stringify(this.baseUrl)}`)
+    this.baseUrl = baseUrl
+    this.handlers = handlers
   }
 
   async invoke (context, options) {
@@ -242,7 +88,7 @@ class Operation {
       ? JSON.parse(this['params*']?.value)
       : {}
     logger.waychaser(parameters)
-    const contextUrl = this.callingContext.url
+    const contextUrl = this.baseUrl
     const expandedUri = URI.expand(this.uri, context || {})
     logger.waychaser(`loading ${expandedUri}`)
 
@@ -297,7 +143,8 @@ class Operation {
           })
         },
         options
-      )
+      ),
+      this.handlers
     )
   }
 }
@@ -337,32 +184,59 @@ const waychaser = {
    * @throws {Error} If the server returns with a status >= 400
    */
   load: async function (url, options) {
-    return loadResource(url, options)
+    return loadResource(url, options, this.defaultHandlers)
+  },
+
+  defaultHandlers: [
+    linkHeaderHandler,
+    linkTemplateHeaderHandler,
+    halHandler,
+    sirenLinkHandler,
+    sirenActionHandler
+  ],
+
+  use: function (handler) {
+    return new waychaser.Loader(handler)
+  },
+
+  useDefaultHanders () {
+    return new waychaser.Loader(waychaser.defaultHandlers)
+  },
+
+  Loader: class {
+    constructor (handler) {
+      this.handlers = [handler]
+      this.logger = waychaser.logger
+    }
+
+    useDefaultHanders () {
+      this.use(waychaser.defaultHandlers)
+      return this
+    }
+
+    use (handler) {
+      if (Array.isArray(handler)) {
+        this.handlers.push(...handler)
+      } else {
+        this.handlers.push(handler)
+      }
+      return this
+    }
+
+    async load (url, options) {
+      return loadResource(url, options, this.handlers)
+    }
   },
 
   logger: logger.waychaser,
 
   ApiResourceObject: class {
-    constructor (response, body, contentType) {
+    constructor (response, body, links, handlers) {
       this.response = response
       this._body = body
-      const linkHeader = response.headers.get('link')
-      const linkTemplateHeader = response.headers.get('link-template')
       const linkDatabase = new Loki()
       this.operations = linkDatabase.addCollection()
-      loadOperations(this.operations, linkHeader, response)
-      loadOperations(this.operations, linkTemplateHeader, response)
-      switch (contentType) {
-        case MediaTypes.HAL:
-          loadHalOperations(this.operations, body._links, response)
-          break
-        case MediaTypes.SIREN:
-          loadSirenOperations(this.operations, body.links, response)
-          loadSirenActionOperations(this.operations, body.actions, response)
-          break
-        default:
-          break
-      }
+      addLinksToOperations(this.operations, links, response.url, handlers)
     }
 
     get ops () {

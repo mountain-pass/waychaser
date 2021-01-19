@@ -62,6 +62,9 @@
   - [x] add support for `actions`
   - [ ] add support for sub-entities as embedded links
   - [ ] add support for sub-entities as embedded representations
+- add support for custom links/actions
+  - [x] intial plugin framework
+  - [ ] refactor to better link/operation objects
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
 - [ ] add support for Siren
 - [ ] add tests for authenticated requests

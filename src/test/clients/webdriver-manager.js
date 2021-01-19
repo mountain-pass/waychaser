@@ -73,7 +73,7 @@ class WebdriverManager {
           done({
             success: false,
             id: window.testResults.length - 1
-            // uncomenting these causes the andriod tests to fail
+            // un-commenting these causes the android tests to fail
             // error: error.toString(),
             // stackTrace: error.stack,
           })
@@ -97,18 +97,15 @@ class WebdriverManager {
   async beforeAllTests () {}
 
   async doExecuteScript (executor, script, ...arguments_) {
-    const code = `(${script}).apply(window, arguments)`
-    const transformed = await (
-      await babel.transformAsync(code, babelConfig)
-    ).code.replace('"use strict";\n\n', 'return ')
+    const transformed = await this.babelifyCode(script)
     try {
       const returnedFromBrowser = await executor(transformed, ...arguments_)
-      logger.debug({ returnedFromBrowser })
+      logger.debug({ transformed, returnedFromBrowser })
       return returnedFromBrowser
     } catch (error) {
-      /* istanbul ignore next: only get's executed when there are webdriver issues */
+      /* istanbul ignore next: only gets executed when there are webdriver issues */
       logger.error(`error executing script: ${error.name}`)
-      /* istanbul ignore next: only get's executed when there are webdriver issues */
+      /* istanbul ignore next: only gets executed when there are webdriver issues */
       if (
         error.constructor.name === 'WebDriverError' &&
         error.message === 'Session not started or terminated'
@@ -122,9 +119,17 @@ class WebdriverManager {
         await this.buildDriver()
         await this.loadWaychaserTestPage()
       }
-      /* istanbul ignore next: only get's executed when there are webdriver issues */
+      /* istanbul ignore next: only gets executed when there are webdriver issues */
       throw error
     }
+  }
+
+  async babelifyCode (script) {
+    const code = `(${script}).apply(window, arguments)`
+    const transformed = await (
+      await babel.transformAsync(code, babelConfig)
+    ).code.replace('"use strict";\n\n', 'return ')
+    return transformed
   }
 
   async executeScript (script, ...arguments_) {
@@ -164,7 +169,7 @@ class WebdriverManager {
       try {
         await this.loadCoverage()
       } catch (error) {
-        /* istanbul ignore next: only get's executed on test framework failure */
+        /* istanbul ignore next: only gets executed on test framework failure */
         logger.error('coverage', error)
       }
       logger.debug('...coverage downloaded')
@@ -172,7 +177,7 @@ class WebdriverManager {
   }
 
   async getBrowserLogs () {
-    // getting logs appears to be only possible wtih chrome
+    // getting logs appears to be only possible with chrome
     /* istanbul ignore else: doesn't get executed on CI */
     if (this.browser === 'chrome') {
       await this.driver
@@ -218,7 +223,7 @@ class WebdriverManager {
   }
 
   async loadCoverage () {
-    /* istanbul ignore else: only get's executed when there are fatal web driver issues  */
+    /* istanbul ignore else: only gets executed when there are fatal web driver issues  */
     if (this.driver && process.env.COVERAGE) {
       try {
         const remoteCoverage = await this.executeScript(
@@ -232,15 +237,15 @@ class WebdriverManager {
         // clear coverage
         await this.clearRemoteCoverage()
       } catch (error) {
-        /* istanbul ignore next: only get's executed when there are instanbul issues */
+        /* istanbul ignore next: only gets executed when there are istanbul issues */
         logger.error(error)
-        /* istanbul ignore next: only get's executed when there are instanbul issues */
+        /* istanbul ignore next: only gets executed when there are istanbul issues */
         throw error
       }
     }
   }
 
-  /* istanbul ignore next: only get's executed if we didn't overload this method */
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async doBuildDriver () {
     abstract()
   }
@@ -249,9 +254,9 @@ class WebdriverManager {
     try {
       return this.doBuildDriver()
     } catch (error) {
-      /* istanbul ignore next: only get's executed when there are web driver issues */
+      /* istanbul ignore next: only gets executed when there are web driver issues */
       logger.error('error getting browser', error)
-      /* istanbul ignore next: only get's executed when there are web driver issues */
+      /* istanbul ignore next: only gets executed when there are web driver issues */
       throw error
     }
   }

@@ -13,8 +13,13 @@ async function handleResponse (promise) {
   }
 }
 class WaychaserDirect extends WaychaserProxy {
+  constructor () {
+    super()
+    this.waychaser = waychaser
+  }
+
   async load (url) {
-    return handleResponse(waychaser.load(url))
+    return handleResponse(this.waychaser.load(url))
   }
 
   async getOCount (property, result) {
@@ -60,6 +65,14 @@ class WaychaserDirect extends WaychaserProxy {
 
   async getStatusCode (result) {
     return result.resource.response.status
+  }
+
+  async use (handler) {
+    this.waychaser = waychaser.use(handler)
+  }
+
+  async reset () {
+    this.waychaser = waychaser
   }
 }
 

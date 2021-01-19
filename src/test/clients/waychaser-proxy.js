@@ -59,6 +59,16 @@ class WaychaserProxy {
   async getStatusCode (result) {
     abstract()
   }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async use (handler) {
+    abstract()
+  }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async reset () {
+    abstract()
+  }
 }
 
 export { WaychaserProxy }
