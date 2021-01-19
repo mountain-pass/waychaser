@@ -1,3 +1,9 @@
+## <small>1.62.17 (2021-01-19)</small>
+
+* Merge pull request #127 from mountain-pass/dependabot/npm_and_yarn/webpack-cli-4.4.0 ([1ed3ce2](https://github.com/mountain-pass/waychaser/commit/1ed3ce2)), closes [#127](https://github.com/mountain-pass/waychaser/issues/127)
+
+
+
 ## <small>1.62.16 (2021-01-18)</small>
 
 * Merge pull request #125 from mountain-pass/dependabot/npm_and_yarn/chromedriver-87.0.7 ([34bc4ff](https://github.com/mountain-pass/waychaser/commit/34bc4ff)), closes [#125](https://github.com/mountain-pass/waychaser/issues/125)
