@@ -1,3 +1,9 @@
+## <small>1.62.19 (2021-01-20)</small>
+
+* Merge pull request #126 from mountain-pass/dependabot/npm_and_yarn/core-js-3.8.3 ([bf1f71c](https://github.com/mountain-pass/waychaser/commit/bf1f71c)), closes [#126](https://github.com/mountain-pass/waychaser/issues/126)
+
+
+
 ## <small>1.62.18 (2021-01-19)</small>
 
 * Merge pull request #128 from mountain-pass/dependabot/npm_and_yarn/fs-extra-9.1.0 ([5394a87](https://github.com/mountain-pass/waychaser/commit/5394a87)), closes [#128](https://github.com/mountain-pass/waychaser/issues/128)
