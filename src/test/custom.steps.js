@@ -1,4 +1,5 @@
 import { Given } from '@cucumber/cucumber'
+import { Operation } from '../waychaser'
 
 Given('waychaser has a custom handler for that resource', async function () {
   await this.waychaserProxy.use(
@@ -6,7 +7,26 @@ Given('waychaser has a custom handler for that resource', async function () {
     (response, next) => {
       const linkHeader = response.headers.get('custom-link')
       const links = JSON.parse(linkHeader)
-      return links
+      return links.map(reference => {
+        const {
+          rel,
+          uri,
+          method = 'GET',
+          'accept*': accept,
+          'params*': parameters,
+          ...otherProperties
+        } = reference
+        const parsedParameters = parameters?.value
+          ? JSON.parse(parameters?.value)
+          : undefined
+        return Operation.builder(rel)
+          .uri(uri)
+          .method(method)
+          .parameters(parsedParameters)
+          .accept(accept)
+          .other(otherProperties)
+          .build()
+      })
     }
   )
 })

@@ -148,9 +148,12 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async use (handler) {
+    const handlerCode = handler
+      .toString()
+      .replace('_waychaser.Operation', 'Operation')
     return this.manager.executeAsyncScript(
       `function (done) {
-        window.testWaychaser = window.waychaser.use(${handler})
+        window.testWaychaser = window.waychaser.use(${handlerCode})
         done()
       }`
     )

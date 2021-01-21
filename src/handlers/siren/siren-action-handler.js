@@ -1,6 +1,4 @@
-import LinkHeader from 'http-link-header'
-import MediaTypes from '../../util/media-types'
-import { mapSirenActionToLinkHeader } from './map-siren-action-to-link-header'
+import { mapSirenActionToOperation } from './map-siren-action-to-operation'
 
 /**
  * @param response
@@ -14,16 +12,13 @@ import { mapSirenActionToLinkHeader } from './map-siren-action-to-link-header'
  * @param next
  */
 export async function sirenActionHandler (response, bodyGetter, next) {
-  const links = new LinkHeader()
-  const contentType = response.headers.get('content-type')?.split(';')
-  if (contentType?.[0] === MediaTypes.SIREN) {
-    const body = await bodyGetter()
-    if (body.actions) {
-      body.actions?.forEach(action => {
-        const mappedLink = mapSirenActionToLinkHeader(action)
-        links.set(mappedLink)
-      })
-    }
+  const operations = []
+  const body = await bodyGetter()
+  if (body.actions) {
+    body.actions?.forEach(action => {
+      const operation = mapSirenActionToOperation(action)
+      operations.push(operation)
+    })
   }
-  return links.refs
+  return operations
 }

@@ -68,7 +68,8 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async use (handler) {
-    this.waychaser = waychaser.use(handler)
+    // eslint-disable-next-line no-eval
+    this.waychaser = waychaser.use(eval(handler)) // eslint-disable-line security/detect-eval-with-expression
   }
 
   async reset () {

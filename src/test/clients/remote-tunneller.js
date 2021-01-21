@@ -2,7 +2,7 @@ import logger from '../../util/logger'
 import browserstack from 'browserstack-local'
 import assert from 'assert'
 
-class RemoteTunneler {
+class RemoteTunneller {
   async startTunnel () {
     /* istanbul ignore next: does not get executed on CI */
     if (!process.env.BROWSERSTACK_LOCAL_IDENTIFIER) {
@@ -40,6 +40,6 @@ class RemoteTunneler {
   }
 }
 
-const instance = new RemoteTunneler()
+const instance = new RemoteTunneller()
 
-export { instance as remoteTunneler }
+export { instance as remoteTunneller }

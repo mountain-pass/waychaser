@@ -6,7 +6,7 @@ exclude:
   - "dist/**/*.js"
   - "scripts/**/*.js"
   - "coverage/**/*.js"
-  - "src/test/clients/remote-tunneler.js"
+  - "src/test/clients/remote-tunneller.js"
   - "src/test/clients/waychaser-via-webdriver.js"
   - "src/test/clients/webdriver-*.js"
   - "src/util/abstract.js"

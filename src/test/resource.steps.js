@@ -110,8 +110,8 @@ function sendResponse (
             name: link.rel,
             href: link.uri,
             method: link.method,
-            ...(link['accept*'] && { type: link['accept*'].value }),
-            ...(link['params*'] && { fields: sirenBodyParameters })
+            ...(link['accept*']?.value && { type: link['accept*'].value }),
+            ...(link['params*']?.value && { fields: sirenBodyParameters })
           })
         })
       }
@@ -175,7 +175,7 @@ async function createDynamicResourceRoute (
       request.params
     )
     if (contentTypes !== undefined) {
-      if (request.headers['content-type'].startsWith('multipart/form-data')) {
+      if (request.headers['content-type']?.startsWith('multipart/form-data')) {
         responseBody['content-type'] = 'multipart/form-data'
       } else {
         responseBody['content-type'] = request.headers['content-type']

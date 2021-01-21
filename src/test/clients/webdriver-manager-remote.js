@@ -3,13 +3,13 @@ import webdriver from 'selenium-webdriver'
 import logger from '../../util/logger'
 import { WebdriverManager } from './webdriver-manager'
 import assert from 'assert'
-import { remoteTunneler } from './remote-tunneler'
+import { remoteTunneller } from './remote-tunneller'
 import { BUILD } from './build-info'
 
 class WebdriverManagerRemote extends WebdriverManager {
   constructor () {
     super()
-    this.tunneler = remoteTunneler
+    this.tunneler = remoteTunneller
     this.status = 'passed'
   }
 

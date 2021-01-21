@@ -1,6 +1,5 @@
-import LinkHeader from 'http-link-header'
 import MediaTypes from '../../util/media-types'
-import { mapHalLinkToLinkHeader } from './map-hal-link-to-link-header'
+import { mapHalLinkToOperation } from './map-hal-link-to-operation'
 
 /**
  * @param response
@@ -8,7 +7,7 @@ import { mapHalLinkToLinkHeader } from './map-hal-link-to-link-header'
  * @param next
  */
 export async function halHandler (response, bodyGetter, next) {
-  const links = new LinkHeader()
+  const operations = []
   const contentType = response.headers.get('content-type')?.split(';')
   if (contentType?.[0] === MediaTypes.HAL) {
     const body = await bodyGetter()
@@ -24,13 +23,13 @@ export async function halHandler (response, bodyGetter, next) {
       Object.keys(body._links).forEach(key => {
         if (Array.isArray(body._links[key])) {
           body._links[key].forEach(link => {
-            links.set(mapHalLinkToLinkHeader(key, link, curies))
+            operations.push(mapHalLinkToOperation(key, link, curies))
           })
         } else {
-          links.set(mapHalLinkToLinkHeader(key, body._links[key], curies))
+          operations.push(mapHalLinkToOperation(key, body._links[key], curies))
         }
       })
     }
   }
-  return links.refs
+  return operations
 }
