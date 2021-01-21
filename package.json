@@ -1,6 +1,6 @@
 {
   "name": "@mountainpass/waychaser",
-  "version": "1.62.21",
+  "version": "1.62.22",
   "description": "Client library for RESTful APIs",
   "repository": {
     "type": "git",
