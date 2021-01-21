@@ -1,3 +1,9 @@
+## <small>1.62.22 (2021-01-21)</small>
+
+* Merge pull request #133 from mountain-pass/dependabot/npm_and_yarn/snyk-1.439.0 ([b70dd5d](https://github.com/mountain-pass/waychaser/commit/b70dd5d)), closes [#133](https://github.com/mountain-pass/waychaser/issues/133)
+
+
+
 ## <small>1.62.21 (2021-01-21)</small>
 
 * Merge pull request #132 from mountain-pass/dependabot/npm_and_yarn/webpack-bundle-analyzer-4.4.0 ([2d1e33e](https://github.com/mountain-pass/waychaser/commit/2d1e33e)), closes [#132](https://github.com/mountain-pass/waychaser/issues/132)
