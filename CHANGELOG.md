@@ -1,3 +1,9 @@
+## <small>1.62.23 (2021-01-23)</small>
+
+* Merge pull request #138 from mountain-pass/dependabot/npm_and_yarn/dateformat-4.5.0 ([8856d98](https://github.com/mountain-pass/waychaser/commit/8856d98)), closes [#138](https://github.com/mountain-pass/waychaser/issues/138)
+
+
+
 ## <small>1.62.22 (2021-01-21)</small>
 
 * Merge pull request #133 from mountain-pass/dependabot/npm_and_yarn/snyk-1.439.0 ([b70dd5d](https://github.com/mountain-pass/waychaser/commit/b70dd5d)), closes [#133](https://github.com/mountain-pass/waychaser/issues/133)
