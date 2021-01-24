@@ -34,16 +34,18 @@ Loki.Collection.prototype.invoke = async function (
 
 /** @namespace */
 const waychaser = {
+  /* eslint-disable jsdoc/no-undefined-types -- Resource is the return type of loadResource.
+     js/doc linting should be smarter */
   /**
    * Loads an API
    *
    * @param {URL} url - the URL of the API to load
    * @param {object} options - options to pass to fetch
-   *
-   * @returns {ApiResourceObject} a ApiResourceObject representing the loaded resource
+   * @returns {Resource} a Resource object representing the loaded resource
    *
    * @throws {Error} If the server returns with a status >= 400
    */
+  /* eslint-enable jsdoc/no-undefined-types */
   load: async function (url, options) {
     return loadResource(url, options, this.defaultHandlers)
   },
@@ -59,17 +61,13 @@ const waychaser = {
     return new waychaser.Loader(handler)
   },
 
-  useDefaultHanders () {
-    return new waychaser.Loader(waychaser.defaultHandlers)
-  },
-
   Loader: class {
     constructor (handler) {
       this.handlers = [handler]
       this.logger = waychaser.logger
     }
 
-    useDefaultHanders () {
+    useDefaultHandlers () {
       this.use(waychaser.defaultHandlers)
       return this
     }

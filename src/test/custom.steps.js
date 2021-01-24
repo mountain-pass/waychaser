@@ -1,31 +1,78 @@
 import { Given } from '@cucumber/cucumber'
 import { Operation } from '../waychaser'
 
-Given('waychaser has a custom handler for that resource', async function () {
+Given('waychaser has a custom header handler', async function () {
   await this.waychaserProxy.use(
     /* istanbul ignore next: won't work in browser otherwise */
-    (response, next) => {
+    response => {
       const linkHeader = response.headers.get('custom-link')
-      const links = JSON.parse(linkHeader)
-      return links.map(reference => {
-        const {
-          rel,
-          uri,
-          method = 'GET',
-          'accept*': accept,
-          'params*': parameters,
-          ...otherProperties
-        } = reference
-        const parsedParameters = parameters?.value
-          ? JSON.parse(parameters?.value)
-          : undefined
-        return Operation.builder(rel)
-          .uri(uri)
-          .method(method)
-          .parameters(parsedParameters)
-          .accept(accept)
-          .other(otherProperties)
-          .build()
+      if (linkHeader) {
+        const links = JSON.parse(linkHeader)
+        return links.map(reference => {
+          return Operation.builder(reference.rel)
+            .uri(reference.uri)
+            .build()
+        })
+      }
+    }
+  )
+})
+
+Given('waychaser has a custom body handler', async function () {
+  await this.waychaserProxy.use(
+    // this can't be an async function, otherwise we have troubles
+    // sending it to the browser in waychaser-via-webdriver.js
+    /* istanbul ignore next: won't work in browser otherwise */
+    (response, bodyGetter) => {
+      return bodyGetter().then(body => {
+        return Object.keys(body.custom_links || {}).map(relationship => {
+          return Operation.builder(relationship)
+            .uri(body.custom_links[relationship].href)
+            .build()
+        })
+      })
+    }
+  )
+})
+
+Given('waychaser has default handlers', async function () {
+  await this.waychaserProxy.useDefaultHandlers()
+})
+
+Given('waychaser has a custom stopping header link handler', async function () {
+  await this.waychaserProxy.use(
+    /* istanbul ignore next: won't work in browser otherwise */
+    (response, bodyGetter, stop) => {
+      const linkHeader = response.headers.get('link')
+      if (linkHeader) {
+        const links = JSON.parse(linkHeader)
+        stop()
+        return links.map(reference => {
+          const { rel, uri } = reference
+          return Operation.builder(rel)
+            .uri(uri)
+            .build()
+        })
+      }
+    }
+  )
+})
+
+Given('waychaser has a custom stopping body _links handler', async function () {
+  await this.waychaserProxy.use(
+    // this can't be an async function, otherwise we have troubles
+    // sending it to the browser in waychaser-via-webdriver.js
+    /* istanbul ignore next: won't work in browser otherwise */
+    (response, bodyGetter, stop) => {
+      return bodyGetter().then(body => {
+        const links = body._links
+
+        stop()
+        return Object.keys(links || {}).map(relationship => {
+          return Operation.builder(relationship)
+            .uri(links[relationship].href)
+            .build()
+        })
       })
     }
   )

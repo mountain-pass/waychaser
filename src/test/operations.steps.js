@@ -227,13 +227,40 @@ Then('resource returned will have the status code {int}', async function (
 Then('the body without the links will contain', async function (
   documentString
 ) {
-  const expectedBody = JSON.parse(documentString)
-  await checkBody.bind(this)(expectedBody, actualBody => {
-    delete actualBody._links
-    delete actualBody.links
-    return actualBody
-  })
+  await checkBody.bind(this)(
+    JSON.parse(documentString),
+    linksDeleter(deleteLinks)
+  )
 })
+
+Then('the body without the custom links will contain', async function (
+  documentString
+) {
+  const expectedBody = JSON.parse(documentString)
+  await checkBody.bind(this)(
+    expectedBody,
+    linksDeleter(actualBody => {
+      delete actualBody.custom_links
+    })
+  )
+})
+
+When('the body will contain', async function (documentString) {
+  const expectedBody = JSON.parse(documentString)
+  await checkBody.bind(this)(expectedBody)
+})
+
+function linksDeleter (deleter) {
+  return actualBody => {
+    deleter(actualBody)
+    return actualBody
+  }
+}
+
+function deleteLinks (actualBody) {
+  delete actualBody._links
+  delete actualBody.links
+}
 
 async function invokeWithName (relationship, name) {
   this.operationResultLokiStyle = await this.waychaserProxy.invokeOperation(

@@ -7,7 +7,7 @@ import { Resource } from '../resource'
  *
  * @param {URL} url url of the resource to load
  * @param {object} options options to pass to fetch
- * @param handlers
+ * @param {Function} handlers an array of functions that can parse operations from the HTTP response
  *
  * @returns {Resource} a ApiResourceObject representing the loaded resource
  *

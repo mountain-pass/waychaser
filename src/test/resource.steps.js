@@ -13,6 +13,11 @@ import MediaTypes from '../util/media-types'
 
 let pathCount = 0
 
+const CUSTOM_HEADER_MEDIA_TYPE = 'application/custom+json'
+const CUSTOM_LINK_HEADER_MEDIA_TYPE = 'application/custom-link+json'
+const CUSTOM_BODY_MEDIA_TYPE = 'application/custom-body+json'
+const CUSTOM_LINKS_BODY_MEDIA_TYPE = 'application/custom-body-links+json'
+
 const randomApiPath = () => {
   return `/api/${pathCount++}-${uniqueNamesGenerator({
     dictionaries: [adjectives, colors, animals]
@@ -36,9 +41,7 @@ function sendResponse (
   mediaType = 'application/json',
   curies
 ) {
-  let halLinks
-  let sirenLinks
-  let sirenActions
+  const bodyOperations = {}
 
   switch (mediaType) {
     case 'application/json':
@@ -49,23 +52,42 @@ function sendResponse (
         response.header('link-template', linkTemplates.toString())
       }
       break
-    case 'application/custom+json':
+    case CUSTOM_HEADER_MEDIA_TYPE:
       response.header('custom-link', JSON.stringify(links.refs))
       break
+    case CUSTOM_LINK_HEADER_MEDIA_TYPE:
+      response.header('link', JSON.stringify(links.refs))
+      break
+    case CUSTOM_BODY_MEDIA_TYPE:
+      bodyOperations.custom_links = {}
+      links.refs.forEach(reference => {
+        bodyOperations.custom_links[reference.rel] = {
+          href: reference.uri
+        }
+      })
+      break
+    case CUSTOM_LINKS_BODY_MEDIA_TYPE:
+      bodyOperations._links = {}
+      links.refs.forEach(reference => {
+        bodyOperations._links[reference.rel] = {
+          href: reference.uri
+        }
+      })
+      break
     case MediaTypes.HAL:
-      halLinks = {}
+      bodyOperations._links = {}
       if (links) {
         links.refs.forEach(link => {
-          halLinks[link.rel] = { href: link.uri }
+          bodyOperations._links[link.rel] = { href: link.uri }
         })
       }
       if (linkTemplates) {
         linkTemplates.refs.forEach(link => {
-          halLinks[link.rel] = { href: link.uri, templated: true }
+          bodyOperations._links[link.rel] = { href: link.uri, templated: true }
         })
       }
       if (curies) {
-        halLinks.curies = curies.map(curie => {
+        bodyOperations._links.curies = curies.map(curie => {
           return {
             name: curie.NAME,
             href: curie.HREF,
@@ -83,30 +105,21 @@ function sendResponse (
       ]
       */
       if (links) {
-        sirenLinks = []
+        bodyOperations.links = []
         links.refs.forEach(link => {
-          sirenLinks.push({ rel: [link.rel], href: link.uri })
+          bodyOperations.links.push({ rel: [link.rel], href: link.uri })
         })
       }
-      /*
-       rel: relationship,
-    uri: dynamicUri,
-    method: method,
-    ...(Object.keys(bodyParameters).length > 0 && {
-      'params*': { value: JSON.stringify(bodyParameters) }
-    }),
-    ...(accept && {
-      'accept*': { value: accept }
-    }) */
+
       if (linkTemplates) {
-        sirenActions = []
+        bodyOperations.actions = []
         linkTemplates.refs.forEach(link => {
           const bodyParameters = JSON.parse(link['params*'].value)
 
           const sirenBodyParameters = Object.keys(bodyParameters).map(key => {
             return { name: key }
           })
-          sirenActions.push({
+          bodyOperations.actions.push({
             name: link.rel,
             href: link.uri,
             method: link.method,
@@ -118,15 +131,15 @@ function sendResponse (
       break
   }
   response.header('content-type', mediaType)
-  const responseBody = {
-    status,
-    ...(mediaType === MediaTypes.HAL && { _links: halLinks }),
-    ...(mediaType === MediaTypes.SIREN && {
-      links: sirenLinks,
-      actions: sirenActions
-    })
-  }
-  response.status(status).send(responseBody)
+
+  response.status(status).send(
+    Object.assign(
+      {
+        status
+      },
+      bodyOperations
+    )
+  )
 }
 
 function filterParameters (parameters, type) {
@@ -297,36 +310,43 @@ Given('a resource with a {string} operation', async function (relationship) {
 Given(
   'a resource with a {string} operation that returns itself',
   async function (relationship) {
-    this.currentResourceRoute = randomApiPath()
-    const to = this.currentResourceRoute
-    await createOkRouteWithLinks.bind(this)(
-      this.currentResourceRoute,
-      createLinks(relationship, to)
+    await createResourceLinkingToSelf.bind(this)(relationship)
+  }
+)
+
+Given(
+  'a custom resource with a {string} header operation that returns itself',
+  async function (relationship) {
+    await createResourceLinkingToSelf.bind(this)(
+      relationship,
+      CUSTOM_HEADER_MEDIA_TYPE
     )
   }
 )
 
 Given(
-  'a custom resource with a {string} operation that returns itself',
-  async function (relationship) {
-    this.currentResourceRoute = randomApiPath()
-    const to = this.currentResourceRoute
-    await createOkRouteWithLinks.bind(this)(
-      this.currentResourceRoute,
-      createLinks(relationship, to),
-      undefined,
-      'application/custom+json'
-    )
-  }
-)
-Given(
   'a HAL resource returning the following with a {string} link that returns itself',
   async function (relationship, responseBody) {
     this.currentResourceRoute = randomApiPath()
     const links = {
-      _links: { self: { href: this.currentResourceRoute } }
+      _links: { [relationship]: { href: this.currentResourceRoute } }
     }
     await createLinkingResource.bind(this)(responseBody, links, MediaTypes.HAL)
+  }
+)
+
+Given(
+  'a custom resource returning the following with a {string} body link that returns itself',
+  async function (relationship, responseBody) {
+    this.currentResourceRoute = randomApiPath()
+    const links = {
+      custom_links: { [relationship]: { href: this.currentResourceRoute } }
+    }
+    await createLinkingResource.bind(this)(
+      responseBody,
+      links,
+      CUSTOM_BODY_MEDIA_TYPE
+    )
   }
 )
 
@@ -379,11 +399,16 @@ Given(
 Given(
   'a resource with a {string} operation that returns an error',
   async function (relationship) {
-    this.currentResourceRoute = randomApiPath()
-    const to = `http://${API_ACCESS_HOST}:33556/api`
-    await createOkRouteWithLinks.bind(this)(
-      this.currentResourceRoute,
-      createLinks(relationship, to)
+    await createResourceLinkingToError.bind(this)(relationship)
+  }
+)
+
+Given(
+  'a custom resource with a {string} header operation that returns an error',
+  async function (relationship) {
+    await createResourceLinkingToError.bind(this)(
+      relationship,
+      CUSTOM_HEADER_MEDIA_TYPE
     )
   }
 )
@@ -414,13 +439,55 @@ Given(
   }
 )
 
+async function createResourceLinkingToError (relationship, mediaType) {
+  this.currentResourceRoute = randomApiPath()
+  const to = `http://${API_ACCESS_HOST}:33556/api`
+  await createOkRouteWithLinks.bind(this)(
+    this.currentResourceRoute,
+    createLinks(relationship, to),
+    undefined,
+    mediaType
+  )
+}
+
+async function createResourceLinkingToSelf (relationship, mediaType) {
+  this.currentResourceRoute = randomApiPath()
+  const to = this.currentResourceRoute
+  await createOkRouteWithLinks.bind(this)(
+    this.currentResourceRoute,
+    createLinks(relationship, to),
+    undefined,
+    mediaType
+  )
+}
+
+function createCustomBodyLink (relationship, to) {
+  return {
+    custom_links: {
+      [relationship]: { href: to }
+    }
+  }
+}
+
+Given(
+  'a custom resource with a {string} body operation that returns an error',
+  async function (relationship) {
+    this.currentResourceRoute = randomApiPath()
+    const links = createCustomBodyLink(
+      relationship,
+      `http://${API_ACCESS_HOST}:33556/api`
+    )
+    createLinkingResource.bind(this)(undefined, links, CUSTOM_BODY_MEDIA_TYPE)
+  }
+)
+
 async function createLinkingResource (responseBody, links, mediaType) {
   const router = await this.router.route(this.currentResourceRoute)
   await router.get(async (request, response) => {
     response.header('content-type', mediaType)
-    response
-      .status(200)
-      .send(Object.assign(JSON.parse(responseBody || '{}'), links))
+    const linkedBody = Object.assign(JSON.parse(responseBody || '{}'), links)
+    logger.debug('sending linked body', JSON.stringify(linkedBody))
+    response.status(200).send(linkedBody)
   })
 }
 
@@ -454,6 +521,46 @@ Given(
   'a Siren resource with a {string} operation that returns that resource',
   async function (relationship) {
     await createResourceToPrevious.bind(this)(relationship, MediaTypes.SIREN)
+  }
+)
+
+Given(
+  'a custom resource with a {string} body operation that returns that resource',
+  async function (relationship) {
+    await createResourceToPrevious.bind(this)(
+      relationship,
+      CUSTOM_BODY_MEDIA_TYPE
+    )
+  }
+)
+
+Given(
+  'a custom resource with a {string} header link operation that returns that resource',
+  async function (relationship) {
+    await createResourceToPrevious.bind(this)(
+      relationship,
+      CUSTOM_LINK_HEADER_MEDIA_TYPE
+    )
+  }
+)
+
+Given(
+  'a custom resource with a {string} body _links operation that returns that resource',
+  async function (relationship) {
+    await createResourceToPrevious.bind(this)(
+      relationship,
+      CUSTOM_LINKS_BODY_MEDIA_TYPE
+    )
+  }
+)
+
+Given(
+  'a custom resource with a {string} header operation that returns that resource',
+  async function (relationship) {
+    await createResourceToPrevious.bind(this)(
+      relationship,
+      CUSTOM_HEADER_MEDIA_TYPE
+    )
   }
 )
 

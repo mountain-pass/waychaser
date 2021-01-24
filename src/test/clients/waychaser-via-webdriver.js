@@ -151,9 +151,10 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     const handlerCode = handler
       .toString()
       .replace('_waychaser.Operation', 'Operation')
+    logger.debug('handlerCode', handlerCode)
     return this.manager.executeAsyncScript(
       `function (done) {
-        window.testWaychaser = window.waychaser.use(${handlerCode})
+        window.testWaychaser = window.testWaychaser.use(${handlerCode})
         done()
       }`
     )
@@ -164,6 +165,16 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       /* istanbul ignore next: won't work in browser otherwise */
       function (done) {
         window.testWaychaser = window.waychaser
+        done()
+      }
+    )
+  }
+
+  async useDefaultHandlers () {
+    return this.manager.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (done) {
+        window.testWaychaser.useDefaultHandlers()
         done()
       }
     )
