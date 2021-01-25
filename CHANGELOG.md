@@ -1,3 +1,9 @@
+## <small>1.62.28 (2021-01-25)</small>
+
+* test(handler): additional tests for custom handlers ([51c8ec6](https://github.com/mountain-pass/waychaser/commit/51c8ec6))
+
+
+
 ## <small>1.62.27 (2021-01-25)</small>
 
 * Merge pull request #147 from mountain-pass/dependabot/npm_and_yarn/geckodriver-1.22.1 ([8f50394](https://github.com/mountain-pass/waychaser/commit/8f50394)), closes [#147](https://github.com/mountain-pass/waychaser/issues/147)
