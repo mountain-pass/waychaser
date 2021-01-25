@@ -1,3 +1,9 @@
+## <small>1.62.27 (2021-01-25)</small>
+
+* Merge pull request #147 from mountain-pass/dependabot/npm_and_yarn/geckodriver-1.22.1 ([8f50394](https://github.com/mountain-pass/waychaser/commit/8f50394)), closes [#147](https://github.com/mountain-pass/waychaser/issues/147)
+
+
+
 ## <small>1.62.26 (2021-01-24)</small>
 
 * Merge pull request #146 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.3.2 ([ac1c4e9](https://github.com/mountain-pass/waychaser/commit/ac1c4e9)), closes [#146](https://github.com/mountain-pass/waychaser/issues/146)
