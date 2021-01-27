@@ -1,3 +1,9 @@
+## <small>1.62.29 (2021-01-27)</small>
+
+* Merge pull request #153 from mountain-pass/dependabot/npm_and_yarn/snyk-1.439.3 ([7e777f1](https://github.com/mountain-pass/waychaser/commit/7e777f1)), closes [#153](https://github.com/mountain-pass/waychaser/issues/153)
+
+
+
 ## <small>1.62.28 (2021-01-25)</small>
 
 * test(handler): additional tests for custom handlers ([51c8ec6](https://github.com/mountain-pass/waychaser/commit/51c8ec6))
