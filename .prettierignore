@@ -11,3 +11,4 @@ report
 .vscode
 *.js
 *.md
+stats.json

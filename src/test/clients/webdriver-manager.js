@@ -55,7 +55,7 @@ class WebdriverManager {
     logger.debug('setting up logger function...')
     await this.executeScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
+      function (browser) {
         window.testResults = []
         window.testLogs = []
         window.testLogger = function (arguments_) {
@@ -69,27 +69,114 @@ class WebdriverManager {
 
         window.callbackWithError = (done, error) => {
           window.testLogger('error: ' + error.toString())
-          window.testResults.push(error)
+          const id = window.testResults.push(error) - 1
           done({
             success: false,
-            id: window.testResults.length - 1
+            id
             // un-commenting these causes the android tests to fail
             // error: error.toString(),
             // stackTrace: error.stack,
           })
         }
 
-        window.handleResponse = function (promise, done) {
+        window.handleResponse = function (promise) {
           return promise
             .then(function (resource) {
               window.testLogger('huzzah!')
-              window.testResults.push(resource)
-              done({ success: true, id: window.testResults.length - 1 })
+              const id = window.testResults.push(resource) - 1
+              return { success: true, id }
             })
             .catch(function (error) {
-              window.callbackWithError(done, error)
+              const id = window.testResults.push(error) - 1
+              return {
+                success: false,
+                id,
+                // returning these on android causes tests to fail
+                ...(browser !== 'android' && {
+                  error: error.toString(),
+                  stackTrace: error.stack
+                })
+              }
             })
         }
+
+        const queries = [
+          relationship => {
+            return relationship
+          },
+          relationship => {
+            return { rel: relationship }
+          },
+          relationship => {
+            return element => {
+              return element.rel === relationship
+            }
+          }
+        ]
+
+        const searchables = [
+          id => {
+            return window.testResults[id].operations
+          },
+          id => {
+            return window.testResults[id].ops
+          }
+        ]
+
+        const invocables = searchables.concat([
+          id => {
+            return window.testResults[id]
+          }
+        ])
+
+        function waychaserInvokeAndHandle (invokable, query, context) {
+          return window.handleResponse(invokable.invoke(query, context))
+        }
+
+        function waychaserFindInvokeAndHandle (searchable, query, context) {
+          // eslint-disable-next-line unicorn/no-array-callback-reference -- we made sure query is a single param function
+          return window.handleResponse(searchable.find(query).invoke(context))
+        }
+
+        window.waychaserInvokeFunctions = []
+        invocables.forEach(invokable => {
+          queries.forEach(query => {
+            window.waychaserInvokeFunctions.push(function (
+              id,
+              relationship,
+              context
+            ) {
+              return waychaserInvokeAndHandle(
+                invokable(id),
+                query(relationship),
+                context
+              )
+            })
+          })
+        })
+
+        searchables.forEach(searchable => {
+          queries.forEach(query => {
+            window.waychaserInvokeFunctions.push(function (
+              id,
+              relationship,
+              context
+            ) {
+              return waychaserFindInvokeAndHandle(
+                searchable(id),
+                query(relationship),
+                context
+              )
+            })
+          })
+        })
+      },
+      this.browser
+    )
+    this.invokeScriptCount = await this.executeScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        return window.waychaserInvokeFunctions.length
       }
     )
   }

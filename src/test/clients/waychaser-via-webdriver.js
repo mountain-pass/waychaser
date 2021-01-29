@@ -1,3 +1,4 @@
+import { assert } from 'chai'
 import logger from '../../util/logger'
 import { WaychaserProxy } from './waychaser-proxy'
 
@@ -17,9 +18,9 @@ class WaychaserViaWebdriver extends WaychaserProxy {
           .load(url)
           .then(function (resource) {
             window.testLogger('success')
-            window.testResults.push(resource)
+            const id = window.testResults.push(resource) - 1
             window.testLogger('calling back')
-            done({ success: true, id: window.testResults.length - 1 })
+            done({ success: true, id })
           })
           .catch(error => {
             window.callbackWithError(done, error)
@@ -27,82 +28,135 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       },
       url
     )
-    logger.debug({ rval })
-    // await this.manager.executeScript(
-    //   /* istanbul ignore next: won't work in browser otherwise */
-    //   function () {
-    //     window.testLogger('after')
-    //   }
-    // )
+
     return rval
   }
 
-  async getOCount (property, result) {
+  async getOperationsCounts (results) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, property, done) {
-        done(window.testResults[id][property].count())
+      function (results, done) {
+        const counts = {}
+        for (const key in results) {
+          counts[`${key}-operations`] =
+            window.testResults[results[key].id].operations.length
+          counts[`${key}-ops`] = window.testResults[results[key].id].ops.length
+        }
+        done(counts)
       },
-      result.id,
-      property
+      results
     )
   }
 
-  async findOne (result, relationship) {
-    return this.manager.executeAsyncScript(
+  async find (results, relationship) {
+    const found = await this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, done) {
-        done({
-          foundOperation: window.testResults[id].operations.findOne(
-            relationship
-          ),
-          foundOperationLokiStyle: window.testResults[id].operations.findOne({
+      function (results, relationship, done) {
+        const innerFound = [
+          // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
+          window.testResults[results[0].id].operations.find(relationship),
+          window.testResults[results[0].id].operations.find({
             rel: relationship
           }),
-          foundOp: window.testResults[id].ops.findOne(relationship),
-          foundOpLokiStyle: window.testResults[id].ops.findOne({
-            rel: relationship
+          window.testResults[results[0].id].operations.find(element => {
+            return element.rel === relationship
+          }),
+          // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
+          window.testResults[results[0].id].ops.find(relationship),
+          window.testResults[results[0].id].ops.find({ rel: relationship }),
+          window.testResults[results[0].id].ops.find(element => {
+            return element.rel === relationship
           })
+        ]
+        window.testLogger('INNER FOUND')
+        window.testLogger(JSON.stringify(innerFound))
+        window.testLogger(
+          [1, 2, 3].find(item => {
+            return item === 4
+          })
+        )
+        window.testLogger(
+          JSON.stringify([
+            [1, 2, 3].find(item => {
+              return item === 4
+            })
+          ])
+        )
+        window.testLogger(results[0].id)
+        window.testLogger(window.testResults[results[0].id])
+        window.testLogger(
+          // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
+          window.testResults[results[0].id].ops.find(relationship)
+        )
+        window.testLogger(
+          JSON.stringify([
+            // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
+            window.testResults[results[0].id].ops.find(relationship)
+          ])
+        )
+        done(innerFound)
+      },
+      results,
+      relationship
+    )
+    // when an matching operation is not found, `find` returns `undefined`, but when `undefined` is converted
+    // to a string within an array, it becomes `null`. Yeah, WTF?
+    // WebDriver converts to and from string to send to and from the browser, so when we get null back, we need
+    // to convert it back to undefined
+    return found.map(item => {
+      return item === null ? undefined : item
+    })
+  }
+
+  async invokeAll (result, relationship, context) {
+    // taking too long on IE doing it as one batch, so we split it into three batches
+    const batchSize =
+      this.manager.browser === 'ie' ? 5 : this.manager.invokeScriptCount
+    const batches = this.manager.invokeScriptCount / batchSize
+    let allResults = []
+    for (let batch = 0; batch < batches; batch++) {
+      const batchStart = batch * batchSize
+      const batchEnd = batchStart + batchSize
+
+      const batchResults = await this.manager.executeAsyncScript(
+        batchInvoke,
+        result.id,
+        relationship,
+        context,
+        { start: batchStart, end: batchEnd }
+      )
+      allResults = allResults.concat(batchResults)
+    }
+    assert.equal(allResults.length, this.manager.invokeScriptCount)
+    return allResults
+  }
+
+  async invokeWithObjectQuery (result, query, context) {
+    return this.manager.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (id, query, context, done) {
+        Promise.all([
+          window.handleResponse(window.testResults[id].invoke(query, context)),
+          window.handleResponse(
+            window.testResults[id].operations.invoke(query, context)
+          ),
+          window.handleResponse(
+            window.testResults[id].ops.invoke(query, context)
+          ),
+          window.handleResponse(
+            // eslint-disable-next-line unicorn/no-array-callback-reference -- query is not a function
+            window.testResults[id].operations.find(query).invoke(context)
+          ),
+          window.handleResponse(
+            // eslint-disable-next-line unicorn/no-array-callback-reference -- query is not a function
+            window.testResults[id].ops.find(query).invoke(context)
+          )
+        ]).then(results => {
+          done(results)
         })
       },
       result.id,
-      relationship
-    )
-  }
-
-  async invokeO (property, result, relationship, context) {
-    return this.manager.executeAsyncScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, property, context, done) {
-        window.testLogger('invokeOperation')
-        window.testLogger(JSON.stringify(arguments, undefined, 2))
-        const ops = window.testResults[id][property]
-        window.testLogger(JSON.stringify(ops, undefined, 2))
-        window.handleResponse(ops.invoke(relationship, context), done)
-      },
-      result.id,
-      relationship,
-      property,
-      context
-    )
-  }
-
-  async invoke (result, relationship, context) {
-    return this.manager.executeAsyncScript(
-      /* istanbul ignore next: won't work in browser otherwise */
-      function (id, relationship, context, done) {
-        window.testResults[id]
-          .invoke(relationship, context)
-          .then(function (resource) {
-            window.testResults.push(resource)
-            done({ success: true, id: window.testResults.length - 1 })
-          })
-          .catch(function (error) {
-            window.callbackWithError(done, error)
-          })
-      },
-      result.id,
-      relationship,
+      query,
       context
     )
   }
@@ -124,26 +178,30 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   async getBodies (results) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (ids, done) {
+      function (results, done) {
         Promise.all(
-          ids.map(id => {
-            return window.testResults[id].body()
+          results.map(result => {
+            return window.testResults[result.id].body()
           })
         ).then(bodies => {
           done(bodies)
         })
       },
-      results.map(result => result.id)
+      results
     )
   }
 
-  async getStatusCode (result) {
+  async getStatusCodes (results) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (id, done) {
-        done(window.testResults[id].response.status)
+      function (results, done) {
+        const codes = {}
+        for (const key in results) {
+          codes[key] = window.testResults[results[key].id].response.status
+        }
+        done(codes)
       },
-      result.id
+      results
     )
   }
 
@@ -182,3 +240,15 @@ class WaychaserViaWebdriver extends WaychaserProxy {
 }
 
 export { WaychaserViaWebdriver }
+
+/* istanbul ignore next: won't work in browser otherwise */
+function batchInvoke (id, relationship, context, batch, done) {
+  const resultsPromises = window.waychaserInvokeFunctions
+    .slice(batch.start, batch.end)
+    .map(invokeFunction => {
+      return invokeFunction(id, relationship, context)
+    })
+  Promise.all(resultsPromises).then(results => {
+    done(results)
+  })
+}

@@ -89,7 +89,7 @@ class WebdriverManagerRemote extends WebdriverManager {
       .usingServer('https://hub-cloud.browserstack.com/wd/hub')
       .withCapabilities(capabilities)
       .build()
-    await this.driver.manage().setTimeouts({ script: 40000 })
+    await this.driver.manage().setTimeouts({ script: 60000 })
     return this.driver
   }
 

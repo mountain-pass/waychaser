@@ -63,10 +63,11 @@
   - [ ] add support for sub-entities as embedded links
   - [ ] add support for sub-entities as embedded representations
 - add support for custom links/actions
-  - [x] intial plugin framework
-  - [ ] refactor to better link/operation objects
+  - [x] initial plugin framework
+  - [x] refactor to better link/operation objects
+- [x] Remove lokijs (too bloated) - see https://stackoverflow.com/a/30391815/269221
+- [ ] Look at using https://github.com/RichardLitt/standard-readme-preset
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
-- [ ] add support for Siren
 - [ ] add tests for authenticated requests
 - [ ] upgrade webpack
   - [ ] or investigate using https://rollupjs.org/guide/en/ instead

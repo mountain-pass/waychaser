@@ -6,6 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Waychaser</title>
     <script>
+      function browserSupportsAllFeatures() {
+        return window.Promise;
+      }
+      function loadScript(src, done) {
+        var js = document.createElement("script");
+        js.src = src;
+        js.onload = function () {
+          done();
+        };
+        js.onerror = function () {
+          throw new Error("Failed to load script " + src);
+        };
+        document.head.appendChild(js);
+      }
+      if (!browserSupportsAllFeatures()) {
+        // loadScript('https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise');
+      }
+
       window.onload = function () {
         document.getElementById("loading-status").innerText =
           window.waychaser !== undefined ? "Loaded ✅" : "Error ❌";

@@ -2,6 +2,7 @@ import { WebdriverManager } from './webdriver-manager'
 import { Builder, Capabilities } from 'selenium-webdriver'
 import logging from 'selenium-webdriver/lib/logging'
 import chrome from 'selenium-webdriver/chrome'
+import firefox from 'selenium-webdriver/firefox'
 import logger from '../../util/logger'
 
 class WebdriverManagerLocal extends WebdriverManager {
@@ -74,6 +75,7 @@ class WebdriverManagerLocal extends WebdriverManager {
     /* istanbul ignore next: only get's executed on CI server */
     if (process.env.CI) {
       builder.setChromeOptions(new chrome.Options().headless())
+      builder.setFirefoxOptions(new firefox.Options().headless())
     }
     this.driver = builder.build()
 

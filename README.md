@@ -45,6 +45,10 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
     - [Path parameter forms](#path-parameter-forms)
     - [Request body forms](#request-body-forms)
     - [DELETE, POST, PUT, PATCH](#delete-post-put-patch)
+- [Upgrading from 1.x to 2.x](#upgrading-from-1x-to-2x)
+  - [Removal of Loki](#removal-of-loki)
+    - [Operation count](#operation-count)
+    - [Finding operations](#finding-operations)
 
 # Usage
 
@@ -309,7 +313,7 @@ Link: <https://api.waychaser.io/example/some-resource>; rel="https://api.waychas
 Then the following code
 
 ```js
-const deletedResource = await apiResource.invoke('https://api.waychaser.io/rel/delete')
+const deletedResource = await apiResource.invoke('https://waychaser.io/rel/delete')
 ```
 
 will send a HTTP `DELETE` to `https://api.waychaser.io/example/some-resource`.
@@ -318,3 +322,92 @@ will send a HTTP `DELETE` to `https://api.waychaser.io/example/some-resource`.
 ([RFC8288](https://tools.ietf.org/html/rfc8288)) or [Link-Template](https://mnot.github.io/I-D/link-template/) headers
 and waychaser's behaviour in relation to the `method` property will be incompatible with servers that use this parameter
 for another purpose.
+
+# Upgrading from 1.x to 2.x
+
+## Removal of Loki
+
+Loki is no longer use for storing operations and has been replaced with an subclass of `Array`. We originally 
+introduced Loki it's querying capability, but it turned out to be far to large a dependency.
+
+### Operation count
+
+Previously you could get the number of operations on a resource by calling
+
+```js
+apiResource.count()
+```
+
+For 2.x, replace this with 
+
+```js
+apiResource.length
+```
+
+### Finding operations
+
+To find an operation, instead of using
+
+```js
+apiResource.operations.findOne(relationship)
+// or
+apiResource.operations.findOne({ rel: relationship })
+// or
+apiResource.ops.findOne(relationship)
+// or
+apiResource.ops.findOne({ rel: relationship })
+```
+
+use 
+
+```js
+apiResource.operations.find(relationship)
+// or
+apiResource.operations.find({ rel: relationship })
+// or
+apiResource.operations.find(operation => {
+  operation.rel === relationship
+})
+// or
+apiResource.ops.find(relationship)
+// or
+apiResource.ops.find({ rel: relationship })
+// or
+apiResource.ops.find(operation => {
+  operation.rel === relationship
+})
+```
+
+Additionally when invoking an operation, you can use an array finder function as well. e.g. the following are all
+equivalent
+
+```js
+await apiResource.invoke(relationship)
+await apiResource.invoke({ rel: relationship })
+await apiResource.invoke(operation => {
+  operation.rel === relationship
+})
+await apiResource.operations.invoke(relationship)
+await apiResource.operations.invoke({ rel: relationship })
+await apiResource.operations.invoke(operation => {
+  operation.rel === relationship
+})
+await apiResource.ops.invoke(relationship)
+await apiResource.ops.invoke({ rel: relationship })
+await apiResource.ops.invoke(operation => {
+  operation.rel === relationship
+})
+await apiResource.operations.find(relationship).invoke()
+await apiResource.operations.find({ rel: relationship }).invoke()
+await apiResource.operations.find(operation => {
+  operation.rel === relationship
+}).invoke()
+await apiResource.ops.find(relationship).invoke()
+await apiResource.ops.find({ rel: relationship }).invoke()
+await apiResource.ops.find(operation => {
+  operation.rel === relationship
+}).invoke()
+```
+
+**NOTE**: When `findOne` could not find an operation, `null` was returned, whereas when `find` cannot find an operation
+it returns `undefined`

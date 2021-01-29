@@ -1,4 +1,4 @@
-import Loki from 'lokijs'
+import { OperationArray } from './operation-array'
 
 export class Resource {
   static async create (response, handlers) {
@@ -31,13 +31,12 @@ export class Resource {
   constructor (response, body, links, handlers) {
     this.response = response
     this._body = body
-    const linkDatabase = new Loki()
-    this.operations = linkDatabase.addCollection()
+    this.operations = new OperationArray()
     links.forEach(operation => {
       operation.baseUrl = response.url
       operation.handlers = handlers
     })
-    this.operations.insert(links)
+    this.operations.push(...links)
   }
 
   get ops () {

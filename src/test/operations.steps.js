@@ -7,36 +7,20 @@ async function checkBody (
     return body
   }
 ) {
-  const bodies = await this.waychaserProxy.getBodies(
-    [
-      this.operationResult,
-      this.operationResultLokiStyle,
-      this.opResult,
-      this.opResultLokiStyle,
-      this.resultLokiStyle,
-      this.result
-    ].filter(result => result !== undefined)
-  )
+  const bodies = await this.waychaserProxy.getBodies(this.results)
   bodies.forEach(body => {
     expect(bodyMutator(body)).to.deep.equal(expectedBody)
   })
 }
 
 async function checkUrls (expectedUrl) {
-  const results = [
-    this.operationResult,
-    this.operationResultLokiStyle,
-    this.opResult,
-    this.opResultLokiStyle,
-    this.resultLokiStyle,
-    this.result
-  ]
+  const results = this.results
+  // if expectedUrl is undefined, then we want to check the URL against the previous resource,
+  // so we add the previousResult to the results, get the urls and then pop it off.
   if (expectedUrl === undefined) {
     results.push(this.previousResult)
   }
-  const urls = await this.waychaserProxy.getUrls(
-    results.filter(result => result !== undefined)
-  )
+  const urls = await this.waychaserProxy.getUrls(this.results)
 
   const previousResultUrl = expectedUrl === undefined ? urls.pop() : expectedUrl
   urls.forEach(url => {
@@ -45,134 +29,68 @@ async function checkUrls (expectedUrl) {
 }
 
 async function expectFindOne (relationship, expectation) {
-  const {
-    foundOperation,
-    foundOperationLokiStyle,
-    foundOp,
-    foundOpLokiStyle
-  } = await findOne.bind(this)(relationship)
-  expectation(foundOperation)
-  expectation(foundOperationLokiStyle)
-  expectation(foundOp)
-  expectation(foundOpLokiStyle)
+  const found = await findOne.bind(this)(relationship)
+  for (const key in found) {
+    expectation(found[key])
+  }
 }
 
 async function findOne (relationship) {
-  return await this.waychaserProxy.findOne(this.result, relationship)
+  return await this.waychaserProxy.find(this.results, relationship)
 }
 
-async function invoke (relationship, previousResult, context) {
+async function invoke (previousResult, relationship, context) {
   this.previousResult = previousResult
-
-  this.operationResult = await this.waychaserProxy.invokeOperation(
+  this.results = await this.waychaserProxy.invokeAll(
     this.previousResult,
     relationship,
     context
   )
-  this.operationResultLokiStyle = await this.waychaserProxy.invokeOperation(
-    this.previousResult,
-    { rel: relationship },
-    context
-  )
-  this.opResult = await this.waychaserProxy.invokeOp(
-    this.previousResult,
-    relationship,
-    context
-  )
-  this.opResultLokiStyle = await this.waychaserProxy.invokeOp(
-    this.previousResult,
-    {
-      rel: relationship
-    },
-    context
-  )
-  this.resultLokiStyle = await this.waychaserProxy.invoke(
-    this.previousResult,
-    {
-      rel: relationship
-    },
-    context
-  )
-  this.result = await this.waychaserProxy.invoke(
-    this.previousResult,
-    relationship,
-    context
-  )
-}
-async function invokeSuccessfully (relationship, previousResult) {
-  await invoke.bind(this)(relationship, previousResult)
-  expect(this.operationResult.success).to.be.true()
-  expect(this.operationResultLokiStyle.success).to.be.true()
-  expect(this.opResult.success).to.be.true()
-  expect(this.opResultLokiStyle.success).to.be.true()
-  expect(this.resultLokiStyle.success).to.be.true()
-  expect(this.result.success).to.be.true()
+  return this.results
 }
 
-async function checkStatusCodeSingle (expectedStatusCode, result) {
-  const actualStatusCode = await this.waychaserProxy.getStatusCode(result)
-  expect(actualStatusCode).to.equal(expectedStatusCode)
+async function invokeSuccessfully (previousResult, relationship) {
+  await invoke.bind(this)(previousResult, relationship)
+  for (const key in this.results) {
+    expect(this.results[key].success).to.be.true()
+  }
 }
 
 async function checkStatusCode (expectedStatusCode) {
-  await checkStatusCodeSingle.bind(this)(
-    expectedStatusCode,
-    this.operationResult
-  )
-  await checkStatusCodeSingle.bind(this)(
-    expectedStatusCode,
-    this.operationResultLokiStyle
-  )
-  await checkStatusCodeSingle.bind(this)(expectedStatusCode, this.opResult)
-  await checkStatusCodeSingle.bind(this)(
-    expectedStatusCode,
-    this.opResultLokiStyle
-  )
-  await checkStatusCodeSingle.bind(this)(
-    expectedStatusCode,
-    this.resultLokiStyle
-  )
-  await checkStatusCodeSingle.bind(this)(expectedStatusCode, this.result)
+  const statusCodes = await this.waychaserProxy.getStatusCodes(this.results)
+  for (const key in statusCodes) {
+    expect(statusCodes[key]).to.equal(expectedStatusCode)
+  }
 }
 
 Then('the loaded resource will have no operations', async function () {
-  const operationsCount = await this.waychaserProxy.getOperationsCount(
-    this.result
-  )
-  expect(operationsCount).to.equal(0)
-  const opsCount = await this.waychaserProxy.getOpsCount(this.result)
-  expect(opsCount).to.equal(0)
+  await checkOperationCounts.bind(this)(0)
 })
 
 Then('the loaded resource will have {int} operation(s)', async function (
   expected
 ) {
-  const operationsCount = await this.waychaserProxy.getOperationsCount(
-    this.result
-  )
-  expect(operationsCount).to.equal(expected)
-  const opsCount = await this.waychaserProxy.getOpsCount(this.result)
-  expect(opsCount).to.equal(expected)
+  await checkOperationCounts.bind(this)(expected)
 })
 
 Then('the loaded resource will have {string} operation', async function (
   relationship
 ) {
-  await expectFindOne.bind(this)(relationship, assert.isNotNull)
+  await expectFindOne.bind(this)(relationship, assert.isDefined)
 })
 
 Then("it won't have a(n) {string} operation", async function (relationship) {
-  await expectFindOne.bind(this)(relationship, assert.isNull)
+  await expectFindOne.bind(this)(relationship, assert.isUndefined)
 })
 
 When('we successfully invoke the {string} operation', async function (
   relationship
 ) {
-  await invokeSuccessfully.bind(this)(relationship, this.result)
+  await invokeSuccessfully.bind(this)(this.results[0], relationship)
 })
 
 When('we invoke the {string} operation', async function (relationship) {
-  await invoke.bind(this)(relationship, this.result)
+  await invoke.bind(this)(this.results[0], relationship)
 })
 
 Then('the same resource will be returned', async function () {
@@ -185,10 +103,9 @@ Then('the former resource will be returned', async function () {
 
 When(
   'invokes each of the {string} operations in turn {int} times',
-  { timeout: 60000 },
   async function (relationship, count) {
     for (let index = 0; index < count; index++) {
-      await invoke.bind(this)(relationship, this.result)
+      await invoke.bind(this)(this.results[0], relationship)
     }
   }
 )
@@ -200,14 +117,15 @@ Then(
   }
 )
 
-When('we invoke the {string} operation with the input', async function (
-  relationship,
-  dataTable
-) {
-  // we store it in expectedBody, because we use in in the next step
-  this.expectedBody = dataTable.rowsHash()
-  await invoke.bind(this)(relationship, this.result, this.expectedBody)
-})
+When(
+  'we invoke the {string} operation with the input',
+  { timeout: 3600000 },
+  async function (relationship, dataTable) {
+    // we store it in expectedBody, because we use in in the next step
+    this.expectedBody = dataTable.rowsHash()
+    await invoke.bind(this)(this.results[0], relationship, this.expectedBody)
+  }
+)
 
 Then('resource returned will contain those values', async function () {
   await checkBody.bind(this)(this.expectedBody)
@@ -227,22 +145,13 @@ Then('resource returned will have the status code {int}', async function (
 Then('the body without the links will contain', async function (
   documentString
 ) {
-  await checkBody.bind(this)(
-    JSON.parse(documentString),
-    linksDeleter(deleteLinks)
-  )
-})
-
-Then('the body without the custom links will contain', async function (
-  documentString
-) {
   const expectedBody = JSON.parse(documentString)
-  await checkBody.bind(this)(
-    expectedBody,
-    linksDeleter(actualBody => {
-      delete actualBody.custom_links
-    })
-  )
+  await checkBody.bind(this)(expectedBody, actualBody => {
+    delete actualBody._links
+    delete actualBody.links
+    delete actualBody.custom_links
+    return actualBody
+  })
 })
 
 When('the body will contain', async function (documentString) {
@@ -250,45 +159,23 @@ When('the body will contain', async function (documentString) {
   await checkBody.bind(this)(expectedBody)
 })
 
-function linksDeleter (deleter) {
-  return actualBody => {
-    deleter(actualBody)
-    return actualBody
+async function checkOperationCounts (expected) {
+  const operationsCounts = await this.waychaserProxy.getOperationsCounts(
+    this.results
+  )
+  for (const key in operationsCounts) {
+    expect(operationsCounts[key]).to.equal(expected)
   }
 }
 
-function deleteLinks (actualBody) {
-  delete actualBody._links
-  delete actualBody.links
-}
-
 async function invokeWithName (relationship, name) {
-  this.operationResultLokiStyle = await this.waychaserProxy.invokeOperation(
-    this.rootResourceResult,
-    { rel: relationship, name: name }
-  )
-  // means we can use the same check body function as use in other invocations
-  this.operationResult = undefined
-
-  this.opResultLokiStyle = await this.waychaserProxy.invokeOp(
+  this.results = await this.waychaserProxy.invokeWithObjectQuery(
     this.rootResourceResult,
     {
       rel: relationship,
       name: name
     }
   )
-  // means we can use the same check body function as use in other invocations
-  this.opResult = undefined
-
-  this.resultLokiStyle = await this.waychaserProxy.invoke(
-    this.rootResourceResult,
-    {
-      rel: relationship,
-      name: name
-    }
-  )
-  // means we can use the same check body function as use in other invocations
-  this.result = undefined
 }
 
 When(

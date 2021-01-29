@@ -4,7 +4,6 @@ Feature: Custom Handler
     As a developer
     I want to be able to provide a custom handler for intepreting operations and excuting them
 
-    @wip
     Scenario: Invoke operation - self header
         Given a custom resource with a "self" header operation that returns itself
         And waychaser has a custom header handler
@@ -23,7 +22,7 @@ Feature: Custom Handler
         When waychaser successfully loads that resource
         And we successfully invoke the "self" operation
         Then the same resource will be returned
-        And the body without the custom links will contain
+        And the body without the links will contain
             """
             {
                 "status": 200

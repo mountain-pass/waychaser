@@ -36,28 +36,30 @@ Then('it will have loaded successfully', async function () {
 })
 
 Then('it will NOT have loaded successfully', async function () {
-  expect(this.result.success).to.be.false()
+  for (const key in this.results) {
+    expect(this.results[key].success).to.be.false()
+  }
 })
 
 When('waychaser successfully loads that resource', async function () {
   logger.debug('loading current resource', this.currentResourceRoute)
-  this.result = await loadAndCheckResourceByPath.bind(this)(
-    this.currentResourceRoute
-  )
-  this.rootResourceResult = this.result
+  this.results = [
+    await loadAndCheckResourceByPath.bind(this)(this.currentResourceRoute)
+  ]
+  this.rootResourceResult = this.results[0]
 })
 
 When('waychaser successfully loads the latter resource', async function () {
-  this.result = await loadAndCheckResourceByPath.bind(this)(
-    this.currentResourceRoute
-  )
+  this.results = [
+    await loadAndCheckResourceByPath.bind(this)(this.currentResourceRoute)
+  ]
 })
 
 When(
   'waychaser successfully loads the first resource in the list',
   async function () {
-    this.result = await loadAndCheckResourceByPath.bind(this)(
-      this.currentResourceRoute
-    )
+    this.results = [
+      await loadAndCheckResourceByPath.bind(this)(this.currentResourceRoute)
+    ]
   }
 )
