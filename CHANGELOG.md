@@ -1,3 +1,9 @@
+## <small>1.62.32 (2021-01-31)</small>
+
+* Merge pull request #159 from mountain-pass/dependabot/npm_and_yarn/eslint-7.19.0 ([d285c5b](https://github.com/mountain-pass/waychaser/commit/d285c5b)), closes [#159](https://github.com/mountain-pass/waychaser/issues/159)
+
+
+
 ## <small>1.62.31 (2021-01-30)</small>
 
 * Merge pull request #158 from mountain-pass/dependabot/npm_and_yarn/dateformat-4.5.1 ([08b310b](https://github.com/mountain-pass/waychaser/commit/08b310b)), closes [#158](https://github.com/mountain-pass/waychaser/issues/158)
