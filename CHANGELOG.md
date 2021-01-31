@@ -1,3 +1,9 @@
+## <small>1.62.34 (2021-01-31)</small>
+
+* Merge pull request #162 from mountain-pass/dependabot/npm_and_yarn/start-server-and-test-1.12.0 ([86ced94](https://github.com/mountain-pass/waychaser/commit/86ced94)), closes [#162](https://github.com/mountain-pass/waychaser/issues/162)
+
+
+
 ## <small>1.62.33 (2021-01-31)</small>
 
 * Merge pull request #160 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.5.0 ([798f570](https://github.com/mountain-pass/waychaser/commit/798f570)), closes [#160](https://github.com/mountain-pass/waychaser/issues/160)
