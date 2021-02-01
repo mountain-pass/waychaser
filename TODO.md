@@ -67,6 +67,10 @@
   - [x] refactor to better link/operation objects
 - [x] Remove lokijs (too bloated) - see https://stackoverflow.com/a/30391815/269221
 - [x] Remove @hapi/accept (too bloated)
+- Add examples and real APIs
+  - [ ] HAL
+  - [ ] Siren
+- [ ] Fix release log and change log - it only includes last commit 😢
 - [ ] Restructure so don't have to load default handlers
 - [ ] Add option for adding custom body encoders
 - [ ] Look at using https://github.com/RichardLitt/standard-readme-preset
