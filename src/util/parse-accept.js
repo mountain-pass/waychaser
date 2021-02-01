@@ -1,5 +1,6 @@
 // negotiated (https://www.npmjs.com/package/negotiated) doesn't working in IE 11 due to missing regex polyfill stuff
 // @hapi/accept https://www.npmjs.com/package/@hapi/accept is too big (with all it's dependencies)
+
 /**
  * @param {string} accept
  */
@@ -37,9 +38,9 @@ export function parseAccept (accept) {
         return 1
       } else if (first.parentType !== '*' && second.parentType === '*') {
         return -1
-      } else if (first.subtype === '*' && second.subType !== '*') {
+      } else if (first.subType === '*' && second.subType !== '*') {
         return 1
-      } else if (first.subtype !== '*' && second.subType === '*') {
+      } else if (first.subType !== '*' && second.subType === '*') {
         return -1
       } else {
         return 0

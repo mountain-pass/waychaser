@@ -17,6 +17,7 @@ logger.remote.log = console.log.bind(console)
 logger.waychaser.log = console.log.bind(console)
 logger.test.log = console.log.bind(console)
 
+/* istanbul ignore next: not executed on CI */
 if (process.env.DEBUG === undefined) {
   debug.enable('info,error')
   // debug.enable('debug,info,error,browser,remote,waychaser,test,express:*')

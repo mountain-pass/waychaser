@@ -13,17 +13,13 @@ export function preferredContentType (
   if (accept) {
     const acceptable = parseAccept(accept)
 
-    const acceptableMediaTypes = acceptable.filter(row => {
+    const acceptableMediaTypes = acceptable.find(row => {
       return supportedContentTypes.some(mediaType => {
         return row.type === mediaType
       })
     })
 
-    const contentType =
-      acceptableMediaTypes.length > 0
-        ? acceptableMediaTypes[0].type
-        : defaultType
-    return contentType
+    return acceptableMediaTypes.type
   } else {
     return defaultType
   }
