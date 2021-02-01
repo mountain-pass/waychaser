@@ -1,3 +1,14 @@
+## 2.0.0 (2021-02-01)
+
+* feat(operation): major version change ([61b62af](https://github.com/mountain-pass/waychaser/commit/61b62af))
+
+
+### BREAKING CHANGE
+
+* version bump was missed before.
+See README.md for upgrade instructions
+
+
 ## <small>1.62.37 (2021-02-01)</small>
 
 * feat(operation)!: trying to force major version ([53d7f13](https://github.com/mountain-pass/waychaser/commit/53d7f13))
