@@ -1,7 +1,7 @@
 {
   "name": "@mountainpass/waychaser",
-  "version": "1.62.38",
-  "description": "Client library for RESTful APIs",
+  "version": "2.0.0",
+  "description": "Client library for HATEOAS level 3 RESTful APIs that provide hypermedia controls",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mountain-pass/waychaser.git"
