@@ -1,3 +1,9 @@
+## <small>1.62.36 (2021-02-01)</small>
+
+* test(accept): fixed coverage ([96bd110](https://github.com/mountain-pass/waychaser/commit/96bd110))
+
+
+
 ## <small>1.62.35 (2021-01-31)</small>
 
 * Merge pull request #163 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.6.0 ([e35ecbd](https://github.com/mountain-pass/waychaser/commit/e35ecbd)), closes [#163](https://github.com/mountain-pass/waychaser/issues/163)
