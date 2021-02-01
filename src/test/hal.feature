@@ -53,7 +53,6 @@ Feature: Invoke HAL Operation
             | query |
             | path  |
 
-    @wip
     Scenario Outline: Invoke operation - parameterised with extra params
         Given a HAL resource with a "https://waychaser.io/rel/pong" operation that returns the provided "ping" "<TYPE>" parameter
         When waychaser successfully loads that resource

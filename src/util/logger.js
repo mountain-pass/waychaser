@@ -17,8 +17,10 @@ logger.remote.log = console.log.bind(console)
 logger.waychaser.log = console.log.bind(console)
 logger.test.log = console.log.bind(console)
 
-// debug.enable('debug,info,error,browser,remote,waychaser,test,express:*')
-debug.enable('info,error')
+if (process.env.DEBUG === undefined) {
+  debug.enable('info,error')
+  // debug.enable('debug,info,error,browser,remote,waychaser,test,express:*')
+}
 
 export default logger
 

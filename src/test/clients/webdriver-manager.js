@@ -88,15 +88,16 @@ class WebdriverManager {
             })
             .catch(function (error) {
               const id = window.testResults.push(error) - 1
-              return {
+              const result = {
                 success: false,
-                id,
-                // returning these on android causes tests to fail
-                ...(browser !== 'android' && {
-                  error: error.toString(),
-                  stackTrace: error.stack
-                })
+                id
               }
+              // returning these on android causes tests to fail
+              if (browser !== 'android') {
+                result.error = error.toString()
+                result.stackTrace = error.stack
+              }
+              return result
             })
         }
 
@@ -185,6 +186,7 @@ class WebdriverManager {
 
   async doExecuteScript (executor, script, ...arguments_) {
     const transformed = await this.babelifyCode(script)
+
     try {
       const returnedFromBrowser = await executor(transformed, ...arguments_)
       logger.debug({ transformed, returnedFromBrowser })

@@ -55,6 +55,11 @@ class WaychaserProxy {
   async useDefaultHandlers () {
     abstract()
   }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async parseAccept (accept) {
+    abstract()
+  }
 }
 
 export { WaychaserProxy }

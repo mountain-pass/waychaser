@@ -45,7 +45,8 @@
     "istanbul/no-ignore-file": "error",
     "istanbul/prefer-ignore-reason": "error",
     "promise/no-callback-in-promise": "off",
-    "security/detect-object-injection": "off"
+    "security/detect-object-injection": "off",
+    "unicorn/no-array-reduce": "off"
   },
   "overrides": [
     {

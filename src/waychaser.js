@@ -5,6 +5,7 @@ import { linkTemplateHeaderHandler } from './handlers/link-template-header/link-
 import { sirenHandler } from './handlers/siren/siren-handler'
 import { loadResource } from './util/load-resource'
 import { Operation } from './operation'
+import { parseAccept } from './util/parse-accept'
 
 /** @namespace */
 const waychaser = {
@@ -63,4 +64,4 @@ const waychaser = {
   logger: logger.waychaser
 }
 
-export { waychaser, Operation }
+export { waychaser, Operation, parseAccept }

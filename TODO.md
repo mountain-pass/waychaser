@@ -66,6 +66,9 @@
   - [x] initial plugin framework
   - [x] refactor to better link/operation objects
 - [x] Remove lokijs (too bloated) - see https://stackoverflow.com/a/30391815/269221
+- [x] Remove @hapi/accept (too bloated)
+- [ ] Restructure so don't have to load default handlers
+- [ ] Add option for adding custom body encoders
 - [ ] Look at using https://github.com/RichardLitt/standard-readme-preset
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
 - [ ] add tests for authenticated requests
@@ -88,4 +91,6 @@
 - [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
 - [ ] try to use umd for both node and browser. https://github.com/webpack/webpack/pull/8625
   - [ ] investigate using https://rollupjs.org/guide/en/
+- [ ] handler for "live" swagger/open-api specs
+- [ ] Move accept parsing into it's own library
 

@@ -237,6 +237,16 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       }
     )
   }
+
+  async parseAccept (accept) {
+    return this.manager.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (accept, done) {
+        done(window.parseAccept(accept))
+      },
+      accept
+    )
+  }
 }
 
 export { WaychaserViaWebdriver }

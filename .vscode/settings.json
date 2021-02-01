@@ -39,6 +39,7 @@
     "codeclimate",
     "commitlint",
     "conventionalcommits",
+    "corejs",
     "curied",
     "dependabot",
     "geckodriver",
@@ -73,5 +74,8 @@
     "webpacking",
     "windyroad"
   ],
-  "cSpell.language": "en-GB"
+  "cSpell.language": "en-GB",
+  "cSpell.enableFiletypes": [
+    "feature"
+  ]
 }

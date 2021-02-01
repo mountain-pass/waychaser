@@ -1,6 +1,7 @@
 import logger from '../../util/logger'
 import { waychaser } from '../../waychaser'
 import { WaychaserProxy } from './waychaser-proxy'
+import { parseAccept } from '../../util/parse-accept'
 
 async function handleResponse (promise) {
   try {
@@ -158,6 +159,10 @@ class WaychaserDirect extends WaychaserProxy {
 
   async useDefaultHandlers () {
     this.waychaser.useDefaultHandlers()
+  }
+
+  async parseAccept (accept) {
+    return parseAccept(accept)
   }
 }
 

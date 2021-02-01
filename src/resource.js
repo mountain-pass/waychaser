@@ -18,7 +18,7 @@ export class Resource {
           stop = true
         }
       )
-      if (handledOperations) {
+      if (handledOperations?.length > 0) {
         operations.push(...handledOperations)
       }
       if (stop) {

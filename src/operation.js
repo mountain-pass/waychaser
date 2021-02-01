@@ -2,8 +2,8 @@ import { loadResource } from './util/load-resource'
 import logger from './util/logger'
 import { URI } from 'uri-template-lite'
 import qsStringify from 'qs-stringify'
-import Accept from '@hapi/accept'
 import FormData from 'form-data'
+import { preferredContentType } from './util/preferred-content-type'
 
 class OperationBuilder {
   constructor (relationship) {
@@ -66,45 +66,52 @@ export class Operation {
         this.parameters ? JSON.stringify(body) : undefined
       }`
     )
-    const contentType = Accept.mediaType(this.accept, [
-      'application/x-www-form-urlencoded',
-      'application/json',
-      'multipart/form-data'
-    ])
+
     let encodedContent
-    switch (contentType) {
-      case 'application/x-www-form-urlencoded':
-        encodedContent = qsStringify(body)
-        break
-      case 'application/json':
-        encodedContent = JSON.stringify(body)
-        break
-      case 'multipart/form-data':
-        encodedContent = new FormData()
-        for (const name in body) {
-          encodedContent.append(name, body[name])
-        }
-        break
-    }
     let headers
-    if (this.parameters && contentType !== 'multipart/form-data') {
-      headers = {
-        'Content-Type': contentType
+
+    if (this.parameters) {
+      const contentType = preferredContentType(
+        this.accept,
+        [
+          'application/x-www-form-urlencoded',
+          'application/json',
+          'multipart/form-data'
+        ],
+        'application/x-www-form-urlencoded'
+      )
+      switch (contentType) {
+        case 'application/x-www-form-urlencoded':
+          encodedContent = qsStringify(body)
+          break
+        case 'application/json':
+          encodedContent = JSON.stringify(body)
+          break
+        case 'multipart/form-data':
+          encodedContent = new FormData()
+          for (const name in body) {
+            encodedContent.append(name, body[name])
+          }
+          break
       }
+      if (contentType !== 'multipart/form-data') {
+        headers = {
+          'Content-Type': contentType
+        }
+      }
+    }
+
+    const baseOptions = {
+      method: this.method
+    }
+    if (this.parameters) {
+      baseOptions.body = encodedContent
+      baseOptions.headers = headers
     }
 
     return this.loadResource(
       invokeUrl,
-      Object.assign(
-        {
-          method: this.method,
-          headers,
-          ...(this.parameters && {
-            body: encodedContent
-          })
-        },
-        options
-      ),
+      Object.assign(baseOptions, options),
       this.handlers
     )
   }
