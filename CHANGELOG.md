@@ -1,3 +1,9 @@
+## <small>2.0.1 (2021-02-01)</small>
+
+* Merge pull request #165 from mountain-pass/dependabot/npm_and_yarn/snyk-1.440.3 ([3fe0221](https://github.com/mountain-pass/waychaser/commit/3fe0221)), closes [#165](https://github.com/mountain-pass/waychaser/issues/165)
+
+
+
 ## 2.0.0 (2021-02-01)
 
 * feat(operation): major version change ([61b62af](https://github.com/mountain-pass/waychaser/commit/61b62af))
