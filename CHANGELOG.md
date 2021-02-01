@@ -1,3 +1,13 @@
+## <small>1.62.37 (2021-02-01)</small>
+
+* feat(operation)!: trying to force major version ([53d7f13](https://github.com/mountain-pass/waychaser/commit/53d7f13))
+
+
+### BREAKING CHANGE
+
+* version bump was missed before
+
+
 ## <small>1.62.36 (2021-02-01)</small>
 
 * test(accept): fixed coverage ([96bd110](https://github.com/mountain-pass/waychaser/commit/96bd110))
