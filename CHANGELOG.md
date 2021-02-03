@@ -1,3 +1,9 @@
+## <small>2.0.7 (2021-02-03)</small>
+
+* Merge pull request #184 from mountain-pass/dependabot/npm_and_yarn/babel/plugin-transform-modules-co ([1dff56d](https://github.com/mountain-pass/waychaser/commit/1dff56d)), closes [#184](https://github.com/mountain-pass/waychaser/issues/184)
+
+
+
 ## <small>2.0.6 (2021-02-03)</small>
 
 * Merge pull request #181 from mountain-pass/dependabot/npm_and_yarn/prettier-config-standard-4.0.0 ([55c2cd2](https://github.com/mountain-pass/waychaser/commit/55c2cd2)), closes [#181](https://github.com/mountain-pass/waychaser/issues/181)
