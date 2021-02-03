@@ -1,3 +1,9 @@
+## <small>2.0.5 (2021-02-03)</small>
+
+* Merge pull request #177 from mountain-pass/dependabot/npm_and_yarn/snyk-1.440.5 ([f3b4657](https://github.com/mountain-pass/waychaser/commit/f3b4657)), closes [#177](https://github.com/mountain-pass/waychaser/issues/177)
+
+
+
 ## <small>2.0.4 (2021-02-03)</small>
 
 * Merge pull request #170 from mountain-pass/dependabot/npm_and_yarn/babel/plugin-transform-arrow-func ([d62fbbd](https://github.com/mountain-pass/waychaser/commit/d62fbbd)), closes [#170](https://github.com/mountain-pass/waychaser/issues/170)
