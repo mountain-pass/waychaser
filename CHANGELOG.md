@@ -1,3 +1,9 @@
+## <small>2.0.6 (2021-02-03)</small>
+
+* Merge pull request #181 from mountain-pass/dependabot/npm_and_yarn/prettier-config-standard-4.0.0 ([55c2cd2](https://github.com/mountain-pass/waychaser/commit/55c2cd2)), closes [#181](https://github.com/mountain-pass/waychaser/issues/181)
+
+
+
 ## <small>2.0.5 (2021-02-03)</small>
 
 * Merge pull request #177 from mountain-pass/dependabot/npm_and_yarn/snyk-1.440.5 ([f3b4657](https://github.com/mountain-pass/waychaser/commit/f3b4657)), closes [#177](https://github.com/mountain-pass/waychaser/issues/177)
