@@ -1,3 +1,9 @@
+## <small>2.0.4 (2021-02-03)</small>
+
+* Merge pull request #170 from mountain-pass/dependabot/npm_and_yarn/babel/plugin-transform-arrow-func ([d62fbbd](https://github.com/mountain-pass/waychaser/commit/d62fbbd)), closes [#170](https://github.com/mountain-pass/waychaser/issues/170)
+
+
+
 ## <small>2.0.3 (2021-02-02)</small>
 
 * Merge pull request #168 from mountain-pass/dependabot/npm_and_yarn/webpack-cli-4.5.0 ([4a4ed10](https://github.com/mountain-pass/waychaser/commit/4a4ed10)), closes [#168](https://github.com/mountain-pass/waychaser/issues/168)
