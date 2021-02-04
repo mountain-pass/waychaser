@@ -1,3 +1,9 @@
+## <small>2.0.13 (2021-02-04)</small>
+
+* Merge pull request #192 from mountain-pass/dependabot/npm_and_yarn/babel/plugin-transform-runtime-7. ([c8ce70b](https://github.com/mountain-pass/waychaser/commit/c8ce70b)), closes [#192](https://github.com/mountain-pass/waychaser/issues/192)
+
+
+
 ## <small>2.0.12 (2021-02-04)</small>
 
 * Merge pull request #191 from mountain-pass/dependabot/npm_and_yarn/snyk-1.445.0 ([4cc46e0](https://github.com/mountain-pass/waychaser/commit/4cc46e0)), closes [#191](https://github.com/mountain-pass/waychaser/issues/191)
