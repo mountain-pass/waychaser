@@ -1,3 +1,9 @@
+## <small>2.0.9 (2021-02-04)</small>
+
+* Merge pull request #186 from mountain-pass/dependabot/npm_and_yarn/chai-4.3.0 ([bdbd0bf](https://github.com/mountain-pass/waychaser/commit/bdbd0bf)), closes [#186](https://github.com/mountain-pass/waychaser/issues/186)
+
+
+
 ## <small>2.0.8 (2021-02-03)</small>
 
 * Merge pull request #182 from mountain-pass/dependabot/npm_and_yarn/babel/preset-env-7.12.13 ([98c788c](https://github.com/mountain-pass/waychaser/commit/98c788c)), closes [#182](https://github.com/mountain-pass/waychaser/issues/182)
