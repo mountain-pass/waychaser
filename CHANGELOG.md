@@ -1,3 +1,9 @@
+## <small>2.0.15 (2021-02-06)</small>
+
+* Merge pull request #196 from mountain-pass/dependabot/npm_and_yarn/moment-timezone-0.5.33 ([4915c29](https://github.com/mountain-pass/waychaser/commit/4915c29)), closes [#196](https://github.com/mountain-pass/waychaser/issues/196)
+
+
+
 ## <small>2.0.14 (2021-02-05)</small>
 
 * Merge pull request #193 from mountain-pass/dependabot/npm_and_yarn/snyk-1.446.0 ([3800523](https://github.com/mountain-pass/waychaser/commit/3800523)), closes [#193](https://github.com/mountain-pass/waychaser/issues/193)
