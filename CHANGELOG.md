@@ -1,3 +1,9 @@
+## <small>2.0.17 (2021-02-07)</small>
+
+* Merge pull request #194 from mountain-pass/dependabot/npm_and_yarn/lint-staged-10.5.4 ([4ea9c31](https://github.com/mountain-pass/waychaser/commit/4ea9c31)), closes [#194](https://github.com/mountain-pass/waychaser/issues/194)
+
+
+
 ## <small>2.0.16 (2021-02-07)</small>
 
 * Merge pull request #198 from mountain-pass/dependabot/npm_and_yarn/markdownlint-0.23.0 ([28365ad](https://github.com/mountain-pass/waychaser/commit/28365ad)), closes [#198](https://github.com/mountain-pass/waychaser/issues/198)
