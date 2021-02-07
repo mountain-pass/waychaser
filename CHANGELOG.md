@@ -1,3 +1,9 @@
+## <small>2.0.16 (2021-02-07)</small>
+
+* Merge pull request #198 from mountain-pass/dependabot/npm_and_yarn/markdownlint-0.23.0 ([28365ad](https://github.com/mountain-pass/waychaser/commit/28365ad)), closes [#198](https://github.com/mountain-pass/waychaser/issues/198)
+
+
+
 ## <small>2.0.15 (2021-02-06)</small>
 
 * Merge pull request #196 from mountain-pass/dependabot/npm_and_yarn/moment-timezone-0.5.33 ([4915c29](https://github.com/mountain-pass/waychaser/commit/4915c29)), closes [#196](https://github.com/mountain-pass/waychaser/issues/196)
