@@ -1,3 +1,9 @@
+## <small>2.0.19 (2021-02-08)</small>
+
+* Merge pull request #201 from mountain-pass/dependabot/npm_and_yarn/snyk-1.447.0 ([bc1629a](https://github.com/mountain-pass/waychaser/commit/bc1629a)), closes [#201](https://github.com/mountain-pass/waychaser/issues/201)
+
+
+
 ## <small>2.0.18 (2021-02-07)</small>
 
 * Merge pull request #199 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.6.1 ([c274e19](https://github.com/mountain-pass/waychaser/commit/c274e19)), closes [#199](https://github.com/mountain-pass/waychaser/issues/199)
