@@ -1,3 +1,9 @@
+## <small>2.0.20 (2021-02-08)</small>
+
+* Merge pull request #202 from mountain-pass/dependabot/npm_and_yarn/husky-5.0.9 ([ead8d45](https://github.com/mountain-pass/waychaser/commit/ead8d45)), closes [#202](https://github.com/mountain-pass/waychaser/issues/202)
+
+
+
 ## <small>2.0.19 (2021-02-08)</small>
 
 * Merge pull request #201 from mountain-pass/dependabot/npm_and_yarn/snyk-1.447.0 ([bc1629a](https://github.com/mountain-pass/waychaser/commit/bc1629a)), closes [#201](https://github.com/mountain-pass/waychaser/issues/201)
