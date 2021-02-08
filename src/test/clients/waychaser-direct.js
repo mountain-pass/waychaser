@@ -2,11 +2,12 @@ import logger from '../../util/logger'
 import { waychaser } from '../../waychaser'
 import { WaychaserProxy } from './waychaser-proxy'
 import { parseAccept } from '../../util/parse-accept'
+// import { SkippedError } from '@windyroad/cucumber-js-throwables'
 
 async function handleResponse (promise) {
   try {
     const resource = await promise
-    return { success: true, resource }
+    return { success: resource.response.ok, resource }
   } catch (error) {
     logger.error('error loading %s', error)
     logger.error(error)
@@ -82,31 +83,31 @@ class WaychaserDirect extends WaychaserProxy {
       ),
       handleResponse(
         // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
-        result.resource.operations.find(relationship).invoke(context)
+        result.resource.operations.find(relationship)?.invoke(context)
       ),
       handleResponse(
-        result.resource.operations.find({ rel: relationship }).invoke(context)
+        result.resource.operations.find({ rel: relationship })?.invoke(context)
       ),
       handleResponse(
         result.resource.operations
           .find(element => {
             return element.rel === relationship
           })
-          .invoke(context)
+          ?.invoke(context)
       ),
       handleResponse(
         // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
-        result.resource.ops.find(relationship).invoke(context)
+        result.resource.ops.find(relationship)?.invoke(context)
       ),
       handleResponse(
-        result.resource.ops.find({ rel: relationship }).invoke(context)
+        result.resource.ops.find({ rel: relationship })?.invoke(context)
       ),
       handleResponse(
         result.resource.ops
           .find(element => {
             return element.rel === relationship
           })
-          .invoke(context)
+          ?.invoke(context)
       )
     ])
   }
@@ -149,8 +150,8 @@ class WaychaserDirect extends WaychaserProxy {
     return codes
   }
 
-  async use (handler) {
-    this.waychaser = this.waychaser.use(handler)
+  async use (handler, mediaRange) {
+    this.waychaser = this.waychaser.use(handler, mediaRange)
   }
 
   async reset () {
@@ -164,6 +165,28 @@ class WaychaserDirect extends WaychaserProxy {
   async parseAccept (accept) {
     return parseAccept(accept)
   }
+
+  // async executeCode (code) {
+  //   const stringFunction = `function (waychaser) {
+  //     ${code}
+  //   }`
+  //   // eslint-disable-next-line security/detect-eval-with-expression -- we trust the feature file
+  //   const parsedFunction = eval(`(${stringFunction})`) // eslint-disable-line no-eval -- we trust the feature file
+  //   logger.debug(parsedFunction.toString())
+  //   try {
+  //     const resource = await parsedFunction(waychaser)
+  //     return { success: resource.response.ok, resource }
+  //   } catch (error) {
+  //     logger.error(error)
+  //     if (error.response?.status >= 500) {
+  //       throw new SkippedError(
+  //         `Server is having issues. Status code ${error.response.status}`
+  //       )
+  //     } else {
+  //       return { success: false, error: error }
+  //     }
+  //   }
+  // }
 }
 
 export { WaychaserDirect }

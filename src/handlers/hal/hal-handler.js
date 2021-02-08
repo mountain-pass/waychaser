@@ -4,9 +4,8 @@ import { mapHalLinkToOperation } from './map-hal-link-to-operation'
 /**
  * @param response
  * @param bodyGetter
- * @param next
  */
-export async function halHandler (response, bodyGetter, next) {
+export async function halHandler (response, bodyGetter) {
   const operations = []
   const contentType = response.headers.get('content-type')?.split(';')
   if (contentType?.[0] === MediaTypes.HAL) {

@@ -9,16 +9,15 @@ import { BUILD } from './build-info'
 class WebdriverManagerRemote extends WebdriverManager {
   constructor () {
     super()
-    this.tunneler = remoteTunneller
+    this.tunneller = remoteTunneller
     this.status = 'passed'
   }
 
   async beforeAllTests () {
-    await this.tunneler.startTunnel()
+    await this.tunneller.startTunnel()
     this.driver = await this.buildDriver()
     logger.debug('driver built')
     await this.loadWaychaserTestPage()
-    await super.beforeAllTests()
   }
 
   async afterTest (scenario) {
@@ -117,7 +116,7 @@ class WebdriverManagerRemote extends WebdriverManager {
     delete this.driver
 
     super.afterAllTests()
-    await this.tunneler.stopTunnel()
+    await this.tunneller.stopTunnel()
   }
 }
 

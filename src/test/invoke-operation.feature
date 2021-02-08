@@ -25,6 +25,12 @@ Feature: Invoke Operation
         And we successfully invoke the "next" operation
         Then the former resource will be returned
 
+    Scenario: Invoke operation - missing
+        Given a resource returning status code 200
+        When waychaser successfully loads the latter resource
+        And we invoke the "missing" operation
+        Then it will NOT have loaded successfully
+
     Scenario: Invoke operation - list
         Given a list of 4 resources linked with "next" operations
         When waychaser successfully loads the first resource in the list
@@ -63,6 +69,21 @@ Feature: Invoke Operation
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/do-it" operation
         Then resource returned will have the status code <CODE>
+
+        Examples:
+            | METHOD | CODE |
+            | DELETE | 204  |
+            | POST   | 201  |
+            | PUT    | 204  |
+            | PATCH  | 204  |
+
+    Scenario Outline: Invoke operation - methods with location response
+        Given a resource returning status code 200
+        And a resource with a "https://waychaser.io/rel/do-it" operation with the "<METHOD>" method returning a location to that resource
+        When waychaser successfully loads that resource
+        And we successfully invoke the "https://waychaser.io/rel/do-it" operation
+        And we successfully invoke the "related" operation
+        Then the former resource will be returned
 
         Examples:
             | METHOD | CODE |
@@ -134,6 +155,7 @@ Feature: Invoke Operation
             | PATCH  | body | application/json                  |
             | PATCH  | body | multipart/form-data               |
 
+
     Scenario Outline: Invoke operation - body with extra context
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
             | NAME | TYPE   |
@@ -158,9 +180,9 @@ Feature: Invoke Operation
             | PATCH  | body | application/json                  |
             | PATCH  | body | multipart/form-data               |
 
-    Scenario Outline: Invoke operation -  body x-www-form-urlencoded prefered
+    Scenario Outline: Invoke operation -  body x-www-form-urlencoded preferred
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "body" parameter and the content type, accepting:
-            | CONENT-TYPE                       |
+            | CONTENT-TYPE                      |
             | application/x-www-form-urlencoded |
             | application/json;q=0.5            |
             | multipart/form-data;q=0.5         |
@@ -177,9 +199,9 @@ Feature: Invoke Operation
             | PUT    |
             | PATCH  |
 
-    Scenario Outline: Invoke operation - body json prefered
+    Scenario Outline: Invoke operation - body json preferred
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "body" parameter and the content type, accepting:
-            | CONENT-TYPE                             |
+            | CONTENT-TYPE                            |
             | application/x-www-form-urlencoded;q=0.5 |
             | application/json                        |
             | multipart/form-data;q=0.5               |
@@ -196,9 +218,9 @@ Feature: Invoke Operation
             | PUT    |
             | PATCH  |
 
-    Scenario Outline: Invoke operation - body multi-part prefered
+    Scenario Outline: Invoke operation - body multi-part preferred
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the provided "ping" "body" parameter and the content type, accepting:
-            | CONENT-TYPE                             |
+            | CONTENT-TYPE                            |
             | application/x-www-form-urlencoded;q=0.5 |
             | application/json;q=0.5                  |
             | multipart/form-data                     |
@@ -369,7 +391,7 @@ Feature: Invoke Operation
             | PATCH  | application/json                  |
             | PATCH  | multipart/form-data               |
 
-    Scenario Outline: Invoke operation - multiple parameters of differnent type, including body
+    Scenario Outline: Invoke operation - multiple parameters of different type, including body
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
             | NAME    | TYPE    |
             | alpha   | <TYPE1> |
@@ -404,7 +426,7 @@ Feature: Invoke Operation
             | PUT    | application/json                  | path  | query | body  |
             | PUT    | multipart/form-data               | path  | query | body  |
 
-    Scenario Outline: Invoke operation - multiple parameters of differnent type, including body with extra params
+    Scenario Outline: Invoke operation - multiple parameters of different type, including body with extra params
         Given a resource with a "https://waychaser.io/rel/pong" operation with the "<METHOD>" method that returns the following "<CONTENT-TYPE>" provided parameters and the content type
             | NAME    | TYPE    |
             | alpha   | <TYPE1> |

@@ -64,7 +64,10 @@ BeforeAll({ timeout: 240000 }, async function () {
   if (webdriverManager) {
     await webdriverManager.beforeAllTests()
   }
-  startServer()
+  logger.debug('Starting server')
+  await startServer()
+
+  logger.debug('END BeforeAll', Date.now())
 })
 
 function world ({ attach }) {

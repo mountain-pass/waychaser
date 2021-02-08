@@ -49,6 +49,12 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
   - [Removal of Loki](#removal-of-loki)
     - [Operation count](#operation-count)
     - [Finding operations](#finding-operations)
+- [Upgrading from 2.x to 3.x](#upgrading-from-2x-to-3x)
+  - [Accept Header](#accept-header)
+    - [Handlers](#handlers)
+  - [Error responses](#error-responses)
+  - [Invoking missing operations](#invoking-missing-operations)
+  - [Handling location headers](#handling-location-headers)
 
 # Usage
 
@@ -411,3 +417,103 @@ await apiResource.ops.find(operation => {
 
 **NOTE**: When `findOne` could not find an operation, `null` was returned, whereas when `find` cannot find an operation
 it returns `undefined`
+
+# Upgrading from 2.x to 3.x
+
+## Accept Header
+
+waychaser now automatically provides an `accept` header in requests.
+
+The accept header can be overridden for individual requests, by including an alternate `header.accept` value in the
+ `options` parameter when calling the `invoke` method.
+
+### Handlers
+
+The `use` method now expects both a `handler` and the `mediaType` it can handle. Waychaser uses the provided 
+mediaTypes to automatically generate the `accept` request header. 
+
+**NOTE:** Currently waychaser does use the corresponding `content-type` header to filter the responses passed to
+handlers. **THIS MAY CHANGE IN THE FUTURE.** Handlers should only process responses that match the mediaType provided
+when they are registered using the `use` method.
+
+## Error responses
+
+In 2.x waychaser would throw an `Error` if `response.ok` was false. This is no longer the case as some APIs provide
+hypermedia responses for 4xx and 5xx responses.
+
+Code like the following
+
+```js
+try {
+  return apiResource.invoke(relationship)
+} catch(error) {
+  if( error.response ) {
+    // handle error response...
+  }
+  else {
+    // handle fetch error
+  }
+}
+```
+
+should be replaced with
+
+```js
+try {
+  const resource = await apiResource.invoke(relationship)
+  if( resource.response.ok ) {
+    return resource
+  }
+  else {
+    // handle error response...
+  }
+} catch(error) {
+  // handle fetch error
+}
+```
+
+or if there is no special processing needed for error responses
+
+```js
+try {
+  return apiResource.invoke(relationship)
+} catch(error) {
+  // handle fetch error
+}
+```
+
+## Invoking missing operations
+
+In 2.x invoking an operation that didn't exist would throw an error, leading to code like
+
+```js
+const found = apiResource.ops.find(relationship)
+if( found ) {
+  return found.invoke()
+}
+else {
+  // handle op missing
+}
+```
+
+In 3.x invoking an operation that doesn't exist returns undefined, allowing for simpler code, as follows
+
+```js
+const resource = await apiResource.invoke(relationship)
+if( resource === undefined ) {
+  // handle operation missing 
+}
+```
+
+or
+
+```js
+return apiResource.invoke(relationship) || //... return a default
+```
+
+## Handling location headers
+
+Waychaser 3.x now includes a `location` header hander, which will create an operation with the `related` relationship.
+This allows support for APIs that, when creating a resource (ie using POST), provide a `location` to the created 
+resource in the response, or APIs that, when updating a resource (ie using PUT or PATCH),  provide a `location` to the
+updated resource in the response.

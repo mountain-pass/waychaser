@@ -1,3 +1,4 @@
+// import { SkippedError } from '@windyroad/cucumber-js-throwables'
 import { assert } from 'chai'
 import logger from '../../util/logger'
 import { WaychaserProxy } from './waychaser-proxy'
@@ -208,16 +209,17 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     )
   }
 
-  async use (handler) {
+  async use (handler, mediaRanges) {
     const handlerCode = handler
       .toString()
       .replace('_waychaser.Operation', 'Operation')
     logger.debug('handlerCode', handlerCode)
     return this.manager.executeAsyncScript(
-      `function (done) {
-        window.testWaychaser = window.testWaychaser.use(${handlerCode})
+      `function (mediaRanges, done) {
+        window.testWaychaser = window.testWaychaser.use(${handlerCode}, mediaRanges)
         done()
-      }`
+      }`,
+      mediaRanges
     )
   }
 
@@ -250,6 +252,40 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       accept
     )
   }
+
+  //   async executeCode (code) {
+  //     await this.manager.executeScriptNoReturn(
+  //       `window.waychaserTestFunction = async function(waychaser) {
+  //         ${code}
+  //       }`
+  //     )
+  //     const stringFunction = `function(done) {
+  //       window.waychaserTestFunction(window.testWaychaser).then(resource => {
+  //         done({ success: resource.response.ok, resource })
+  //       }).catch(error => {
+  //         done({ success: false, error: error })
+  //       })
+  //     }`
+  //     const result = await this.manager.executeAsyncScript(
+  //       /* istanbul ignore next: won't work in browser otherwise */
+  //       function (done) {
+  //         window
+  //           .waychaserTestFunction(window.testWaychaser)
+  //           .then(resource => {
+  //             done({ success: resource.response.ok, resource })
+  //           })
+  //           .catch(error => {
+  //             done({ success: false, error: error })
+  //           })
+  //       }
+  //     )
+  //     if (!result.success && result.error.response?.status >= 500) {
+  //       throw new SkippedError(
+  //         `Server is having issues. Status code ${result.error.response.status}`
+  //       )
+  //     }
+  //     return result
+  //   }
 }
 
 export { WaychaserViaWebdriver }

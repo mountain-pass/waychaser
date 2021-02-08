@@ -9,7 +9,6 @@ class WebdriverManagerLocal extends WebdriverManager {
   async beforeAllTests () {
     this.driver = await this.buildDriver()
     await this.loadWaychaserTestPage()
-    await super.beforeAllTests()
   }
 
   async afterTest (scenario) {

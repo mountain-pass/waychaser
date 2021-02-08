@@ -30,8 +30,10 @@
     "[[BREAKING CHANGE: ]optional footer(s)]"
   ],
   "cSpell.words": [
+    "Edsger",
     "HATEOAS",
     "ationship",
+    "babelify",
     "browserstack",
     "bufferutil",
     "chromedriver",
@@ -39,6 +41,7 @@
     "codeclimate",
     "commitlint",
     "conventionalcommits",
+    "cookied",
     "corejs",
     "curied",
     "dependabot",
@@ -46,6 +49,7 @@
     "github's",
     "godban",
     "huzzah",
+    "hyperwizard",
     "invision",
     "invocables",
     "iphone",

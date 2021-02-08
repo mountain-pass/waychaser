@@ -1,64 +1,94 @@
-import { abstract } from '../../util/abstract'
-
+import { PendingError } from '@windyroad/cucumber-js-throwables'
 class WaychaserProxy {
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async load (url) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.load.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getOperationsCounts (result) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getOperationsCounts.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async find (result, relationship) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.find.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async invokeAll (result, relationship, context) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.invokeAll.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async invokeWithObjectQuery (result, query, context) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.invokeWithObjectQuery.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getUrls (result, context) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getUrls.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getBodies (results) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getBodies.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getStatusCodes (result) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getStatusCodes.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async use (handler) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.use.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async reset () {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.reset.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async useDefaultHandlers () {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.useDefaultHandlers.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async parseAccept (accept) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.parseAccept.name}`
+    )
+  }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async executeCode (code) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.executeCode.name}`
+    )
   }
 }
 

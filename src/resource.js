@@ -1,7 +1,7 @@
 import { OperationArray } from './operation-array'
 
 export class Resource {
-  static async create (response, handlers) {
+  static async create (response, handlers, mediaRanges, fetcher) {
     const operations = []
     let body
     let stop = false
@@ -25,16 +25,25 @@ export class Resource {
         break
       }
     }
-    return new Resource(response, body, operations, handlers)
+    return new Resource(
+      response,
+      body,
+      operations,
+      handlers,
+      mediaRanges,
+      fetcher
+    )
   }
 
-  constructor (response, body, links, handlers) {
+  constructor (response, body, links, handlers, mediaRanges, fetcher) {
     this.response = response
     this._body = body
     this.operations = new OperationArray()
     links.forEach(operation => {
       operation.baseUrl = response.url
       operation.handlers = handlers
+      operation.mediaRanges = mediaRanges
+      operation.fetcher = fetcher
     })
     this.operations.push(...links)
   }
@@ -49,7 +58,14 @@ export class Resource {
 
   async body () {
     if (!this.response.bodyUsed) {
+      // const contentType = this.response.headers.get('content-type')
+      // switch (contentType) {
+      //   case 'image/png':
+      //     this._body = await this.response.blob()
+      //     break
+      //   default:
       this._body = await this.response.json()
+      // }
     }
     return this._body
   }

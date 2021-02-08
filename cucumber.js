@@ -8,9 +8,10 @@ const PUBLISH = '--publish-quiet'
 
 /* istanbul ignore next: branch only taken when remote */
 const RETRY =
-  process.env.npm_lifecycle_event.includes(':remote') &&
-  process.env.GITHUB_WORKFLOW
-    ? '--retry 5'
+  (process.env.npm_lifecycle_event.includes(':remote') &&
+    process.env.GITHUB_WORKFLOW) ||
+  process.env.RETRY
+    ? `--retry ${process.env.RETRY || 5}`
     : ''
 
 const outputDirectory = 'test-results'

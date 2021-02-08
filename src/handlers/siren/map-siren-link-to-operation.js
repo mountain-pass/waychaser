@@ -15,6 +15,6 @@ export function mapSirenLinkToOperation (relationship, link) {
   const { href, rel, ...otherProperties } = link
   return Operation.builder(relationship)
     .uri(href)
-    .other(otherProperties)
+    .other(Object.assign({ handler: 'siren-link' }, otherProperties))
     .build()
 }

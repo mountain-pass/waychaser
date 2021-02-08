@@ -2,9 +2,9 @@ import logger from '../../util/logger'
 import logging from 'selenium-webdriver/lib/logging'
 import { BROWSER_PORT, BROWSER_HOST } from '../config'
 import { utils } from 'istanbul'
+import { PendingError } from '@windyroad/cucumber-js-throwables'
 import * as babel from '@babel/core'
 import babelConfig from '../../../babel.config'
-import { abstract } from '../../util/abstract'
 
 delete babelConfig.env.test
 
@@ -80,11 +80,15 @@ class WebdriverManager {
         }
 
         window.handleResponse = function (promise) {
+          if (promise === undefined) {
+            const id = window.testResults.push() - 1
+            return { success: false, id }
+          }
           return promise
             .then(function (resource) {
               window.testLogger('huzzah!')
               const id = window.testResults.push(resource) - 1
-              return { success: true, id }
+              return { success: resource.response.ok, id }
             })
             .catch(function (error) {
               const id = window.testResults.push(error) - 1
@@ -136,7 +140,10 @@ class WebdriverManager {
 
         function waychaserFindInvokeAndHandle (searchable, query, context) {
           // eslint-disable-next-line unicorn/no-array-callback-reference -- we made sure query is a single param function
-          return window.handleResponse(searchable.find(query).invoke(context))
+          const found = searchable.find(query)
+          return window.handleResponse(
+            found ? found.invoke(context) : undefined
+          )
         }
 
         window.waychaserInvokeFunctions = []
@@ -182,14 +189,22 @@ class WebdriverManager {
     )
   }
 
-  async beforeAllTests () {}
+  async beforeAllTests () {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.beforeAllTests.name}`
+    )
+  }
 
-  async doExecuteScript (executor, script, ...arguments_) {
-    const transformed = await this.babelifyCode(script)
+  async doExecuteScript (executor, script, returnApproach, ...arguments_) {
+    const code = `(${script}).apply(window, arguments)`
+    const transformed = (
+      await babel.transformAsync(code, babelConfig)
+    ).code.replace('"use strict";\n\n', returnApproach) // || '')
 
     try {
+      logger.debug({ transformed })
       const returnedFromBrowser = await executor(transformed, ...arguments_)
-      logger.debug({ transformed, returnedFromBrowser })
+      logger.debug({ returnedFromBrowser })
       return returnedFromBrowser
     } catch (error) {
       /* istanbul ignore next: only gets executed when there are webdriver issues */
@@ -213,18 +228,20 @@ class WebdriverManager {
     }
   }
 
-  async babelifyCode (script) {
-    const code = `(${script}).apply(window, arguments)`
-    const transformed = await (
-      await babel.transformAsync(code, babelConfig)
-    ).code.replace('"use strict";\n\n', 'return ')
-    return transformed
-  }
+  // async executeScriptNoReturn (script, ...arguments_) {
+  //   return this.doExecuteScript(
+  //     this.driver.executeScript.bind(this.driver),
+  //     script,
+  //     '',
+  //     ...arguments_
+  //   )
+  // }
 
   async executeScript (script, ...arguments_) {
     return this.doExecuteScript(
       this.driver.executeScript.bind(this.driver),
       script,
+      'return ',
       ...arguments_
     )
   }
@@ -233,6 +250,7 @@ class WebdriverManager {
     return this.doExecuteScript(
       this.driver.executeAsyncScript.bind(this.driver),
       script,
+      'return ',
       ...arguments_
     )
   }
@@ -336,7 +354,9 @@ class WebdriverManager {
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async doBuildDriver () {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.doBuildDriver.name}`
+    )
   }
 
   async buildDriver () {

@@ -38,7 +38,7 @@ OperationArray.prototype.invoke = async function (
     JSON.stringify(operation, undefined, 2)
   )
   logger.waychaser('context:', JSON.stringify(context, undefined, 2))
-  return operation.invoke(context, options)
+  return operation ? operation.invoke(context, options) : undefined
 }
 
 // export class OperationArray extends Array {

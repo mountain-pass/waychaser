@@ -6,6 +6,9 @@ import { sirenHandler } from './handlers/siren/siren-handler'
 import { loadResource } from './util/load-resource'
 import { Operation } from './operation'
 import { parseAccept } from './util/parse-accept'
+import MediaTypes from './util/media-types'
+import fetch from 'isomorphic-fetch'
+import { locationHeaderHandler } from './handlers/location-header/location-header-handler'
 
 /** @namespace */
 const waychaser = {
@@ -22,42 +25,77 @@ const waychaser = {
    */
   /* eslint-enable jsdoc/no-undefined-types */
   load: async function (url, options) {
-    return loadResource(url, options, this.defaultHandlers)
+    return loadResource(
+      url,
+      options,
+      this.defaultHandlers,
+      this.defaultMediaRanges,
+      this.defaultFetcher
+    )
   },
 
   defaultHandlers: [
+    locationHeaderHandler,
     linkHeaderHandler,
     linkTemplateHeaderHandler,
     halHandler,
     sirenHandler
   ],
 
-  use: function (handler) {
-    return new waychaser.Loader(handler)
+  defaultMediaRanges: [
+    'application/json',
+    '*/*;q=0.8',
+    MediaTypes.HAL,
+    MediaTypes.SIREN
+  ],
+
+  use: function (handler, mediaRange) {
+    return new waychaser.Loader(handler, mediaRange, this.defaultFetcher)
   },
 
+  defaultFetcher: fetch,
+
+  // withFetcher (fetcher) {
+  //   return new waychaser.Loader(this.defaultHandlers, fetcher)
+  // },
+
   Loader: class {
-    constructor (handler) {
+    constructor (handler, mediaRange, fetcher) {
       this.handlers = [handler]
+      this.mediaRanges = Array.isArray(mediaRange) ? mediaRange : [mediaRange]
       this.logger = waychaser.logger
+      this.fetcher = fetcher
     }
 
     useDefaultHandlers () {
-      this.use(waychaser.defaultHandlers)
+      this.handlers.push(...waychaser.defaultHandlers)
+      this.mediaRanges.push(...waychaser.defaultMediaRanges)
       return this
     }
 
-    use (handler) {
-      if (Array.isArray(handler)) {
-        this.handlers.push(...handler)
+    use (handler, mediaRange) {
+      this.handlers.push(handler)
+      if (Array.isArray(mediaRange)) {
+        this.mediaRanges.push(...mediaRange)
       } else {
-        this.handlers.push(handler)
+        this.mediaRanges.push(mediaRange)
       }
       return this
     }
 
+    // withFetcher (fetcher) {
+    //   this.fetcher = fetcher
+    //   return this
+    // }
+
     async load (url, options) {
-      return loadResource(url, options, this.handlers)
+      return loadResource(
+        url,
+        options,
+        this.handlers,
+        this.mediaRanges,
+        this.fetcher
+      )
     }
   },
 

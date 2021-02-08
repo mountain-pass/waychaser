@@ -10,7 +10,7 @@ async function loadResourceByUrl (url) {
 
 async function loadResourceByPath (path) {
   return loadResourceByUrl.bind(this)(
-    `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${path}`
+    new URL(path, `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}`)
   )
 }
 

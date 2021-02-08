@@ -54,18 +54,12 @@ export class Operation {
     logger.waychaser(parameters)
     const contextUrl = this.baseUrl
     const expandedUri = URI.expand(this.uri, context || {})
-    logger.waychaser(`loading ${expandedUri}`)
 
     const invokeUrl = new URL(expandedUri, contextUrl)
     const body = {}
     Object.keys(parameters).forEach(key => {
-      body[key] = context[key]
+      body[key] = context?.[key]
     })
-    logger.waychaser(
-      `invoking ${invokeUrl} with body ${
-        this.parameters ? JSON.stringify(body) : undefined
-      }`
-    )
 
     let encodedContent
     let headers
@@ -96,7 +90,7 @@ export class Operation {
       }
       if (contentType !== 'multipart/form-data') {
         headers = {
-          'Content-Type': contentType
+          'content-type': contentType
         }
       }
     }
@@ -112,7 +106,9 @@ export class Operation {
     return this.loadResource(
       invokeUrl,
       Object.assign(baseOptions, options),
-      this.handlers
+      this.handlers,
+      this.mediaRanges,
+      this.fetcher
     )
   }
 

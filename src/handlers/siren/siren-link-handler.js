@@ -1,11 +1,9 @@
 import { mapSirenLinkToOperation } from './map-siren-link-to-operation'
 
 /**
- * @param response
  * @param bodyGetter
- * @param next
  */
-export async function sirenLinkHandler (response, bodyGetter, next) {
+export async function sirenLinkHandler (bodyGetter) {
   const operations = []
   const body = await bodyGetter()
   if (body.links) {

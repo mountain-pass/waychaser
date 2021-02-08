@@ -3,9 +3,8 @@ import { Operation } from '../../operation'
 
 /**
  * @param response
- * @param next
  */
-export async function linkHeaderHandler (response, next) {
+export async function linkHeaderHandler (response) {
   const linkHeader = response.headers.get('link')
   if (linkHeader) {
     const links = LinkHeader.parse(linkHeader)
@@ -14,7 +13,7 @@ export async function linkHeaderHandler (response, next) {
       return Operation.builder(rel)
         .uri(uri)
         .method(method)
-        .other(otherProperties)
+        .other(Object.assign({ handler: 'link-header' }, otherProperties))
         .build()
     })
   }

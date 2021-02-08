@@ -4,6 +4,7 @@ import assert from 'assert'
 
 class RemoteTunneller {
   async startTunnel () {
+    logger.info('Starting browserstack tunnel...')
     /* istanbul ignore next: does not get executed on CI */
     if (!process.env.BROWSERSTACK_LOCAL_IDENTIFIER) {
       assert(
@@ -25,7 +26,7 @@ class RemoteTunneller {
           resolve()
         })
       })
-      logger.info('Browserstack tunnel started')
+      logger.info('🚇 Browserstack tunnel started')
     }
   }
 
