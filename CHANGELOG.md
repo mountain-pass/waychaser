@@ -1,3 +1,13 @@
+## 3.0.0 (2021-02-09)
+
+* feat(multiple): added or modified support for accept ([67d336d](https://github.com/mountain-pass/waychaser/commit/67d336d))
+
+
+### BREAKING CHANGE
+
+* See README for upgrade instructions
+
+
 ## <small>2.0.20 (2021-02-08)</small>
 
 * Merge pull request #202 from mountain-pass/dependabot/npm_and_yarn/husky-5.0.9 ([ead8d45](https://github.com/mountain-pass/waychaser/commit/ead8d45)), closes [#202](https://github.com/mountain-pass/waychaser/issues/202)
