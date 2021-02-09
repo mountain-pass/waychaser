@@ -189,6 +189,7 @@ class WebdriverManager {
     )
   }
 
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
   async beforeAllTests () {
     throw new PendingError(
       `TODO: implement ${this.constructor.name}.${this.beforeAllTests.name}`
