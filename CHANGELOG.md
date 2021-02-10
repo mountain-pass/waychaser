@@ -1,3 +1,9 @@
+## <small>3.0.1 (2021-02-10)</small>
+
+* fix(invoke): fixed options when calling `invoke` on an resource ([0ea4045](https://github.com/mountain-pass/waychaser/commit/0ea4045))
+
+
+
 ## 3.0.0 (2021-02-09)
 
 * feat(multiple): added or modified support for accept ([67d336d](https://github.com/mountain-pass/waychaser/commit/67d336d))
