@@ -81,8 +81,7 @@ class WebdriverManager {
 
         window.handleResponse = function (promise) {
           if (promise === undefined) {
-            const id = window.testResults.push() - 1
-            return { success: false, id }
+            return
           }
           return promise
             .then(function (resource) {
@@ -153,41 +152,33 @@ class WebdriverManager {
           )
         }
 
-        window.waychaserInvokeFunctions = []
-        invocables.forEach(invokable => {
-          queries.forEach(query => {
-            window.waychaserInvokeFunctions.push(function (
-              id,
-              relationship,
+        function addInvokeFunction (functionToCall, invokable, query) {
+          window.waychaserInvokeFunctions.push(function (
+            id,
+            relationship,
+            context,
+            options
+          ) {
+            return functionToCall(
+              invokable(id),
+              query(relationship),
               context,
               options
-            ) {
-              return waychaserInvokeAndHandle(
-                invokable(id),
-                query(relationship),
-                context,
-                options
-              )
-            })
+            )
           })
+        }
+
+        window.waychaserInvokeFunctions = []
+        invocables.forEach(invokable => {
+          queries.forEach(query =>
+            addInvokeFunction(waychaserInvokeAndHandle, invokable, query)
+          )
         })
 
         searchables.forEach(searchable => {
-          queries.forEach(query => {
-            window.waychaserInvokeFunctions.push(function (
-              id,
-              relationship,
-              context,
-              options
-            ) {
-              return waychaserFindInvokeAndHandle(
-                searchable(id),
-                query(relationship),
-                context,
-                options
-              )
-            })
-          })
+          queries.forEach(query =>
+            addInvokeFunction(waychaserFindInvokeAndHandle, searchable, query)
+          )
         })
       },
       this.browser

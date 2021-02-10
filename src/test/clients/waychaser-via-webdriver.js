@@ -133,7 +133,11 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       allResults = allResults.concat(batchResults)
     }
     assert.equal(allResults.length, this.manager.invokeScriptCount)
-    return allResults
+    // when an matching operation is not found, `invoke` returns `undefined`, but when `undefined` is converted
+    // to a string within an array, it becomes `null`. Yeah, WTF?
+    // WebDriver converts to and from string to send to and from the browser, so when we get null back, we need
+    // to convert it back to undefined
+    return allResults.map(item => (item === null ? undefined : item))
   }
 
   async invokeWithObjectQuery (result, query, context) {

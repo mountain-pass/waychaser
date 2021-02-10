@@ -26,11 +26,7 @@ OperationArray.prototype.find = function (...arguments_) {
   }
 }
 
-OperationArray.prototype.invoke = async function (
-  relationship,
-  context,
-  options
-) {
+OperationArray.prototype.invoke = function (relationship, context, options) {
   logger.waychaser('OPERATIONS', JSON.stringify(this, undefined, 2))
   const operation = this.find(relationship)
   logger.waychaser(

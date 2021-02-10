@@ -52,7 +52,7 @@ export class Resource {
     return this.operations
   }
 
-  async invoke (relationship, context, options) {
+  invoke (relationship, context, options) {
     return this.operations.invoke(relationship, context, options)
   }
 

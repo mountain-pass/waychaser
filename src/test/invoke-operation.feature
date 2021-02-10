@@ -25,11 +25,11 @@ Feature: Invoke Operation
         And we successfully invoke the "next" operation
         Then the former resource will be returned
 
+    @wip
     Scenario: Invoke operation - missing
         Given a resource returning status code 200
         When waychaser successfully loads the latter resource
-        And we invoke the "missing" operation
-        Then it will NOT have loaded successfully
+        Then invoking a missing operation will immediately return undefined
 
     Scenario: Invoke operation - list
         Given a list of 4 resources linked with "next" operations

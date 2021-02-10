@@ -47,6 +47,7 @@ async function invoke (previousResult, relationship, context, options) {
     context,
     options
   )
+
   return this.results
 }
 
@@ -108,6 +109,19 @@ When(
     for (let index = 0; index < count; index++) {
       await invoke.bind(this)(this.results[0], relationship)
     }
+  }
+)
+
+Then(
+  'invoking a missing operation will immediately return undefined',
+  async function () {
+    const results = await this.waychaserProxy.invokeAll(
+      this.results[0],
+      'missing'
+    )
+    results.forEach(result => {
+      expect(result).to.be.undefined()
+    })
   }
 )
 

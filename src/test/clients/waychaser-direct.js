@@ -4,15 +4,18 @@ import { WaychaserProxy } from './waychaser-proxy'
 import { parseAccept } from '../../util/parse-accept'
 // import { SkippedError } from '@windyroad/cucumber-js-throwables'
 
-async function handleResponse (promise) {
-  try {
-    const resource = await promise
-    return { success: resource.response.ok, resource }
-  } catch (error) {
-    logger.error('error loading %s', error)
-    logger.error(error)
-    return { success: false, error }
-  }
+function handleResponse (promise) {
+  return promise
+    ? promise
+        .then(resource => {
+          return { success: resource.response.ok, resource }
+        })
+        .catch(error => {
+          logger.error('error loading %s', error)
+          logger.error(error)
+          return { success: false, error }
+        })
+    : undefined
 }
 class WaychaserDirect extends WaychaserProxy {
   constructor () {
