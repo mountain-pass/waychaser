@@ -109,7 +109,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     })
   }
 
-  async invokeAll (result, relationship, context) {
+  async invokeAll (result, relationship, context, options) {
     let batchSize = this.manager.invokeScriptCount
     // taking too long on IE doing it as one batch, so we split it into three batches
     /* istanbul ignore next: IE doesn't report coverage */
@@ -127,6 +127,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
         result.id,
         relationship,
         context,
+        options,
         { start: batchStart, end: batchEnd }
       )
       allResults = allResults.concat(batchResults)
@@ -291,11 +292,11 @@ class WaychaserViaWebdriver extends WaychaserProxy {
 export { WaychaserViaWebdriver }
 
 /* istanbul ignore next: won't work in browser otherwise */
-function batchInvoke (id, relationship, context, batch, done) {
+function batchInvoke (id, relationship, context, options, batch, done) {
   const resultsPromises = window.waychaserInvokeFunctions
     .slice(batch.start, batch.end)
     .map(invokeFunction => {
-      return invokeFunction(id, relationship, context)
+      return invokeFunction(id, relationship, context, options)
     })
   Promise.all(resultsPromises).then(results => {
     done(results)

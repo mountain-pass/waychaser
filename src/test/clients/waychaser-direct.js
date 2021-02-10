@@ -53,61 +53,87 @@ class WaychaserDirect extends WaychaserProxy {
     return found
   }
 
-  async invokeAll (result, relationship, context) {
+  async invokeAll (result, relationship, context, options) {
     logger.debug('invoke CONTEXT', context)
     return Promise.all([
-      handleResponse(result.resource.invoke(relationship, context)),
-      handleResponse(result.resource.invoke({ rel: relationship }, context)),
+      handleResponse(result.resource.invoke(relationship, context, options)),
       handleResponse(
-        result.resource.invoke(element => {
-          return element.rel === relationship
-        }, context)
-      ),
-      handleResponse(result.resource.operations.invoke(relationship, context)),
-      handleResponse(
-        result.resource.operations.invoke({ rel: relationship }, context)
+        result.resource.invoke({ rel: relationship }, context, options)
       ),
       handleResponse(
-        result.resource.operations.invoke(element => {
-          return element.rel === relationship
-        }, context)
+        result.resource.invoke(
+          element => {
+            return element.rel === relationship
+          },
+          context,
+          options
+        )
       ),
-      handleResponse(result.resource.ops.invoke(relationship, context)),
       handleResponse(
-        result.resource.ops.invoke({ rel: relationship }, context)
+        result.resource.operations.invoke(relationship, context, options)
       ),
       handleResponse(
-        result.resource.ops.invoke(element => {
-          return element.rel === relationship
-        }, context)
+        result.resource.operations.invoke(
+          { rel: relationship },
+          context,
+          options
+        )
+      ),
+      handleResponse(
+        result.resource.operations.invoke(
+          element => {
+            return element.rel === relationship
+          },
+          context,
+          options
+        )
+      ),
+      handleResponse(
+        result.resource.ops.invoke(relationship, context, options)
+      ),
+      handleResponse(
+        result.resource.ops.invoke({ rel: relationship }, context, options)
+      ),
+      handleResponse(
+        result.resource.ops.invoke(
+          element => {
+            return element.rel === relationship
+          },
+          context,
+          options
+        )
       ),
       handleResponse(
         // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
-        result.resource.operations.find(relationship)?.invoke(context)
+        result.resource.operations.find(relationship)?.invoke(context, options)
       ),
       handleResponse(
-        result.resource.operations.find({ rel: relationship })?.invoke(context)
+        result.resource.operations
+          .find({ rel: relationship })
+          ?.invoke(context, options)
       ),
       handleResponse(
         result.resource.operations
           .find(element => {
             return element.rel === relationship
           })
-          ?.invoke(context)
+          ?.invoke(context, options)
       ),
       handleResponse(
         // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
-        result.resource.ops.find(relationship)?.invoke(context)
+        result.resource.ops.find(relationship)?.invoke(context, options)
       ),
       handleResponse(
-        result.resource.ops.find({ rel: relationship })?.invoke(context)
+        result.resource.ops
+          .find({ rel: relationship })
+          ?.invoke(context, options)
       ),
       handleResponse(
         result.resource.ops
           .find(element => {
             return element.rel === relationship
           })
-          ?.invoke(context)
+          ?.invoke(context, options)
       )
     ])
   }

@@ -134,15 +134,22 @@ class WebdriverManager {
           }
         ])
 
-        function waychaserInvokeAndHandle (invokable, query, context) {
-          return window.handleResponse(invokable.invoke(query, context))
+        function waychaserInvokeAndHandle (invokable, query, context, options) {
+          return window.handleResponse(
+            invokable.invoke(query, context, options)
+          )
         }
 
-        function waychaserFindInvokeAndHandle (searchable, query, context) {
+        function waychaserFindInvokeAndHandle (
+          searchable,
+          query,
+          context,
+          options
+        ) {
           // eslint-disable-next-line unicorn/no-array-callback-reference -- we made sure query is a single param function
           const found = searchable.find(query)
           return window.handleResponse(
-            found ? found.invoke(context) : undefined
+            found ? found.invoke(context, options) : undefined
           )
         }
 
@@ -152,12 +159,14 @@ class WebdriverManager {
             window.waychaserInvokeFunctions.push(function (
               id,
               relationship,
-              context
+              context,
+              options
             ) {
               return waychaserInvokeAndHandle(
                 invokable(id),
                 query(relationship),
-                context
+                context,
+                options
               )
             })
           })
@@ -168,12 +177,14 @@ class WebdriverManager {
             window.waychaserInvokeFunctions.push(function (
               id,
               relationship,
-              context
+              context,
+              options
             ) {
               return waychaserFindInvokeAndHandle(
                 searchable(id),
                 query(relationship),
-                context
+                context,
+                options
               )
             })
           })

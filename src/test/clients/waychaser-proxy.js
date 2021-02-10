@@ -22,7 +22,7 @@ class WaychaserProxy {
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async invokeAll (result, relationship, context) {
+  async invokeAll (result, relationship, context, options) {
     throw new PendingError(
       `TODO: implement ${this.constructor.name}.${this.invokeAll.name}`
     )

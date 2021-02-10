@@ -462,3 +462,10 @@ Feature: Invoke Operation
             | PUT    | application/json                  | path  | query | body  |
             | PUT    | multipart/form-data               | path  | query | body  |
 
+    Scenario: Invoke operation - options
+        Given a resource with a "https://waychaser.io/rel/pong" operation returns the provided "test" header
+        When waychaser successfully loads that resource
+        And we invoke the "https://waychaser.io/rel/pong" operation with the headers
+            | test | value |
+        Then resource returned will contain only
+            | test | value |

@@ -39,12 +39,13 @@ async function findOne (relationship) {
   return await this.waychaserProxy.find(this.results, relationship)
 }
 
-async function invoke (previousResult, relationship, context) {
+async function invoke (previousResult, relationship, context, options) {
   this.previousResult = previousResult
   this.results = await this.waychaserProxy.invokeAll(
     this.previousResult,
     relationship,
-    context
+    context,
+    options
   )
   return this.results
 }
@@ -195,4 +196,14 @@ Then(
 Then('resource returned will contain', async function (documentString) {
   const expectedBody = JSON.parse(documentString)
   await checkBody.bind(this)(expectedBody)
+})
+
+When('we invoke the {string} operation with the headers', async function (
+  relationship,
+  dataTable
+) {
+  const options = {
+    headers: dataTable.rowsHash()
+  }
+  await invoke.bind(this)(this.results[0], relationship, undefined, options)
 })

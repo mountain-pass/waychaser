@@ -166,10 +166,11 @@ function joinParameters (parameters, separator) {
 async function createDynamicResourceRoute (
   route,
   relationship,
-  method,
-  parameters,
+  method = 'GET',
+  parameters = [],
   contentTypes,
-  mediaType = 'application/json'
+  mediaType = 'application/json',
+  headerToReturn
 ) {
   let dynamicRoutePath = route
   let dynamicUri = route
@@ -194,12 +195,15 @@ async function createDynamicResourceRoute (
       request.query,
       request.params
     )
-    if (contentTypes !== undefined) {
+    if (contentTypes) {
       if (request.headers['content-type']?.startsWith('multipart/form-data')) {
         responseBody['content-type'] = 'multipart/form-data'
       } else {
         responseBody['content-type'] = request.headers['content-type']
       }
+    }
+    if (headerToReturn) {
+      responseBody[headerToReturn] = request.headers[headerToReturn]
     }
     response.header('content-type', mediaType)
     response.status(200).send(responseBody)
@@ -287,7 +291,8 @@ async function createRandomDynamicResourceRoute (
   method,
   parameters,
   contentTypes,
-  mediaType
+  mediaType,
+  headerToReturn
 ) {
   return createDynamicResourceRoute.bind(this)(
     randomApiPath(),
@@ -295,7 +300,8 @@ async function createRandomDynamicResourceRoute (
     method,
     parameters,
     contentTypes,
-    mediaType
+    mediaType,
+    headerToReturn
   )
 }
 
@@ -751,6 +757,16 @@ Given(
     )
   }
 )
+
+Given(
+  'a resource with a {string} operation returns the provided {string} header',
+  async function (relationship, headerName) {
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(relationship, undefined, undefined, undefined, undefined, headerName)
+  }
+)
+
 function addRouteToStaticResource (method, statusCode, links, mediaType) {
   return route => {
     route[method.toLowerCase()](async (request, response) => {
