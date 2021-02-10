@@ -1,3 +1,9 @@
+## <small>3.0.2 (2021-02-10)</small>
+
+* Merge pull request #205 from mountain-pass/dependabot/npm_and_yarn/snyk-1.449.0 ([5304988](https://github.com/mountain-pass/waychaser/commit/5304988)), closes [#205](https://github.com/mountain-pass/waychaser/issues/205)
+
+
+
 ## <small>3.0.1 (2021-02-10)</small>
 
 * fix(invoke): fixed options when calling `invoke` on an resource ([0ea4045](https://github.com/mountain-pass/waychaser/commit/0ea4045))
