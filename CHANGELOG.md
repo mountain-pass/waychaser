@@ -1,3 +1,9 @@
+## <small>3.0.6 (2021-02-12)</small>
+
+* Merge pull request #215 from mountain-pass/dependabot/npm_and_yarn/markdownlint-0.23.1 ([8fe5830](https://github.com/mountain-pass/waychaser/commit/8fe5830)), closes [#215](https://github.com/mountain-pass/waychaser/issues/215)
+
+
+
 ## <small>3.0.5 (2021-02-12)</small>
 
 * Merge pull request #214 from mountain-pass/dependabot/npm_and_yarn/babel/preset-env-7.12.16 ([8ded219](https://github.com/mountain-pass/waychaser/commit/8ded219)), closes [#214](https://github.com/mountain-pass/waychaser/issues/214)
