@@ -234,6 +234,206 @@ jobs:
           name: code-coverage-report-node-${{ matrix.node-version }}
           path: coverage/node-api
 
+
+
+  test-browser-api-local:
+    if: |
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    runs-on: ubuntu-latest
+
+    name: test-chrome-local
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run cover:browser-api:chrome:local
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-chrome-local
+          path: coverage/browser-api-chrome-local
+
+  check-coverage-local:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+
+    needs:
+      - test-node-api
+      - test-browser-api-local
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - uses: actions/download-artifact@v2
+      - run: mkdir -p coverage
+      - run: |
+          for directory in $(ls -d code-coverage-report-*); do
+            mv "${directory}" "coverage/." 
+          done
+          ls -l coverage
+      - run: npm run report:cover
+
+
+  // some of the tests can be skipped if the external system is not available
+  // this is part of a test run to make sure we still have coverage even if
+  // those tests don't run
+  test-node-api-not-skippable:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run cover:node-api:not[@skippable]
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-node-not-skippable-14.x
+          path: coverage/node-api-not--skippable-
+
+  test-browser-api-local-not-skippable:
+    if: |
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    runs-on: ubuntu-latest
+
+    name: test-chrome-local-not-skippable
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run cover:browser-api:chrome:local:not[@skippable]:
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-chrome-local-not-skippable
+          path: coverage/browser-api-chrome-local-not--skippable-
+
+  check-coverage-local-not-skippable:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+
+    needs:
+      - test-node-api-not-skippable
+      - test-browser-api-local-not-skippable
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - uses: actions/download-artifact@v2
+      - run: mkdir -p coverage
+      - run: |
+          for directory in $(ls -d code-coverage-report-*); do
+            mv "${directory}" "coverage/." 
+          done
+          ls -l coverage
+      - run: npm run report:cover
+
+
   get-browser-list:
     needs:
       - check-secret
@@ -273,44 +473,6 @@ jobs:
       - run: npm run --silent json:list-github-actions-browser-matrix:1 > browser-matrix-1.json
       - id: set-matrix-1
         run: echo "::set-output name=matrix-1::$(cat browser-matrix-1.json)"
-
-  test-browser-api-local:
-    if: |
-      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
-
-    runs-on: ubuntu-latest
-
-    name: test-chrome-local
-
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v1
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache-
-
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - run: npm config set script-shell $(which bash)
-      - run: npm ci
-      - run: npm run cover:browser-api:chrome:local
-      - uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-chrome-local
-          path: coverage/browser-api-chrome-local
 
   test-browser-api-1:
     needs:
@@ -438,47 +600,6 @@ jobs:
           name: code-coverage-report-${{ matrix.browser }}
           path: coverage/browser-api-${{ matrix.browser }}-remote
 
-  check-coverage-local:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
-
-    needs:
-      - test-node-api
-      - test-browser-api-local
-
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v1
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache-
-
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - run: npm config set script-shell $(which bash)
-      - run: npm ci
-      - uses: actions/download-artifact@v2
-      - run: mkdir -p coverage
-      - run: |
-          for directory in $(ls -d code-coverage-report-*); do
-            mv "${directory}" "coverage/." 
-          done
-          ls -l coverage
-      - run: npm run report:cover
 
   check-coverage:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
@@ -532,6 +653,7 @@ jobs:
     needs:
       - check-secret
       - check-coverage-local
+      - check-coverage-local-not-skippable
       - check-coverage
       - lint
       - audit

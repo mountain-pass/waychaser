@@ -1,4 +1,5 @@
 // import { SkippedError } from '@windyroad/cucumber-js-throwables'
+import { SkippedError } from '@windyroad/cucumber-js-throwables'
 import { assert } from 'chai'
 import logger from '../../util/logger'
 import { WaychaserProxy } from './waychaser-proxy'
@@ -50,9 +51,11 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async find (results, relationship) {
+    await this.manager.getBrowserLogs()
     const found = await this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (results, relationship, done) {
+        window.testLogger(JSON.stringify({ results }, undefined, 2))
         const innerFound = [
           // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
           window.testResults[results[0].id].operations.find(relationship),
@@ -71,18 +74,6 @@ class WaychaserViaWebdriver extends WaychaserProxy {
         ]
         window.testLogger('INNER FOUND')
         window.testLogger(JSON.stringify(innerFound))
-        window.testLogger(
-          [1, 2, 3].find(item => {
-            return item === 4
-          })
-        )
-        window.testLogger(
-          JSON.stringify([
-            [1, 2, 3].find(item => {
-              return item === 4
-            })
-          ])
-        )
         window.testLogger(results[0].id)
         window.testLogger(window.testResults[results[0].id])
         window.testLogger(
@@ -258,39 +249,37 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     )
   }
 
-  //   async executeCode (code) {
-  //     await this.manager.executeScriptNoReturn(
-  //       `window.waychaserTestFunction = async function(waychaser) {
-  //         ${code}
-  //       }`
-  //     )
-  //     const stringFunction = `function(done) {
-  //       window.waychaserTestFunction(window.testWaychaser).then(resource => {
-  //         done({ success: resource.response.ok, resource })
-  //       }).catch(error => {
-  //         done({ success: false, error: error })
-  //       })
-  //     }`
-  //     const result = await this.manager.executeAsyncScript(
-  //       /* istanbul ignore next: won't work in browser otherwise */
-  //       function (done) {
-  //         window
-  //           .waychaserTestFunction(window.testWaychaser)
-  //           .then(resource => {
-  //             done({ success: resource.response.ok, resource })
-  //           })
-  //           .catch(error => {
-  //             done({ success: false, error: error })
-  //           })
-  //       }
-  //     )
-  //     if (!result.success && result.error.response?.status >= 500) {
-  //       throw new SkippedError(
-  //         `Server is having issues. Status code ${result.error.response.status}`
-  //       )
-  //     }
-  //     return result
-  //   }
+  async executeCode (code, baseUrl) {
+    await this.manager.executeScriptNoReturn(
+      `window.waychaserTestFunction = function(waychaser, baseUrl) {
+          ${code}
+        }`
+    )
+    const result = await this.manager.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (baseUrl, done) {
+        window
+          .waychaserTestFunction(window.testWaychaser, baseUrl)
+          .then(resource => {
+            done({
+              success: resource.response.ok,
+              id: window.testResults.push(resource) - 1
+            })
+          })
+          .catch(error => {
+            done({ success: false, id: window.testResults.push(error) - 1 })
+          })
+      },
+      baseUrl
+    )
+    /* istanbul ignore next: only occurs if a testing external dependency is unavailable */
+    if (!result.success && result.error.response?.status >= 500) {
+      throw new SkippedError(
+        `Server is having issues. Status code ${result.error.response.status}`
+      )
+    }
+    return result
+  }
 }
 
 export { WaychaserViaWebdriver }

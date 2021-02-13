@@ -2,9 +2,10 @@
 
 : "${npm_lifecycle_event?This script should be run from npm}"
 
+# need to remove `:not[@skippable]` if it's present
 COVERING=${npm_lifecycle_event#cover:}
-COVER_NAME=${COVERING//:/-}
-COVER_NAME_ALL=${COVER_NAME//browser-api-*-/browser-api-}
+COVER_NAME=${COVERING//[:@\[\]]/-}
+COVER_NAME_ALL=${COVER_NAME//browser-api-[^-]-/browser-api-}
 
 COVERAGE=1 nyc \
     --nycrc-path \

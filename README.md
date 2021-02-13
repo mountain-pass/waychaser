@@ -45,6 +45,8 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
     - [Path parameter forms](#path-parameter-forms)
     - [Request body forms](#request-body-forms)
     - [DELETE, POST, PUT, PATCH](#delete-post-put-patch)
+- [Examples](#examples)
+  - [Siren](#siren)
 - [Upgrading from 1.x to 2.x](#upgrading-from-1x-to-2x)
   - [Removal of Loki](#removal-of-loki)
     - [Operation count](#operation-count)
@@ -325,9 +327,68 @@ const deletedResource = await apiResource.invoke('https://waychaser.io/rel/delet
 will send a HTTP `DELETE` to `https://api.waychaser.io/example/some-resource`.
 
 **NOTE**: The `method` property is not part of the specification for Link
-([RFC8288](https://tools.ietf.org/html/rfc8288)) or [Link-Template](https://mnot.github.io/I-D/link-template/) headers
-and waychaser's behaviour in relation to the `method` property will be incompatible with servers that use this parameter
-for another purpose.
+([RFC8288](https://tools.ietf.org/html/rfc8288)) or [Link-Template](https://mnot.github.io/I-D/link-template/) headers.
+This means that if you use waychaser with a server that provides this headers and it uses the `method` property
+for something else, then you're going to need a custom handler.
+
+# Examples
+
+## Siren
+
+While admittedly a toy example, the following code demonstrates using waychaser to complete the 
+[*Hypermedia in the Wizard's Tower* text-based adventure game](https://github.com/einarwh/hyperwizard).
+
+But even though it's a game, it shows how waychaser can easily navigate a complex process, including `POST`ing data and
+`DELETE`ing resources.
+
+```js
+  return waychaser
+    .load('http://hyperwizard.azurewebsites.net/hywit/void')
+    .then(current =>
+      current.invoke('start-adventure', {
+        name: 'waychaser',
+        class: 'Burglar',
+        race: 'waychaser',
+        gender: 'Male'
+      })
+    )
+    .then(current => current.invoke('related'))
+    .then(current => current.invoke('north'))
+    .then(current => current.invoke('pull-lever'))
+    .then(current =>
+      current.invoke({ rel: 'move', title: 'Cross the bridge.' })
+    )
+    .then(current => current.invoke('move'))
+    .then(current => current.invoke('look'))
+    .then(current => current.invoke('eat-snacks'))
+    .then(current => current.invoke('related'))
+    .then(current => current.invoke('north'))
+    .then(current => current.invoke('pull-lever'))
+    .then(current => current.invoke('look'))
+    .then(current => current.invoke('eat-snacks'))
+    .then(current => current.invoke('enter'))
+    .then(current => current.invoke('answer-skull', { master: 'Edsger' }))
+    .then(current => current.invoke('east'))
+    .then(current => current.invoke('smash-mirror-1') || current)
+    .then(current => current.invoke('related') || current)
+    .then(current => current.invoke('smash-mirror-2') || current)
+    .then(current => current.invoke('related') || current)
+    .then(current => current.invoke('smash-mirror-3') || current)
+    .then(current => current.invoke('related') || current)
+    .then(current => current.invoke('smash-mirror-4') || current)
+    .then(current => current.invoke('related') || current)
+    .then(current => current.invoke('smash-mirror-5') || current)
+    .then(current => current.invoke('related') || current)
+    .then(current => current.invoke('smash-mirror-6') || current)
+    .then(current => current.invoke('related') || current)
+    .then(current => current.invoke('smash-mirror-7') || current)
+    .then(current => current.invoke('related') || current)
+    .then(current => current.invoke('look'))
+    .then(current => current.invoke('enter-mirror'))
+    .then(current => current.invoke('north'))
+    .then(current => current.invoke('down'))
+    .then(current => current.invoke('take-book-3'))
+```
 
 # Upgrading from 1.x to 2.x
 
@@ -496,7 +557,7 @@ else {
 }
 ```
 
-In 3.x invoking an operation that doesn't exist returns undefined, allowing for simpler code, as follows
+In 3.x invoking an operation that doesn't exist returns `undefined`, allowing for simpler code, as follows
 
 ```js
 const resource = await apiResource.invoke(relationship)
@@ -510,6 +571,9 @@ or
 ```js
 return apiResource.invoke(relationship) || //... return a default
 ```
+
+**NOTE:** When we say it returns `undefined` we actually mean `undefined`, **NOT** a promise the resolves
+to `undefined`. This is what makes the `...invoke(rel) || default` code possible.
 
 ## Handling location headers
 

@@ -198,8 +198,7 @@ class WebdriverManager {
     )
   }
 
-  async doExecuteScript (executor, script, returnApproach, ...arguments_) {
-    const code = `(${script}).apply(window, arguments)`
+  async doExecuteScript (executor, code, returnApproach, ...arguments_) {
     const transformed = (
       await babel.transformAsync(code, babelConfig)
     ).code.replace('"use strict";\n\n', returnApproach) // || '')
@@ -231,19 +230,19 @@ class WebdriverManager {
     }
   }
 
-  // async executeScriptNoReturn (script, ...arguments_) {
-  //   return this.doExecuteScript(
-  //     this.driver.executeScript.bind(this.driver),
-  //     script,
-  //     '',
-  //     ...arguments_
-  //   )
-  // }
+  async executeScriptNoReturn (script, ...arguments_) {
+    return this.doExecuteScript(
+      this.driver.executeScript.bind(this.driver),
+      script,
+      '',
+      ...arguments_
+    )
+  }
 
   async executeScript (script, ...arguments_) {
     return this.doExecuteScript(
       this.driver.executeScript.bind(this.driver),
-      script,
+      `(${script}).apply(window, arguments)`,
       'return ',
       ...arguments_
     )
@@ -252,7 +251,7 @@ class WebdriverManager {
   async executeAsyncScript (script, ...arguments_) {
     return this.doExecuteScript(
       this.driver.executeAsyncScript.bind(this.driver),
-      script,
+      `(${script}).apply(window, arguments)`,
       'return ',
       ...arguments_
     )

@@ -18,3 +18,11 @@ Feature: Load Resource
     Scenario: Load API error cannot connect
         When waychaser loads a resource that's not available
         Then it will NOT have loaded successfully
+
+    Scenario: Load API - code example
+        Given a resource returning status code 200
+        When the following code is executed:
+            """
+            return waychaser.load(baseUrl)
+            """
+        Then it will have loaded successfully

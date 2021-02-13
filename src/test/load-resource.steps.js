@@ -63,3 +63,11 @@ When(
     ]
   }
 )
+
+When('the following code is executed:', async function (documentString) {
+  this.result = await this.waychaserProxy.executeCode(
+    documentString,
+    this.firstResourceRoute
+  )
+  expect(this.result.success).to.be.true()
+})

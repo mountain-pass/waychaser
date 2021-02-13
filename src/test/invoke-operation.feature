@@ -25,7 +25,6 @@ Feature: Invoke Operation
         And we successfully invoke the "next" operation
         Then the former resource will be returned
 
-    @wip
     Scenario: Invoke operation - missing
         Given a resource returning status code 200
         When waychaser successfully loads the latter resource
@@ -185,6 +184,9 @@ Feature: Invoke Operation
             | CONTENT-TYPE                      |
             | application/x-www-form-urlencoded |
             | application/json;q=0.5            |
+            | text/plain;q=0.2                  |
+            | application/*;q=0.2               |
+            | */*;q=0.1                         |
             | multipart/form-data;q=0.5         |
         When waychaser successfully loads that resource
         And we invoke the "https://waychaser.io/rel/pong" operation with the input

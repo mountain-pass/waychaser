@@ -73,7 +73,9 @@ class WebdriverManagerLocal extends WebdriverManager {
 
     /* istanbul ignore next: only get's executed on CI server */
     if (process.env.CI) {
-      builder.setChromeOptions(new chrome.Options().headless())
+      builder.setChromeOptions(
+        new chrome.Options().headless().addArguments('disable-web-security')
+      )
       builder.setFirefoxOptions(new firefox.Options().headless())
     }
     this.driver = builder.build()

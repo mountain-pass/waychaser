@@ -17,10 +17,24 @@ const RETRY =
 const outputDirectory = 'test-results'
 fs.mkdirSync(outputDirectory, { recursive: true })
 
+const lastPart = process.env.npm_lifecycle_event.slice(
+  process.env.npm_lifecycle_event.lastIndexOf(':') + 1
+)
+
+/* istanbul ignore next: branching on @ only happens on special test runs */
+const profileWithoutSuffix = lastPart.includes('@')
+  ? process.env.npm_lifecycle_event.slice(
+      0,
+      process.env.npm_lifecycle_event.lastIndexOf(':')
+    )
+  : process.env.npm_lifecycle_event
+
 function getFeatureGlob (RERUN, profile) {
-  /* istanbul ignore next: :wip is not used for full test runs */
-  if (process.env.npm_lifecycle_event.endsWith(':wip')) {
-    return "src/test/**/*.feature --tags '@wip'"
+  /* istanbul ignore next: branching on @ only happens on special test runs */
+  if (lastPart.includes('@')) {
+    return `src/test/**/*.feature --tags '${lastPart
+      .replace('[', '(')
+      .replace(']', ')')}'`
   }
   /* istanbul ignore next: RERUN is not set for full test runs */
   return !process.env.COVERAGE &&
@@ -31,10 +45,7 @@ function getFeatureGlob (RERUN, profile) {
 }
 
 function generateConfig () {
-  const profile = process.env.npm_lifecycle_event
-    .replace('test:', '')
-    .replace(/:/g, '-')
-    .replace(/-wip$/, '')
+  const profile = profileWithoutSuffix.replace('test:', '').replace(':', '-')
 
   const resultsDirectory = `${outputDirectory}/${profile}`
   fs.mkdirSync(resultsDirectory, { recursive: true })
