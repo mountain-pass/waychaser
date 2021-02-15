@@ -30,22 +30,36 @@ const profileWithoutSuffix = lastPart.includes('@')
   : process.env.npm_lifecycle_event
 
 function getFeatureGlob (RERUN, profile) {
-  /* istanbul ignore next: branching on @ only happens on special test runs */
-  if (lastPart.includes('@')) {
-    return `src/test/**/*.feature --tags '${lastPart
-      .replace('[', '(')
-      .replace(']', ')')}'`
-  }
   /* istanbul ignore next: RERUN is not set for full test runs */
-  return !process.env.COVERAGE &&
+  if (
+    !process.env.COVERAGE &&
     fs.existsSync(RERUN) &&
     fs.statSync(RERUN).size !== 0
-    ? RERUN
-    : `src/test/**/*.feature --tags 'not(@not-${profile})'`
+  ) {
+    return RERUN
+  } else {
+    let rval = "src/test/**/*.feature --tags '"
+    rval += `not(@not-${profile})`
+    const splitProfile = profile.split('-')
+    if (splitProfile[0] === 'browser') {
+      rval += ` and not(@not-${splitProfile[2]})`
+      rval += ` and not(@not-${splitProfile[3]})`
+      if (!process.env.CI) {
+        rval += ' and not(@not-head)'
+      }
+    }
+    /* istanbul ignore next: branching on @ only happens on special test runs */
+    if (lastPart.includes('@')) {
+      rval += ` and ${lastPart.replace('[', '(').replace(']', ')')}`
+    }
+
+    rval += "'"
+    return rval
+  }
 }
 
 function generateConfig () {
-  const profile = profileWithoutSuffix.replace('test:', '').replace(':', '-')
+  const profile = profileWithoutSuffix.replace('test:', '').replace(/:/g, '-')
 
   const resultsDirectory = `${outputDirectory}/${profile}`
   fs.mkdirSync(resultsDirectory, { recursive: true })

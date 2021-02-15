@@ -1,5 +1,5 @@
 
-@skippable @wip
+@skippable @wip @not-firefox @not-safari @not-ie @not-edge @not-iphone @not-android @not-remote @not-head
 Feature: Siren Example
 
   So that I can better understand how to use waychaser
@@ -28,7 +28,10 @@ Feature: Siren Example
         race: 'human'
       })
     )
-    .then(resource => resource.invoke('related'))
+    .then(resource => {
+      if (resource.response.status <= 500) return resource.invoke('related')
+      else throw new Error('Server Error')
+    })
       """
     Then the adventure will have started
 
@@ -45,7 +48,10 @@ Feature: Siren Example
         gender: 'Male'
       })
     )
-    .then(current => current.invoke('related'))
+    .then(current => {
+      if (current.response.status <= 500) return current.invoke('related')
+      else throw new Error('Server Error')
+    })
     .then(current => current.invoke('north'))
     .then(current => current.invoke('pull-lever'))
     .then(current =>

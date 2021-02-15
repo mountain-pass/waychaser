@@ -205,19 +205,18 @@ class WaychaserDirect extends WaychaserProxy {
     // eslint-disable-next-line security/detect-eval-with-expression -- we trust the feature file
     const parsedFunction = eval(`(${stringFunction})`) // eslint-disable-line no-eval -- we trust the feature file
     logger.debug(parsedFunction.toString())
-    try {
-      const resource = await parsedFunction(waychaser, baseUrl)
-      return { success: resource.response.ok, resource }
-    } catch (error) {
-      /* istanbul ignore next: only gets executed when there are test failures */
-      logger.error(error)
-      /* istanbul ignore next: only gets executed when there are test failures */
-      if (error.response?.status >= 500) {
+    const resource = await parsedFunction(waychaser, baseUrl)
+    logger.info(JSON.stringify(resource, undefined, 2))
+    /* istanbul ignore else: only gets executed when there are test failures */
+    if (resource.response.ok) {
+      return { success: true, resource }
+    } else {
+      if (resource.response.status >= 500) {
         throw new SkippedError(
-          `Server is having issues. Status code ${error.response.status}`
+          `Server is having issues. Status code ${resource.response.status}`
         )
       } else {
-        return { success: false, error: error }
+        return { success: false, resource }
       }
     }
   }

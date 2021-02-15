@@ -71,13 +71,16 @@ class WebdriverManagerLocal extends WebdriverManager {
       .withCapabilities(caps)
       .forBrowser(this.browser)
 
+    const chromeOptions = new chrome.Options()
+    const firefoxOptions = new firefox.Options()
+    chromeOptions.addArguments('disable-web-security')
     /* istanbul ignore next: only get's executed on CI server */
     if (process.env.CI) {
-      builder.setChromeOptions(
-        new chrome.Options().headless().addArguments('disable-web-security')
-      )
-      builder.setFirefoxOptions(new firefox.Options().headless())
+      chromeOptions.headless()
+      firefoxOptions.headless()
     }
+    builder.setChromeOptions(chromeOptions)
+    builder.setFirefoxOptions(firefoxOptions)
     this.driver = builder.build()
 
     return this.driver

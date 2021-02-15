@@ -267,13 +267,16 @@ class WaychaserViaWebdriver extends WaychaserProxy {
             })
           })
           .catch(error => {
-            done({ success: false, id: window.testResults.push(error) - 1 })
+            done({
+              success: error.response?.status >= 500 ? 'skipped' : false,
+              id: window.testResults.push(error) - 1
+            })
           })
       },
       baseUrl
     )
     /* istanbul ignore next: only occurs if a testing external dependency is unavailable */
-    if (!result.success && result.error.response?.status >= 500) {
+    if (result.success === 'skipped') {
       throw new SkippedError(
         `Server is having issues. Status code ${result.error.response.status}`
       )

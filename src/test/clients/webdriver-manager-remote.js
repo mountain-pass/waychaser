@@ -5,6 +5,7 @@ import { WebdriverManager } from './webdriver-manager'
 import assert from 'assert'
 import { remoteTunneller } from './remote-tunneller'
 import { BUILD } from './build-info'
+import chrome from 'selenium-webdriver/chrome'
 
 class WebdriverManagerRemote extends WebdriverManager {
   constructor () {
@@ -87,6 +88,11 @@ class WebdriverManagerRemote extends WebdriverManager {
     this.driver = new webdriver.Builder()
       .usingServer('https://hub-cloud.browserstack.com/wd/hub')
       .withCapabilities(capabilities)
+      .setChromeOptions(
+        new chrome.Options()
+          .addArguments('disable-web-security')
+          .addArguments('disable-notifications')
+      )
       .build()
     await this.driver.manage().setTimeouts({ script: 60000 })
     return this.driver
