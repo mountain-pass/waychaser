@@ -221,12 +221,12 @@ class WaychaserDirect extends WaychaserProxy {
         }
       }
     } catch (error) {
-      /* istanbul ignore else: only gets executed when there are test failures */
+      /* istanbul ignore next: only gets executed when there are test failures */
       const error_ =
         error.message === 'Server Error'
           ? new SkippedError('Server is having issues.')
           : error
-      /* istanbul ignore else: only gets executed when there are test failures */
+      /* istanbul ignore next: only gets executed when there are test failures */
       throw error_
     }
   }
