@@ -1,6 +1,7 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
 const fs = require('fs')
 
+/* istanbul ignore next: Second branch only happens when not running a CI job */
 const FAIL_FAST = process.env.CI ? '' : '--fail-fast'
 const NO_STRICT = process.env.NO_STRICT || ''
 
