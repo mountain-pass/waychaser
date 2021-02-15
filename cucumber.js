@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
 const fs = require('fs')
 
-const FAIL_FAST = process.env.FAIL_FAST || '--fail-fast'
+const FAIL_FAST = process.env.CI ? '' : '--fail-fast'
 const NO_STRICT = process.env.NO_STRICT || ''
 
 const PUBLISH = '--publish-quiet'
@@ -32,6 +32,7 @@ const profileWithoutSuffix = lastPart.includes('@')
 function getFeatureGlob (RERUN, profile) {
   /* istanbul ignore next: RERUN is not set for full test runs */
   if (
+    !process.env.CI &&
     !process.env.COVERAGE &&
     fs.existsSync(RERUN) &&
     fs.statSync(RERUN).size !== 0
