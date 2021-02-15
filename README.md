@@ -352,7 +352,10 @@ But even though it's a game, it shows how waychaser can easily navigate a comple
         gender: 'Male'
       })
     )
-    .then(current => current.invoke('related'))
+    .then(current => {
+      if (current.response.status <= 500) return current.invoke('related')
+      else throw new Error('Server Error')
+    })
     .then(current => current.invoke('north'))
     .then(current => current.invoke('pull-lever'))
     .then(current =>
