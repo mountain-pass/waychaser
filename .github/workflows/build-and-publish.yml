@@ -538,6 +538,7 @@ jobs:
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
       - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
+        continue-on-error: true
       # stop tunnel
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         with:
@@ -564,6 +565,7 @@ jobs:
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
       - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
+        continue-on-error: true
       # stop tunnel
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         if: steps.attempt-1.outputs.result != 'success'
@@ -591,6 +593,7 @@ jobs:
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
       - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
+        continue-on-error: true
       # stop tunnel
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
         if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
