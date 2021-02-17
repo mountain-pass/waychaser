@@ -534,7 +534,7 @@ jobs:
       # run tests
       - id: attempt-1
         run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
-        timeout-minutes: 25
+        timeout-minutes: 30
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
       - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
@@ -563,7 +563,7 @@ jobs:
       - id: attempt-2
         if: steps.attempt-1.outputs.result != 'success'
         run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
-        timeout-minutes: 25
+        timeout-minutes: 30
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
       - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
@@ -593,7 +593,7 @@ jobs:
       - id: attempt-3
         if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
         run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
-        timeout-minutes: 25
+        timeout-minutes: 30
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
       - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
