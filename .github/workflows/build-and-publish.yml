@@ -537,6 +537,8 @@ jobs:
         timeout-minutes: 25
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
+      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
+        continue-on-error: true
       - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
         continue-on-error: true
       # stop tunnel
@@ -564,6 +566,8 @@ jobs:
         timeout-minutes: 25
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
+      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
+        continue-on-error: true
       - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
         continue-on-error: true
       # stop tunnel
@@ -592,6 +596,8 @@ jobs:
         timeout-minutes: 25
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
+      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
+        continue-on-error: true
       - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
         continue-on-error: true
       # stop tunnel
