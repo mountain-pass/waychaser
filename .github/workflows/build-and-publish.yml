@@ -540,13 +540,13 @@ jobs:
       # the test run may have timed out, so kill any remnants of it
       - run: ps -ef | grep '[w]ebpack'
         continue-on-error: true
-      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
+      - run: for process in $(ps aux | grep '[w]ebpack' | awk '{print $2}'); do kill $process; done
         continue-on-error: true
       - run: ps -ef | grep '[w]ebpack'
         continue-on-error: true
       - run: ps -ef | grep '[n]ode'
         continue-on-error: true
-      - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
+      - run: for process in $(ps aux | grep '[n]ode' | awk '{print $2}'); do kill $process; done
         continue-on-error: true
       - run: ps -ef | grep '[n]ode'
         continue-on-error: true
@@ -577,13 +577,13 @@ jobs:
       # the test run may have timed out, so kill any remnants of it
       - run: ps -ef | grep '[w]ebpack'
         continue-on-error: true
-      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
+      - run: for process in $(ps aux | grep '[w]ebpack' | awk '{print $2}'); do kill $process; done
         continue-on-error: true
       - run: ps -ef | grep '[w]ebpack'
         continue-on-error: true
       - run: ps -ef | grep '[n]ode'
         continue-on-error: true
-      - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
+      - run: for process in $(ps aux | grep '[n]ode' | awk '{print $2}'); do kill $process; done
         continue-on-error: true
       - run: ps -ef | grep '[n]ode'
         continue-on-error: true
@@ -615,13 +615,13 @@ jobs:
       # the test run may have timed out, so kill any remnants of it
       - run: ps -ef | grep '[w]ebpack'
         continue-on-error: true
-      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
+      - run: for process in $(ps aux | grep '[w]ebpack' | awk '{print $2}'); do kill $process; done
         continue-on-error: true
       - run: ps -ef | grep '[w]ebpack'
         continue-on-error: true
       - run: ps -ef | grep '[n]ode'
         continue-on-error: true
-      - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
+      - run: for process in $(ps aux | grep '[n]ode' | awk '{print $2}'); do kill $process; done
         continue-on-error: true
       - run: ps -ef | grep '[n]ode'
         continue-on-error: true
