@@ -533,7 +533,7 @@ jobs:
           local-identifier: random
       # run tests
       - id: attempt-1
-        run: BROWSERSTACK_TUNNEL_STARTED=1 npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        run: BROWSERSTACK_TUNNEL_STARTED=1 timeout 30m (npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success")
         timeout-minutes: 30
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
@@ -562,7 +562,7 @@ jobs:
       # run tests
       - id: attempt-2
         if: steps.attempt-1.outputs.result != 'success'
-        run: BROWSERSTACK_TUNNEL_STARTED=1 npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        run: BROWSERSTACK_TUNNEL_STARTED=1 timeout 30m (npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success")
         timeout-minutes: 30
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
@@ -592,7 +592,7 @@ jobs:
       # run tests
       - id: attempt-3
         if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
-        run: BROWSERSTACK_TUNNEL_STARTED=1 npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        run: BROWSERSTACK_TUNNEL_STARTED=1 timeout 30m (npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success")
         timeout-minutes: 30
         continue-on-error: true
       # stop tunnel
