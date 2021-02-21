@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-      - spike-*
   pull_request:
     branches:
       - "**"

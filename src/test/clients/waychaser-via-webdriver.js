@@ -105,8 +105,8 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     let batchSize = this.manager.invokeScriptCount
     // taking too long on IE doing it as one batch, so we split it into three batches
     /* istanbul ignore next: IE doesn't report coverage */
-    if (this.manager.browser === 'ie') {
-      batchSize = 5
+    if (['ie', 'iphone'].includes(this.manager.browser)) {
+      batchSize = 4
     }
     const batches = this.manager.invokeScriptCount / batchSize
     let allResults = []
