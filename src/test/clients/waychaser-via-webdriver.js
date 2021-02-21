@@ -86,7 +86,8 @@ class WaychaserViaWebdriver extends WaychaserProxy {
             window.testResults[results[0].id].ops.find(relationship)
           ])
         )
-        done(innerFound)
+        // iphone tests will fail if we try and pass this back as array
+        done(JSON.stringify(innerFound))
       },
       results,
       relationship
@@ -95,7 +96,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     // to a string within an array, it becomes `null`. Yeah, WTF?
     // WebDriver converts to and from string to send to and from the browser, so when we get null back, we need
     // to convert it back to undefined
-    return found.map(item => {
+    return JSON.parse(found).map(item => {
       return item === null ? undefined : item
     })
   }

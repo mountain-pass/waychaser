@@ -35,6 +35,7 @@ function getFeatureGlob (RERUN, profile) {
   if (
     !process.env.CI &&
     !process.env.COVERAGE &&
+    !lastPart.includes('@') &&
     fs.existsSync(RERUN) &&
     fs.statSync(RERUN).size !== 0
   ) {

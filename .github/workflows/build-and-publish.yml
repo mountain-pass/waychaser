@@ -538,17 +538,9 @@ jobs:
         timeout-minutes: 30
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
-      - run: ps -ef | grep '[w]ebpack'
-        continue-on-error: true
       - run: for process in $(ps aux | grep '[w]ebpack' | awk '{print $2}'); do kill $process; done
         continue-on-error: true
-      - run: ps -ef | grep '[w]ebpack'
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
-        continue-on-error: true
       - run: for process in $(ps aux | grep '[n]ode' | awk '{print $2}'); do kill $process; done
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
         continue-on-error: true
       # stop tunnel
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
@@ -575,17 +567,9 @@ jobs:
         timeout-minutes: 30
         continue-on-error: true
       # the test run may have timed out, so kill any remnants of it
-      - run: ps -ef | grep '[w]ebpack'
-        continue-on-error: true
       - run: for process in $(ps aux | grep '[w]ebpack' | awk '{print $2}'); do kill $process; done
         continue-on-error: true
-      - run: ps -ef | grep '[w]ebpack'
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
-        continue-on-error: true
       - run: for process in $(ps aux | grep '[n]ode' | awk '{print $2}'); do kill $process; done
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
         continue-on-error: true
       # stop tunnel
       - uses: "browserstack/github-actions/setup-local@v1.0.1"
@@ -611,19 +595,6 @@ jobs:
         if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
         run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
         timeout-minutes: 30
-        continue-on-error: true
-      # the test run may have timed out, so kill any remnants of it
-      - run: ps -ef | grep '[w]ebpack'
-        continue-on-error: true
-      - run: for process in $(ps aux | grep '[w]ebpack' | awk '{print $2}'); do kill $process; done
-        continue-on-error: true
-      - run: ps -ef | grep '[w]ebpack'
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
-        continue-on-error: true
-      - run: for process in $(ps aux | grep '[n]ode' | awk '{print $2}'); do kill $process; done
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
         continue-on-error: true
       # stop tunnel
       - uses: "browserstack/github-actions/setup-local@v1.0.1"

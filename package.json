@@ -93,6 +93,7 @@
     "test:browser-api:safari:local": "scripts/test-browser.sh",
     "test:browser-api:safari:remote": "scripts/test-browser.sh",
     "test:browser-api:iphone:remote": "scripts/test-browser.sh",
+    "test:browser-api:iphone:remote:@wip": "scripts/test-browser.sh",
     "test:browser-api:android:remote": "scripts/test-browser.sh",
     "test:browser-api:edge:remote": "scripts/test-browser.sh",
     "test:browser-api": "scripts/for-all-browsers.sh",
