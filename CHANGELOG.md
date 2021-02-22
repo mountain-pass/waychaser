@@ -1,3 +1,9 @@
+## <small>3.0.11 (2021-02-22)</small>
+
+* Merge pull request #239 from mountain-pass/dependabot/npm_and_yarn/snyk-1.459.0 ([1b29f74](https://github.com/mountain-pass/waychaser/commit/1b29f74)), closes [#239](https://github.com/mountain-pass/waychaser/issues/239)
+
+
+
 ## <small>3.0.10 (2021-02-22)</small>
 
 * Merge pull request #236 from mountain-pass/spike-ci-debugging ([74b2281](https://github.com/mountain-pass/waychaser/commit/74b2281)), closes [#236](https://github.com/mountain-pass/waychaser/issues/236)
