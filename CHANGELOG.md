@@ -1,3 +1,9 @@
+## <small>3.0.10 (2021-02-22)</small>
+
+* Merge pull request #236 from mountain-pass/spike-ci-debugging ([74b2281](https://github.com/mountain-pass/waychaser/commit/74b2281)), closes [#236](https://github.com/mountain-pass/waychaser/issues/236)
+
+
+
 ## <small>3.0.9 (2021-02-13)</small>
 
 * Merge pull request #218 from mountain-pass/dependabot/npm_and_yarn/eslint-7.20.0 ([72842ac](https://github.com/mountain-pass/waychaser/commit/72842ac)), closes [#218](https://github.com/mountain-pass/waychaser/issues/218)
