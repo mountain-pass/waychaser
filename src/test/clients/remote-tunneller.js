@@ -9,10 +9,7 @@ class RemoteTunneller {
   }
 
   async stopTunnel () {
-    if (this.tunnel) {
-      this.tunnel.close()
-      delete this.tunnel
-    }
+    this.tunnel.close()
   }
 }
 
