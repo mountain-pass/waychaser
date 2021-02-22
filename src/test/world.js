@@ -22,6 +22,7 @@ import { webdriverManagerLocal } from './clients/webdriver-manager-local'
 import { webdriverManagerRemote } from './clients/webdriver-manager-remote'
 
 import { startServer, app, stopServer, getNewRouter } from './fakes/server'
+import { API_ACCESS_PORT, API_ACCESS_HOST } from './config'
 
 chai.use(chaiAsPromised)
 chai.use(dirtyChai)
@@ -58,11 +59,13 @@ if (profile.startsWith('browser-api')) {
   waychaserProxy = new WaychaserDirect()
 }
 
+let baseUrl = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}`
+
 BeforeAll({ timeout: 240000 }, async function () {
   logger.info('BEGIN BeforeAll', Date.now())
 
   if (webdriverManager) {
-    await webdriverManager.beforeAllTests()
+    baseUrl = await webdriverManager.beforeAllTests()
   }
   logger.info('Starting server...')
   await startServer()
@@ -78,6 +81,7 @@ function world ({ attach }) {
 
   // reset the fake API server, so we can set new routes
   this.router = getNewRouter()
+  this.baseUrl = baseUrl
 
   logger.info('END world')
   return ''

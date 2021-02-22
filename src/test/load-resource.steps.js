@@ -1,17 +1,14 @@
 import { expect } from 'chai'
 import { When, Then } from '@cucumber/cucumber'
 import logger from '../util/logger'
-import { API_ACCESS_PORT, API_ACCESS_HOST } from './config'
 
-async function loadResourceByUrl (url) {
+function loadResourceByUrl (url) {
   logger.debug(`loading ${url}`)
   return this.waychaserProxy.load(url)
 }
 
-async function loadResourceByPath (path) {
-  return loadResourceByUrl.bind(this)(
-    new URL(path, `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}`)
-  )
+function loadResourceByPath (path) {
+  return loadResourceByUrl.bind(this)(new URL(path, this.baseUrl))
 }
 
 async function loadAndCheckResourceByPath (path) {
@@ -26,9 +23,7 @@ When('waychaser loads that resource', async function () {
 })
 
 When("waychaser loads a resource that's not available", async function () {
-  this.result = await loadResourceByUrl.bind(this)(
-    `http://${API_ACCESS_HOST}:33556/api`
-  )
+  this.result = await loadResourceByUrl.bind(this)(`${this.baseUrl}:33556/api`)
 })
 
 Then('it will have loaded successfully', async function () {
@@ -42,7 +37,11 @@ Then('it will NOT have loaded successfully', async function () {
 })
 
 When('waychaser successfully loads that resource', async function () {
-  logger.debug('loading current resource', this.currentResourceRoute)
+  logger.debug(
+    'loading current resource',
+    this.currentResourceRoute,
+    this.baseUrl
+  )
   this.results = [
     await loadAndCheckResourceByPath.bind(this)(this.currentResourceRoute)
   ]
