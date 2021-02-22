@@ -56,7 +56,6 @@ class WebdriverManagerRemote extends WebdriverManager {
         userName: process.env.BROWSERSTACK_USERNAME,
         accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         ...(this.browser === 'android' && {
-          deviceName: 'Samsung Galaxy S20',
           realMobile: 'true'
         }),
         ...(this.browser === 'iphone' && {
