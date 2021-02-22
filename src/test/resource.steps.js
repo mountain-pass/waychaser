@@ -1,6 +1,5 @@
 import { Given } from '@cucumber/cucumber'
 import LinkHeader from 'http-link-header'
-import { API_ACCESS_HOST, API_ACCESS_PORT } from './config'
 
 import {
   uniqueNamesGenerator,
@@ -308,7 +307,7 @@ async function createRandomDynamicResourceRoute (
 Given('a resource returning status code {int}', async function (status) {
   this.currentResourceRoute = randomApiPath()
   await createRouteWithLinks(this.router, this.currentResourceRoute, status)
-  this.firstResourceRoute = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
+  this.firstResourceRoute = `${this.baseUrl}${this.currentResourceRoute}`
 })
 
 Given('a resource with no operations', async function () {
@@ -484,7 +483,7 @@ Given(
     this.currentResourceRoute = randomApiPath()
     const links = createCustomBodyLink(
       relationship,
-      `http://${API_ACCESS_HOST}:33556/api`
+      `${this.baseUrl}:33556/api`
     )
     createLinkingResource.bind(this)(undefined, links, CUSTOM_BODY_MEDIA_TYPE)
   }
@@ -577,7 +576,7 @@ async function createListOfResources (count, relationship, mediaType) {
   // we add the last one first
   this.currentResourceRoute = randomApiPath()
   await createOkRouteWithLinks.bind(this)(this.currentResourceRoute)
-  this.lastOnList = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
+  this.lastOnList = `${this.baseUrl}${this.currentResourceRoute}`
   for (let index = 1; index < count; index++) {
     // and then point each on to the previously created resource
     const previousResourceRoute = this.currentResourceRoute

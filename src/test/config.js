@@ -19,10 +19,6 @@ assert(
   "'BROWSER_PORT' environment variable must be set when testing browser api"
 )
 
-export const BROWSER_HOST = process.env.npm_lifecycle_event.includes(
-  'iphone'
-) /* istanbul ignore next: only get's executed on CI server */
-  ? 'bs-local.com'
-  : 'localhost'
+export const BROWSER_HOST = 'localhost'
 
 export const API_ACCESS_HOST = BROWSER_HOST

@@ -1,6 +1,5 @@
 import logger from '../../util/logger'
 import logging from 'selenium-webdriver/lib/logging'
-import { BROWSER_PORT, BROWSER_HOST } from '../config'
 import { utils } from 'istanbul'
 import { PendingError } from '@windyroad/cucumber-js-throwables'
 import * as babel from '@babel/core'
@@ -36,10 +35,10 @@ function mergeClientCoverage (object) {
 }
 
 class WebdriverManager {
-  async loadWaychaserTestPage () {
-    logger.debug('loading page...')
+  async loadWaychaserTestPage (url) {
     await this.driver.get('https://google.com')
-    await this.driver.get(`http://${BROWSER_HOST}:${BROWSER_PORT}`)
+    logger.debug(`loading page '${url}'...`)
+    await this.driver.get(url)
     logger.debug('...page loaded')
 
     logger.debug('waiting for waychaser...')
@@ -47,6 +46,10 @@ class WebdriverManager {
       return this.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */
         function () {
+          const buttons = document.querySelectorAll('button')
+          if (buttons[0]) {
+            buttons[0].click()
+          }
           return window.waychaser !== undefined
         }
       )

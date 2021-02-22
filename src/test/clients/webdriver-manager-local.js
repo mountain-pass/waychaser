@@ -4,17 +4,19 @@ import logging from 'selenium-webdriver/lib/logging'
 import chrome from 'selenium-webdriver/chrome'
 import firefox from 'selenium-webdriver/firefox'
 import logger from '../../util/logger'
-
+import { BROWSER_HOST, BROWSER_PORT } from '../config'
 class WebdriverManagerLocal extends WebdriverManager {
   async beforeAllTests () {
     this.driver = await this.buildDriver()
-    await this.loadWaychaserTestPage()
+    const url = `http://${BROWSER_HOST}:${BROWSER_PORT}`
+    await this.loadWaychaserTestPage(url)
+    return url
   }
 
   async afterTest (scenario) {
     await super.afterTest(scenario)
 
-    /* istanbul ignore next: only get's executed on test failure */
+    /* istanbul ignore next: only gets executed on test failure */
     if (
       scenario.result.status === 'failed' ||
       scenario.result.status === 'pending'
@@ -24,11 +26,11 @@ class WebdriverManagerLocal extends WebdriverManager {
     }
   }
 
-  /* istanbul ignore next: only get's executed on test failure */
+  /* istanbul ignore next: only gets executed on test failure */
   async allowDebug (timeout) {
     if (this.driver && process.env.CI === undefined) {
       this.executeScript(
-        /* istanbul ignore next: only get's executed on test failure */
+        /* istanbul ignore next: only gets executed on test failure */
         function () {
           window.alert(
             `Window will remain for ${arguments[0]}ms for debugging purposes`
@@ -74,7 +76,7 @@ class WebdriverManagerLocal extends WebdriverManager {
     const chromeOptions = new chrome.Options()
     const firefoxOptions = new firefox.Options()
     chromeOptions.addArguments('disable-web-security')
-    /* istanbul ignore next: only get's executed on CI server */
+    /* istanbul ignore next: only gets executed on CI server */
     if (process.env.CI) {
       chromeOptions.headless()
       firefoxOptions.headless()

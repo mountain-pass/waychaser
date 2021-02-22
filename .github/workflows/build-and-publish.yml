@@ -526,29 +526,11 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      # create tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        with:
-          local-testing: start
-          local-identifier: random
       # run tests
       - id: attempt-1
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        run: timeout 30m npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
         timeout-minutes: 30
         continue-on-error: true
-      # the test run may have timed out, so kill any remnants of it
-      - run: ps -ef | grep '[w]ebpack'
-      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
-        continue-on-error: true
-      - run: ps -ef | grep '[w]ebpack'
-      - run: ps -ef | grep '[n]ode'
-      - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
-      # stop tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        with:
-          local-testing: stop
 
       ### SECOND ATTEMPT ###
       # wait for availability
@@ -557,32 +539,12 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      # create tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        if: steps.attempt-1.outputs.result != 'success'
-        with:
-          local-testing: start
-          local-identifier: random
       # run tests
       - id: attempt-2
         if: steps.attempt-1.outputs.result != 'success'
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        run: timeout 30m npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
         timeout-minutes: 30
         continue-on-error: true
-      # the test run may have timed out, so kill any remnants of it
-      - run: ps -ef | grep '[w]ebpack'
-      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
-        continue-on-error: true
-      - run: ps -ef | grep '[w]ebpack'
-      - run: ps -ef | grep '[n]ode'
-      - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
-      # stop tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        if: steps.attempt-1.outputs.result != 'success'
-        with:
-          local-testing: stop
 
       ### THIRD ATTEMPT ###
       # wait for availability
@@ -591,32 +553,12 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      # create tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
-        with:
-          local-testing: start
-          local-identifier: random
       # run tests
       - id: attempt-3
         if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        run: timeout 30m npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
         timeout-minutes: 30
         continue-on-error: true
-      # the test run may have timed out, so kill any remnants of it
-      - run: ps -ef | grep '[w]ebpack'
-      - run: ps aux | grep '[w]ebpack' | awk '{print $2}' | xargs kill
-        continue-on-error: true
-      - run: ps -ef | grep '[w]ebpack'
-      - run: ps -ef | grep '[n]ode'
-      - run: ps aux | grep '[n]ode' | grep '[n]yc' | awk '{print $2}' | xargs kill
-        continue-on-error: true
-      - run: ps -ef | grep '[n]ode'
-      # stop tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
-        with:
-          local-testing: stop
 
       # fail if the third attempt failed
       - run: exit 1

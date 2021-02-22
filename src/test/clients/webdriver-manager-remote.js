@@ -18,7 +18,8 @@ class WebdriverManagerRemote extends WebdriverManager {
     await this.tunneller.startTunnel()
     this.driver = await this.buildDriver()
     logger.debug('driver built')
-    await this.loadWaychaserTestPage()
+    await this.loadWaychaserTestPage(remoteTunneller.tunnel.url)
+    return remoteTunneller.tunnel.url
   }
 
   async afterTest (scenario) {
@@ -43,16 +44,11 @@ class WebdriverManagerRemote extends WebdriverManager {
     const projectName =
       process.env.npm_package_name + (process.env.GITHUB_RUN_ID ? '' : '-LOCAL')
     /* istanbul ignore next: branching depends on if running on CI or not */
-    const localIdentifier = process.env.BROWSERSTACK_LOCAL_IDENTIFIER
     const capabilities = {
       'bstack:options': {
         os: 'Any',
         projectName,
         buildName: BUILD,
-        local: 'true',
-        ...(localIdentifier && {
-          localIdentifier
-        }),
         debug: 'true',
         consoleLogs: 'verbose',
         networkLogs: 'true',
@@ -60,7 +56,6 @@ class WebdriverManagerRemote extends WebdriverManager {
         userName: process.env.BROWSERSTACK_USERNAME,
         accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         ...(this.browser === 'android' && {
-          deviceName: 'Samsung Galaxy S20',
           realMobile: 'true'
         }),
         ...(this.browser === 'iphone' && {

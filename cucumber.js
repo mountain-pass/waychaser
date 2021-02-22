@@ -9,9 +9,7 @@ const PUBLISH = '--publish-quiet'
 
 /* istanbul ignore next: branch only taken when remote */
 const RETRY =
-  (process.env.npm_lifecycle_event.includes(':remote') &&
-    process.env.GITHUB_WORKFLOW) ||
-  process.env.RETRY
+  process.env.npm_lifecycle_event.includes(':remote') || process.env.RETRY
     ? `--retry ${process.env.RETRY || 5}`
     : ''
 
@@ -35,6 +33,7 @@ function getFeatureGlob (RERUN, profile) {
   if (
     !process.env.CI &&
     !process.env.COVERAGE &&
+    !lastPart.includes('@') &&
     fs.existsSync(RERUN) &&
     fs.statSync(RERUN).size !== 0
   ) {

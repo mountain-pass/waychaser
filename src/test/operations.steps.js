@@ -1,5 +1,6 @@
 import { assert, expect } from 'chai'
 import { When, Then } from '@cucumber/cucumber'
+import logger from '../util/logger'
 
 async function checkBody (
   expectedBody,
@@ -36,7 +37,9 @@ async function expectFindOne (relationship, expectation) {
 }
 
 async function findOne (relationship) {
-  return await this.waychaserProxy.find(this.results, relationship)
+  const found = await this.waychaserProxy.find(this.results, relationship)
+  logger.debug(found)
+  return found
 }
 
 async function invoke (previousResult, relationship, context, options) {

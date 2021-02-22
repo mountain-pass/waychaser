@@ -22,6 +22,7 @@ import { webdriverManagerLocal } from './clients/webdriver-manager-local'
 import { webdriverManagerRemote } from './clients/webdriver-manager-remote'
 
 import { startServer, app, stopServer, getNewRouter } from './fakes/server'
+import { API_ACCESS_PORT, API_ACCESS_HOST } from './config'
 
 chai.use(chaiAsPromised)
 chai.use(dirtyChai)
@@ -58,50 +59,53 @@ if (profile.startsWith('browser-api')) {
   waychaserProxy = new WaychaserDirect()
 }
 
+let baseUrl = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}`
+
 BeforeAll({ timeout: 240000 }, async function () {
-  logger.debug('BEGIN BeforeAll', Date.now())
+  logger.info('BEGIN BeforeAll', Date.now())
 
   if (webdriverManager) {
-    await webdriverManager.beforeAllTests()
+    baseUrl = await webdriverManager.beforeAllTests()
   }
-  logger.debug('Starting server')
+  logger.info('Starting server...')
   await startServer()
 
-  logger.debug('END BeforeAll', Date.now())
+  logger.info('END BeforeAll', Date.now())
 })
 
 function world ({ attach }) {
-  logger.debug('BEGIN world')
+  logger.info('BEGIN world')
 
   this.attach = attach
   this.app = app
 
   // reset the fake API server, so we can set new routes
   this.router = getNewRouter()
+  this.baseUrl = baseUrl
 
-  logger.debug('END world')
+  logger.info('END world')
   return ''
 }
 
 Before({ timeout: 240000 }, async function (scenario) {
-  logger.debug('BEGIN Before')
+  logger.info('BEGIN Before')
   this.router = getNewRouter()
   this.waychaserProxy = waychaserProxy
   await this.waychaserProxy.reset()
   if (webdriverManager) {
     await webdriverManager.beforeTest(scenario)
   }
-  logger.debug('END Before')
+  logger.info('END Before')
 })
 
 After({ timeout: 600000 }, async function (scenario) {
-  logger.debug('BEGIN After')
+  logger.info('BEGIN After')
 
-  logger.debug('%s: - %s', scenario.pickle.name, scenario.result.status)
+  logger.info('%s: - %s', scenario.pickle.name, scenario.result.status)
   if (webdriverManager) {
     await webdriverManager.afterTest(scenario)
   }
-  logger.debug('END After')
+  logger.info('END After')
 })
 
 AfterAll({ timeout: 600000 }, async function () {
