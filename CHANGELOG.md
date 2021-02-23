@@ -1,3 +1,9 @@
+## <small>3.0.12 (2021-02-23)</small>
+
+* Merge pull request #245 from mountain-pass/dependabot/npm_and_yarn/commitlint/cli-12.0.0 ([0468014](https://github.com/mountain-pass/waychaser/commit/0468014)), closes [#245](https://github.com/mountain-pass/waychaser/issues/245)
+
+
+
 ## <small>3.0.11 (2021-02-22)</small>
 
 * Merge pull request #239 from mountain-pass/dependabot/npm_and_yarn/snyk-1.459.0 ([1b29f74](https://github.com/mountain-pass/waychaser/commit/1b29f74)), closes [#239](https://github.com/mountain-pass/waychaser/issues/239)
