@@ -1,3 +1,9 @@
+## <small>3.0.15 (2021-02-23)</small>
+
+* Merge pull request #249 from mountain-pass/dependabot/npm_and_yarn/babel/runtime-7.13.4 ([c90ae7a](https://github.com/mountain-pass/waychaser/commit/c90ae7a)), closes [#249](https://github.com/mountain-pass/waychaser/issues/249)
+
+
+
 ## <small>3.0.14 (2021-02-23)</small>
 
 * Merge pull request #247 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-32.2.0 ([fd0df5e](https://github.com/mountain-pass/waychaser/commit/fd0df5e)), closes [#247](https://github.com/mountain-pass/waychaser/issues/247)
