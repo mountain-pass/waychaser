@@ -1,3 +1,9 @@
+## <small>3.0.16 (2021-02-23)</small>
+
+* Merge pull request #251 from mountain-pass/dependabot/npm_and_yarn/babel/preset-env-7.13.5 ([b28166f](https://github.com/mountain-pass/waychaser/commit/b28166f)), closes [#251](https://github.com/mountain-pass/waychaser/issues/251)
+
+
+
 ## <small>3.0.15 (2021-02-23)</small>
 
 * Merge pull request #249 from mountain-pass/dependabot/npm_and_yarn/babel/runtime-7.13.4 ([c90ae7a](https://github.com/mountain-pass/waychaser/commit/c90ae7a)), closes [#249](https://github.com/mountain-pass/waychaser/issues/249)
