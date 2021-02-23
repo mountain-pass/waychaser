@@ -1,3 +1,9 @@
+## <small>3.0.18 (2021-02-23)</small>
+
+* Merge pull request #254 from mountain-pass/dependabot/npm_and_yarn/babel/cli-7.13.0 ([c1bebbb](https://github.com/mountain-pass/waychaser/commit/c1bebbb)), closes [#254](https://github.com/mountain-pass/waychaser/issues/254)
+
+
+
 ## <small>3.0.17 (2021-02-23)</small>
 
 * Merge pull request #253 from mountain-pass/dependabot/npm_and_yarn/babel/runtime-7.13.6 ([6a41026](https://github.com/mountain-pass/waychaser/commit/6a41026)), closes [#253](https://github.com/mountain-pass/waychaser/issues/253)
