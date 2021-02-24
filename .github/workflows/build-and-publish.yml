@@ -229,6 +229,9 @@ jobs:
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run cover:node-api
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report-node-${{ matrix.node-version }}
@@ -348,6 +351,9 @@ jobs:
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run cover:node-api:not[@skippable]
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report-node-not-skippable-14.x
