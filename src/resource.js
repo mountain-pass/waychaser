@@ -1,4 +1,5 @@
 import { OperationArray } from './operation-array'
+import logger from './util/logger'
 
 export class Resource {
   static async create (response, handlers, mediaRanges, fetcher) {
@@ -12,6 +13,7 @@ export class Resource {
           if (!body) {
             body = await response.json()
           }
+          logger.waychaser('BODY', JSON.stringify(body, undefined, 2))
           return body
         },
         () => {
@@ -53,6 +55,7 @@ export class Resource {
   }
 
   invoke (relationship, context, options) {
+    logger.waychaser(`resource.invoke: ${relationship}`)
     return this.operations.invoke(relationship, context, options)
   }
 

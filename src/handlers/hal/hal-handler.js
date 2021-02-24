@@ -15,9 +15,13 @@ export async function halHandler (response, bodyGetter) {
       // we also want to convert them to a map, for easy lookup
       const curies = {}
       if (body._links.curies) {
-        body._links.curies.forEach(curie => {
-          curies[curie.name] = curie.href
-        })
+        if (Array.isArray(body._links.curies)) {
+          body._links.curies.forEach(curie => {
+            curies[curie.name] = curie.href
+          })
+        } else {
+          curies[body._links.curies.name] = body._links.curies.href
+        }
       }
       Object.keys(body._links).forEach(key => {
         if (Array.isArray(body._links[key])) {

@@ -46,6 +46,7 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
     - [Request body forms](#request-body-forms)
     - [DELETE, POST, PUT, PATCH](#delete-post-put-patch)
 - [Examples](#examples)
+  - [HAL](#hal)
   - [Siren](#siren)
 - [Upgrading from 1.x to 2.x](#upgrading-from-1x-to-2x)
   - [Removal of Loki](#removal-of-loki)
@@ -333,15 +334,85 @@ for something else, then you're going to need a custom handler.
 
 # Examples
 
+## HAL
+
+The following code demonstrates using waychaser with the REST API for AWS API Gateway to download the 'Error' 
+schema from 'test-waychaser' gateway 
+
+```js
+import { waychaser, halHandler, MediaTypes } from '@mountainpass/waychaser'
+import fetch from 'isomorphic-fetch'
+import aws4 from 'aws4'
+
+
+// AWS makes us sign each request. This is a fetcher that does that automagically for us.
+function awsFetch (url, options) {
+  const parsedUrl = new URL(url)
+  const signedOptions = aws4.sign(
+    Object.assign(
+      {
+        host: parsedUrl.host,
+        path: `${parsedUrl.pathname}?${parsedUrl.searchParams}`,
+        method: 'GET'
+      },
+      options
+    )
+  )
+  return fetch(url, signedOptions)
+}
+
+// Now we tell waychaser, to only accept HAL and to use our fetcher.
+const awsWaychaser = waychaser.use(halHandler, MediaTypes.HAL).withFetch(awsFetch)
+
+// now we can load the API
+const api = await waychaser.load(
+  'https://apigateway.ap-southeast-2.amazonaws.com/restapis'
+)
+
+// then we can find the gateway we're after
+const gateway = await api.ops
+  .filter('item')
+  .findInRelated({ name: 'test-waychaser' })
+
+// then we can get the models
+const models = await gateway.invoke(
+  'http://docs.aws.amazon.com/apigateway/latest/developerguide/restapi-restapi-models.html'
+)
+
+// then we can find the schema we're after 
+const model = await models.ops
+  .filter('item')
+  .findInRelated({ name: 'Error' })
+
+// and now we get the schema
+const schema = JSON.parse((await model.body()).schema)
+```
+
+
+**NOTE:** While the above is a legit, and it works ([here's the test](./src/test/hal-example.feature)), for full
+use of the AWS API Gateway REST API, you're going to need a custom handler.
+
+This is because HAL links are supposed retrieved using a HTTP GET, but many of the AWS API Gateway REST API links
+require using [POST](https://docs.aws.amazon.com/apigateway/api-reference/link-relation/restapi-create/), 
+[PATCH](https://docs.aws.amazon.com/apigateway/api-reference/link-relation/restapi-update/) or 
+[DELETE](https://docs.aws.amazon.com/apigateway/api-reference/link-relation/restapi-delete/) HTTP methods. 
+
+But there's nothing in AWS API Gateway links to tell you when to use a different HTTP method. Instead it's 
+communicated out-of-band in AWS API Gateway documentation. If you write a custom handler, please let me know 👍
+
+
 ## Siren
 
-While admittedly a toy example, the following code demonstrates using waychaser to complete the 
+While admittedly this is a toy example, the following code demonstrates using waychaser to complete the 
 [*Hypermedia in the Wizard's Tower* text-based adventure game](https://github.com/einarwh/hyperwizard).
 
 But even though it's a game, it shows how waychaser can easily navigate a complex process, including `POST`ing data and
 `DELETE`ing resources.
 
 ```js
+  return waychaser
+    .load('http://hyperwizard.azurewebsites.net/hywit/void')
+    .then(current => current.invoke(['north', 'pull-lever', { rel: 'move', title: 'Cross the bridge.' }]))
   return waychaser
     .load('http://hyperwizard.azurewebsites.net/hywit/void')
     .then(current =>

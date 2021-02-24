@@ -2,6 +2,7 @@ import { Given, Then } from '@cucumber/cucumber'
 import { expect } from 'chai'
 import fetch from 'isomorphic-fetch'
 import logger from '../util/logger'
+import { handleResponseError } from './handle-response-error'
 
 Given('Assuming a Siren API is available at {string}', async function (url) {
   const response = await fetch(url, {
@@ -9,11 +10,7 @@ Given('Assuming a Siren API is available at {string}', async function (url) {
       accept: 'application/vnd.siren+json'
     }
   })
-  if (!response.ok) {
-    logger.error(`URL not available: ${url}`)
-    logger.error(`status code: ${response.statusText} ${response.status}`)
-    return 'skipped'
-  }
+  handleResponseError(response, url)
   this.currentResourceRoute = url
 })
 

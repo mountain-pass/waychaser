@@ -10,8 +10,19 @@ import MediaTypes from './util/media-types'
 import fetch from 'isomorphic-fetch'
 import { locationHeaderHandler } from './handlers/location-header/location-header-handler'
 
-/** @namespace */
-const waychaser = {
+class WayChaser {
+  constructor (
+    handler = WayChaser.defaultHandlers,
+    mediaRange = WayChaser.defaultMediaRanges,
+    fetcher = WayChaser.defaultFetcher,
+    logger = WayChaser.logger
+  ) {
+    this.handlers = Array.isArray(handler) ? handler : [handler]
+    this.mediaRanges = Array.isArray(mediaRange) ? mediaRange : [mediaRange]
+    this.logger = logger
+    this.fetcher = fetcher
+  }
+
   /* eslint-disable jsdoc/no-undefined-types -- Resource is the return type of loadResource.
      js/doc linting should be smarter */
   /**
@@ -24,56 +35,41 @@ const waychaser = {
    * @throws {Error} If the server returns with a status >= 400
    */
   /* eslint-enable jsdoc/no-undefined-types */
-  load: async function (url, options) {
+  async load (url, options) {
     return loadResource(
       url,
       options,
-      this.defaultHandlers,
-      this.defaultMediaRanges,
-      this.defaultFetcher
+      this.handlers,
+      this.mediaRanges,
+      this.fetcher
     )
-  },
+  }
 
-  defaultHandlers: [
+  static defaultHandlers = [
     locationHeaderHandler,
     linkHeaderHandler,
     linkTemplateHeaderHandler,
     halHandler,
     sirenHandler
-  ],
+  ]
 
-  defaultMediaRanges: [
+  static defaultFetcher = fetch
+
+  static logger = logger.waychaser
+
+  static defaultMediaRanges = [
     'application/json',
     '*/*;q=0.8',
     MediaTypes.HAL,
     MediaTypes.SIREN
-  ],
+  ]
 
-  use: function (handler, mediaRange) {
-    return new waychaser.Loader(handler, mediaRange, this.defaultFetcher)
-  },
+  static defaultWaychaser = new WayChaser()
 
-  defaultFetcher: fetch,
-
-  // withFetcher (fetcher) {
-  //   return new waychaser.Loader(this.defaultHandlers, fetcher)
-  // },
-
-  Loader: class {
-    constructor (handler, mediaRange, fetcher) {
-      this.handlers = [handler]
-      this.mediaRanges = Array.isArray(mediaRange) ? mediaRange : [mediaRange]
-      this.logger = waychaser.logger
-      this.fetcher = fetcher
-    }
-
-    useDefaultHandlers () {
-      this.handlers.push(...waychaser.defaultHandlers)
-      this.mediaRanges.push(...waychaser.defaultMediaRanges)
-      return this
-    }
-
-    use (handler, mediaRange) {
+  use (handler, mediaRange) {
+    if (this === WayChaser.defaultWaychaser) {
+      return new WayChaser(handler, mediaRange)
+    } else {
       this.handlers.push(handler)
       if (Array.isArray(mediaRange)) {
         this.mediaRanges.push(...mediaRange)
@@ -82,24 +78,20 @@ const waychaser = {
       }
       return this
     }
+  }
 
-    // withFetcher (fetcher) {
-    //   this.fetcher = fetcher
-    //   return this
-    // }
+  withFetch (fetcher) {
+    this.fetcher = fetcher
+    return this
+  }
 
-    async load (url, options) {
-      return loadResource(
-        url,
-        options,
-        this.handlers,
-        this.mediaRanges,
-        this.fetcher
-      )
-    }
-  },
-
-  logger: logger.waychaser
+  useDefaultHandlers () {
+    this.handlers.push(...WayChaser.defaultHandlers)
+    this.mediaRanges.push(...WayChaser.defaultMediaRanges)
+    return this
+  }
 }
 
-export { waychaser, Operation, parseAccept }
+const waychaser = WayChaser.defaultWaychaser
+
+export { WayChaser, waychaser, Operation, parseAccept }

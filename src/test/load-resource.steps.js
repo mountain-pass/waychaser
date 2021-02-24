@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import { When, Then } from '@cucumber/cucumber'
 import logger from '../util/logger'
+import { API_ACCESS_PORT } from './config'
 
 function loadResourceByUrl (url) {
   logger.debug(`loading ${url}`)
@@ -23,7 +24,13 @@ When('waychaser loads that resource', async function () {
 })
 
 When("waychaser loads a resource that's not available", async function () {
-  this.result = await loadResourceByUrl.bind(this)(`${this.baseUrl}:33556/api`)
+  this.result = await loadResourceByUrl.bind(this)(
+    `${this.baseUrl.replace(
+      // eslint-disable-next-line security/detect-non-literal-regexp -- not regex DoS vulnerable
+      new RegExp(`(:${API_ACCESS_PORT})?$`),
+      ':33556'
+    )}/api`
+  )
 })
 
 Then('it will have loaded successfully', async function () {

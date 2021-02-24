@@ -1,5 +1,5 @@
 
-@skippable @wip @not-firefox @not-safari @not-ie @not-edge @not-iphone @not-android @not-remote @not-head
+@skippable @not-firefox @not-safari @not-ie @not-edge @not-iphone @not-android @not-remote @not-head
 Feature: Siren Example
 
   So that I can better understand how to use waychaser

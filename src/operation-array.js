@@ -15,18 +15,20 @@ export function OperationArray () {
 }
 OperationArray.prototype = []
 
-OperationArray.prototype.find = function (...arguments_) {
-  if (arguments_.length === 1 && typeof arguments_[0] === 'string') {
-    return this.find({ rel: arguments_[0] })
-  } else if (arguments_.length === 1 && typeof arguments_[0] === 'object') {
-    const query = arguments_[0]
-    return Array.prototype.find.bind(this)(objectFinder(query))
+OperationArray.prototype.find = function (query, thisArgument) {
+  const finder = Array.prototype.find.bind(this)
+  if (typeof query === 'string') {
+    return finder(objectFinder({ rel: query }), thisArgument)
+  } else if (typeof query === 'object') {
+    return finder(objectFinder(query), thisArgument)
   } else {
-    return Array.prototype.find.bind(this)(...arguments_)
+    return finder(query, thisArgument)
   }
 }
 
 OperationArray.prototype.invoke = function (relationship, context, options) {
+  logger.waychaser(`OperationArray.invoke: ${relationship}`)
+
   logger.waychaser('OPERATIONS', JSON.stringify(this, undefined, 2))
   const operation = this.find(relationship)
   logger.waychaser(
@@ -37,29 +39,29 @@ OperationArray.prototype.invoke = function (relationship, context, options) {
   return operation ? operation.invoke(context, options) : undefined
 }
 
-// export class OperationArray extends Array {
-//   find (...arguments_) {
-//     if (arguments_.length === 1 && typeof arguments_[0] === 'string') {
-//       return this.find({ rel: arguments_[0] })
-//     } else if (arguments_.length === 1 && typeof arguments_[0] === 'object') {
-//       const query = arguments_[0]
-//       return super.find(objectFinder(query))
-//     } else {
-//       return super.find(...arguments_)
-//     }
-//   }
+OperationArray.prototype.filter = function (query) {
+  if (typeof query === 'string') {
+    return this.filter({ rel: query })
+  } else if (typeof query === 'object') {
+    return this.filter(objectFinder(query))
+  } else {
+    return new OperationArray(...Array.prototype.filter.bind(this)(query))
+  }
+}
 
-//   async invoke (relationship, context, options) {
-//     logger.waychaser('OPERATIONS', JSON.stringify(this, undefined, 2))
-//     const operation = this.find(relationship)
-//     logger.waychaser(
-//       `operation ${JSON.stringify(relationship)}:`,
-//       JSON.stringify(operation, undefined, 2)
-//     )
-//     logger.waychaser('context:', JSON.stringify(context, undefined, 2))
-//     return operation.invoke(context, options)
-//   }
-// }
+OperationArray.prototype.findInRelated = async function (predicate) {
+  if (typeof predicate === 'object') {
+    return this.findInRelated(objectFinder(predicate))
+  } else {
+    for (const getter of this) {
+      const resource = await getter.invoke()
+      if (predicate(await resource.body())) {
+        return resource
+      }
+    }
+  }
+}
+
 /**
  * @param query
  */

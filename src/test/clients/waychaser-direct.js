@@ -3,6 +3,7 @@ import { waychaser } from '../../waychaser'
 import { WaychaserProxy } from './waychaser-proxy'
 import { parseAccept } from '../../util/parse-accept'
 import { SkippedError } from '@windyroad/cucumber-js-throwables'
+import { getAwsApiGatewaySchema } from '../examples/get-aws-api-gateway-schema'
 
 function handleResponse (promise) {
   return promise
@@ -27,6 +28,7 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async load (url) {
+    logger.debug('LOAD Fetcher: ', this.waychaser.fetcher)
     return handleResponse(this.waychaser.load(url))
   }
 
@@ -206,13 +208,12 @@ class WaychaserDirect extends WaychaserProxy {
     const parsedFunction = eval(`(${stringFunction})`) // eslint-disable-line no-eval -- we trust the feature file
     logger.debug(parsedFunction.toString())
     try {
-      const resource = await parsedFunction(waychaser, baseUrl)
-      logger.info(JSON.stringify(resource, undefined, 2))
+      const resource = await parsedFunction(this.waychaser, baseUrl)
       /* istanbul ignore else: only gets executed when there are test failures */
       if (resource.response.ok) {
         return { success: true, resource }
       } else {
-        if (resource.response.status >= 500) {
+        if (resource.response?.status >= 500) {
           throw new SkippedError(
             `Server is having issues. Status code ${resource.response.status}`
           )
@@ -229,6 +230,15 @@ class WaychaserDirect extends WaychaserProxy {
       /* istanbul ignore next: only gets executed when there are test failures */
       throw error_
     }
+  }
+
+  async withFetch (fetch) {
+    this.waychaser = this.waychaser.withFetch(fetch)
+    logger.debug('Fetcher: ', this.waychaser.fetcher)
+  }
+
+  async getAwsApiGatewaySchema (gatewayName, schemaName) {
+    return getAwsApiGatewaySchema(this.waychaser, gatewayName, schemaName)
   }
 }
 

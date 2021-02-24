@@ -69,7 +69,9 @@
 - [x] Remove @hapi/accept (too bloated)
 - Add examples and real APIs
   - [ ] HAL
+    - [ ] getting the embedded sub-entities
   - [x] Siren
+- [ ] add invocation arrays 
 - [ ] have `body()` interpret the `content-type` header
 - [ ] Fix release log and change log - it only includes last commit 😢
   - [ ] fix versioning. CUrrently we bump the version as the start of a set of changes, we don't know if there will be a breaking change or not.

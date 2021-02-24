@@ -90,6 +90,20 @@ class WaychaserProxy {
       `TODO: implement ${this.constructor.name}.${this.executeCode.name}`
     )
   }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async withFetch (fetch) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.withFetch.name}`
+    )
+  }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async getAwsApiGatewaySchema (gatewayName, schemaName) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getAwsApiGatewaySchema.name}`
+    )
+  }
 }
 
 export { WaychaserProxy }
