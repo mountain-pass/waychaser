@@ -9,6 +9,7 @@ import {
 } from 'unique-names-generator'
 import logger from '../util/logger'
 import MediaTypes from '../util/media-types'
+import { API_ACCESS_PORT } from './config'
 
 let pathCount = 0
 
@@ -483,7 +484,11 @@ Given(
     this.currentResourceRoute = randomApiPath()
     const links = createCustomBodyLink(
       relationship,
-      `${this.baseUrl}:33556/api`
+      `${this.baseUrl.replace(
+        // eslint-disable-next-line security/detect-non-literal-regexp -- not regex DoS vulnerable
+        new RegExp(`(:${API_ACCESS_PORT})?$`),
+        ':33556'
+      )}/api`
     )
     createLinkingResource.bind(this)(undefined, links, CUSTOM_BODY_MEDIA_TYPE)
   }
