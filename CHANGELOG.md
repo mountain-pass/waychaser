@@ -1,3 +1,9 @@
+## <small>3.0.19 (2021-02-24)</small>
+
+* fix(coverage): added missing aws keys to CI ([5f385f4](https://github.com/mountain-pass/waychaser/commit/5f385f4))
+
+
+
 ## <small>3.0.18 (2021-02-23)</small>
 
 * Merge pull request #254 from mountain-pass/dependabot/npm_and_yarn/babel/cli-7.13.0 ([c1bebbb](https://github.com/mountain-pass/waychaser/commit/c1bebbb)), closes [#254](https://github.com/mountain-pass/waychaser/issues/254)
