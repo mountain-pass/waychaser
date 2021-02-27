@@ -136,8 +136,8 @@
     "wait-for-browser-stack": "scripts/${npm_lifecycle_event}.js"
   },
   "files": [
-    "/dist/*.js",
-    "/dist/*.js.map"
+    "/dist/**/*.js",
+    "/dist/**/*.js.map"
   ],
   "dependencies": {
     "debug": "^4.2.0",
