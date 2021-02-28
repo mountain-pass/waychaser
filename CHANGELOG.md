@@ -1,3 +1,9 @@
+## <small>3.0.20 (2021-02-28)</small>
+
+* fix(package): added missing files ([13eded3](https://github.com/mountain-pass/waychaser/commit/13eded3))
+
+
+
 ## <small>3.0.19 (2021-02-24)</small>
 
 * fix(coverage): added missing aws keys to CI ([5f385f4](https://github.com/mountain-pass/waychaser/commit/5f385f4))
