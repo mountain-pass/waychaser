@@ -62,7 +62,7 @@ class WebdriverManager {
         window.testResults = []
         window.testLogs = []
         window.testLogger = function (arguments_) {
-          console.log(arguments_)
+          // console.log(arguments_)
           // window.testLogs.push(arguments_)
           // // eslint-disable-next-line unicorn/prefer-query-selector
           // var logsElement = document.getElementById('logs') // eslint-disable-line no-var

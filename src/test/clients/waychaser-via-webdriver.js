@@ -11,6 +11,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   }
 
   async load (url) {
+    await this.manager.getBrowserLogs()
     logger.debug(`loading ${url}`)
     const rval = await this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
@@ -30,7 +31,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       },
       url
     )
-
+    await this.manager.getBrowserLogs()
     return rval
   }
 

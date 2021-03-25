@@ -164,12 +164,12 @@ Then('the body without the links will contain', async function (
   documentString
 ) {
   const expectedBody = JSON.parse(documentString)
-  await checkBody.bind(this)(expectedBody, actualBody => {
-    delete actualBody._links
-    delete actualBody.links
-    delete actualBody.custom_links
-    return actualBody
-  })
+  await checkBody.bind(this)(
+    expectedBody,
+    ({ _links, links, customLinks, ...actualBody }) => {
+      return actualBody
+    }
+  )
 })
 
 When('the body will contain', async function (documentString) {
