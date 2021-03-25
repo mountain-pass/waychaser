@@ -16,7 +16,7 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
 
 [![Quality](https://img.shields.io/codacy/grade/940768d54f7545f7b42f89b26c23c751?logo=codacy)](https://www.codacy.com/gh/mountain-pass/waychaser/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mountain-pass/waychaser&amp;utm_campaign=Badge_Grade) [![Coverage](https://img.shields.io/codacy/coverage/940768d54f7545f7b42f89b26c23c751?logo=codacy)](https://www.codacy.com/gh/mountain-pass/waychaser/dashboard?utm_source=github.com&utm_medium=referral&utm_content=mountain-pass/waychaser&utm_campaign=Badge_Coverage)
 
-[![source code vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?label=source%20code%20vulnerabilities&logo=snyk)](https://snyk.io/test/github/mountain-pass/waychaser) [![npm package vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@3.0.20?label=npm%20package%20vulnerabilties&logo=snyk)](https://snyk.io/test/npm/@mountainpass/waychaser/3.0.20)
+[![source code vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/mountain-pass/waychaser?label=source%20code%20vulnerabilities&logo=snyk)](https://snyk.io/test/github/mountain-pass/waychaser) [![npm package vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@mountainpass/waychaser@3.0.21?label=npm%20package%20vulnerabilties&logo=snyk)](https://snyk.io/test/npm/@mountainpass/waychaser/3.0.21)
 
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
@@ -85,7 +85,7 @@ try {
 ```html
 <script
   type="text/javascript"
-  src="https://unpkg.com/@mountainpass/waychaser@3.0.20"
+  src="https://unpkg.com/@mountainpass/waychaser@3.0.21"
 ></script>
 
 ...
