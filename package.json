@@ -212,7 +212,7 @@
     "husky": "^5.0.9",
     "imagemin-lint-staged": "^0.4.0",
     "istanbul": "^0.4.5",
-    "jscpd": "^3.3.21",
+    "jscpd": "^3.3.25",
     "jsdoc": "^3.6.6",
     "lint-staged": "^10.2.11",
     "localtunnel": "^2.0.1",
