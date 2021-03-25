@@ -1,3 +1,9 @@
+## <small>3.0.21 (2021-03-25)</small>
+
+* fix(duplication): fixed crash when using duplication detection ([d7e609f](https://github.com/mountain-pass/waychaser/commit/d7e609f))
+
+
+
 ## <small>3.0.20 (2021-02-28)</small>
 
 * fix(package): added missing files ([13eded3](https://github.com/mountain-pass/waychaser/commit/13eded3))
