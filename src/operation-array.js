@@ -29,12 +29,12 @@ OperationArray.prototype.find = function (query, thisArgument) {
 OperationArray.prototype.invoke = function (relationship, context, options) {
   logger.waychaser(`OperationArray.invoke: ${relationship}`)
 
-  logger.waychaser('OPERATIONS', JSON.stringify(this, undefined, 2))
+  //  logger.waychaser('OPERATIONS', JSON.stringify(this, undefined, 2))
   const operation = this.find(relationship)
-  logger.waychaser(
-    `operation ${JSON.stringify(relationship)}:`,
-    JSON.stringify(operation, undefined, 2)
-  )
+  // logger.waychaser(
+  //   `operation ${JSON.stringify(relationship)}:`,
+  //   JSON.stringify(operation, undefined, 2)
+  // )
   logger.waychaser('context:', JSON.stringify(context, undefined, 2))
   return operation ? operation.invoke(context, options) : undefined
 }

@@ -10,6 +10,32 @@ import MediaTypes from './util/media-types'
 import fetch from 'isomorphic-fetch'
 import { locationHeaderHandler } from './handlers/location-header/location-header-handler'
 
+/**
+ * @param fetch
+ */
+function bodyStoringFetch (fetch) {
+  return function (url, options) {
+    return fetch(url, options).then(response => {
+      response.originalJson = response.json
+      response.json = async function () {
+        logger.waychaser('getting json')
+        // WARNING when `await this.json()` is called multiple times, `this.bodyused` can be set to true
+        // BEFORE the original `await this.json()` returns
+        // TL;DR bodyUsed cannot be trusted
+        // to prevent the above funkyness, instead of trying to cache the returned value
+        // we cache the promise
+        if (this.bodyReadPromise) {
+          return await this.bodyReadPromise
+        } else {
+          this.bodyReadPromise = this.originalJson()
+          return await this.bodyReadPromise
+        }
+      }
+      return response
+    })
+  }
+}
+
 class WayChaser {
   constructor (
     handler = WayChaser.defaultHandlers,
@@ -17,10 +43,11 @@ class WayChaser {
     fetcher = WayChaser.defaultFetcher,
     logger = WayChaser.logger
   ) {
-    this.handlers = Array.isArray(handler) ? handler : [handler]
-    this.mediaRanges = Array.isArray(mediaRange) ? mediaRange : [mediaRange]
-    this.logger = logger
-    this.fetcher = fetcher
+    this.waychaserContext = {
+      handlers: Array.isArray(handler) ? handler : [handler],
+      mediaRanges: Array.isArray(mediaRange) ? mediaRange : [mediaRange],
+      fetcher: bodyStoringFetch(fetcher)
+    }
   }
 
   /* eslint-disable jsdoc/no-undefined-types -- Resource is the return type of loadResource.
@@ -36,13 +63,7 @@ class WayChaser {
    */
   /* eslint-enable jsdoc/no-undefined-types */
   async load (url, options) {
-    return loadResource(
-      url,
-      options,
-      this.handlers,
-      this.mediaRanges,
-      this.fetcher
-    )
+    return loadResource(url, options, this.waychaserContext)
   }
 
   static defaultHandlers = [
@@ -70,24 +91,24 @@ class WayChaser {
     if (this === WayChaser.defaultWaychaser) {
       return new WayChaser(handler, mediaRange)
     } else {
-      this.handlers.push(handler)
+      this.waychaserContext.handlers.push(handler)
       if (Array.isArray(mediaRange)) {
-        this.mediaRanges.push(...mediaRange)
+        this.waychaserContext.mediaRanges.push(...mediaRange)
       } else {
-        this.mediaRanges.push(mediaRange)
+        this.waychaserContext.mediaRanges.push(mediaRange)
       }
       return this
     }
   }
 
   withFetch (fetcher) {
-    this.fetcher = fetcher
+    this.waychaserContext.fetcher = bodyStoringFetch(fetcher)
     return this
   }
 
   useDefaultHandlers () {
-    this.handlers.push(...WayChaser.defaultHandlers)
-    this.mediaRanges.push(...WayChaser.defaultMediaRanges)
+    this.waychaserContext.handlers.push(...WayChaser.defaultHandlers)
+    this.waychaserContext.mediaRanges.push(...WayChaser.defaultMediaRanges)
     return this
   }
 }

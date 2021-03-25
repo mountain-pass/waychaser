@@ -144,6 +144,7 @@
     "form-data": "^3.0.0",
     "http-link-header": "^1.0.2",
     "isomorphic-fetch": "^3.0.0",
+    "jsonpointer": "^4.1.0",
     "qs-stringify": "^1.2.1",
     "uri-template-lite": "^20.5.0"
   },
@@ -177,7 +178,7 @@
     "bufferutil": "^4.0.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "chromedriver": "^87.0.5",
+    "chromedriver": "^89.0.0",
     "clean-webpack-plugin": "^3.0.0",
     "concurrently": "^5.3.0",
     "conventional-changelog-cli": "^2.1.1",

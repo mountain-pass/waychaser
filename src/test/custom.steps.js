@@ -21,9 +21,9 @@ Given(
       /* istanbul ignore next: won't work in browser otherwise */
       (response, bodyGetter) => {
         return bodyGetter().then(body => {
-          return Object.keys(body.custom_links || {}).map(relationship => {
+          return Object.keys(body.customLinks || {}).map(relationship => {
             return Operation.builder(relationship)
-              .uri(body.custom_links[relationship].href)
+              .uri(body.customLinks[relationship].href)
               .build()
           })
         })

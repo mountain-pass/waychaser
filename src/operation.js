@@ -1,4 +1,5 @@
 import { loadResource } from './util/load-resource'
+import { loadResourceFragment } from './util/load-resource-fragment'
 import logger from './util/logger'
 import { URI } from 'uri-template-lite'
 import qsStringify from 'qs-stringify'
@@ -56,6 +57,14 @@ export class Operation {
     const expandedUri = URI.expand(this.uri, context || {})
 
     const invokeUrl = new URL(expandedUri, contextUrl)
+    const invokeUrlWithOutHash = new URL(expandedUri, contextUrl)
+    const hash = invokeUrlWithOutHash.hash
+    invokeUrlWithOutHash.hash = ''
+    const invokeUrlWithOutHashAsString = invokeUrlWithOutHash.toString()
+    if (hash !== '' && invokeUrlWithOutHashAsString === contextUrl) {
+      return loadResourceFragment(hash, this.response, this.waychaserContext)
+    }
+
     const body = {}
     Object.keys(parameters).forEach(key => {
       body[key] = context?.[key]
@@ -106,9 +115,7 @@ export class Operation {
     return this.loadResource(
       invokeUrl,
       Object.assign(baseOptions, options),
-      this.handlers,
-      this.mediaRanges,
-      this.fetcher
+      this.waychaserContext
     )
   }
 

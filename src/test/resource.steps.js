@@ -19,13 +19,13 @@ const CUSTOM_BODY_MEDIA_TYPE = 'application/custom-body+json'
 const CUSTOM_LINKS_BODY_MEDIA_TYPE = 'application/custom-body-links+json'
 const LOCATION_LINK_MEDIA_TYPE = 'application/location+json'
 
-const randomApiPath = () => {
+export const randomApiPath = () => {
   return `/api/${pathCount++}-${uniqueNamesGenerator({
     dictionaries: [adjectives, colors, animals]
   })}`
 }
 
-function createLinks (relationship, uri, method) {
+export function createLinks (relationship, uri, method) {
   const links = new LinkHeader()
   links.set({
     rel: relationship,
@@ -41,7 +41,8 @@ function sendResponse (
   links,
   linkTemplates,
   mediaType = 'application/json',
-  curies
+  curies,
+  body
 ) {
   const bodyOperations = {}
 
@@ -64,9 +65,9 @@ function sendResponse (
       response.header('location', links.refs[0].uri)
       break
     case CUSTOM_BODY_MEDIA_TYPE:
-      bodyOperations.custom_links = {}
+      bodyOperations.customLinks = {}
       links.refs.forEach(reference => {
-        bodyOperations.custom_links[reference.rel] = {
+        bodyOperations.customLinks[reference.rel] = {
           href: reference.uri
         }
       })
@@ -141,7 +142,7 @@ function sendResponse (
 
   response.status(status).send(
     Object.assign(
-      {
+      body || {
         status
       },
       bodyOperations
@@ -255,21 +256,31 @@ async function createRouteWithLinks (
   links,
   linkTemplates,
   mediaType,
-  curies
+  curies,
+  body
 ) {
   const router = await rootRouter.route(route)
   await router.get(async (request, response) => {
-    sendResponse(response, status, links, linkTemplates, mediaType, curies)
+    sendResponse(
+      response,
+      status,
+      links,
+      linkTemplates,
+      mediaType,
+      curies,
+      body
+    )
   })
   return router
 }
 
-async function createOkRouteWithLinks (
+export async function createOkRouteWithLinks (
   route,
   links,
   linkTemplates,
   mediaType,
-  curies
+  curies,
+  body
 ) {
   return createRouteWithLinks(
     this.router,
@@ -278,7 +289,8 @@ async function createOkRouteWithLinks (
     links,
     linkTemplates,
     mediaType,
-    curies
+    curies,
+    body
   )
 }
 
@@ -357,7 +369,7 @@ Given(
   async function (relationship, responseBody) {
     this.currentResourceRoute = randomApiPath()
     const links = {
-      custom_links: { [relationship]: { href: this.currentResourceRoute } }
+      customLinks: { [relationship]: { href: this.currentResourceRoute } }
     }
     await createLinkingResource.bind(this)(
       responseBody,
@@ -472,7 +484,7 @@ async function createResourceLinkingToSelf (relationship, mediaType) {
 
 function createCustomBodyLink (relationship, to) {
   return {
-    custom_links: {
+    customLinks: {
       [relationship]: { href: to }
     }
   }

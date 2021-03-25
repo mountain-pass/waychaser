@@ -1,21 +1,16 @@
 import { OperationArray } from './operation-array'
 import logger from './util/logger'
+import pointer from 'jsonpointer'
 
 export class Resource {
-  static async create (response, handlers, mediaRanges, fetcher) {
+  static async create (response, waychaserContext) {
+    logger.waychaser('creating resource')
     const operations = []
-    let body
     let stop = false
-    for (const handler of handlers) {
+    for (const handler of waychaserContext.handlers) {
       const handledOperations = await handler(
         response,
-        async () => {
-          if (!body) {
-            body = await response.json()
-          }
-          logger.waychaser('BODY', JSON.stringify(body, undefined, 2))
-          return body
-        },
+        () => response.json(),
         () => {
           stop = true
         }
@@ -27,27 +22,25 @@ export class Resource {
         break
       }
     }
-    return new Resource(
-      response,
-      body,
-      operations,
-      handlers,
-      mediaRanges,
-      fetcher
-    )
+    return new Resource(response, undefined, operations, waychaserContext)
   }
 
-  constructor (response, body, links, handlers, mediaRanges, fetcher) {
+  static createFromFragment (response, jsonPointer, waychaserContext) {
+    const operations = []
+    return new Resource(response, jsonPointer, operations, waychaserContext)
+  }
+
+  constructor (response, jsonPointer, links, waychaserContext) {
     this.response = response
-    this._body = body
+    this.jsonPointer = jsonPointer
     this.operations = new OperationArray()
     links.forEach(operation => {
       operation.baseUrl = response.url
-      operation.handlers = handlers
-      operation.mediaRanges = mediaRanges
-      operation.fetcher = fetcher
+      operation.waychaserContext = waychaserContext
+      operation.response = response
     })
     this.operations.push(...links)
+    logger.waychaser('resource created')
   }
 
   get ops () {
@@ -60,16 +53,7 @@ export class Resource {
   }
 
   async body () {
-    if (!this.response.bodyUsed) {
-      // const contentType = this.response.headers.get('content-type')
-      // switch (contentType) {
-      //   case 'image/png':
-      //     this._body = await this.response.blob()
-      //     break
-      //   default:
-      this._body = await this.response.json()
-      // }
-    }
-    return this._body
+    const fullBody = await this.response.json()
+    return this.jsonPointer ? pointer.get(fullBody, this.jsonPointer) : fullBody
   }
 }
