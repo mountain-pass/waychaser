@@ -99,7 +99,7 @@ jobs:
           path: report
 
   audit:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && ! startsWith( github.ref, 'refs/heads/dependabot' )"
 
     runs-on: ubuntu-latest
 
