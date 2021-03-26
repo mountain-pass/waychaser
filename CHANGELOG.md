@@ -1,3 +1,9 @@
+## <small>3.0.22 (2021-03-26)</small>
+
+* Merge pull request #274 from mountain-pass/dependabot/npm_and_yarn/is-svg-4.3.1 ([1be30c1](https://github.com/mountain-pass/waychaser/commit/1be30c1)), closes [#274](https://github.com/mountain-pass/waychaser/issues/274)
+
+
+
 ## <small>3.0.21 (2021-03-25)</small>
 
 * fix(duplication): fixed crash when using duplication detection ([d7e609f](https://github.com/mountain-pass/waychaser/commit/d7e609f))
