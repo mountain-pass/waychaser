@@ -742,3 +742,31 @@ jobs:
           git commit -m "chore(release): version bump to $NEXT_VERSION. :tada: [skip-ci]"
           git pull --rebase
           git push origin HEAD:main
+
+
+  not-publish:
+    needs:
+      - check-secret
+      - check-coverage-local
+      - check-coverage-local-not-skippable
+      - check-coverage
+      - lint
+      - audit
+      - security
+      - build
+      - duplication
+    if: |
+      !(needs.check-secret.outputs.SECRETS_SET == 'true' &&
+      github.ref == 'refs/heads/main') && 
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && 
+      ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - run: |
+          echo "this is just to make sure the dependant jobs passed"
