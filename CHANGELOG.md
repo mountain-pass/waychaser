@@ -1,3 +1,9 @@
+## <small>3.0.23 (2021-03-26)</small>
+
+* Merge pull request #280 from mountain-pass/dependabot/npm_and_yarn/snyk-1.511.0 ([5276911](https://github.com/mountain-pass/waychaser/commit/5276911)), closes [#280](https://github.com/mountain-pass/waychaser/issues/280)
+
+
+
 ## <small>3.0.22 (2021-03-26)</small>
 
 * Merge pull request #274 from mountain-pass/dependabot/npm_and_yarn/is-svg-4.3.1 ([1be30c1](https://github.com/mountain-pass/waychaser/commit/1be30c1)), closes [#274](https://github.com/mountain-pass/waychaser/issues/274)
