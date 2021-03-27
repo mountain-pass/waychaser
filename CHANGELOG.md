@@ -1,3 +1,9 @@
+## <small>3.0.24 (2021-03-27)</small>
+
+* Merge pull request #283 from mountain-pass/dependabot/npm_and_yarn/webpack-cli-4.6.0 ([dbe5dd2](https://github.com/mountain-pass/waychaser/commit/dbe5dd2)), closes [#283](https://github.com/mountain-pass/waychaser/issues/283)
+
+
+
 ## <small>3.0.23 (2021-03-26)</small>
 
 * Merge pull request #280 from mountain-pass/dependabot/npm_and_yarn/snyk-1.511.0 ([5276911](https://github.com/mountain-pass/waychaser/commit/5276911)), closes [#280](https://github.com/mountain-pass/waychaser/issues/280)
