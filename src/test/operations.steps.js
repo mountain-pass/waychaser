@@ -54,7 +54,7 @@ async function invoke (previousResult, relationship, context, options) {
   return this.results
 }
 
-async function invokeSuccessfully (previousResult, relationship) {
+export async function invokeSuccessfully (previousResult, relationship) {
   await invoke.bind(this)(previousResult, relationship)
   for (const key in this.results) {
     expect(this.results[key].success).to.be.true()

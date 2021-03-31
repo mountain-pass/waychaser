@@ -72,7 +72,7 @@
     - [ ] getting the embedded sub-entities
   - [x] Siren
 - [x] add support for retrieving fragment documents
-  - [ ] and providing the appropriately anchored operations
+  - [x] and providing the appropriately anchored operations
 - [x] Dependabot branches shouldn't run audit. Because the branches restricted to 10, this can prevent the update of 
 the package that is causing the audit failure
 - [ ] add invocation arrays 
