@@ -17,7 +17,9 @@ class OperationBuilder {
   }
 
   method (method) {
-    this.method = method
+    if (method) {
+      this.method = method
+    }
     return this
   }
 
