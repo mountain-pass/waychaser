@@ -6,8 +6,9 @@ import pointer from 'jsonpointer'
  * @param root0
  * @param root0.handlers
  * @param root0.response
+ * @param root0.anchor
  */
-async function parseOperations ({ handlers, response }) {
+async function parseOperations ({ handlers, response, anchor }) {
   const operations = []
   let stop = false
   for (const handler of handlers) {
@@ -25,32 +26,27 @@ async function parseOperations ({ handlers, response }) {
       break
     }
   }
-  return operations
+  return operations.filter(operation => {
+    return operation.anchor === anchor
+  })
 }
 
 export class Resource {
   static async create (response, waychaserContext) {
     logger.waychaser('creating resource')
-    const operations = (
-      await parseOperations({
-        handlers: waychaserContext.handlers,
-        response
-      })
-    ).filter(operation => {
-      return operation.anchor === undefined
+    const operations = await parseOperations({
+      handlers: waychaserContext.handlers,
+      response
     })
 
     return new Resource(response, undefined, operations, waychaserContext)
   }
 
   static async createFromFragment (response, jsonPointer, waychaserContext) {
-    const operations = (
-      await parseOperations({
-        handlers: waychaserContext.handlers,
-        response
-      })
-    ).filter(operation => {
-      return operation.anchor === `#${jsonPointer}`
+    const operations = await parseOperations({
+      handlers: waychaserContext.handlers,
+      response,
+      anchor: `#${jsonPointer}`
     })
     // OPTIONS
     // we can either
