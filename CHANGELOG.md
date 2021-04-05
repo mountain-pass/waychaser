@@ -1,3 +1,9 @@
+## <small>3.0.26 (2021-04-05)</small>
+
+* Merge pull request #228 from mountain-pass/dependabot/npm_and_yarn/depcheck-1.4.0 ([0d84847](https://github.com/mountain-pass/waychaser/commit/0d84847)), closes [#228](https://github.com/mountain-pass/waychaser/issues/228)
+
+
+
 ## <small>3.0.25 (2021-03-29)</small>
 
 * Merge pull request #284 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-32.3.0 ([8f3a67d](https://github.com/mountain-pass/waychaser/commit/8f3a67d)), closes [#284](https://github.com/mountain-pass/waychaser/issues/284)
