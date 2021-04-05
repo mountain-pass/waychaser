@@ -68,9 +68,9 @@ export class Operation {
     }
 
     const body = {}
-    Object.keys(parameters).forEach(key => {
+    for (const key of Object.keys(parameters)) {
       body[key] = context?.[key]
-    })
+    }
 
     let encodedContent
     let headers

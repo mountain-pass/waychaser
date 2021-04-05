@@ -13,10 +13,10 @@ export async function sirenActionHandler (bodyGetter) {
   const operations = []
   const body = await bodyGetter()
   if (body.actions) {
-    body.actions?.forEach(action => {
+    for (const action of body.actions) {
       const operation = mapSirenActionToOperation(action)
       operations.push(operation)
-    })
+    }
   }
   return operations
 }

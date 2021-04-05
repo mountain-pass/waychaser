@@ -9,9 +9,9 @@ async function checkBody (
   }
 ) {
   const bodies = await this.waychaserProxy.getBodies(this.results)
-  bodies.forEach(body => {
+  for (const body of bodies) {
     expect(bodyMutator(body)).to.deep.equal(expectedBody)
-  })
+  }
 }
 
 async function checkUrls (expectedUrl) {
@@ -24,9 +24,9 @@ async function checkUrls (expectedUrl) {
   const urls = await this.waychaserProxy.getUrls(this.results)
 
   const previousResultUrl = expectedUrl === undefined ? urls.pop() : expectedUrl
-  urls.forEach(url => {
+  for (const url of urls) {
     expect(url).to.equal(previousResultUrl)
-  })
+  }
 }
 
 async function expectFindOne (relationship, expectation) {
@@ -122,9 +122,9 @@ Then(
       this.results[0],
       'missing'
     )
-    results.forEach(result => {
+    for (const result of results) {
       expect(result).to.be.undefined()
-    })
+    }
   }
 )
 

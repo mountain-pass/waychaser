@@ -66,31 +66,31 @@ function sendResponse (
       break
     case CUSTOM_BODY_MEDIA_TYPE:
       bodyOperations.customLinks = {}
-      links.refs.forEach(reference => {
+      for (const reference of links.refs) {
         bodyOperations.customLinks[reference.rel] = {
           href: reference.uri
         }
-      })
+      }
       break
     case CUSTOM_LINKS_BODY_MEDIA_TYPE:
       bodyOperations._links = {}
-      links.refs.forEach(reference => {
+      for (const reference of links.refs) {
         bodyOperations._links[reference.rel] = {
           href: reference.uri
         }
-      })
+      }
       break
     case MediaTypes.HAL:
       bodyOperations._links = {}
       if (links) {
-        links.refs.forEach(link => {
+        for (const link of links.refs) {
           bodyOperations._links[link.rel] = { href: link.uri }
-        })
+        }
       }
       if (linkTemplates) {
-        linkTemplates.refs.forEach(link => {
+        for (const link of linkTemplates.refs) {
           bodyOperations._links[link.rel] = { href: link.uri, templated: true }
-        })
+        }
       }
       if (curies) {
         bodyOperations._links.curies = curies.map(curie => {
@@ -112,14 +112,14 @@ function sendResponse (
       */
       if (links) {
         bodyOperations.links = []
-        links.refs.forEach(link => {
+        for (const link of links.refs) {
           bodyOperations.links.push({ rel: [link.rel], href: link.uri })
-        })
+        }
       }
 
       if (linkTemplates) {
         bodyOperations.actions = []
-        linkTemplates.refs.forEach(link => {
+        for (const link of linkTemplates.refs) {
           const bodyParameters = JSON.parse(link['params*'].value)
 
           const sirenBodyParameters = Object.keys(bodyParameters).map(key => {
@@ -132,7 +132,7 @@ function sendResponse (
             ...(link['accept*']?.value && { type: link['accept*'].value }),
             ...(link['params*']?.value && { fields: sirenBodyParameters })
           })
-        })
+        }
       }
       break
   }
@@ -197,11 +197,11 @@ async function createDynamicResourceRoute (
       request.params
     )
     if (contentTypes) {
-      if (request.headers['content-type']?.startsWith('multipart/form-data')) {
-        responseBody['content-type'] = 'multipart/form-data'
-      } else {
-        responseBody['content-type'] = request.headers['content-type']
-      }
+      responseBody['content-type'] = request.headers[
+        'content-type'
+      ]?.startsWith('multipart/form-data')
+        ? 'multipart/form-data'
+        : request.headers['content-type']
     }
     if (headerToReturn) {
       responseBody[headerToReturn] = request.headers[headerToReturn]
@@ -212,9 +212,9 @@ async function createDynamicResourceRoute (
 
   const bodyParameters = {}
   const filteredBodyParameters = filterParameters(parameters, 'body')
-  filteredBodyParameters.forEach(parameter_ => {
+  for (const parameter_ of filteredBodyParameters) {
     bodyParameters[parameter_.NAME] = {}
-  })
+  }
 
   const acceptArray = Array.isArray(contentTypes)
     ? contentTypes

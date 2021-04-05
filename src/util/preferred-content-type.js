@@ -14,9 +14,7 @@ export function preferredContentType (
     const acceptable = parseAccept(accept)
 
     const acceptableMediaTypes = acceptable.find(row => {
-      return supportedContentTypes.some(mediaType => {
-        return row.type === mediaType
-      })
+      return supportedContentTypes.includes(row.type)
     })
 
     return acceptableMediaTypes.type

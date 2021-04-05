@@ -123,7 +123,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
         options,
         { start: batchStart, end: batchEnd }
       )
-      allResults = allResults.concat(batchResults)
+      allResults = [...allResults, ...batchResults]
     }
     assert.equal(allResults.length, this.manager.invokeScriptCount)
     // when an matching operation is not found, `invoke` returns `undefined`, but when `undefined` is converted
