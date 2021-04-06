@@ -1,3 +1,9 @@
+## <small>3.0.27 (2021-04-06)</small>
+
+* Merge pull request #300 from mountain-pass/dependabot/npm_and_yarn/snyk-1.523.0 ([e79d0de](https://github.com/mountain-pass/waychaser/commit/e79d0de)), closes [#300](https://github.com/mountain-pass/waychaser/issues/300)
+
+
+
 ## <small>3.0.26 (2021-04-05)</small>
 
 * Merge pull request #228 from mountain-pass/dependabot/npm_and_yarn/depcheck-1.4.0 ([0d84847](https://github.com/mountain-pass/waychaser/commit/0d84847)), closes [#228](https://github.com/mountain-pass/waychaser/issues/228)
