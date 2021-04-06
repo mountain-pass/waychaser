@@ -9,6 +9,7 @@ async function checkBody (
   }
 ) {
   const bodies = await this.waychaserProxy.getBodies(this.results)
+  // eslint-disable-next-line unicorn/no-array-for-each
   bodies.forEach(body => {
     expect(bodyMutator(body)).to.deep.equal(expectedBody)
   })

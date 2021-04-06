@@ -197,11 +197,11 @@ async function createDynamicResourceRoute (
       request.params
     )
     if (contentTypes) {
-      if (request.headers['content-type']?.startsWith('multipart/form-data')) {
-        responseBody['content-type'] = 'multipart/form-data'
-      } else {
-        responseBody['content-type'] = request.headers['content-type']
-      }
+      responseBody['content-type'] = request.headers[
+        'content-type'
+      ]?.startsWith('multipart/form-data')
+        ? 'multipart/form-data'
+        : request.headers['content-type']
     }
     if (headerToReturn) {
       responseBody[headerToReturn] = request.headers[headerToReturn]

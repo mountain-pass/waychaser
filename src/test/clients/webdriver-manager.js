@@ -130,11 +130,12 @@ class WebdriverManager {
           }
         ]
 
-        const invocables = searchables.concat([
+        const invocables = [
+          ...searchables,
           id => {
             return window.testResults[id]
           }
-        ])
+        ]
 
         function waychaserInvokeAndHandle (invokable, query, context, options) {
           return window.handleResponse(
