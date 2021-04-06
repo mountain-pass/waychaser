@@ -9,10 +9,10 @@ import { sirenLinkHandler } from './siren-link-handler'
 export async function sirenHandler (response, bodyGetter) {
   const contentType = response.headers.get('content-type')?.split(';')
   if (contentType?.[0] === MediaTypes.SIREN) {
-    return [
-      ...(await sirenLinkHandler(bodyGetter)),
-      ...(await sirenActionHandler(bodyGetter))
-    ]
+    return [].concat(
+      await sirenLinkHandler(bodyGetter),
+      await sirenActionHandler(bodyGetter)
+    )
   }
   return []
 }

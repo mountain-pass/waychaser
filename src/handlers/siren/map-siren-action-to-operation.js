@@ -8,11 +8,9 @@ import { Operation } from '../../waychaser'
 export function mapSirenActionToOperation (action) {
   const { name, href, fields, type, ...otherProperties } = action
   const bodyParameters = {}
-  if (fields) {
-    for (const parameter of fields) {
-      bodyParameters[parameter.name] = {}
-    }
-  }
+  fields?.forEach(parameter => {
+    bodyParameters[parameter.name] = {}
+  })
   return Operation.builder(name)
     .uri(href)
     .accept(type)

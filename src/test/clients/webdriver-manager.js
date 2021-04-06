@@ -130,12 +130,11 @@ class WebdriverManager {
           }
         ]
 
-        const invocables = [
-          ...searchables,
+        const invocables = searchables.concat([
           id => {
             return window.testResults[id]
           }
-        ]
+        ])
 
         function waychaserInvokeAndHandle (invokable, query, context, options) {
           return window.handleResponse(
@@ -173,17 +172,17 @@ class WebdriverManager {
         }
 
         window.waychaserInvokeFunctions = []
-        for (const invokable of invocables) {
-          for (const query of queries) {
+        invocables.forEach(invokable => {
+          queries.forEach(query =>
             addInvokeFunction(waychaserInvokeAndHandle, invokable, query)
-          }
-        }
+          )
+        })
 
-        for (const searchable of searchables) {
-          for (const query of queries) {
+        searchables.forEach(searchable => {
+          queries.forEach(query =>
             addInvokeFunction(waychaserFindInvokeAndHandle, searchable, query)
-          }
-        }
+          )
+        })
       },
       this.browser
     )
@@ -298,9 +297,9 @@ class WebdriverManager {
         .logs()
         .get(logging.Type.BROWSER)
         .then(entries => {
-          for (const entry of entries) {
+          entries.forEach(entry => {
             logger.browser('[%s] %s', entry.level.name, entry.message)
-          }
+          })
         })
     }
   }

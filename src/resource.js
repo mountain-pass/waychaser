@@ -72,11 +72,11 @@ export class Resource {
     this.response = response
     this.jsonPointer = jsonPointer
     this.operations = new OperationArray()
-    for (const operation of links) {
+    links.forEach(operation => {
       operation.baseUrl = response.url
       operation.waychaserContext = waychaserContext
       operation.response = response
-    }
+    })
     this.operations.push(...links)
     logger.waychaser('resource created')
   }

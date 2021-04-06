@@ -16,12 +16,12 @@ export function parseAccept (accept) {
         parentType: types[0],
         subType: types[1]
       }
-      for (const field of fields) {
+      fields.forEach(field => {
         const parsedFields = field.split('=')
         if (field[0] === 'q') {
           parsedEntry[parsedFields[0]] = Number.parseFloat(parsedFields[1])
         }
-      }
+      })
       if (parsedEntry.q === undefined) {
         parsedEntry.q = 1
       }

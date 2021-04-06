@@ -16,22 +16,22 @@ export async function halHandler (response, bodyGetter) {
       const curies = {}
       if (body._links.curies) {
         if (Array.isArray(body._links.curies)) {
-          for (const curie of body._links.curies) {
+          body._links.curies.forEach(curie => {
             curies[curie.name] = curie.href
-          }
+          })
         } else {
           curies[body._links.curies.name] = body._links.curies.href
         }
       }
-      for (const key of Object.keys(body._links)) {
+      Object.keys(body._links).forEach(key => {
         if (Array.isArray(body._links[key])) {
-          for (const link of body._links[key]) {
+          body._links[key].forEach(link => {
             operations.push(mapHalLinkToOperation(key, link, curies))
-          }
+          })
         } else {
           operations.push(mapHalLinkToOperation(key, body._links[key], curies))
         }
-      }
+      })
     }
   }
   return operations

@@ -7,12 +7,12 @@ export async function sirenLinkHandler (bodyGetter) {
   const operations = []
   const body = await bodyGetter()
   if (body.links) {
-    for (const link of body.links) {
-      for (const relationship of link.rel) {
+    body.links?.forEach(link => {
+      link.rel.forEach(relationship => {
         const mappedLink = mapSirenLinkToOperation(relationship, link)
         operations.push(mappedLink)
-      }
-    }
+      })
+    })
   }
   return operations
 }
