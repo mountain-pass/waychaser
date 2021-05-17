@@ -35,19 +35,24 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     return rval
   }
 
-  async getOperationsCounts (results) {
+  async getOperationsCounts (results, filter) {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function (results, done) {
+      function (results, filter, done) {
         const counts = {}
         for (const key in results) {
-          counts[`${key}-operations`] =
-            window.testResults[results[key].id].operations.length
-          counts[`${key}-ops`] = window.testResults[results[key].id].ops.length
+          counts[`${key}-operations`] = filter
+            ? window.testResults[results[key].id].operations.filter(filter)
+                .length
+            : window.testResults[results[key].id].operations.length
+          counts[`${key}-ops`] = filter
+            ? window.testResults[results[key].id].ops.filter(filter).length
+            : window.testResults[results[key].id].ops.length
         }
         done(counts)
       },
-      results
+      results,
+      filter
     )
   }
 
@@ -160,6 +165,27 @@ class WaychaserViaWebdriver extends WaychaserProxy {
       result.id,
       query,
       context
+    )
+  }
+
+  async invokeNth (result, relationship, nth) {
+    return this.manager.executeAsyncScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function (id, relationship, nth, done) {
+        Promise.all([
+          window.handleResponse(
+            window.testResults[id].operations.filter(relationship)[nth].invoke()
+          ),
+          window.handleResponse(
+            window.testResults[id].ops.filter(relationship)[nth].invoke()
+          )
+        ]).then(results => {
+          done(results)
+        })
+      },
+      result.id,
+      relationship,
+      nth
     )
   }
 

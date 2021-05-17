@@ -1,6 +1,45 @@
 import { OperationArray } from './operation-array'
 import logger from './util/logger'
 import pointer from 'jsonpointer'
+import { Operation } from './operation'
+
+/**
+ * @param operation
+ */
+function expandOperation (operation) {
+  const expandedOperations = []
+  const rangeRegex = /{\[(\d+)..(\d+)]}/
+  const matches = operation.uri.match(rangeRegex)
+  if (matches) {
+    const newOperations = []
+    for (let index = matches[1]; index <= matches[2]; ++index) {
+      const newUri = operation.uri.replace(rangeRegex, index)
+      newOperations.push(
+        ...expandOperation(
+          Object.assign(new Operation(operation), { uri: newUri })
+        )
+      )
+    }
+    expandedOperations.push(...newOperations)
+  } else {
+    const anchorMatches = operation.anchor?.match(rangeRegex)
+    if (anchorMatches) {
+      const newOperations = []
+      for (let index = anchorMatches[1]; index <= anchorMatches[2]; ++index) {
+        const newAnchor = operation.anchor.replace(rangeRegex, index)
+        newOperations.push(
+          ...expandOperation(
+            Object.assign(new Operation(operation), { anchor: newAnchor })
+          )
+        )
+      }
+      expandedOperations.push(...newOperations)
+    } else {
+      expandedOperations.push(operation)
+    }
+  }
+  return expandedOperations
+}
 
 /**
  * @param root0
@@ -26,7 +65,13 @@ async function parseOperations ({ handlers, response, anchor }) {
       break
     }
   }
-  return operations.filter(operation => {
+  const expandedOperations = []
+  for (const operation of operations) {
+    const expanded = expandOperation(operation)
+    expandedOperations.push(...expanded)
+  }
+
+  return expandedOperations.filter(operation => {
     return operation.anchor === anchor
   })
 }
@@ -68,16 +113,16 @@ export class Resource {
     return new Resource(response, jsonPointer, operations, waychaserContext)
   }
 
-  constructor (response, jsonPointer, links, waychaserContext) {
+  constructor (response, jsonPointer, operations, waychaserContext) {
     this.response = response
     this.jsonPointer = jsonPointer
     this.operations = new OperationArray()
-    links.forEach(operation => {
+    for (const operation of operations) {
       operation.baseUrl = response.url
       operation.waychaserContext = waychaserContext
       operation.response = response
-    })
-    this.operations.push(...links)
+      this.operations.push(operation)
+    }
     logger.waychaser('resource created')
   }
 

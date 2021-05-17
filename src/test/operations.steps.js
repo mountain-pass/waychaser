@@ -224,3 +224,44 @@ When('we invoke the {string} operation with the headers', async function (
   }
   await invoke.bind(this)(this.results[0], relationship, undefined, options)
 })
+
+Then('it will have {int} {string} operations', async function (
+  count,
+  relationship
+) {
+  const operationsCounts = await this.waychaserProxy.getOperationsCounts(
+    this.results,
+    relationship
+  )
+  for (const key in operationsCounts) {
+    expect(operationsCounts[key]).to.equal(count)
+  }
+})
+
+Then('each {string} will have a {string} operation', async function (
+  getRelationship,
+  hasRelationship
+) {
+  this.previousResult = this.results[0]
+  const counts = await this.waychaserProxy.getOperationsCounts(
+    this.results,
+    getRelationship
+  )
+  for (let nth = 0; nth < counts['0-operations']; nth++) {
+    const items = await this.waychaserProxy.invokeNth(
+      this.results[0],
+      getRelationship,
+      nth
+    )
+    for (const item of items) {
+      expect(item.success).to.be.true()
+    }
+    const hasCounts = await this.waychaserProxy.getOperationsCounts(
+      items,
+      hasRelationship
+    )
+    for (const key in hasCounts) {
+      expect(hasCounts[key]).to.equal(1)
+    }
+  }
+})
