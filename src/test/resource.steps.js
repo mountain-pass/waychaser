@@ -804,24 +804,9 @@ Given(
   }
 )
 
-Given(
-  'a resource with a {string} operation with the URI {string} and anchor {string}',
-  async function (relationship, uri, anchor) {
-    this.currentResourceRoute = randomApiPath()
-    const links = new LinkHeader()
-    links.set({
-      rel: relationship,
-      uri: uri,
-      anchor: anchor
-    })
-    await createOkRouteWithLinks.bind(this)(this.currentResourceRoute, links)
-  }
-)
-
 Given('a resource with the operations', async function (dataTable) {
   this.currentResourceRoute = randomApiPath()
   const links = new LinkHeader()
-  console.log(dataTable.hashes())
   for (const row of dataTable.hashes()) {
     const tidied = {}
     for (const key in row) {

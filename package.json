@@ -116,7 +116,7 @@
     "cover:browser-api": "scripts/for-all-browsers.sh",
     "cover": "scripts/cover-all.sh",
     "ci:cover": "CI=1 npm run ${npm_lifecycle_event#ci:}",
-    "clean:cover": "rm -rf coverage",
+    "clean:cover": "rm -rf coverage test-results",
     "report:cover": "scripts/report-cover.sh",
     "check:cover:local": "npm run clean:cover && npm run cover:node-api && npm run cover:browser-api:chrome:local && npm run report:cover",
     "check:cover:local:not[@skippable]": "npm run clean:cover && npm run cover:node-api:not[@skippable] && npm run cover:browser-api:chrome:local:not[@skippable] && report:cover",
