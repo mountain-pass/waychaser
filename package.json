@@ -197,7 +197,7 @@
     "eslint-plugin-istanbul": "^0.1.2",
     "eslint-plugin-jsdoc": "^34.8.2",
     "eslint-plugin-json": "^2.1.2",
-    "eslint-plugin-markdown": "^1.0.2",
+    "eslint-plugin-markdown": "^2.1.0",
     "eslint-plugin-md": "^1.0.19",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.3.0",
