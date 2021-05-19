@@ -226,7 +226,7 @@
     "prettier": "2.2.1",
     "prettier-config-standard": "^4.0.0",
     "selenium-webdriver": "^4.0.0-alpha.5",
-    "shellcheck": "^0.4.4",
+    "shellcheck": "^1.0.0",
     "snyk": "^1.431.1",
     "standard": "^16.0.3",
     "start-server-and-test": "^1.11.7",
