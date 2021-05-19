@@ -1,6 +1,5 @@
 import { Given } from '@cucumber/cucumber'
 import LinkHeader from 'http-link-header'
-import { API_ACCESS_HOST, API_ACCESS_PORT } from './config'
 
 import {
   uniqueNamesGenerator,
@@ -10,6 +9,7 @@ import {
 } from 'unique-names-generator'
 import logger from '../util/logger'
 import MediaTypes from '../util/media-types'
+import { API_ACCESS_PORT } from './config'
 
 let pathCount = 0
 
@@ -17,18 +17,20 @@ const CUSTOM_HEADER_MEDIA_TYPE = 'application/custom+json'
 const CUSTOM_LINK_HEADER_MEDIA_TYPE = 'application/custom-link+json'
 const CUSTOM_BODY_MEDIA_TYPE = 'application/custom-body+json'
 const CUSTOM_LINKS_BODY_MEDIA_TYPE = 'application/custom-body-links+json'
+const LOCATION_LINK_MEDIA_TYPE = 'application/location+json'
 
-const randomApiPath = () => {
+export const randomApiPath = () => {
   return `/api/${pathCount++}-${uniqueNamesGenerator({
     dictionaries: [adjectives, colors, animals]
   })}`
 }
 
-function createLinks (relationship, uri) {
+export function createLinks (relationship, uri, method) {
   const links = new LinkHeader()
   links.set({
     rel: relationship,
-    uri: uri
+    uri: uri,
+    ...(method && { method })
   })
   return links
 }
@@ -39,7 +41,8 @@ function sendResponse (
   links,
   linkTemplates,
   mediaType = 'application/json',
-  curies
+  curies,
+  body
 ) {
   const bodyOperations = {}
 
@@ -58,10 +61,13 @@ function sendResponse (
     case CUSTOM_LINK_HEADER_MEDIA_TYPE:
       response.header('link', JSON.stringify(links.refs))
       break
+    case LOCATION_LINK_MEDIA_TYPE:
+      response.header('location', links.refs[0].uri)
+      break
     case CUSTOM_BODY_MEDIA_TYPE:
-      bodyOperations.custom_links = {}
+      bodyOperations.customLinks = {}
       links.refs.forEach(reference => {
-        bodyOperations.custom_links[reference.rel] = {
+        bodyOperations.customLinks[reference.rel] = {
           href: reference.uri
         }
       })
@@ -130,11 +136,13 @@ function sendResponse (
       }
       break
   }
-  response.header('content-type', mediaType)
+  if (mediaType !== LOCATION_LINK_MEDIA_TYPE) {
+    response.header('content-type', mediaType)
+  }
 
   response.status(status).send(
     Object.assign(
-      {
+      body || {
         status
       },
       bodyOperations
@@ -159,10 +167,11 @@ function joinParameters (parameters, separator) {
 async function createDynamicResourceRoute (
   route,
   relationship,
-  method,
-  parameters,
+  method = 'GET',
+  parameters = [],
   contentTypes,
-  mediaType = 'application/json'
+  mediaType = 'application/json',
+  headerToReturn
 ) {
   let dynamicRoutePath = route
   let dynamicUri = route
@@ -187,12 +196,15 @@ async function createDynamicResourceRoute (
       request.query,
       request.params
     )
-    if (contentTypes !== undefined) {
+    if (contentTypes) {
       if (request.headers['content-type']?.startsWith('multipart/form-data')) {
         responseBody['content-type'] = 'multipart/form-data'
       } else {
         responseBody['content-type'] = request.headers['content-type']
       }
+    }
+    if (headerToReturn) {
+      responseBody[headerToReturn] = request.headers[headerToReturn]
     }
     response.header('content-type', mediaType)
     response.status(200).send(responseBody)
@@ -244,21 +256,31 @@ async function createRouteWithLinks (
   links,
   linkTemplates,
   mediaType,
-  curies
+  curies,
+  body
 ) {
   const router = await rootRouter.route(route)
   await router.get(async (request, response) => {
-    sendResponse(response, status, links, linkTemplates, mediaType, curies)
+    sendResponse(
+      response,
+      status,
+      links,
+      linkTemplates,
+      mediaType,
+      curies,
+      body
+    )
   })
   return router
 }
 
-async function createOkRouteWithLinks (
+export async function createOkRouteWithLinks (
   route,
   links,
   linkTemplates,
   mediaType,
-  curies
+  curies,
+  body
 ) {
   return createRouteWithLinks(
     this.router,
@@ -267,8 +289,13 @@ async function createOkRouteWithLinks (
     links,
     linkTemplates,
     mediaType,
-    curies
+    curies,
+    body
   )
+}
+
+async function createErrorRoute (route) {
+  return createRouteWithLinks(this.router, route, 500)
 }
 
 async function createRandomDynamicResourceRoute (
@@ -276,7 +303,8 @@ async function createRandomDynamicResourceRoute (
   method,
   parameters,
   contentTypes,
-  mediaType
+  mediaType,
+  headerToReturn
 ) {
   return createDynamicResourceRoute.bind(this)(
     randomApiPath(),
@@ -284,14 +312,15 @@ async function createRandomDynamicResourceRoute (
     method,
     parameters,
     contentTypes,
-    mediaType
+    mediaType,
+    headerToReturn
   )
 }
 
 Given('a resource returning status code {int}', async function (status) {
   this.currentResourceRoute = randomApiPath()
   await createRouteWithLinks(this.router, this.currentResourceRoute, status)
-  this.firstResourceRoute = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
+  this.firstResourceRoute = `${this.baseUrl}${this.currentResourceRoute}`
 })
 
 Given('a resource with no operations', async function () {
@@ -303,7 +332,7 @@ Given('a resource with a {string} operation', async function (relationship) {
   this.currentResourceRoute = randomApiPath()
   await createOkRouteWithLinks.bind(this)(
     this.currentResourceRoute,
-    createLinks(relationship)
+    createLinks(relationship, this.currentResourceRoute)
   )
 })
 
@@ -340,7 +369,7 @@ Given(
   async function (relationship, responseBody) {
     this.currentResourceRoute = randomApiPath()
     const links = {
-      custom_links: { [relationship]: { href: this.currentResourceRoute } }
+      customLinks: { [relationship]: { href: this.currentResourceRoute } }
     }
     await createLinkingResource.bind(this)(
       responseBody,
@@ -416,35 +445,27 @@ Given(
 Given(
   'a HAL resource with a {string} operation that returns an error',
   async function (relationship) {
-    this.currentResourceRoute = randomApiPath()
-    const links = {
-      _links: {
-        [relationship]: { href: `http://${API_ACCESS_HOST}:33556/api` }
-      }
-    }
-    createLinkingResource.bind(this)(undefined, links, MediaTypes.HAL)
+    await createResourceLinkingToError.bind(this)(relationship, MediaTypes.HAL)
   }
 )
 
 Given(
   'a Siren resource with a {string} operation that returns an error',
   async function (relationship) {
-    this.currentResourceRoute = randomApiPath()
-    const links = {
-      links: [
-        { rel: [relationship], href: `http://${API_ACCESS_HOST}:33556/api` }
-      ]
-    }
-    createLinkingResource.bind(this)(undefined, links, MediaTypes.SIREN)
+    await createResourceLinkingToError.bind(this)(
+      relationship,
+      MediaTypes.SIREN
+    )
   }
 )
 
 async function createResourceLinkingToError (relationship, mediaType) {
+  const errorResourcePath = randomApiPath()
+  createErrorRoute.bind(this)(errorResourcePath, 500)
   this.currentResourceRoute = randomApiPath()
-  const to = `http://${API_ACCESS_HOST}:33556/api`
   await createOkRouteWithLinks.bind(this)(
     this.currentResourceRoute,
-    createLinks(relationship, to),
+    createLinks(relationship, errorResourcePath),
     undefined,
     mediaType
   )
@@ -463,7 +484,7 @@ async function createResourceLinkingToSelf (relationship, mediaType) {
 
 function createCustomBodyLink (relationship, to) {
   return {
-    custom_links: {
+    customLinks: {
       [relationship]: { href: to }
     }
   }
@@ -475,7 +496,11 @@ Given(
     this.currentResourceRoute = randomApiPath()
     const links = createCustomBodyLink(
       relationship,
-      `http://${API_ACCESS_HOST}:33556/api`
+      `${this.baseUrl.replace(
+        // eslint-disable-next-line security/detect-non-literal-regexp -- not regex DoS vulnerable
+        new RegExp(`(:${API_ACCESS_PORT})?$`),
+        ':33556'
+      )}/api`
     )
     createLinkingResource.bind(this)(undefined, links, CUSTOM_BODY_MEDIA_TYPE)
   }
@@ -568,7 +593,7 @@ async function createListOfResources (count, relationship, mediaType) {
   // we add the last one first
   this.currentResourceRoute = randomApiPath()
   await createOkRouteWithLinks.bind(this)(this.currentResourceRoute)
-  this.lastOnList = `http://${API_ACCESS_HOST}:${API_ACCESS_PORT}${this.currentResourceRoute}`
+  this.lastOnList = `${this.baseUrl}${this.currentResourceRoute}`
   for (let index = 1; index < count; index++) {
     // and then point each on to the previously created resource
     const previousResourceRoute = this.currentResourceRoute
@@ -640,11 +665,36 @@ Given(
     })
     await createOkRouteWithLinks
       .bind(this)(this.currentResourceRoute, undefined, links)
-      .then(route => {
-        route[method.toLowerCase()](async (request, response) => {
-          sendResponse(response, statusCode)
-        })
-      })
+      .then(addRouteToStaticResource(method, statusCode))
+  }
+)
+
+Given(
+  'a resource with a {string} operation with the {string} method returning a location to that resource',
+  async function (relationship, method) {
+    // three routes here.
+    // this.currentResourceRoute is the path of the resource that location should point too. It already exists
+    // second route when invoked, returns location
+    // third route, returns a resource with the operation
+
+    const previousResourceRoute = this.currentResourceRoute
+    this.currentResourceRoute = randomApiPath()
+    const links = createLinks(relationship, this.currentResourceRoute, method)
+    const locationLinks = new LinkHeader()
+    locationLinks.set({
+      uri: previousResourceRoute
+    })
+
+    await createOkRouteWithLinks
+      .bind(this)(this.currentResourceRoute, undefined, links)
+      .then(
+        addRouteToStaticResource(
+          method,
+          200,
+          locationLinks,
+          LOCATION_LINK_MEDIA_TYPE
+        )
+      )
   }
 )
 
@@ -723,3 +773,48 @@ Given(
     )
   }
 )
+
+Given(
+  'a resource with a {string} operation returns the provided {string} header',
+  async function (relationship, headerName) {
+    this.currentResourceRoute = await createRandomDynamicResourceRoute.bind(
+      this
+    )(relationship, undefined, undefined, undefined, undefined, headerName)
+  }
+)
+
+function addRouteToStaticResource (method, statusCode, links, mediaType) {
+  return route => {
+    route[method.toLowerCase()](async (request, response) => {
+      sendResponse(response, statusCode, links, undefined, mediaType)
+    })
+  }
+}
+
+Given(
+  'a resource with a {string} operation with the URI {string}',
+  async function (relationship, uri) {
+    this.currentResourceRoute = randomApiPath()
+    const links = new LinkHeader()
+    links.set({
+      rel: relationship,
+      uri: uri
+    })
+    await createOkRouteWithLinks.bind(this)(this.currentResourceRoute, links)
+  }
+)
+
+Given('a resource with the operations', async function (dataTable) {
+  this.currentResourceRoute = randomApiPath()
+  const links = new LinkHeader()
+  for (const row of dataTable.hashes()) {
+    const tidied = {}
+    for (const key in row) {
+      if (row[key]) {
+        tidied[key] = row[key]
+      }
+    }
+    links.set(tidied)
+  }
+  await createOkRouteWithLinks.bind(this)(this.currentResourceRoute, links)
+})

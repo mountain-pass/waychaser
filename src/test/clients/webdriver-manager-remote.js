@@ -5,20 +5,21 @@ import { WebdriverManager } from './webdriver-manager'
 import assert from 'assert'
 import { remoteTunneller } from './remote-tunneller'
 import { BUILD } from './build-info'
+import chrome from 'selenium-webdriver/chrome'
 
 class WebdriverManagerRemote extends WebdriverManager {
   constructor () {
     super()
-    this.tunneler = remoteTunneller
+    this.tunneller = remoteTunneller
     this.status = 'passed'
   }
 
   async beforeAllTests () {
-    await this.tunneler.startTunnel()
+    await this.tunneller.startTunnel()
     this.driver = await this.buildDriver()
     logger.debug('driver built')
-    await this.loadWaychaserTestPage()
-    await super.beforeAllTests()
+    await this.loadWaychaserTestPage(remoteTunneller.tunnel.url)
+    return remoteTunneller.tunnel.url
   }
 
   async afterTest (scenario) {
@@ -43,16 +44,11 @@ class WebdriverManagerRemote extends WebdriverManager {
     const projectName =
       process.env.npm_package_name + (process.env.GITHUB_RUN_ID ? '' : '-LOCAL')
     /* istanbul ignore next: branching depends on if running on CI or not */
-    const localIdentifier = process.env.BROWSERSTACK_LOCAL_IDENTIFIER
     const capabilities = {
       'bstack:options': {
         os: 'Any',
         projectName,
         buildName: BUILD,
-        local: 'true',
-        ...(localIdentifier && {
-          localIdentifier
-        }),
         debug: 'true',
         consoleLogs: 'verbose',
         networkLogs: 'true',
@@ -60,7 +56,6 @@ class WebdriverManagerRemote extends WebdriverManager {
         userName: process.env.BROWSERSTACK_USERNAME,
         accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         ...(this.browser === 'android' && {
-          deviceName: 'Samsung Galaxy S20',
           realMobile: 'true'
         }),
         ...(this.browser === 'iphone' && {
@@ -88,8 +83,13 @@ class WebdriverManagerRemote extends WebdriverManager {
     this.driver = new webdriver.Builder()
       .usingServer('https://hub-cloud.browserstack.com/wd/hub')
       .withCapabilities(capabilities)
+      .setChromeOptions(
+        new chrome.Options()
+          .addArguments('disable-web-security')
+          .addArguments('disable-notifications')
+      )
       .build()
-    await this.driver.manage().setTimeouts({ script: 40000 })
+    await this.driver.manage().setTimeouts({ script: 60000 })
     return this.driver
   }
 
@@ -117,7 +117,7 @@ class WebdriverManagerRemote extends WebdriverManager {
     delete this.driver
 
     super.afterAllTests()
-    await this.tunneler.stopTunnel()
+    await this.tunneller.stopTunnel()
   }
 }
 

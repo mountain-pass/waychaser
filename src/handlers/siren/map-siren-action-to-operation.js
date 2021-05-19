@@ -15,6 +15,6 @@ export function mapSirenActionToOperation (action) {
     .uri(href)
     .accept(type)
     .parameters(bodyParameters)
-    .other(otherProperties)
+    .other(Object.assign({ handler: 'siren-action' }, otherProperties))
     .build()
 }

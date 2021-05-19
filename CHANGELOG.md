@@ -1,3 +1,352 @@
+## <small>3.0.29 (2021-04-06)</small>
+
+* Merge pull request #303 from mountain-pass/dependabot/npm_and_yarn/snyk-1.526.0 ([f0f506c](https://github.com/mountain-pass/waychaser/commit/f0f506c)), closes [#303](https://github.com/mountain-pass/waychaser/issues/303)
+
+
+
+## <small>3.0.28 (2021-04-06)</small>
+
+* Merge pull request #302 from mountain-pass/dependabot/npm_and_yarn/snyk-1.525.0 ([9e0a360](https://github.com/mountain-pass/waychaser/commit/9e0a360)), closes [#302](https://github.com/mountain-pass/waychaser/issues/302)
+
+
+
+## <small>3.0.27 (2021-04-06)</small>
+
+* Merge pull request #300 from mountain-pass/dependabot/npm_and_yarn/snyk-1.523.0 ([e79d0de](https://github.com/mountain-pass/waychaser/commit/e79d0de)), closes [#300](https://github.com/mountain-pass/waychaser/issues/300)
+
+
+
+## <small>3.0.26 (2021-04-05)</small>
+
+* Merge pull request #228 from mountain-pass/dependabot/npm_and_yarn/depcheck-1.4.0 ([0d84847](https://github.com/mountain-pass/waychaser/commit/0d84847)), closes [#228](https://github.com/mountain-pass/waychaser/issues/228)
+
+
+
+## <small>3.0.25 (2021-03-29)</small>
+
+* Merge pull request #284 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-32.3.0 ([8f3a67d](https://github.com/mountain-pass/waychaser/commit/8f3a67d)), closes [#284](https://github.com/mountain-pass/waychaser/issues/284)
+
+
+
+## <small>3.0.24 (2021-03-27)</small>
+
+* Merge pull request #283 from mountain-pass/dependabot/npm_and_yarn/webpack-cli-4.6.0 ([dbe5dd2](https://github.com/mountain-pass/waychaser/commit/dbe5dd2)), closes [#283](https://github.com/mountain-pass/waychaser/issues/283)
+
+
+
+## <small>3.0.23 (2021-03-26)</small>
+
+* Merge pull request #280 from mountain-pass/dependabot/npm_and_yarn/snyk-1.511.0 ([5276911](https://github.com/mountain-pass/waychaser/commit/5276911)), closes [#280](https://github.com/mountain-pass/waychaser/issues/280)
+
+
+
+## <small>3.0.22 (2021-03-26)</small>
+
+* Merge pull request #274 from mountain-pass/dependabot/npm_and_yarn/is-svg-4.3.1 ([1be30c1](https://github.com/mountain-pass/waychaser/commit/1be30c1)), closes [#274](https://github.com/mountain-pass/waychaser/issues/274)
+
+
+
+## <small>3.0.21 (2021-03-25)</small>
+
+* fix(duplication): fixed crash when using duplication detection ([d7e609f](https://github.com/mountain-pass/waychaser/commit/d7e609f))
+
+
+
+## <small>3.0.20 (2021-02-28)</small>
+
+* fix(package): added missing files ([13eded3](https://github.com/mountain-pass/waychaser/commit/13eded3))
+
+
+
+## <small>3.0.19 (2021-02-24)</small>
+
+* fix(coverage): added missing aws keys to CI ([5f385f4](https://github.com/mountain-pass/waychaser/commit/5f385f4))
+
+
+
+## <small>3.0.18 (2021-02-23)</small>
+
+* Merge pull request #254 from mountain-pass/dependabot/npm_and_yarn/babel/cli-7.13.0 ([c1bebbb](https://github.com/mountain-pass/waychaser/commit/c1bebbb)), closes [#254](https://github.com/mountain-pass/waychaser/issues/254)
+
+
+
+## <small>3.0.17 (2021-02-23)</small>
+
+* Merge pull request #253 from mountain-pass/dependabot/npm_and_yarn/babel/runtime-7.13.6 ([6a41026](https://github.com/mountain-pass/waychaser/commit/6a41026)), closes [#253](https://github.com/mountain-pass/waychaser/issues/253)
+
+
+
+## <small>3.0.16 (2021-02-23)</small>
+
+* Merge pull request #251 from mountain-pass/dependabot/npm_and_yarn/babel/preset-env-7.13.5 ([b28166f](https://github.com/mountain-pass/waychaser/commit/b28166f)), closes [#251](https://github.com/mountain-pass/waychaser/issues/251)
+
+
+
+## <small>3.0.15 (2021-02-23)</small>
+
+* Merge pull request #249 from mountain-pass/dependabot/npm_and_yarn/babel/runtime-7.13.4 ([c90ae7a](https://github.com/mountain-pass/waychaser/commit/c90ae7a)), closes [#249](https://github.com/mountain-pass/waychaser/issues/249)
+
+
+
+## <small>3.0.14 (2021-02-23)</small>
+
+* Merge pull request #247 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-32.2.0 ([fd0df5e](https://github.com/mountain-pass/waychaser/commit/fd0df5e)), closes [#247](https://github.com/mountain-pass/waychaser/issues/247)
+
+
+
+## <small>3.0.13 (2021-02-23)</small>
+
+* Merge pull request #246 from mountain-pass/dependabot/npm_and_yarn/commitlint/config-conventional-12 ([994fcff](https://github.com/mountain-pass/waychaser/commit/994fcff)), closes [#246](https://github.com/mountain-pass/waychaser/issues/246)
+
+
+
+## <small>3.0.12 (2021-02-23)</small>
+
+* Merge pull request #245 from mountain-pass/dependabot/npm_and_yarn/commitlint/cli-12.0.0 ([0468014](https://github.com/mountain-pass/waychaser/commit/0468014)), closes [#245](https://github.com/mountain-pass/waychaser/issues/245)
+
+
+
+## <small>3.0.11 (2021-02-22)</small>
+
+* Merge pull request #239 from mountain-pass/dependabot/npm_and_yarn/snyk-1.459.0 ([1b29f74](https://github.com/mountain-pass/waychaser/commit/1b29f74)), closes [#239](https://github.com/mountain-pass/waychaser/issues/239)
+
+
+
+## <small>3.0.10 (2021-02-22)</small>
+
+* Merge pull request #236 from mountain-pass/spike-ci-debugging ([74b2281](https://github.com/mountain-pass/waychaser/commit/74b2281)), closes [#236](https://github.com/mountain-pass/waychaser/issues/236)
+
+
+
+## <small>3.0.9 (2021-02-13)</small>
+
+* Merge pull request #218 from mountain-pass/dependabot/npm_and_yarn/eslint-7.20.0 ([72842ac](https://github.com/mountain-pass/waychaser/commit/72842ac)), closes [#218](https://github.com/mountain-pass/waychaser/issues/218)
+
+
+
+## <small>3.0.8 (2021-02-12)</small>
+
+* Merge pull request #217 from mountain-pass/dependabot/npm_and_yarn/snyk-1.454.0 ([7f58812](https://github.com/mountain-pass/waychaser/commit/7f58812)), closes [#217](https://github.com/mountain-pass/waychaser/issues/217)
+
+
+
+## <small>3.0.7 (2021-02-12)</small>
+
+* Merge pull request #216 from mountain-pass/dependabot/npm_and_yarn/snyk-1.453.0 ([e2edca6](https://github.com/mountain-pass/waychaser/commit/e2edca6)), closes [#216](https://github.com/mountain-pass/waychaser/issues/216)
+
+
+
+## <small>3.0.6 (2021-02-12)</small>
+
+* Merge pull request #215 from mountain-pass/dependabot/npm_and_yarn/markdownlint-0.23.1 ([8fe5830](https://github.com/mountain-pass/waychaser/commit/8fe5830)), closes [#215](https://github.com/mountain-pass/waychaser/issues/215)
+
+
+
+## <small>3.0.5 (2021-02-12)</small>
+
+* Merge pull request #214 from mountain-pass/dependabot/npm_and_yarn/babel/preset-env-7.12.16 ([8ded219](https://github.com/mountain-pass/waychaser/commit/8ded219)), closes [#214](https://github.com/mountain-pass/waychaser/issues/214)
+
+
+
+## <small>3.0.4 (2021-02-12)</small>
+
+* Merge pull request #211 from mountain-pass/dependabot/npm_and_yarn/babel/node-7.12.16 ([8f70c42](https://github.com/mountain-pass/waychaser/commit/8f70c42)), closes [#211](https://github.com/mountain-pass/waychaser/issues/211)
+
+
+
+## <small>3.0.3 (2021-02-10)</small>
+
+* Merge pull request #207 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-promise-4.3.1 ([f045b96](https://github.com/mountain-pass/waychaser/commit/f045b96)), closes [#207](https://github.com/mountain-pass/waychaser/issues/207)
+
+
+
+## <small>3.0.2 (2021-02-10)</small>
+
+* Merge pull request #205 from mountain-pass/dependabot/npm_and_yarn/snyk-1.449.0 ([5304988](https://github.com/mountain-pass/waychaser/commit/5304988)), closes [#205](https://github.com/mountain-pass/waychaser/issues/205)
+
+
+
+## <small>3.0.1 (2021-02-10)</small>
+
+* fix(invoke): fixed options when calling `invoke` on an resource ([0ea4045](https://github.com/mountain-pass/waychaser/commit/0ea4045))
+
+
+
+## 3.0.0 (2021-02-09)
+
+* feat(multiple): added or modified support for accept ([67d336d](https://github.com/mountain-pass/waychaser/commit/67d336d))
+
+
+### BREAKING CHANGE
+
+* See README for upgrade instructions
+
+
+## <small>2.0.20 (2021-02-08)</small>
+
+* Merge pull request #202 from mountain-pass/dependabot/npm_and_yarn/husky-5.0.9 ([ead8d45](https://github.com/mountain-pass/waychaser/commit/ead8d45)), closes [#202](https://github.com/mountain-pass/waychaser/issues/202)
+
+
+
+## <small>2.0.19 (2021-02-08)</small>
+
+* Merge pull request #201 from mountain-pass/dependabot/npm_and_yarn/snyk-1.447.0 ([bc1629a](https://github.com/mountain-pass/waychaser/commit/bc1629a)), closes [#201](https://github.com/mountain-pass/waychaser/issues/201)
+
+
+
+## <small>2.0.18 (2021-02-07)</small>
+
+* Merge pull request #199 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.6.1 ([c274e19](https://github.com/mountain-pass/waychaser/commit/c274e19)), closes [#199](https://github.com/mountain-pass/waychaser/issues/199)
+
+
+
+## <small>2.0.17 (2021-02-07)</small>
+
+* Merge pull request #194 from mountain-pass/dependabot/npm_and_yarn/lint-staged-10.5.4 ([4ea9c31](https://github.com/mountain-pass/waychaser/commit/4ea9c31)), closes [#194](https://github.com/mountain-pass/waychaser/issues/194)
+
+
+
+## <small>2.0.16 (2021-02-07)</small>
+
+* Merge pull request #198 from mountain-pass/dependabot/npm_and_yarn/markdownlint-0.23.0 ([28365ad](https://github.com/mountain-pass/waychaser/commit/28365ad)), closes [#198](https://github.com/mountain-pass/waychaser/issues/198)
+
+
+
+## <small>2.0.15 (2021-02-06)</small>
+
+* Merge pull request #196 from mountain-pass/dependabot/npm_and_yarn/moment-timezone-0.5.33 ([4915c29](https://github.com/mountain-pass/waychaser/commit/4915c29)), closes [#196](https://github.com/mountain-pass/waychaser/issues/196)
+
+
+
+## <small>2.0.14 (2021-02-05)</small>
+
+* Merge pull request #193 from mountain-pass/dependabot/npm_and_yarn/snyk-1.446.0 ([3800523](https://github.com/mountain-pass/waychaser/commit/3800523)), closes [#193](https://github.com/mountain-pass/waychaser/issues/193)
+
+
+
+## <small>2.0.13 (2021-02-04)</small>
+
+* Merge pull request #192 from mountain-pass/dependabot/npm_and_yarn/babel/plugin-transform-runtime-7. ([c8ce70b](https://github.com/mountain-pass/waychaser/commit/c8ce70b)), closes [#192](https://github.com/mountain-pass/waychaser/issues/192)
+
+
+
+## <small>2.0.12 (2021-02-04)</small>
+
+* Merge pull request #191 from mountain-pass/dependabot/npm_and_yarn/snyk-1.445.0 ([4cc46e0](https://github.com/mountain-pass/waychaser/commit/4cc46e0)), closes [#191](https://github.com/mountain-pass/waychaser/issues/191)
+
+
+
+## <small>2.0.11 (2021-02-04)</small>
+
+* Merge pull request #190 from mountain-pass/dependabot/npm_and_yarn/snyk-1.444.0 ([1ed8d3e](https://github.com/mountain-pass/waychaser/commit/1ed8d3e)), closes [#190](https://github.com/mountain-pass/waychaser/issues/190)
+
+
+
+## <small>2.0.10 (2021-02-04)</small>
+
+* Merge pull request #188 from mountain-pass/dependabot/npm_and_yarn/snyk-1.442.0 ([65633ee](https://github.com/mountain-pass/waychaser/commit/65633ee)), closes [#188](https://github.com/mountain-pass/waychaser/issues/188)
+
+
+
+## <small>2.0.9 (2021-02-04)</small>
+
+* Merge pull request #186 from mountain-pass/dependabot/npm_and_yarn/chai-4.3.0 ([bdbd0bf](https://github.com/mountain-pass/waychaser/commit/bdbd0bf)), closes [#186](https://github.com/mountain-pass/waychaser/issues/186)
+
+
+
+## <small>2.0.8 (2021-02-03)</small>
+
+* Merge pull request #182 from mountain-pass/dependabot/npm_and_yarn/babel/preset-env-7.12.13 ([98c788c](https://github.com/mountain-pass/waychaser/commit/98c788c)), closes [#182](https://github.com/mountain-pass/waychaser/issues/182)
+
+
+
+## <small>2.0.7 (2021-02-03)</small>
+
+* Merge pull request #184 from mountain-pass/dependabot/npm_and_yarn/babel/plugin-transform-modules-co ([1dff56d](https://github.com/mountain-pass/waychaser/commit/1dff56d)), closes [#184](https://github.com/mountain-pass/waychaser/issues/184)
+
+
+
+## <small>2.0.6 (2021-02-03)</small>
+
+* Merge pull request #181 from mountain-pass/dependabot/npm_and_yarn/prettier-config-standard-4.0.0 ([55c2cd2](https://github.com/mountain-pass/waychaser/commit/55c2cd2)), closes [#181](https://github.com/mountain-pass/waychaser/issues/181)
+
+
+
+## <small>2.0.5 (2021-02-03)</small>
+
+* Merge pull request #177 from mountain-pass/dependabot/npm_and_yarn/snyk-1.440.5 ([f3b4657](https://github.com/mountain-pass/waychaser/commit/f3b4657)), closes [#177](https://github.com/mountain-pass/waychaser/issues/177)
+
+
+
+## <small>2.0.4 (2021-02-03)</small>
+
+* Merge pull request #170 from mountain-pass/dependabot/npm_and_yarn/babel/plugin-transform-arrow-func ([d62fbbd](https://github.com/mountain-pass/waychaser/commit/d62fbbd)), closes [#170](https://github.com/mountain-pass/waychaser/issues/170)
+
+
+
+## <small>2.0.3 (2021-02-02)</small>
+
+* Merge pull request #168 from mountain-pass/dependabot/npm_and_yarn/webpack-cli-4.5.0 ([4a4ed10](https://github.com/mountain-pass/waychaser/commit/4a4ed10)), closes [#168](https://github.com/mountain-pass/waychaser/issues/168)
+
+
+
+## <small>2.0.2 (2021-02-01)</small>
+
+* Merge pull request #166 from mountain-pass/dependabot/npm_and_yarn/snyk-1.440.4 ([650073e](https://github.com/mountain-pass/waychaser/commit/650073e)), closes [#166](https://github.com/mountain-pass/waychaser/issues/166)
+
+
+
+## <small>2.0.1 (2021-02-01)</small>
+
+* Merge pull request #165 from mountain-pass/dependabot/npm_and_yarn/snyk-1.440.3 ([3fe0221](https://github.com/mountain-pass/waychaser/commit/3fe0221)), closes [#165](https://github.com/mountain-pass/waychaser/issues/165)
+
+
+
+## 2.0.0 (2021-02-01)
+
+* feat(operation): major version change ([61b62af](https://github.com/mountain-pass/waychaser/commit/61b62af))
+
+
+### BREAKING CHANGE
+
+* version bump was missed before.
+See README.md for upgrade instructions
+
+
+## <small>1.62.37 (2021-02-01)</small>
+
+* feat(operation)!: trying to force major version ([53d7f13](https://github.com/mountain-pass/waychaser/commit/53d7f13))
+
+
+### BREAKING CHANGE
+
+* version bump was missed before
+
+
+## <small>1.62.36 (2021-02-01)</small>
+
+* test(accept): fixed coverage ([96bd110](https://github.com/mountain-pass/waychaser/commit/96bd110))
+
+
+
+## <small>1.62.35 (2021-01-31)</small>
+
+* Merge pull request #163 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.6.0 ([e35ecbd](https://github.com/mountain-pass/waychaser/commit/e35ecbd)), closes [#163](https://github.com/mountain-pass/waychaser/issues/163)
+
+
+
+## <small>1.62.34 (2021-01-31)</small>
+
+* Merge pull request #162 from mountain-pass/dependabot/npm_and_yarn/start-server-and-test-1.12.0 ([86ced94](https://github.com/mountain-pass/waychaser/commit/86ced94)), closes [#162](https://github.com/mountain-pass/waychaser/issues/162)
+
+
+
+## <small>1.62.33 (2021-01-31)</small>
+
+* Merge pull request #160 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-31.5.0 ([798f570](https://github.com/mountain-pass/waychaser/commit/798f570)), closes [#160](https://github.com/mountain-pass/waychaser/issues/160)
+
+
+
 ## <small>1.62.32 (2021-01-31)</small>
 
 * Merge pull request #159 from mountain-pass/dependabot/npm_and_yarn/eslint-7.19.0 ([d285c5b](https://github.com/mountain-pass/waychaser/commit/d285c5b)), closes [#159](https://github.com/mountain-pass/waychaser/issues/159)

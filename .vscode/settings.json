@@ -30,8 +30,11 @@
     "[[BREAKING CHANGE: ]optional footer(s)]"
   ],
   "cSpell.words": [
+    "Edsger",
     "HATEOAS",
+    "Wellerman",
     "ationship",
+    "babelify",
     "browserstack",
     "bufferutil",
     "chromedriver",
@@ -39,16 +42,22 @@
     "codeclimate",
     "commitlint",
     "conventionalcommits",
+    "cookied",
+    "corejs",
     "curied",
     "dependabot",
+    "funkyness",
     "geckodriver",
     "github's",
     "godban",
     "huzzah",
+    "hyperwizard",
     "invision",
+    "invocables",
     "iphone",
     "istanbuljs",
     "jscpd",
+    "jsonpointer",
     "lcov",
     "lokijs",
     "markdownlint",
@@ -60,9 +69,11 @@
     "refs",
     "rels",
     "saucelabs",
+    "searchables",
     "shellcheck",
     "snyk",
     "standardjs",
+    "styfle",
     "tada",
     "turnstyle",
     "waychaser",
@@ -71,5 +82,8 @@
     "webpacking",
     "windyroad"
   ],
-  "cSpell.language": "en-GB"
+  "cSpell.language": "en-GB",
+  "cSpell.enableFiletypes": [
+    "feature"
+  ]
 }

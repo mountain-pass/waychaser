@@ -11,9 +11,9 @@
   - [Assumptions](#assumptions)
     - [Unvalidated](#unvalidated)
     - [Validating](#validating)
-      - [Developers still care about REST and HATEOAS](#developers-still-care-about-rest-and-hateoas)
     - [Validated](#validated)
     - [Invalidated](#invalidated)
+      - [Developers are interested in HATEOAS clients](#developers-are-interested-in-hateoas-clients)
   
 ## Problem
 
@@ -36,24 +36,32 @@ Simple interface that abstracted the details of navigating a REST APIs that uses
 
 ## Assumptions
 
-### Unvalidated
+### Unvalidated 
 
-Lots 😂
+- it is faster to develop with a hateoas client than a non-hateoas client
+- There is little interest in hateoas or demand for hateoas clients because there are so few hateoas APIs
+- There are few hateoas APIs because there's little demand 
+- There are few hateoas APIs because they are much harder to create than non-hateoas APIs, and it's hard to justify the
+effort when lots of people just tightly couple to the API with a non-hateoas client.
+- If it was just as easy or easier to create a hateoas API than a non-hateoas API, then more people would create
+hateoas APIs
 
 ### Validating
 
-#### Developers still care about REST and HATEOAS
-
-Test: Create initial version of library, supporting HAL and Siren and pitch it on twitter.
-
-Info on popularity a features of different hypermedia types at https://www.fabernovel.com/en/article/tech-en/which-technologies-should-you-use-to-build-hypermedia-apis
-
-Success: At least 10 like, retweets or comments.
-
+_None_
 ### Validated
 
 _None_
 
 ### Invalidated
 
-_None_
+#### Developers are interested in HATEOAS clients
+
+Test: Create initial version of library, supporting HAL and Siren and pitch it on twitter.
+
+Info on popularity a features of different hypermedia types at https://www.fabernovel.com/en/article/tech-en/which-technologies-should-you-use-to-build-hypermedia-apis
+
+Success: At least 10 like, retweets or comments.
+Result: 
+  3 likes 😢 https://twitter.com/tompahoward/status/1364548120814768128?s=20
+  4 likes + 1 😢 retweet https://twitter.com/tompahoward/status/1361981160524378113?s=20

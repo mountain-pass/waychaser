@@ -12,6 +12,6 @@ export function mapHalLinkToOperation (relationship, link, curies) {
   const { href, templated, ...otherProperties } = link
   return Operation.builder(deCurie(relationship, curies))
     .uri(href)
-    .other(otherProperties)
+    .other(Object.assign({ handler: 'hal-link' }, otherProperties))
     .build()
 }

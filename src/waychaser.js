@@ -1,5 +1,3 @@
-import { polyfill } from 'es6-promise'
-import Loki from 'lokijs'
 import logger from './util/logger'
 import { halHandler } from './handlers/hal/hal-handler'
 import { linkHeaderHandler } from './handlers/link-header/link-header-handler'
@@ -7,33 +5,51 @@ import { linkTemplateHeaderHandler } from './handlers/link-template-header/link-
 import { sirenHandler } from './handlers/siren/siren-handler'
 import { loadResource } from './util/load-resource'
 import { Operation } from './operation'
+import { parseAccept } from './util/parse-accept'
+import MediaTypes from './util/media-types'
+import fetch from 'isomorphic-fetch'
+import { locationHeaderHandler } from './handlers/location-header/location-header-handler'
 
-polyfill()
-
-Loki.Collection.prototype.findOne_ = Loki.Collection.prototype.findOne
-
-Loki.Collection.prototype.findOne = function (...arguments_) {
-  return arguments_.length === 1 && typeof arguments_[0] === 'string'
-    ? this.findOne_({ rel: arguments_[0] })
-    : this.findOne_(...arguments_)
+/**
+ * @param fetch
+ */
+function bodyStoringFetch (fetch) {
+  return function (url, options) {
+    return fetch(url, options).then(response => {
+      response.originalJson = response.json
+      response.json = async function () {
+        logger.waychaser('getting json')
+        // WARNING when `await this.json()` is called multiple times, `this.bodyused` can be set to true
+        // BEFORE the original `await this.json()` returns
+        // TL;DR bodyUsed cannot be trusted
+        // to prevent the above funkyness, instead of trying to cache the returned value
+        // we cache the promise
+        if (this.bodyReadPromise) {
+          return await this.bodyReadPromise
+        } else {
+          this.bodyReadPromise = this.originalJson()
+          return await this.bodyReadPromise
+        }
+      }
+      return response
+    })
+  }
 }
 
-Loki.Collection.prototype.invoke = async function (
-  relationship,
-  context,
-  options
-) {
-  const operation = this.findOne(relationship)
-  logger.waychaser(
-    `operation ${JSON.stringify(relationship)}:`,
-    JSON.stringify(operation, undefined, 2)
-  )
-  logger.waychaser('context:', JSON.stringify(context, undefined, 2))
-  return operation.invoke(context, options)
-}
+class WayChaser {
+  constructor (
+    handler = WayChaser.defaultHandlers,
+    mediaRange = WayChaser.defaultMediaRanges,
+    fetcher = WayChaser.defaultFetcher,
+    logger = WayChaser.logger
+  ) {
+    this.waychaserContext = {
+      handlers: Array.isArray(handler) ? handler : [handler],
+      mediaRanges: Array.isArray(mediaRange) ? mediaRange : [mediaRange],
+      fetcher: bodyStoringFetch(fetcher)
+    }
+  }
 
-/** @namespace */
-const waychaser = {
   /* eslint-disable jsdoc/no-undefined-types -- Resource is the return type of loadResource.
      js/doc linting should be smarter */
   /**
@@ -46,47 +62,57 @@ const waychaser = {
    * @throws {Error} If the server returns with a status >= 400
    */
   /* eslint-enable jsdoc/no-undefined-types */
-  load: async function (url, options) {
-    return loadResource(url, options, this.defaultHandlers)
-  },
+  async load (url, options) {
+    return loadResource(url, options, this.waychaserContext)
+  }
 
-  defaultHandlers: [
+  static defaultHandlers = [
+    locationHeaderHandler,
     linkHeaderHandler,
     linkTemplateHeaderHandler,
     halHandler,
     sirenHandler
-  ],
+  ]
 
-  use: function (handler) {
-    return new waychaser.Loader(handler)
-  },
+  static defaultFetcher = fetch
 
-  Loader: class {
-    constructor (handler) {
-      this.handlers = [handler]
-      this.logger = waychaser.logger
-    }
+  static logger = logger.waychaser
 
-    useDefaultHandlers () {
-      this.use(waychaser.defaultHandlers)
-      return this
-    }
+  static defaultMediaRanges = [
+    'application/json',
+    '*/*;q=0.8',
+    MediaTypes.HAL,
+    MediaTypes.SIREN
+  ]
 
-    use (handler) {
-      if (Array.isArray(handler)) {
-        this.handlers.push(...handler)
+  static defaultWaychaser = new WayChaser()
+
+  use (handler, mediaRange) {
+    if (this === WayChaser.defaultWaychaser) {
+      return new WayChaser(handler, mediaRange)
+    } else {
+      this.waychaserContext.handlers.push(handler)
+      if (Array.isArray(mediaRange)) {
+        this.waychaserContext.mediaRanges.push(...mediaRange)
       } else {
-        this.handlers.push(handler)
+        this.waychaserContext.mediaRanges.push(mediaRange)
       }
       return this
     }
+  }
 
-    async load (url, options) {
-      return loadResource(url, options, this.handlers)
-    }
-  },
+  withFetch (fetcher) {
+    this.waychaserContext.fetcher = bodyStoringFetch(fetcher)
+    return this
+  }
 
-  logger: logger.waychaser
+  useDefaultHandlers () {
+    this.waychaserContext.handlers.push(...WayChaser.defaultHandlers)
+    this.waychaserContext.mediaRanges.push(...WayChaser.defaultMediaRanges)
+    return this
+  }
 }
 
-export { waychaser, Operation }
+const waychaser = WayChaser.defaultWaychaser
+
+export { WayChaser, waychaser, Operation, parseAccept }

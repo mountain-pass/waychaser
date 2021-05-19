@@ -45,7 +45,8 @@
     "istanbul/no-ignore-file": "error",
     "istanbul/prefer-ignore-reason": "error",
     "promise/no-callback-in-promise": "off",
-    "security/detect-object-injection": "off"
+    "security/detect-object-injection": "off",
+    "unicorn/no-array-reduce": "off"
   },
   "overrides": [
     {
@@ -74,7 +75,8 @@
       "rules": {
         "security/detect-non-literal-fs-filename": "off",
         "jsdoc/require-jsdoc": "off",
-        "security/detect-object-injection": "off"
+        "security/detect-object-injection": "off",
+        "unicorn/no-array-callback-reference": "off"
       }
     },
     {

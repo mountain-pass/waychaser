@@ -5,7 +5,7 @@ import { Operation } from '../../operation'
  * @param response
  * @param next
  */
-export async function linkTemplateHeaderHandler (response, next) {
+export async function linkTemplateHeaderHandler (response) {
   const linkTemplateHeader = response.headers.get('link-template')
   if (linkTemplateHeader) {
     const linkTemplates = LinkHeader.parse(linkTemplateHeader)
@@ -26,7 +26,9 @@ export async function linkTemplateHeaderHandler (response, next) {
         .method(method)
         .parameters(parsedParameters)
         .accept(accept?.value)
-        .other(otherProperties)
+        .other(
+          Object.assign({ handler: 'link-template-header' }, otherProperties)
+        )
         .build()
     })
   }

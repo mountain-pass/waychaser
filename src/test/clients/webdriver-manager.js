@@ -1,10 +1,9 @@
 import logger from '../../util/logger'
 import logging from 'selenium-webdriver/lib/logging'
-import { BROWSER_PORT, BROWSER_HOST } from '../config'
 import { utils } from 'istanbul'
+import { PendingError } from '@windyroad/cucumber-js-throwables'
 import * as babel from '@babel/core'
 import babelConfig from '../../../babel.config'
-import { abstract } from '../../util/abstract'
 
 delete babelConfig.env.test
 
@@ -36,10 +35,10 @@ function mergeClientCoverage (object) {
 }
 
 class WebdriverManager {
-  async loadWaychaserTestPage () {
-    logger.debug('loading page...')
+  async loadWaychaserTestPage (url) {
     await this.driver.get('https://google.com')
-    await this.driver.get(`http://${BROWSER_HOST}:${BROWSER_PORT}`)
+    logger.debug(`loading page '${url}'...`)
+    await this.driver.get(url)
     logger.debug('...page loaded')
 
     logger.debug('waiting for waychaser...')
@@ -47,6 +46,10 @@ class WebdriverManager {
       return this.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */
         function () {
+          const buttons = document.querySelectorAll('button')
+          if (buttons[0]) {
+            buttons[0].click()
+          }
           return window.waychaser !== undefined
         }
       )
@@ -55,11 +58,11 @@ class WebdriverManager {
     logger.debug('setting up logger function...')
     await this.executeScript(
       /* istanbul ignore next: won't work in browser otherwise */
-      function () {
+      function (browser) {
         window.testResults = []
         window.testLogs = []
         window.testLogger = function (arguments_) {
-          console.log(arguments_)
+          // console.log(arguments_)
           // window.testLogs.push(arguments_)
           // // eslint-disable-next-line unicorn/prefer-query-selector
           // var logsElement = document.getElementById('logs') // eslint-disable-line no-var
@@ -69,38 +72,144 @@ class WebdriverManager {
 
         window.callbackWithError = (done, error) => {
           window.testLogger('error: ' + error.toString())
-          window.testResults.push(error)
+          const id = window.testResults.push(error) - 1
           done({
             success: false,
-            id: window.testResults.length - 1
+            id
             // un-commenting these causes the android tests to fail
             // error: error.toString(),
             // stackTrace: error.stack,
           })
         }
 
-        window.handleResponse = function (promise, done) {
+        window.handleResponse = function (promise) {
+          if (promise === undefined) {
+            return
+          }
           return promise
             .then(function (resource) {
               window.testLogger('huzzah!')
-              window.testResults.push(resource)
-              done({ success: true, id: window.testResults.length - 1 })
+              const id = window.testResults.push(resource) - 1
+              return { success: resource.response.ok, id }
             })
             .catch(function (error) {
-              window.callbackWithError(done, error)
+              const id = window.testResults.push(error) - 1
+              const result = {
+                success: false,
+                id
+              }
+              // returning these on android causes tests to fail
+              if (browser !== 'android') {
+                result.error = error.toString()
+                result.stackTrace = error.stack
+              }
+              return result
             })
         }
+
+        const queries = [
+          relationship => {
+            return relationship
+          },
+          relationship => {
+            return { rel: relationship }
+          },
+          relationship => {
+            return element => {
+              return element.rel === relationship
+            }
+          }
+        ]
+
+        const searchables = [
+          id => {
+            return window.testResults[id].operations
+          },
+          id => {
+            return window.testResults[id].ops
+          }
+        ]
+
+        const invocables = searchables.concat([
+          id => {
+            return window.testResults[id]
+          }
+        ])
+
+        function waychaserInvokeAndHandle (invokable, query, context, options) {
+          return window.handleResponse(
+            invokable.invoke(query, context, options)
+          )
+        }
+
+        function waychaserFindInvokeAndHandle (
+          searchable,
+          query,
+          context,
+          options
+        ) {
+          // eslint-disable-next-line unicorn/no-array-callback-reference -- we made sure query is a single param function
+          const found = searchable.find(query)
+          return window.handleResponse(
+            found ? found.invoke(context, options) : undefined
+          )
+        }
+
+        function addInvokeFunction (functionToCall, invokable, query) {
+          window.waychaserInvokeFunctions.push(function (
+            id,
+            relationship,
+            context,
+            options
+          ) {
+            return functionToCall(
+              invokable(id),
+              query(relationship),
+              context,
+              options
+            )
+          })
+        }
+
+        window.waychaserInvokeFunctions = []
+        invocables.forEach(invokable => {
+          queries.forEach(query =>
+            addInvokeFunction(waychaserInvokeAndHandle, invokable, query)
+          )
+        })
+
+        searchables.forEach(searchable => {
+          queries.forEach(query =>
+            addInvokeFunction(waychaserFindInvokeAndHandle, searchable, query)
+          )
+        })
+      },
+      this.browser
+    )
+    this.invokeScriptCount = await this.executeScript(
+      /* istanbul ignore next: won't work in browser otherwise */
+      function () {
+        return window.waychaserInvokeFunctions.length
       }
     )
   }
 
-  async beforeAllTests () {}
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async beforeAllTests () {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.beforeAllTests.name}`
+    )
+  }
 
-  async doExecuteScript (executor, script, ...arguments_) {
-    const transformed = await this.babelifyCode(script)
+  async doExecuteScript (executor, code, returnApproach, ...arguments_) {
+    const transformed = (
+      await babel.transformAsync(code, babelConfig)
+    ).code.replace('"use strict";\n\n', returnApproach) // || '')
+
     try {
+      logger.debug({ transformed })
       const returnedFromBrowser = await executor(transformed, ...arguments_)
-      logger.debug({ transformed, returnedFromBrowser })
+      logger.debug({ returnedFromBrowser })
       return returnedFromBrowser
     } catch (error) {
       /* istanbul ignore next: only gets executed when there are webdriver issues */
@@ -124,18 +233,20 @@ class WebdriverManager {
     }
   }
 
-  async babelifyCode (script) {
-    const code = `(${script}).apply(window, arguments)`
-    const transformed = await (
-      await babel.transformAsync(code, babelConfig)
-    ).code.replace('"use strict";\n\n', 'return ')
-    return transformed
+  async executeScriptNoReturn (script, ...arguments_) {
+    return this.doExecuteScript(
+      this.driver.executeScript.bind(this.driver),
+      script,
+      '',
+      ...arguments_
+    )
   }
 
   async executeScript (script, ...arguments_) {
     return this.doExecuteScript(
       this.driver.executeScript.bind(this.driver),
-      script,
+      `(${script}).apply(window, arguments)`,
+      'return ',
       ...arguments_
     )
   }
@@ -143,7 +254,8 @@ class WebdriverManager {
   async executeAsyncScript (script, ...arguments_) {
     return this.doExecuteScript(
       this.driver.executeAsyncScript.bind(this.driver),
-      script,
+      `(${script}).apply(window, arguments)`,
+      'return ',
       ...arguments_
     )
   }
@@ -247,7 +359,9 @@ class WebdriverManager {
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async doBuildDriver () {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.doBuildDriver.name}`
+    )
   }
 
   async buildDriver () {

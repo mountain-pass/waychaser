@@ -1,9 +1,10 @@
 import { loadResource } from './util/load-resource'
+import { loadResourceFragment } from './util/load-resource-fragment'
 import logger from './util/logger'
 import { URI } from 'uri-template-lite'
 import qsStringify from 'qs-stringify'
-import Accept from '@hapi/accept'
 import FormData from 'form-data'
+import { preferredContentType } from './util/preferred-content-type'
 
 class OperationBuilder {
   constructor (relationship) {
@@ -16,7 +17,9 @@ class OperationBuilder {
   }
 
   method (method) {
-    this.method = method
+    if (method) {
+      this.method = method
+    }
     return this
   }
 
@@ -54,58 +57,67 @@ export class Operation {
     logger.waychaser(parameters)
     const contextUrl = this.baseUrl
     const expandedUri = URI.expand(this.uri, context || {})
-    logger.waychaser(`loading ${expandedUri}`)
 
     const invokeUrl = new URL(expandedUri, contextUrl)
+    const invokeUrlWithOutHash = new URL(expandedUri, contextUrl)
+    const hash = invokeUrlWithOutHash.hash
+    invokeUrlWithOutHash.hash = ''
+    const invokeUrlWithOutHashAsString = invokeUrlWithOutHash.toString()
+    if (hash !== '' && invokeUrlWithOutHashAsString === contextUrl) {
+      return loadResourceFragment(hash, this.response, this.waychaserContext)
+    }
+
     const body = {}
     Object.keys(parameters).forEach(key => {
-      body[key] = context[key]
+      body[key] = context?.[key]
     })
-    logger.waychaser(
-      `invoking ${invokeUrl} with body ${
-        this.parameters ? JSON.stringify(body) : undefined
-      }`
-    )
-    const contentType = Accept.mediaType(this.accept, [
-      'application/x-www-form-urlencoded',
-      'application/json',
-      'multipart/form-data'
-    ])
+
     let encodedContent
-    switch (contentType) {
-      case 'application/x-www-form-urlencoded':
-        encodedContent = qsStringify(body)
-        break
-      case 'application/json':
-        encodedContent = JSON.stringify(body)
-        break
-      case 'multipart/form-data':
-        encodedContent = new FormData()
-        for (const name in body) {
-          encodedContent.append(name, body[name])
-        }
-        break
-    }
     let headers
-    if (this.parameters && contentType !== 'multipart/form-data') {
-      headers = {
-        'Content-Type': contentType
+
+    if (this.parameters) {
+      const contentType = preferredContentType(
+        this.accept,
+        [
+          'application/x-www-form-urlencoded',
+          'application/json',
+          'multipart/form-data'
+        ],
+        'application/x-www-form-urlencoded'
+      )
+      switch (contentType) {
+        case 'application/x-www-form-urlencoded':
+          encodedContent = qsStringify(body)
+          break
+        case 'application/json':
+          encodedContent = JSON.stringify(body)
+          break
+        case 'multipart/form-data':
+          encodedContent = new FormData()
+          for (const name in body) {
+            encodedContent.append(name, body[name])
+          }
+          break
       }
+      if (contentType !== 'multipart/form-data') {
+        headers = {
+          'content-type': contentType
+        }
+      }
+    }
+
+    const baseOptions = {
+      method: this.method
+    }
+    if (this.parameters) {
+      baseOptions.body = encodedContent
+      baseOptions.headers = headers
     }
 
     return this.loadResource(
       invokeUrl,
-      Object.assign(
-        {
-          method: this.method,
-          headers,
-          ...(this.parameters && {
-            body: encodedContent
-          })
-        },
-        options
-      ),
-      this.handlers
+      Object.assign(baseOptions, options),
+      this.waychaserContext
     )
   }
 

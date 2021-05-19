@@ -1,78 +1,108 @@
-import { abstract } from '../../util/abstract'
-import logger from '../../util/logger'
-
+import { PendingError } from '@windyroad/cucumber-js-throwables'
 class WaychaserProxy {
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async load (url) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.load.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async getOCount (property, result) {
-    abstract()
-  }
-
-  async getOperationsCount (result) {
-    return this.getOCount('operations', result)
-  }
-
-  async getOpsCount (result) {
-    return this.getOCount('ops', result)
+  async getOperationsCounts (result) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getOperationsCounts.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async findOne (result, relationship) {
-    abstract()
+  async find (result, relationship) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.find.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async invokeO (property, result, relationship, context) {
-    abstract()
-  }
-
-  async invokeOperation (result, relationship, context) {
-    logger.debug('OPERATION CONTEXT', context)
-    return this.invokeO('operations', result, relationship, context)
-  }
-
-  async invokeOp (result, relationship, context) {
-    logger.debug('OP CONTEXT', context)
-    return this.invokeO('ops', result, relationship, context)
+  async invokeAll (result, relationship, context, options) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.invokeAll.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async invoke (result, relationship, context) {
-    abstract()
+  async invokeWithObjectQuery (result, query, context) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.invokeWithObjectQuery.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getUrls (result, context) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getUrls.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async getBodies (results) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getBodies.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async getStatusCode (result) {
-    abstract()
+  async getStatusCodes (result) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getStatusCodes.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async use (handler) {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.use.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async reset () {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.reset.name}`
+    )
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
   async useDefaultHandlers () {
-    abstract()
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.useDefaultHandlers.name}`
+    )
+  }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async parseAccept (accept) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.parseAccept.name}`
+    )
+  }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async executeCode (code) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.executeCode.name}`
+    )
+  }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async withFetch (fetch) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.withFetch.name}`
+    )
+  }
+
+  /* istanbul ignore next: only gets executed if we didn't overload this method */
+  async getAwsApiGatewaySchema (gatewayName, schemaName) {
+    throw new PendingError(
+      `TODO: implement ${this.constructor.name}.${this.getAwsApiGatewaySchema.name}`
+    )
   }
 }
 

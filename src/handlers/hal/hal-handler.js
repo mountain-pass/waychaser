@@ -4,9 +4,8 @@ import { mapHalLinkToOperation } from './map-hal-link-to-operation'
 /**
  * @param response
  * @param bodyGetter
- * @param next
  */
-export async function halHandler (response, bodyGetter, next) {
+export async function halHandler (response, bodyGetter) {
   const operations = []
   const contentType = response.headers.get('content-type')?.split(';')
   if (contentType?.[0] === MediaTypes.HAL) {
@@ -16,9 +15,13 @@ export async function halHandler (response, bodyGetter, next) {
       // we also want to convert them to a map, for easy lookup
       const curies = {}
       if (body._links.curies) {
-        body._links.curies.forEach(curie => {
-          curies[curie.name] = curie.href
-        })
+        if (Array.isArray(body._links.curies)) {
+          body._links.curies.forEach(curie => {
+            curies[curie.name] = curie.href
+          })
+        } else {
+          curies[body._links.curies.name] = body._links.curies.href
+        }
       }
       Object.keys(body._links).forEach(key => {
         if (Array.isArray(body._links[key])) {

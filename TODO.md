@@ -63,10 +63,26 @@
   - [ ] add support for sub-entities as embedded links
   - [ ] add support for sub-entities as embedded representations
 - add support for custom links/actions
-  - [x] intial plugin framework
-  - [ ] refactor to better link/operation objects
+  - [x] initial plugin framework
+  - [x] refactor to better link/operation objects
+- [x] Remove lokijs (too bloated) - see https://stackoverflow.com/a/30391815/269221
+- [x] Remove @hapi/accept (too bloated)
+- Add examples and real APIs
+  - [ ] HAL
+    - [ ] getting the embedded sub-entities
+  - [x] Siren
+- [x] add support for retrieving fragment documents
+  - [x] and providing the appropriately anchored operations
+- [x] Dependabot branches shouldn't run audit. Because the branches restricted to 10, this can prevent the update of 
+the package that is causing the audit failure
+- [ ] add invocation arrays 
+- [ ] have `body()` interpret the `content-type` header
+- [ ] Fix release log and change log - it only includes last commit 😢
+  - [ ] fix versioning. CUrrently we bump the version as the start of a set of changes, we don't know if there will be a breaking change or not.
+- [ ] Restructure so don't have to load default handlers
+- [ ] Add option for adding custom body encoders
+- [ ] Look at using https://github.com/RichardLitt/standard-readme-preset
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
-- [ ] add support for Siren
 - [ ] add tests for authenticated requests
 - [ ] upgrade webpack
   - [ ] or investigate using https://rollupjs.org/guide/en/ instead
@@ -87,4 +103,6 @@
 - [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
 - [ ] try to use umd for both node and browser. https://github.com/webpack/webpack/pull/8625
   - [ ] investigate using https://rollupjs.org/guide/en/
+- [ ] handler for "live" swagger/open-api specs
+- [ ] Move accept parsing into it's own library
 

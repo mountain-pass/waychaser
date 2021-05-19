@@ -13,7 +13,7 @@ app.use(bodyParser.json()) // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })) // support url encoded bodies
 app.use(upload.none()) // support multi-part bodies
 
-/* istanbul ignore next: only get's executed when there are test errors (at this stage) */
+/* istanbul ignore next: only gets executed when there are test errors (at this stage) */
 app.use(function (error, request, response, next) {
   logger.error(error)
   next()
@@ -40,12 +40,14 @@ export function stopServer () {
 export function startServer () {
   stopServer()
   server = createServer(app)
-  server.listen(API_PORT, function () {
-    logger.info(
-      '📡  Server is listening on port %d ( http://localhost:%d ) ',
-      API_PORT,
-      API_PORT
-    )
+  return new Promise(resolve => {
+    server.listen(API_PORT, function () {
+      logger.info(
+        '📡  Server is listening on port %d ( http://localhost:%d ) ',
+        API_PORT,
+        API_PORT
+      )
+      resolve(app)
+    })
   })
-  return app
 }

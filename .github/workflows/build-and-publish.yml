@@ -99,8 +99,8 @@ jobs:
           path: report
 
   audit:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
-
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && ! startsWith( github.head_ref, 'dependabot' )"
+    
     runs-on: ubuntu-latest
 
     defaults:
@@ -229,10 +229,216 @@ jobs:
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run cover:node-api
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report-node-${{ matrix.node-version }}
           path: coverage/node-api
+
+
+
+  test-browser-api-local:
+    if: |
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    runs-on: ubuntu-latest
+
+    name: test-chrome-local
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run cover:browser-api:chrome:local
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-chrome-local
+          path: coverage/browser-api-chrome-local
+
+  check-coverage-local:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+
+    needs:
+      - test-node-api
+      - test-browser-api-local
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - uses: actions/download-artifact@v2
+      - run: mkdir -p coverage
+      - run: |
+          for directory in $(ls -d code-coverage-report-*); do
+            mv "${directory}" "coverage/." 
+          done
+          ls -l coverage
+      - run: npm run report:cover
+
+
+  # some of the tests can be skipped if the external system is not available
+  # this is part of a test run to make sure we still have coverage even if
+  # those tests don't run
+  test-node-api-not-skippable:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run cover:node-api:not[@skippable]
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-node-not-skippable-14.x
+          path: coverage/node-api-not--skippable-
+
+  test-browser-api-local-not-skippable:
+    if: |
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    runs-on: ubuntu-latest
+
+    name: test-chrome-local-not-skippable
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run cover:browser-api:chrome:local:not[@skippable]
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-chrome-local-not-skippable
+          path: coverage/browser-api-chrome-local-not--skippable-
+
+  check-coverage-local-not-skippable:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+
+    needs:
+      - test-node-api-not-skippable
+      - test-browser-api-local-not-skippable
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - uses: actions/download-artifact@v2
+      - run: mkdir -p coverage
+      - run: |
+          for directory in $(ls -d code-coverage-report-*); do
+            mv "${directory}" "coverage/." 
+          done
+          ls -l coverage
+      - run: npm run report:cover
+
 
   get-browser-list:
     needs:
@@ -273,44 +479,6 @@ jobs:
       - run: npm run --silent json:list-github-actions-browser-matrix:1 > browser-matrix-1.json
       - id: set-matrix-1
         run: echo "::set-output name=matrix-1::$(cat browser-matrix-1.json)"
-
-  test-browser-api-local:
-    if: |
-      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
-
-    runs-on: ubuntu-latest
-
-    name: test-chrome-local
-
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v1
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache-
-
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - run: npm config set script-shell $(which bash)
-      - run: npm ci
-      - run: npm run cover:browser-api:chrome:local
-      - uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-chrome-local
-          path: coverage/browser-api-chrome-local
 
   test-browser-api-1:
     needs:
@@ -364,20 +532,11 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      # create tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        with:
-          local-testing: start
-          local-identifier: random
       # run tests
       - id: attempt-1
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
-        timeout-minutes: 25
+        run: timeout 30m npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        timeout-minutes: 30
         continue-on-error: true
-      # stop tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        with:
-          local-testing: stop
 
       ### SECOND ATTEMPT ###
       # wait for availability
@@ -386,23 +545,12 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      # create tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        if: steps.attempt-1.outputs.result != 'success'
-        with:
-          local-testing: start
-          local-identifier: random
       # run tests
       - id: attempt-2
         if: steps.attempt-1.outputs.result != 'success'
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
-        timeout-minutes: 25
+        run: timeout 30m npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        timeout-minutes: 30
         continue-on-error: true
-      # stop tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        if: steps.attempt-1.outputs.result != 'success'
-        with:
-          local-testing: stop
 
       ### THIRD ATTEMPT ###
       # wait for availability
@@ -411,23 +559,12 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      # create tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
-        with:
-          local-testing: start
-          local-identifier: random
       # run tests
       - id: attempt-3
         if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
-        run: npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
-        timeout-minutes: 25
+        run: timeout 30m npm run cover:browser-api:${{ matrix.browser }}:remote && echo "::set-output name=result::success"
+        timeout-minutes: 30
         continue-on-error: true
-      # stop tunnel
-      - uses: "browserstack/github-actions/setup-local@v1.0.1"
-        if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success'
-        with:
-          local-testing: stop
 
       # fail if the third attempt failed
       - run: exit 1
@@ -438,47 +575,6 @@ jobs:
           name: code-coverage-report-${{ matrix.browser }}
           path: coverage/browser-api-${{ matrix.browser }}-remote
 
-  check-coverage-local:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
-
-    needs:
-      - test-node-api
-      - test-browser-api-local
-
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v1
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache-
-
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - run: npm config set script-shell $(which bash)
-      - run: npm ci
-      - uses: actions/download-artifact@v2
-      - run: mkdir -p coverage
-      - run: |
-          for directory in $(ls -d code-coverage-report-*); do
-            mv "${directory}" "coverage/." 
-          done
-          ls -l coverage
-      - run: npm run report:cover
 
   check-coverage:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
@@ -532,6 +628,7 @@ jobs:
     needs:
       - check-secret
       - check-coverage-local
+      - check-coverage-local-not-skippable
       - check-coverage
       - lint
       - audit
@@ -645,3 +742,31 @@ jobs:
           git commit -m "chore(release): version bump to $NEXT_VERSION. :tada: [skip-ci]"
           git pull --rebase
           git push origin HEAD:main
+
+
+  not-publish:
+    needs:
+      - check-secret
+      - check-coverage-local
+      - check-coverage-local-not-skippable
+      - check-coverage
+      - lint
+      - audit
+      - security
+      - build
+      - duplication
+    if: |
+      !(needs.check-secret.outputs.SECRETS_SET == 'true' &&
+      github.ref == 'refs/heads/main') && 
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && 
+      ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - run: |
+          echo "this is just to make sure the dependant jobs passed"

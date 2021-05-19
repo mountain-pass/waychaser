@@ -11,3 +11,5 @@ report
 .vscode
 *.js
 *.md
+stats.json
+.github/workflows/build-and-publish.yml
