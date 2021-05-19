@@ -19,7 +19,6 @@ Feature: Get Fragment
         Then the fragment will be returned
         And it will have a "self" operation that returns the same fragment
 
-    @wip
     Scenario: Invoke operation - fragment links filtered
         Given a resource with a "contents" operation that returns a fragment of the resource which has a "self" operation
         When waychaser successfully loads that resource

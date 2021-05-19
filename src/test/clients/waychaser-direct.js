@@ -32,11 +32,15 @@ class WaychaserDirect extends WaychaserProxy {
     return handleResponse(this.waychaser.load(url))
   }
 
-  async getOperationsCounts (results) {
+  async getOperationsCounts (results, filter) {
     const counts = {}
     for (const key in results) {
-      counts[`${key}-operations`] = results[key].resource.operations.length
-      counts[`${key}-ops`] = results[key].resource.ops.length
+      counts[`${key}-operations`] = filter
+        ? results[key].resource.operations.filter(filter).length
+        : results[key].resource.operations.length
+      counts[`${key}-ops`] = filter
+        ? results[key].resource.ops.filter(filter).length
+        : results[key].resource.ops.length
     }
     return counts
   }
@@ -159,6 +163,15 @@ class WaychaserDirect extends WaychaserProxy {
         // eslint-disable-next-line unicorn/no-array-callback-reference -- query is not a function
         result.resource.ops.find(query).invoke(context)
       )
+    ])
+  }
+
+  async invokeNth (result, relationship, nth) {
+    return Promise.all([
+      handleResponse(
+        result.resource.operations.filter(relationship)[nth]?.invoke()
+      ),
+      handleResponse(result.resource.ops.filter(relationship)[nth]?.invoke())
     ])
   }
 

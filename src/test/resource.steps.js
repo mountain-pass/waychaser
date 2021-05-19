@@ -790,3 +790,31 @@ function addRouteToStaticResource (method, statusCode, links, mediaType) {
     })
   }
 }
+
+Given(
+  'a resource with a {string} operation with the URI {string}',
+  async function (relationship, uri) {
+    this.currentResourceRoute = randomApiPath()
+    const links = new LinkHeader()
+    links.set({
+      rel: relationship,
+      uri: uri
+    })
+    await createOkRouteWithLinks.bind(this)(this.currentResourceRoute, links)
+  }
+)
+
+Given('a resource with the operations', async function (dataTable) {
+  this.currentResourceRoute = randomApiPath()
+  const links = new LinkHeader()
+  for (const row of dataTable.hashes()) {
+    const tidied = {}
+    for (const key in row) {
+      if (row[key]) {
+        tidied[key] = row[key]
+      }
+    }
+    links.set(tidied)
+  }
+  await createOkRouteWithLinks.bind(this)(this.currentResourceRoute, links)
+})

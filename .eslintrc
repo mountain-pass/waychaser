@@ -77,7 +77,8 @@
         "security/detect-non-literal-fs-filename": "off",
         "jsdoc/require-jsdoc": "off",
         "security/detect-object-injection": "off",
-        "unicorn/no-array-for-each": "off"
+        "unicorn/no-array-for-each": "off",
+        "unicorn/no-array-callback-reference": "off"
       }
     },
     {
