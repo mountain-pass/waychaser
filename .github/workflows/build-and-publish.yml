@@ -131,7 +131,7 @@ jobs:
       - check-secret
     if: |
       needs.check-secret.outputs.SECRETS_SET == 'true' &&
-       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')  && ! startsWith( github.head_ref, 'dependabot' )
 
     runs-on: ubuntu-latest
 
@@ -278,7 +278,7 @@ jobs:
           path: coverage/browser-api-chrome-local
 
   check-coverage-local:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && ! startsWith( github.head_ref, 'dependabot' )"
 
     needs:
       - test-node-api
@@ -398,7 +398,7 @@ jobs:
           path: coverage/browser-api-chrome-local-not--skippable-
 
   check-coverage-local-not-skippable:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && ! startsWith( github.head_ref, 'dependabot' )"
 
     needs:
       - test-node-api-not-skippable
@@ -577,7 +577,7 @@ jobs:
 
 
   check-coverage:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && ! startsWith( github.head_ref, 'dependabot' )"
 
     needs:
       - test-node-api
@@ -636,7 +636,7 @@ jobs:
       - build
       - duplication
     if: |
-      needs.check-secret.outputs.SECRETS_SET == 'true' &&
+      needs.check-secret.outputs.SECRETS_SET == 'true' && 
       github.ref == 'refs/heads/main' && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && 
       ! contains(toJSON(github.event.commits.*.message), '[skip-release]')
