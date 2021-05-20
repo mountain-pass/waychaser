@@ -36,7 +36,8 @@ module.exports = {
       {
         allowTopLevelThis: true
       }
-    ]
+    ],
+    ['@babel/plugin-syntax-top-level-await']
   ],
   env: {
     test: {
