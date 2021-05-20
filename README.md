@@ -416,9 +416,6 @@ But even though it's a game, it shows how waychaser can easily navigate a comple
 ```js
   return waychaser
     .load('http://hyperwizard.azurewebsites.net/hywit/void')
-    .then(current => current.invoke(['north', 'pull-lever', { rel: 'move', title: 'Cross the bridge.' }]))
-  return waychaser
-    .load('http://hyperwizard.azurewebsites.net/hywit/void')
     .then(current =>
       current.invoke('start-adventure', {
         name: 'waychaser',
@@ -511,7 +508,7 @@ apiResource.operations.find(relationship)
 apiResource.operations.find({ rel: relationship })
 // or
 apiResource.operations.find(operation => {
-  operation.rel === relationship
+  return operation.rel === relationship
 })
 // or
 apiResource.ops.find(relationship)
@@ -519,7 +516,7 @@ apiResource.ops.find(relationship)
 apiResource.ops.find({ rel: relationship })
 // or
 apiResource.ops.find(operation => {
-  operation.rel === relationship
+  return operation.rel === relationship
 })
 ```
 
@@ -530,27 +527,27 @@ equivalent
 await apiResource.invoke(relationship)
 await apiResource.invoke({ rel: relationship })
 await apiResource.invoke(operation => {
-  operation.rel === relationship
+  return operation.rel === relationship
 })
 await apiResource.operations.invoke(relationship)
 await apiResource.operations.invoke({ rel: relationship })
 await apiResource.operations.invoke(operation => {
-  operation.rel === relationship
+  return operation.rel === relationship
 })
 await apiResource.ops.invoke(relationship)
 await apiResource.ops.invoke({ rel: relationship })
 await apiResource.ops.invoke(operation => {
-  operation.rel === relationship
+  return operation.rel === relationship
 })
 await apiResource.operations.find(relationship).invoke()
 await apiResource.operations.find({ rel: relationship }).invoke()
 await apiResource.operations.find(operation => {
-  operation.rel === relationship
+  return operation.rel === relationship
 }).invoke()
 await apiResource.ops.find(relationship).invoke()
 await apiResource.ops.find({ rel: relationship }).invoke()
 await apiResource.ops.find(operation => {
-  operation.rel === relationship
+  return operation.rel === relationship
 }).invoke()
 ```
 
@@ -646,6 +643,7 @@ if( resource === undefined ) {
 
 or
 
+<!-- eslint-skip -->
 ```js
 return apiResource.invoke(relationship) || //... return a default
 ```

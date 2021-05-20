@@ -90,10 +90,9 @@
       }
     },
     {
-      "files": ["*.md"],
-      "parser": "markdown-eslint-parser",
+      "files": ["**/*.md"],
+      "processor": "markdown/markdown",
       "rules": {
-        "unicorn/filename-case": "off",
         "md/remark": [
           "error",
           {
@@ -102,6 +101,21 @@
             }
           }
         ]
+      }
+    },
+    {
+      "files": ["**/*.md/*.js"],
+      "parser": "@babel/eslint-parser",
+      "rules": {
+        "no-console": "off",
+        "import/no-unresolved": "off",
+        "unicorn/filename-case": "off",
+        "no-unused-vars": "off",
+        "no-undef": "off",
+        "unicorn/prefer-optional-catch-binding": "off",
+        "spaced-comment": "off",
+        "no-unused-expressions": "off",
+        "unicorn/no-array-callback-reference": "off"
       }
     }
   ]
