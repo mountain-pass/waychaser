@@ -13,7 +13,7 @@
   ],
   "extends": [
     "standard",
-    "prettier-standard",
+    "prettier",
     "plugin:security/recommended",
     "plugin:unicorn/recommended",
     "plugin:jsdoc/recommended",
@@ -61,7 +61,7 @@
       ],
       "extends": [
         "plugin:chai-friendly/recommended",
-        "prettier-standard",
+        "prettier",
         "plugin:security/recommended",
         "plugin:unicorn/recommended",
         "plugin:jsdoc/recommended",
