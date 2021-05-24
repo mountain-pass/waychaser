@@ -1,3 +1,9 @@
+## <small>3.0.32 (2021-05-24)</small>
+
+* Merge pull request #357 from mountain-pass/dependabot/npm_and_yarn/start-server-and-test-1.12.2 ([eb8f71d](https://github.com/mountain-pass/waychaser/commit/eb8f71d)), closes [#357](https://github.com/mountain-pass/waychaser/issues/357)
+
+
+
 ## <small>3.0.31 (2021-05-23)</small>
 
 * Merge pull request #354 from mountain-pass/dependabot/npm_and_yarn/snyk-1.606.0 ([f28c484](https://github.com/mountain-pass/waychaser/commit/f28c484)), closes [#354](https://github.com/mountain-pass/waychaser/issues/354)
