@@ -1,3 +1,9 @@
+## <small>3.0.33 (2021-05-24)</small>
+
+* Merge pull request #359 from mountain-pass/dependabot/npm_and_yarn/concurrently-6.2.0 ([c3a70e3](https://github.com/mountain-pass/waychaser/commit/c3a70e3)), closes [#359](https://github.com/mountain-pass/waychaser/issues/359)
+
+
+
 ## <small>3.0.32 (2021-05-24)</small>
 
 * Merge pull request #357 from mountain-pass/dependabot/npm_and_yarn/start-server-and-test-1.12.2 ([eb8f71d](https://github.com/mountain-pass/waychaser/commit/eb8f71d)), closes [#357](https://github.com/mountain-pass/waychaser/issues/357)
