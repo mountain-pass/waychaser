@@ -5,6 +5,7 @@ import { URI } from 'uri-template-lite'
 import qsStringify from 'qs-stringify'
 import FormData from 'form-data'
 import { preferredContentType } from './util/preferred-content-type'
+import flatten from 'flat'
 
 class OperationBuilder {
   constructor (relationship) {
@@ -56,8 +57,18 @@ export class Operation {
 
     logger.waychaser(parameters)
     const contextUrl = this.baseUrl
-    const expandedUri = URI.expand(this.uri, context || {})
-
+    let thisContext = {}
+    try {
+      thisContext = await this.response.json()
+      thisContext = flatten({ this: JSON.parse(thisContext) })
+    } catch {
+      // not json
+      thisContext = {}
+    }
+    const expandedUri = URI.expand(
+      this.uri,
+      Object.assign({}, thisContext, context || {})
+    )
     const invokeUrl = new URL(expandedUri, contextUrl)
     const invokeUrlWithOutHash = new URL(expandedUri, contextUrl)
     const hash = invokeUrlWithOutHash.hash

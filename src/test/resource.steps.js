@@ -818,3 +818,30 @@ Given('a resource with the operations', async function (dataTable) {
   }
   await createOkRouteWithLinks.bind(this)(this.currentResourceRoute, links)
 })
+
+Given('a resource at {string}', async function (path) {
+  this.currentResourceRoute = `/api${path}`
+  await createOkRouteWithLinks.bind(this)(this.currentResourceRoute)
+  this.firstResourceRoute = `${this.baseUrl}${this.currentResourceRoute}`
+})
+
+Given(
+  'a resource with a {string} operation with the URI {string} and the body',
+  async function (relationship, path, body) {
+    this.currentResourceRoute = randomApiPath()
+    const links = new LinkHeader()
+    links.set({
+      rel: relationship,
+      uri: `/api${path}`
+    })
+
+    await createOkRouteWithLinks.bind(this)(
+      this.currentResourceRoute,
+      links,
+      undefined,
+      undefined,
+      undefined,
+      body
+    )
+  }
+)

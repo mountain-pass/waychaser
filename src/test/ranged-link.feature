@@ -1,5 +1,4 @@
 
-@wip
 Feature: Ranged Link
 
     Scenario: Ranged Link Automatically Expands
