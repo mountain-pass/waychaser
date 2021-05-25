@@ -62,12 +62,9 @@ export class Operation {
     try {
       //      thisContext = await this.response.json()
       const fullBody = await this.response.json()
-      logger.waychaser({ fullBody })
       const contextBody = this.jsonPointer
         ? pointer.get(fullBody, this.jsonPointer)
         : fullBody
-      logger.waychaser(this.rel)
-      logger.waychaser(contextBody)
       thisContext = flatten({ this: contextBody })
     } catch (error) {
       // not json
@@ -78,6 +75,7 @@ export class Operation {
       this.uri,
       Object.assign({}, thisContext, context || {})
     )
+    logger.waychaser({ expandedUri })
     const invokeUrl = new URL(expandedUri, contextUrl)
     const invokeUrlWithOutHash = new URL(expandedUri, contextUrl)
     const hash = invokeUrlWithOutHash.hash
