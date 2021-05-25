@@ -3,7 +3,7 @@ Feature: This Link
 
     Scenario: This Link Automatically Expands
         Given a resource at "/api/user/jane-smith"
-        And a resource with a "item" operation with the URI "/{this.type}/{this.username}" and the body
+        And a resource with a "item" operation with the URI "/api/{this.type}/{this.username}" and the body
             """
             {
                 "type": "user",
