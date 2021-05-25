@@ -1,3 +1,9 @@
+## <small>3.0.35 (2021-05-25)</small>
+
+* fix(coverage): removed dead code ([3e63934](https://github.com/mountain-pass/waychaser/commit/3e63934))
+
+
+
 ## <small>3.0.33 (2021-05-24)</small>
 
 * Merge pull request #359 from mountain-pass/dependabot/npm_and_yarn/concurrently-6.2.0 ([c3a70e3](https://github.com/mountain-pass/waychaser/commit/c3a70e3)), closes [#359](https://github.com/mountain-pass/waychaser/issues/359)
