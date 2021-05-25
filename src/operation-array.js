@@ -45,7 +45,9 @@ OperationArray.prototype.filter = function (query) {
   } else if (typeof query === 'object') {
     return this.filter(objectFinder(query))
   } else {
-    return new OperationArray(...Array.prototype.filter.bind(this)(query))
+    const filtered = Array.prototype.filter.bind(this)(query)
+    Object.setPrototypeOf(filtered, OperationArray.prototype)
+    return filtered
   }
 }
 
