@@ -121,6 +121,7 @@ export class Resource {
       operation.baseUrl = response.url
       operation.waychaserContext = waychaserContext
       operation.response = response
+      operation.jsonPointer = jsonPointer
       this.operations.push(operation)
     }
     logger.waychaser('resource created')

@@ -6,6 +6,7 @@ import qsStringify from 'qs-stringify'
 import FormData from 'form-data'
 import { preferredContentType } from './util/preferred-content-type'
 import flatten from 'flat'
+import pointer from 'jsonpointer'
 
 class OperationBuilder {
   constructor (relationship) {
@@ -53,16 +54,24 @@ export class Operation {
   }
 
   async invoke (context, options) {
+    logger.waychaser('Operation.invoke')
     const parameters = this.parameters || {}
 
-    logger.waychaser(parameters)
     const contextUrl = this.baseUrl
     let thisContext = {}
     try {
-      thisContext = await this.response.json()
-      thisContext = flatten({ this: JSON.parse(thisContext) })
-    } catch {
+      //      thisContext = await this.response.json()
+      const fullBody = await this.response.json()
+      logger.waychaser({ fullBody })
+      const contextBody = this.jsonPointer
+        ? pointer.get(fullBody, this.jsonPointer)
+        : fullBody
+      logger.waychaser(this.rel)
+      logger.waychaser(contextBody)
+      thisContext = flatten({ this: contextBody })
+    } catch (error) {
       // not json
+      logger.error(error)
       thisContext = {}
     }
     const expandedUri = URI.expand(

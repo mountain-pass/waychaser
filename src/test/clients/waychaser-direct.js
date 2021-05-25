@@ -66,7 +66,7 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async invokeAll (result, relationship, context, options) {
-    logger.debug('invoke CONTEXT', context)
+    logger.debug('invoke CONTEXT', context, relationship)
     return Promise.all([
       handleResponse(result.resource.invoke(relationship, context, options)),
       handleResponse(

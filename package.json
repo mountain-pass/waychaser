@@ -1,6 +1,6 @@
 {
   "name": "@mountainpass/waychaser",
-  "version": "3.0.34",
+  "version": "3.0.35",
   "description": "Client library for HATEOAS level 3 RESTful APIs that provide hypermedia controls",
   "repository": {
     "type": "git",
@@ -70,8 +70,8 @@
     "test:node-api": "scripts/test-node.sh",
     "watch:test:node-api": "nodemon -V -x npm -- run ${npm_lifecycle_event#watch:}",
     "test:node-api:@wip": "scripts/test-node.sh",
-    "test:node-api:not[@skippable]": "scripts/test-node.sh",
     "watch:test:node-api:@wip": "nodemon -V -x npm -- run ${npm_lifecycle_event#watch:}",
+    "test:node-api:not[@skippable]": "scripts/test-node.sh",
     "test:browser-api:ie:remote": "scripts/test-browser.sh",
     "test:browser-api:ie:remote:@wip": "scripts/test-browser.sh",
     "test:browser-api:chrome:local": "scripts/test-browser.sh",
