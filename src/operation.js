@@ -59,18 +59,12 @@ export class Operation {
 
     const contextUrl = this.baseUrl
     let thisContext = {}
-    try {
-      //      thisContext = await this.response.json()
-      const fullBody = await this.response.json()
-      const contextBody = this.jsonPointer
-        ? pointer.get(fullBody, this.jsonPointer)
-        : fullBody
-      thisContext = flatten({ this: contextBody })
-    } catch (error) {
-      // not json
-      logger.error(error)
-      thisContext = {}
-    }
+    //      thisContext = await this.response.json()
+    const fullBody = await this.response.json()
+    const contextBody = this.jsonPointer
+      ? pointer.get(fullBody, this.jsonPointer)
+      : fullBody
+    thisContext = flatten({ this: contextBody })
     const expandedUri = URI.expand(
       this.uri,
       Object.assign({}, thisContext, context || {})
