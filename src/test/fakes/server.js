@@ -5,6 +5,7 @@ import { API_PORT } from '../config'
 import express from 'express'
 import bodyParser from 'body-parser'
 import multer from 'multer'
+import { createHttpTerminator } from 'http-terminator'
 
 const upload = multer()
 
@@ -30,16 +31,24 @@ app.use(function (request, response, next) {
 })
 
 export let server
+let httpTerminator
 
-export function stopServer () {
-  if (server !== undefined) {
-    server.close()
+export async function stopServer () {
+  if (httpTerminator !== undefined) {
+    logger.info('Stopping Server...')
+    await httpTerminator.terminate()
+    logger.info('...stopped')
+    httpTerminator = undefined
+    server = undefined
   }
 }
 
-export function startServer () {
-  stopServer()
+export async function startServer () {
+  await stopServer()
   server = createServer(app)
+  httpTerminator = createHttpTerminator({
+    server
+  })
   return new Promise(resolve => {
     server.listen(API_PORT, function () {
       logger.info(

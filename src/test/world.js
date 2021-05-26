@@ -109,12 +109,12 @@ After({ timeout: 600000 }, async function (scenario) {
 })
 
 AfterAll({ timeout: 600000 }, async function () {
-  logger.debug('BEGIN AfterAll')
+  logger.info('BEGIN AfterAll')
   if (webdriverManager) {
     await webdriverManager.afterAllTests()
   }
-  stopServer()
-  logger.debug('END AfterAll')
+  await stopServer()
+  logger.info('END AfterAll')
 })
 
 setWorldConstructor(world)
