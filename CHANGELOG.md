@@ -1,3 +1,9 @@
+## <small>3.0.36 (2021-05-26)</small>
+
+* Merge pull request #362 from mountain-pass/dependabot/npm_and_yarn/dns-packet-1.3.4 ([4353895](https://github.com/mountain-pass/waychaser/commit/4353895)), closes [#362](https://github.com/mountain-pass/waychaser/issues/362)
+
+
+
 ## <small>3.0.35 (2021-05-25)</small>
 
 * fix(coverage): removed dead code ([3e63934](https://github.com/mountain-pass/waychaser/commit/3e63934))
