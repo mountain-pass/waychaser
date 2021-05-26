@@ -850,26 +850,22 @@ Given('a resource  with the body {string} and the links', async function (
   body,
   dataTable
 ) {
-  this.currentResourceRoute = randomApiPath()
-  const links = createLinksFromDataTable(dataTable)
-
-  const router = await this.router.route(this.currentResourceRoute)
-  await router.get(async (request, response) => {
-    response.header('link', links.toString())
-    response.status(200).send(JSON.parse(body))
-  })
+  await createBasicResource.bind(this)(dataTable, body)
 })
 
 Given('a resource  with no body and the links', async function (dataTable) {
+  await createBasicResource.bind(this)(dataTable)
+})
+
+async function createBasicResource (dataTable, body) {
   this.currentResourceRoute = randomApiPath()
   const links = createLinksFromDataTable(dataTable)
-
   const router = await this.router.route(this.currentResourceRoute)
   await router.get(async (request, response) => {
     response.header('link', links.toString())
-    response.status(200).send()
+    response.status(200).send(body)
   })
-})
+}
 
 function createLinksFromDataTable (dataTable) {
   const links = new LinkHeader()
