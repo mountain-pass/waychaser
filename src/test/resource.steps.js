@@ -851,6 +851,27 @@ Given('a resource  with the body {string} and the links', async function (
   dataTable
 ) {
   this.currentResourceRoute = randomApiPath()
+  const links = createLinksFromDataTable(dataTable)
+
+  const router = await this.router.route(this.currentResourceRoute)
+  await router.get(async (request, response) => {
+    response.header('link', links.toString())
+    response.status(200).send(JSON.parse(body))
+  })
+})
+
+Given('a resource  with no body and the links', async function (dataTable) {
+  this.currentResourceRoute = randomApiPath()
+  const links = createLinksFromDataTable(dataTable)
+
+  const router = await this.router.route(this.currentResourceRoute)
+  await router.get(async (request, response) => {
+    response.header('link', links.toString())
+    response.status(200).send()
+  })
+})
+
+function createLinksFromDataTable (dataTable) {
   const links = new LinkHeader()
   for (const row of dataTable.hashes()) {
     links.set({
@@ -859,13 +880,5 @@ Given('a resource  with the body {string} and the links', async function (
       ...(row.anchor && { anchor: row.anchor })
     })
   }
-
-  await createOkRouteWithLinks.bind(this)(
-    this.currentResourceRoute,
-    links,
-    undefined,
-    undefined,
-    undefined,
-    JSON.parse(body)
-  )
-})
+  return links
+}

@@ -36,6 +36,10 @@ OperationArray.prototype.invoke = function (relationship, context, options) {
   //   JSON.stringify(operation, undefined, 2)
   // )
   logger.waychaser('context:', JSON.stringify(context, undefined, 2))
+  if (operation === undefined) {
+    logger.waychaser('operation not found', relationship)
+    logger.waychaser(this)
+  }
   return operation ? operation.invoke(context, options) : undefined
 }
 
