@@ -167,11 +167,11 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async invokeNth (result, relationship, nth) {
+    const operation = result.resource.operations.filter(relationship)[nth]
+    const op = result.resource.ops.filter(relationship)[nth]
     return Promise.all([
-      handleResponse(
-        result.resource.operations.filter(relationship)[nth]?.invoke()
-      ),
-      handleResponse(result.resource.ops.filter(relationship)[nth]?.invoke())
+      handleResponse(operation?.invoke()),
+      handleResponse(op?.invoke())
     ])
   }
 

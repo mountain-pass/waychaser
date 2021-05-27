@@ -29,9 +29,8 @@ Feature: Ranged Link
         Then it will have 10 "item" operations
         And each "item" will have a "canonical" operation
 
-# Scenario: Ranged Link Automatically Expands
-#     Given a collection resource with 20 item and the following Link header
-#         | rel       | anchor      | uri              |
-#         | canonical | "/{[0..4]}" | /items/{this.id} |
-#     When waychaser successfully loads that resource
-#     Then it will have 20 "item" operations
+    Scenario: Collection with many many items - fetch nth item
+        Given a resource that's a collection with 524288 items
+        When waychaser successfully loads that resource
+        And we invoke the 'item' operation for the 1986th item
+        Then the 1986th item will be returned

@@ -878,3 +878,19 @@ function createLinksFromDataTable (dataTable) {
   }
   return links
 }
+
+Given("a resource that's a collection with {int} items", async function (
+  count
+) {
+  const body = [...Array.from({ length: Number.parseInt(count) }).keys()].map(
+    index => ({
+      id: index,
+      title: 'foo',
+      other: 'bar'
+    })
+  )
+  await createBasicResource.bind(this)(
+    { hashes: () => [{ rel: 'item', uri: `#/{[0..${count - 1}]}` }] },
+    body
+  )
+})

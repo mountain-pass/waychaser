@@ -9,18 +9,16 @@ import { Operation } from './operation'
 function expandOperation (operation) {
   const expandedOperations = []
   const rangeRegex = /{\[(\d+)..(\d+)]}/
-  const matches = operation.uri.match(rangeRegex)
+  const originalUrl = operation.uri
+  const matches = originalUrl.match(rangeRegex)
   if (matches) {
-    const newOperations = []
     for (let index = matches[1]; index <= matches[2]; ++index) {
-      const newUri = operation.uri.replace(rangeRegex, index)
-      newOperations.push(
-        ...expandOperation(
-          Object.assign(new Operation(operation), { uri: newUri })
-        )
-      )
+      operation.uri = originalUrl.replace(rangeRegex, index)
+      const thisExpandedOperations = expandOperation(operation)
+      for (const operation of thisExpandedOperations) {
+        expandedOperations.push(new Operation(operation))
+      }
     }
-    expandedOperations.push(...newOperations)
   } else {
     const anchorMatches = operation.anchor?.match(rangeRegex)
     if (anchorMatches) {
@@ -58,8 +56,10 @@ async function parseOperations ({ handlers, response, anchor }) {
         stop = true
       }
     )
-    if (handledOperations?.length > 0) {
-      operations.push(...handledOperations)
+    if (handledOperations) {
+      for (const operation of handledOperations) {
+        operations.push(operation)
+      }
     }
     if (stop) {
       break
@@ -68,7 +68,9 @@ async function parseOperations ({ handlers, response, anchor }) {
   const expandedOperations = []
   for (const operation of operations) {
     const expanded = expandOperation(operation)
-    expandedOperations.push(...expanded)
+    for (const operation of expanded) {
+      expandedOperations.push(operation)
+    }
   }
 
   return expandedOperations.filter(operation => {

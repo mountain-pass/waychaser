@@ -265,3 +265,23 @@ Then('each {string} will have a {string} operation', async function (
     }
   }
 })
+
+When('we invoke the {string} operation for the {int}th item', async function (
+  relationship,
+  nth
+) {
+  this.previousResult = this.results[0]
+  this.results = await this.waychaserProxy.invokeNth(
+    this.results[0],
+    relationship,
+    nth
+  )
+})
+
+Then('the {int}th item will be returned', async function (nth) {
+  const bodies = await this.waychaserProxy.getBodies(this.results)
+  console.log({ bodies })
+  for (const body of bodies) {
+    expect(body.id).to.equal(nth)
+  }
+})
