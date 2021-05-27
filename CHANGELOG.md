@@ -1,3 +1,9 @@
+## <small>3.0.38 (2021-05-27)</small>
+
+* Merge pull request #347 from mountain-pass/dependabot/npm_and_yarn/commitlint/config-conventional-12 ([0e574b5](https://github.com/mountain-pass/waychaser/commit/0e574b5)), closes [#347](https://github.com/mountain-pass/waychaser/issues/347)
+
+
+
 ## <small>3.0.37 (2021-05-27)</small>
 
 * Merge pull request #350 from mountain-pass/dependabot/npm_and_yarn/humanize-duration-3.26.0 ([2edbbc0](https://github.com/mountain-pass/waychaser/commit/2edbbc0)), closes [#350](https://github.com/mountain-pass/waychaser/issues/350)
