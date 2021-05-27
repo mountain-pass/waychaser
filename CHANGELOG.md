@@ -1,3 +1,9 @@
+## <small>3.0.37 (2021-05-27)</small>
+
+* Merge pull request #350 from mountain-pass/dependabot/npm_and_yarn/humanize-duration-3.26.0 ([2edbbc0](https://github.com/mountain-pass/waychaser/commit/2edbbc0)), closes [#350](https://github.com/mountain-pass/waychaser/issues/350)
+
+
+
 ## <small>3.0.36 (2021-05-26)</small>
 
 * Merge pull request #362 from mountain-pass/dependabot/npm_and_yarn/dns-packet-1.3.4 ([4353895](https://github.com/mountain-pass/waychaser/commit/4353895)), closes [#362](https://github.com/mountain-pass/waychaser/issues/362)
