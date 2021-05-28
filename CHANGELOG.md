@@ -1,3 +1,9 @@
+## <small>3.0.39 (2021-05-28)</small>
+
+* fix(ranged-links): fixed stack issues with links with ranges in anchors ([e6c4946](https://github.com/mountain-pass/waychaser/commit/e6c4946))
+
+
+
 ## <small>3.0.38 (2021-05-27)</small>
 
 * Merge pull request #347 from mountain-pass/dependabot/npm_and_yarn/commitlint/config-conventional-12 ([0e574b5](https://github.com/mountain-pass/waychaser/commit/0e574b5)), closes [#347](https://github.com/mountain-pass/waychaser/issues/347)
