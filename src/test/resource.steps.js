@@ -890,7 +890,16 @@ Given("a resource that's a collection with {int} items", async function (
     })
   )
   await createBasicResource.bind(this)(
-    { hashes: () => [{ rel: 'item', uri: `#/{[0..${count - 1}]}` }] },
+    {
+      hashes: () => [
+        { rel: 'item', uri: `#/{[0..${count - 1}]}` },
+        {
+          rel: 'canonical',
+          uri: './{this.id}',
+          anchor: `#/{[0..${count - 1}]}`
+        }
+      ]
+    },
     body
   )
 })

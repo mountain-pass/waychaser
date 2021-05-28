@@ -20,18 +20,16 @@ function expandOperation (operation) {
       }
     }
   } else {
-    const anchorMatches = operation.anchor?.match(rangeRegex)
+    const originalAnchor = operation.anchor
+    const anchorMatches = originalAnchor?.match(rangeRegex)
     if (anchorMatches) {
-      const newOperations = []
       for (let index = anchorMatches[1]; index <= anchorMatches[2]; ++index) {
-        const newAnchor = operation.anchor.replace(rangeRegex, index)
-        newOperations.push(
-          ...expandOperation(
-            Object.assign(new Operation(operation), { anchor: newAnchor })
-          )
-        )
+        operation.anchor = originalAnchor.replace(rangeRegex, index)
+        const thisExpandedOperations = expandOperation(operation)
+        for (const operation of thisExpandedOperations) {
+          expandedOperations.push(new Operation(operation))
+        }
       }
-      expandedOperations.push(...newOperations)
     } else {
       expandedOperations.push(operation)
     }

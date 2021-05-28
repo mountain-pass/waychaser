@@ -29,6 +29,7 @@ Feature: Ranged Link
         Then it will have 10 "item" operations
         And each "item" will have a "canonical" operation
 
+    @wip
     Scenario: Collection with many many items - fetch nth item
         Given a resource that's a collection with 524288 items
         When waychaser successfully loads that resource
