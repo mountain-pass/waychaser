@@ -1,3 +1,9 @@
+## <small>3.0.40 (2021-06-04)</small>
+
+* Merge pull request #379 from mountain-pass/dependabot/npm_and_yarn/ws-6.2.2 ([ca356fb](https://github.com/mountain-pass/waychaser/commit/ca356fb)), closes [#379](https://github.com/mountain-pass/waychaser/issues/379)
+
+
+
 ## <small>3.0.39 (2021-05-28)</small>
 
 * fix(ranged-links): fixed stack issues with links with ranges in anchors ([e6c4946](https://github.com/mountain-pass/waychaser/commit/e6c4946))
