@@ -1,3 +1,9 @@
+## <small>3.0.42 (2021-06-05)</small>
+
+* Merge pull request #385 from mountain-pass/dependabot/npm_and_yarn/core-js-3.14.0 ([a0ee0a8](https://github.com/mountain-pass/waychaser/commit/a0ee0a8)), closes [#385](https://github.com/mountain-pass/waychaser/issues/385)
+
+
+
 ## <small>3.0.41 (2021-06-04)</small>
 
 * Merge pull request #368 from mountain-pass/dependabot/npm_and_yarn/webpack-bundle-analyzer-4.4.2 ([96e1b12](https://github.com/mountain-pass/waychaser/commit/96e1b12)), closes [#368](https://github.com/mountain-pass/waychaser/issues/368)
