@@ -1,3 +1,9 @@
+## <small>3.0.43 (2021-06-06)</small>
+
+* Merge pull request #388 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-35.1.3 ([4deaa16](https://github.com/mountain-pass/waychaser/commit/4deaa16)), closes [#388](https://github.com/mountain-pass/waychaser/issues/388)
+
+
+
 ## <small>3.0.42 (2021-06-05)</small>
 
 * Merge pull request #385 from mountain-pass/dependabot/npm_and_yarn/core-js-3.14.0 ([a0ee0a8](https://github.com/mountain-pass/waychaser/commit/a0ee0a8)), closes [#385](https://github.com/mountain-pass/waychaser/issues/385)
