@@ -4,11 +4,12 @@ import logging from 'selenium-webdriver/lib/logging'
 import chrome from 'selenium-webdriver/chrome'
 import firefox from 'selenium-webdriver/firefox'
 import logger from '../../util/logger'
-import { BROWSER_HOST, BROWSER_PORT } from '../config'
+import { API_HOST, API_PORT } from '../config'
+
 class WebdriverManagerLocal extends WebdriverManager {
   async beforeAllTests () {
     this.driver = await this.buildDriver()
-    const url = `http://${BROWSER_HOST}:${BROWSER_PORT}`
+    const url = `http://${API_HOST}:${API_PORT}`
     await this.loadWaychaserTestPage(url)
     return url
   }

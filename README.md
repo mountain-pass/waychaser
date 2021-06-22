@@ -61,6 +61,7 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
   - [Error responses](#error-responses)
   - [Invoking missing operations](#invoking-missing-operations)
   - [Handling location headers](#handling-location-headers)
+- [Upgrading from 3.x to 4.x](#upgrading-from-3x-to-4x)
 
 # Usage
 
@@ -71,10 +72,10 @@ npm install @mountainpass/waychaser
 ```
 
 ```js
-import { waychaser } from '@mountainpass/waychaser'
+import { WayChaser } from '@mountainpass/waychaser'
 
 //...
-
+const waychaser = new WayChaser()
 try {
   const apiResource = await waychaser.load(apiUrl)
   // do something with `apiResource`
@@ -93,6 +94,7 @@ try {
 
 ...
 <script type="text/javascript">
+  var waychaser = new window.waychaser.WayChaser()
   waychaser
     .load(apiUrl)
     .then((apiResource) => {
@@ -106,7 +108,7 @@ try {
 
 ## Getting the response
 
-Waychaser makes it's http requests using `fetch` and the `Fetch.Response` is available via the `response` property.
+WayChaser makes it's http requests using `fetch` and the `Fetch.Response` is available via the `response` property.
 
 For example
 ```js
@@ -115,21 +117,17 @@ const responseUrl = apiResource.response.url
 
 ### Getting the response body
 
-Waychaser makes the response body available via the `body()` async method.
+WayChaser makes the response body available via the `body()` async method.
 
 For example
 ```js
 const responseUrl = await apiResource.body()
 ```
-
-NOTE: The response body is also available via the `Fetch.Response`, however if the server is using HAL or Siren, then
-waychaser needs to consume the body in order to parse the links. If you then call `apiResource.response.json()`, you will get a `Body has already been consumed` error. Use `apiResource.body()` instead.
-
 ## Requesting linked resources
 
-Level 3 REST APIs are expected to return links to related resources. Waychaser expects to find these links via [RFC 8288](https://tools.ietf.org/html/rfc8288) `link` headers, [`link-template`](https://mnot.github.io/I-D/link-template/) headers, [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08)  `_link` elements or [Siren](https://github.com/kevinswiber/siren) `link` elements.
+Level 3 REST APIs are expected to return links to related resources. WayChaser expects to find these links via [RFC 8288](https://tools.ietf.org/html/rfc8288) `link` headers, [`link-template`](https://mnot.github.io/I-D/link-template/) headers, [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-08)  `_link` elements or [Siren](https://github.com/kevinswiber/siren) `link` elements.
 
-Waychaser provides methods to simplify requesting these linked resources.
+WayChaser provides methods to simplify requesting these linked resources.
 
 For instance, if the `apiResource` we loaded above has a `next`  `link` like any of the following:
 
@@ -350,6 +348,10 @@ import aws4 from 'aws4'
 
 
 // AWS makes us sign each request. This is a fetcher that does that automagically for us.
+/**
+ * @param url
+ * @param options
+ */
 function awsFetch (url, options) {
   const parsedUrl = new URL(url)
   const signedOptions = aws4.sign(
@@ -366,7 +368,7 @@ function awsFetch (url, options) {
 }
 
 // Now we tell waychaser, to only accept HAL and to use our fetcher.
-const awsWaychaser = waychaser.use(halHandler, MediaTypes.HAL).withFetch(awsFetch)
+const awsWayChaser = waychaser.use(halHandler, MediaTypes.HAL).withFetch(awsFetch)
 
 // now we can load the API
 const api = await waychaser.load(
@@ -565,7 +567,7 @@ The accept header can be overridden for individual requests, by including an alt
 
 ### Handlers
 
-The `use` method now expects both a `handler` and the `mediaType` it can handle. Waychaser uses the provided 
+The `use` method now expects both a `handler` and the `mediaType` it can handle. WayChaser uses the provided 
 mediaTypes to automatically generate the `accept` request header. 
 
 **NOTE:** Currently waychaser does use the corresponding `content-type` header to filter the responses passed to
@@ -653,8 +655,12 @@ to `undefined`. This is what makes the `...invoke(rel) || default` code possible
 
 ## Handling location headers
 
-Waychaser 3.x now includes a `location` header hander, which will create an operation with the `related` relationship.
+WayChaser 3.x now includes a `location` header hander, which will create an operation with the `related` relationship.
 This allows support for APIs that, when creating a resource (ie using POST), provide a `location` to the created 
 resource in the response, or APIs that, when updating a resource (ie using PUT or PATCH),  provide a `location` to the
 updated resource in the response.
 
+# Upgrading from 3.x to 4.x
+
+Previously WayChaser provided a default instance via the `waychaser` export. This is no longer the case and you will
+need to create your own instance using `new WayChaser()`

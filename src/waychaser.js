@@ -58,7 +58,6 @@ class WayChaser {
    * @param {URL} url - the URL of the API to load
    * @param {object} options - options to pass to fetch
    * @returns {Resource} a Resource object representing the loaded resource
-   *
    * @throws {Error} If the server returns with a status >= 400
    */
   /* eslint-enable jsdoc/no-undefined-types */

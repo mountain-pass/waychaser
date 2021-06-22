@@ -13,8 +13,6 @@ waychaser is released under the non-restrictive Apache 2.0 licenses and follows 
     - [🚫💩](#)
     - [Babel](#babel)
     - [ESLint](#eslint)
-    - [Webpack](#webpack)
-      - [Webpack dev server](#webpack-dev-server)
     - [VSCode + ESLint + Prettier](#vscode--eslint--prettier)
       - [Installation guide](#installation-guide)
     - [Contribution flow](#contribution-flow)
@@ -83,16 +81,6 @@ Babel requires plugins to do the transformation. Presets are the set of plugins 
 [ESLint](https://eslint.org/) is a pluggable and configurable linter tool for identifying and reporting on patterns in JavaScript.
 
 [.eslintrc.json file](<(https://eslint.org/docs/user-guide/configuring)>) (alternatively configurations can we written in Javascript or YAML as well) is used describe the configurations required for ESLint.
-
-### Webpack
-
-[Webpack](https://webpack.js.org/) is a module bundler. Its main purpose is to bundle JavaScript files for usage in a browser.
-
-[webpack.config.js](https://webpack.js.org/configuration/) file is used to describe the configurations required for webpack.
-
-#### Webpack dev server
-
-[Webpack dev server](https://webpack.js.org/configuration/dev-server/) is used along with webpack. It provides a development server that provides live reloading for the client side code. This should be used for development only.
 
 ### VSCode + ESLint + Prettier
 

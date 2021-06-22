@@ -75,6 +75,7 @@
   - [x] and providing the appropriately anchored operations
 - [x] Dependabot branches shouldn't run audit. Because the branches restricted to 10, this can prevent the update of 
 the package that is causing the audit failure
+- [x] replace webpack with rollup
 - [ ] add invocation arrays 
 - [ ] have `body()` interpret the `content-type` header
 - [ ] Fix release log and change log - it only includes last commit 😢
@@ -84,9 +85,6 @@ the package that is causing the audit failure
 - [ ] Look at using https://github.com/RichardLitt/standard-readme-preset
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
 - [ ] add tests for authenticated requests
-- [ ] upgrade webpack
-  - [ ] or investigate using https://rollupjs.org/guide/en/ instead
-  - [ ] or https://github.com/parcel-bundler/parcel
 - [ ] fix structure of package so we get better jsdoc linting
 - [ ] refactor browserstack test run to use single tunnel when running locally
 - [ ] add tests for abort
@@ -101,8 +99,6 @@ the package that is causing the audit failure
 - [ ] help [
       eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security) and get better version of `security/detect-object-injection` that doesn't flag `for (const index in object) { object[index] = 0; }`
 - [ ] have a look at using https://github.com/gkouziik/eslint-plugin-security-node
-- [ ] try to use umd for both node and browser. https://github.com/webpack/webpack/pull/8625
-  - [ ] investigate using https://rollupjs.org/guide/en/
 - [ ] handler for "live" swagger/open-api specs
 - [ ] Move accept parsing into it's own library
 

@@ -10,10 +10,12 @@ import { createHttpTerminator } from 'http-terminator'
 const upload = multer()
 
 export const app = express()
+app.use(express.static('public'))
+app.use(express.static('dist'))
+
 app.use(bodyParser.json()) // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })) // support url encoded bodies
 app.use(upload.none()) // support multi-part bodies
-
 /* istanbul ignore next: only gets executed when there are test errors (at this stage) */
 app.use(function (error, request, response, next) {
   logger.error(error)

@@ -1,7 +1,7 @@
 import { loadResource } from './util/load-resource'
 import { loadResourceFragment } from './util/load-resource-fragment'
 import logger from './util/logger'
-import { URI } from 'uri-template-lite'
+import { URI } from './util/uri-template-lite'
 import qsStringify from 'qs-stringify'
 import FormData from 'form-data'
 import { preferredContentType } from './util/preferred-content-type'

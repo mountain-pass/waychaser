@@ -1,4 +1,4 @@
-import { URI } from 'uri-template-lite'
+import { URI } from '../../util/uri-template-lite'
 
 /**
  * @param relationship

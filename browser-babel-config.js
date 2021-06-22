@@ -1,4 +1,4 @@
-module.exports = {
+export const babelConfig = {
   presets: [
     [
       '@babel/preset-env',
@@ -7,15 +7,12 @@ module.exports = {
           version: '3',
           proposals: true
         },
+        modules: false,
+        spec: true,
         useBuiltIns: 'entry',
         targets: {
           ie: '11',
-          browsers: [
-            'ie >= 11',
-            'last 2 versions',
-            '> 0.2%',
-            'maintained node versions'
-          ]
+          browsers: ['ie >= 11', 'last 2 versions', '> 0.2%']
         }
       }
     ]
@@ -28,13 +25,6 @@ module.exports = {
       '@babel/transform-runtime',
       {
         regenerator: true
-      }
-    ],
-    'dynamic-import-webpack',
-    [
-      '@babel/plugin-transform-modules-commonjs',
-      {
-        allowTopLevelThis: true
       }
     ],
     ['@babel/plugin-syntax-top-level-await']

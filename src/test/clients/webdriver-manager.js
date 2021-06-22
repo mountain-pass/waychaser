@@ -1,58 +1,99 @@
 import logger from '../../util/logger'
 import logging from 'selenium-webdriver/lib/logging'
-import { utils } from 'istanbul'
 import { PendingError } from '@windyroad/cucumber-js-throwables'
 import * as babel from '@babel/core'
-import babelConfig from '../../../babel.config'
+import temp from 'temp'
+import fs from 'fs'
+import { babelConfig } from '../../../browser-babel-config'
+import { promisify } from 'util'
 
-delete babelConfig.env.test
+const fsWrite = promisify(fs.write)
+const fsClose = promisify(fs.close)
 
-/* global __coverage__ */
+temp.track()
+
 // based on https://github.com/gotwarlost/istanbul-middleware/blob/dfbca20f361b9c2b79934e395fd266d95d9c5af5/lib/core.js#L217
-function mergeClientCoverage (object) {
-  /* istanbul ignore else: else is only taken if coverage is off */
-  if (process.env.COVERAGE) {
-    for (const [filePath, added] of Object.entries(object)) {
-      const original = __coverage__[filePath.toString()]
-      /* istanbul ignore if: needed for IE but IE doesn't give is coverage */
-      if (added.s === null) {
-        added.s = {}
-      }
-      /* istanbul ignore if: needed for IE but IE doesn't give is coverage */
-      if (added.f === null) {
-        added.f = {}
-      }
-      /* istanbul ignore if: needed for IE but IE doesn't give is coverage */
-      if (added.b === null) {
-        added.b = {}
-      }
-      __coverage__[filePath.toString()] = utils.mergeFileCoverage(
-        original,
-        added
-      )
-    }
-  }
-}
+// function mergeClientCoverage (object) {
+//   /* istanbul ignore else: else is only taken if coverage is off */
+//   if (process.env.COVERAGE) {
+//     for (const key in object) {
+//       if (__coverage__[key]) {
+//         const added = Object.assign({ s: {}, f: {}, b: {} }, object[key])
+//         const original = Object.assign(
+//           { s: {}, f: {}, b: {} },
+//           __coverage__[key]
+//         )
+//         __coverage__[key] = mergeFileCoverage(original, added)
+//       } else {
+//         __coverage__[key] = object[key]
+//       }
+//     }
+//   }
+// }
+
+/**
+ * originally from istanbul/lib/object-utils.js
+ *
+ * merges two instances of file coverage objects *for the same file*
+ * such that the execution counts are correct.
+ *
+ * @function mergeFileCoverage
+ * @static
+ * @param {object} first the first file coverage object for a given file
+ * @param {object} second the second file coverage object for the same file
+ * @returns {object} an object that is a result of merging the two. Note that
+ *      the input objects are not changed in any way.
+ */
+// function mergeFileCoverage (first, second) {
+//   const returnValue = first
+//   delete returnValue.l // remove derived info
+
+//   Object.keys(second.s).forEach(function (k) {
+//     returnValue.s[k] = (returnValue.s[k] || 0) + second.s[k]
+//   })
+//   Object.keys(second.f).forEach(function (k) {
+//     returnValue.f[k] = (returnValue.f[k] || 0) + second.f[k]
+//   })
+//   Object.keys(second.b).forEach(function (k) {
+//     const returnValueArray = returnValue.b[k] || []
+//     const secondArray = second.b[k]
+//     for (const [index, element] of secondArray.entries()) {
+//       returnValueArray[index] = (returnValueArray[index] || 0) + element
+//     }
+//   })
+
+//   return returnValue
+// }
+
+// process.env.npm_lifecycle_event
+const profile = process.env.npm_lifecycle_event
+  .replace('test:', '')
+  .replace(/:.*/g, '')
 
 class WebdriverManager {
   async loadWaychaserTestPage (url) {
     await this.driver.get('https://google.com')
-    logger.debug(`loading page '${url}'...`)
-    await this.driver.get(url)
-    logger.debug('...page loaded')
+    logger.info(`loading page '${url}/index-${profile}.html'...`)
+    await this.driver.get(`${url}/index-${profile}.html`)
+    logger.info('...page loaded')
 
-    logger.debug('waiting for waychaser...')
+    logger.info('waiting for waychaser...')
     await this.driver.wait(() => {
+      console.log('waiting...')
       return this.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */
         function () {
+          // this button pressing thing is to get past the warning screen in browserstack
           const buttons = document.querySelectorAll('button')
           if (buttons[0]) {
             buttons[0].click()
           }
           return window.waychaser !== undefined
         }
-      )
+      ).then(result => {
+        console.log(`wait result: ${result}`)
+        return result
+      })
     }, 40000)
 
     logger.debug('setting up logger function...')
@@ -75,10 +116,10 @@ class WebdriverManager {
           const id = window.testResults.push(error) - 1
           done({
             success: false,
-            id
+            id,
             // un-commenting these causes the android tests to fail
-            // error: error.toString(),
-            // stackTrace: error.stack,
+            error: error.toString(),
+            stackTrace: error.stack
           })
         }
 
@@ -202,10 +243,12 @@ class WebdriverManager {
   }
 
   async doExecuteScript (executor, code, returnApproach, ...arguments_) {
+    const temporaryFile = await temp.open('waychaser-test')
+    await fsWrite(temporaryFile.fd, code)
+    await fsClose(temporaryFile.fd)
     const transformed = (
-      await babel.transformAsync(code, babelConfig)
-    ).code.replace('"use strict";\n\n', returnApproach) // || '')
-
+      await babel.transformFileAsync(temporaryFile.path, babelConfig)
+    ).code.replace('"use strict";', returnApproach) // || '')
     try {
       logger.debug({ transformed })
       const returnedFromBrowser = await executor(transformed, ...arguments_)
@@ -243,6 +286,7 @@ class WebdriverManager {
   }
 
   async executeScript (script, ...arguments_) {
+    console.log('executing script...')
     return this.doExecuteScript(
       this.driver.executeScript.bind(this.driver),
       `(${script}).apply(window, arguments)`,
@@ -306,55 +350,55 @@ class WebdriverManager {
 
   async afterAllTests () {}
 
-  async clearRemoteCoverage () {
-    /* istanbul ignore else: else is only taken if coverage is off */
-    if (process.env.COVERAGE) {
-      await this.executeScript(
-        /* istanbul ignore next: won't work in browser otherwise */
-        function () {
-          if (
-            typeof window.__coverage__ !== 'undefined' &&
-            window.__coverage__ !== null
-          ) {
-            for (const f in window.__coverage__) {
-              const coverage = window.__coverage__[f]
-              for (const index in coverage.b) {
-                coverage.b[index] = [0, 0]
-              }
-              for (const index in coverage.f) {
-                coverage.f[index] = 0
-              }
-              for (const index in coverage.s) {
-                coverage.s[index] = 0
-              }
-            }
-          }
-        }
-      )
-    }
-  }
+  // async clearRemoteCoverage () {
+  //   /* istanbul ignore else: else is only taken if coverage is off */
+  //   if (process.env.COVERAGE) {
+  //     await this.executeScript(
+  //       /* istanbul ignore next: won't work in browser otherwise */
+  //       function () {
+  //         if (
+  //           typeof window.__coverage__ !== 'undefined' &&
+  //           window.__coverage__ !== null
+  //         ) {
+  //           for (const f in window.__coverage__) {
+  //             const coverage = window.__coverage__[f]
+  //             for (const index in coverage.b) {
+  //               coverage.b[index] = [0, 0]
+  //             }
+  //             for (const index in coverage.f) {
+  //               coverage.f[index] = 0
+  //             }
+  //             for (const index in coverage.s) {
+  //               coverage.s[index] = 0
+  //             }
+  //           }
+  //         }
+  //       }
+  //     )
+  //   }
+  // }
 
   async loadCoverage () {
-    /* istanbul ignore else: only gets executed when there are fatal web driver issues  */
-    if (this.driver && process.env.COVERAGE) {
-      try {
-        const remoteCoverage = await this.executeScript(
-          /* istanbul ignore next: won't work in browser otherwise */
-          function () {
-            return window.__coverage__
-          }
-        )
-        mergeClientCoverage(remoteCoverage)
-
-        // clear coverage
-        await this.clearRemoteCoverage()
-      } catch (error) {
-        /* istanbul ignore next: only gets executed when there are istanbul issues */
-        logger.error(error)
-        /* istanbul ignore next: only gets executed when there are istanbul issues */
-        throw error
-      }
-    }
+    // No longer working since we move to rollup 😭
+    // /* istanbul ignore else: only gets executed when there are fatal web driver issues  */
+    // if (this.driver && process.env.COVERAGE) {
+    //   try {
+    //     const remoteCoverage = await this.executeScript(
+    //       /* istanbul ignore next: won't work in browser otherwise */
+    //       function () {
+    //         return window.__coverage__
+    //       }
+    //     )
+    //     mergeClientCoverage(remoteCoverage)
+    //     // clear coverage
+    //     await this.clearRemoteCoverage()
+    //   } catch (error) {
+    //     /* istanbul ignore next: only gets executed when there are istanbul issues */
+    //     logger.error(error)
+    //     /* istanbul ignore next: only gets executed when there are istanbul issues */
+    //     throw error
+    //   }
+    // }
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */

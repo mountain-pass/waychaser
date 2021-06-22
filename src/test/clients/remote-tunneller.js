@@ -4,7 +4,7 @@ import localtunnel from 'localtunnel'
 class RemoteTunneller {
   async startTunnel () {
     logger.info('Starting tunnel...')
-    this.tunnel = await localtunnel({ port: process.env.BROWSER_PORT })
+    this.tunnel = await localtunnel({ port: process.env.API_PORT })
     logger.info(`🚇  tunnel started: ${this.tunnel.url}`)
   }
 

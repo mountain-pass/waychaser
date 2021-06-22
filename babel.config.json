@@ -1,0 +1,26 @@
+{
+  "presets": [["@babel/preset-env"]],
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    [
+      "@babel/transform-runtime",
+      {
+        "regenerator": true
+      }
+    ],
+    ["@babel/plugin-syntax-top-level-await"]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        [
+          "@babel/plugin-transform-modules-commonjs",
+          {
+            "allowTopLevelThis": true
+          }
+        ],
+        "istanbul"
+      ]
+    }
+  }
+}

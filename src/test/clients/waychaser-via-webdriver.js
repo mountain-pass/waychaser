@@ -26,6 +26,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
             done({ success: true, id })
           })
           .catch(error => {
+            window.testLogger(error)
             window.callbackWithError(done, error)
           })
       },
@@ -236,7 +237,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
   async use (handler, mediaRanges) {
     const handlerCode = handler
       .toString()
-      .replace('_waychaser.Operation', 'Operation')
+      .replace('_waychaser', 'window.waychaser')
     logger.debug('handlerCode', handlerCode)
     return this.manager.executeAsyncScript(
       `function (mediaRanges, done) {
@@ -251,7 +252,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (done) {
-        window.testWaychaser = window.waychaser
+        window.testWaychaser = window.waychaser.waychaser
         done()
       }
     )
@@ -271,7 +272,7 @@ class WaychaserViaWebdriver extends WaychaserProxy {
     return this.manager.executeAsyncScript(
       /* istanbul ignore next: won't work in browser otherwise */
       function (accept, done) {
-        done(window.parseAccept(accept))
+        done(window.waychaser.parseAccept(accept))
       },
       accept
     )

@@ -201,9 +201,16 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    continue-on-error: ${{ matrix.experimental }}
+
     strategy:
+      fail-fast: true
       matrix:
         node-version: [10.x, 12.x, 14.x]
+        experimental: [false]
+        include:
+          - node-version: 16.x
+            experimental: true
 
     defaults:
       run:
@@ -239,7 +246,7 @@ jobs:
 
 
 
-  test-browser-api-local:
+  test-chrome-local:
     if: |
       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
@@ -277,12 +284,88 @@ jobs:
           name: code-coverage-report-chrome-local
           path: coverage/browser-api-chrome-local
 
+  test-chrome-local-min:
+    if: |
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+
+    continue-on-error: true
+
+    runs-on: ubuntu-latest
+
+    name: test-chrome-local-min
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run test:browser-api-min:chrome:local
+
+  test-firefox-local:
+    if: |
+      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
+    
+    continue-on-error: true
+
+    runs-on: ubuntu-latest
+
+    name: test-firefox-local
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npm run cover:browser-api:firefox:local
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-firefox-local
+          path: coverage/browser-api-firefox-local
+          
   check-coverage-local:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && ! startsWith( github.head_ref, 'dependabot' )"
 
     needs:
       - test-node-api
-      - test-browser-api-local
+      - test-chrome-local
 
     runs-on: ubuntu-latest
 
@@ -359,7 +442,7 @@ jobs:
           name: code-coverage-report-node-not-skippable-14.x
           path: coverage/node-api-not--skippable-
 
-  test-browser-api-local-not-skippable:
+  test-chrome-local-not-skippable:
     if: |
       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')
 
@@ -402,7 +485,7 @@ jobs:
 
     needs:
       - test-node-api-not-skippable
-      - test-browser-api-local-not-skippable
+      - test-chrome-local-not-skippable
 
     runs-on: ubuntu-latest
 
