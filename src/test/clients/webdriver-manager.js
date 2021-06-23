@@ -81,6 +81,7 @@ class WebdriverManager {
     const buttons = await this.driver.findElements(By.css('button'))
     console.log({ buttons })
     // this button pressing thing is to get past the warning screen from the tunnel
+    /* istanbul ignore next: only gets executed on remote testing */
     if (buttons.length > 0) {
       await buttons[0].click()
     }
@@ -98,10 +99,13 @@ class WebdriverManager {
           logger.info(`wait result: ${result}`)
           return result
         })
-        .catch(error => {
-          logger.error(error)
-          return false
-        })
+        .catch(
+          /* istanbul ignore next: only executed on error */
+          error => {
+            logger.error(error)
+            return false
+          }
+        )
     }, 40000)
 
     logger.debug('setting up logger function...')

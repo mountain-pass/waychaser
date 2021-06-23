@@ -48,7 +48,7 @@
     "build": "npm-run-all --parallel build:*",
     "build:main": "babel --delete-dir-on-start --source-maps true --verbose --ignore src/test --out-dir dist src",
     "build:iife": "rollup --config",
-    "serve": "npm run build:iife && babel-node scripts/development-server.js",
+    "serve": "npm run build:iife && API_PORT=${npm_package_config_TEST_API_PORT} babel-node scripts/development-server.js",
     "prepack": "npm run build",
     "lint:sh": "shellcheck **/*.sh",
     "lint:standardjs": "standard --verbose",
