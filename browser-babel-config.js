@@ -28,12 +28,5 @@ export const babelConfig = {
       }
     ],
     ['@babel/plugin-syntax-top-level-await']
-  ],
-  env: {
-    test: {
-      plugins: ['istanbul'],
-      sourceMaps: 'inline',
-      retainLines: true
-    }
-  }
+  ]
 }

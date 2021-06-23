@@ -6,6 +6,7 @@ import temp from 'temp'
 import fs from 'fs'
 import { babelConfig } from '../../../browser-babel-config'
 import { promisify } from 'util'
+import { By } from 'selenium-webdriver'
 
 const fsWrite = promisify(fs.write)
 const fsClose = promisify(fs.close)
@@ -77,23 +78,30 @@ class WebdriverManager {
     await this.driver.get(`${url}/index-${profile}.html`)
     logger.info('...page loaded')
 
+    const buttons = await this.driver.findElements(By.css('button'))
+    console.log({ buttons })
+    // this button pressing thing is to get past the warning screen from the tunnel
+    if (buttons.length > 0) {
+      await buttons[0].click()
+    }
+
     logger.info('waiting for waychaser...')
     await this.driver.wait(() => {
-      console.log('waiting...')
+      logger.info('waiting...')
       return this.executeScript(
         /* istanbul ignore next: won't work in browser otherwise */
         function () {
-          // this button pressing thing is to get past the warning screen in browserstack
-          const buttons = document.querySelectorAll('button')
-          if (buttons[0]) {
-            buttons[0].click()
-          }
           return window.waychaser !== undefined
         }
-      ).then(result => {
-        console.log(`wait result: ${result}`)
-        return result
-      })
+      )
+        .then(result => {
+          logger.info(`wait result: ${result}`)
+          return result
+        })
+        .catch(error => {
+          logger.error(error)
+          return false
+        })
     }, 40000)
 
     logger.debug('setting up logger function...')
@@ -248,7 +256,7 @@ class WebdriverManager {
     await fsClose(temporaryFile.fd)
     const transformed = (
       await babel.transformFileAsync(temporaryFile.path, babelConfig)
-    ).code.replace('"use strict";', returnApproach) // || '')
+    ).code.replace(/"use strict";(\s)+/, returnApproach) // || '')
     try {
       logger.debug({ transformed })
       const returnedFromBrowser = await executor(transformed, ...arguments_)
