@@ -1,3 +1,9 @@
+## <small>4.0.2 (2021-06-24)</small>
+
+* Merge pull request #420 from mountain-pass/dependabot/npm_and_yarn/snyk-1.645.0 ([16bb850](https://github.com/mountain-pass/waychaser/commit/16bb850)), closes [#420](https://github.com/mountain-pass/waychaser/issues/420)
+
+
+
 ## <small>4.0.1 (2021-06-24)</small>
 
 * fix(ci): fixed version number ([ede0233](https://github.com/mountain-pass/waychaser/commit/ede0233))
