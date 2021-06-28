@@ -200,7 +200,7 @@
     "eslint-plugin-prettier": "npm:@rxts/eslint-plugin-prettier@^3.4.0-1",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-security": "^1.4.0",
-    "eslint-plugin-unicorn": "^26.0.1",
+    "eslint-plugin-unicorn": "^34.0.0",
     "express": "^4.16.3",
     "fs-extra": "^9.0.1",
     "geckodriver": "^1.20.0",
