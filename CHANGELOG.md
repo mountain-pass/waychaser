@@ -1,3 +1,9 @@
+## <small>4.0.3 (2021-06-29)</small>
+
+* Merge pull request #425 from mountain-pass/dependabot/npm_and_yarn/core-js-3.15.2 ([afcfd54](https://github.com/mountain-pass/waychaser/commit/afcfd54)), closes [#425](https://github.com/mountain-pass/waychaser/issues/425)
+
+
+
 ## <small>4.0.2 (2021-06-24)</small>
 
 * Merge pull request #420 from mountain-pass/dependabot/npm_and_yarn/snyk-1.645.0 ([16bb850](https://github.com/mountain-pass/waychaser/commit/16bb850)), closes [#420](https://github.com/mountain-pass/waychaser/issues/420)
