@@ -33,7 +33,6 @@
     "siren",
     "siren-client"
   ],
-  "type": "module",
   "main": "dist/waychaser.js",
   "unpkg": "dist/waychaser.iife.min.js",
   "browser": "dist/waychaser.iife.min.js",
