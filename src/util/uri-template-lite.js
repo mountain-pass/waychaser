@@ -6,6 +6,6 @@ export const URI = (() => {
   if (typeof window === 'undefined') {
     return origURI
   } else {
-    return window.URI
+    return window.URI || origURI
   }
 })()
