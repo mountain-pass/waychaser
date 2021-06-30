@@ -1,3 +1,21 @@
+## <small>4.0.3 (2021-06-29)</small>
+
+* Merge pull request #425 from mountain-pass/dependabot/npm_and_yarn/core-js-3.15.2 ([afcfd54](https://github.com/mountain-pass/waychaser/commit/afcfd54)), closes [#425](https://github.com/mountain-pass/waychaser/issues/425)
+
+
+
+## <small>4.0.2 (2021-06-24)</small>
+
+* Merge pull request #420 from mountain-pass/dependabot/npm_and_yarn/snyk-1.645.0 ([16bb850](https://github.com/mountain-pass/waychaser/commit/16bb850)), closes [#420](https://github.com/mountain-pass/waychaser/issues/420)
+
+
+
+## <small>4.0.1 (2021-06-24)</small>
+
+* fix(ci): fixed version number ([ede0233](https://github.com/mountain-pass/waychaser/commit/ede0233))
+
+
+
 ## <small>3.0.43 (2021-06-06)</small>
 
 * Merge pull request #388 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-35.1.3 ([4deaa16](https://github.com/mountain-pass/waychaser/commit/4deaa16)), closes [#388](https://github.com/mountain-pass/waychaser/issues/388)
