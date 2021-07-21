@@ -1,3 +1,9 @@
+## <small>4.0.6 (2021-07-21)</small>
+
+* Merge pull request #432 from mountain-pass/dependabot/npm_and_yarn/rollup-2.53.3 ([1ea70b7](https://github.com/mountain-pass/waychaser/commit/1ea70b7)), closes [#432](https://github.com/mountain-pass/waychaser/issues/432)
+
+
+
 ## <small>4.0.5 (2021-07-21)</small>
 
 * Merge pull request #431 from mountain-pass/dependabot/npm_and_yarn/babel/cli-7.14.8 ([5e1acaa](https://github.com/mountain-pass/waychaser/commit/5e1acaa)), closes [#431](https://github.com/mountain-pass/waychaser/issues/431)
