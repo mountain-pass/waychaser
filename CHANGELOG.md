@@ -1,3 +1,9 @@
+## <small>4.0.5 (2021-07-21)</small>
+
+* Merge pull request #431 from mountain-pass/dependabot/npm_and_yarn/babel/cli-7.14.8 ([5e1acaa](https://github.com/mountain-pass/waychaser/commit/5e1acaa)), closes [#431](https://github.com/mountain-pass/waychaser/issues/431)
+
+
+
 ## <small>4.0.4 (2021-06-30)</small>
 
 * fix: fixed build issue ([fb26806](https://github.com/mountain-pass/waychaser/commit/fb26806))
