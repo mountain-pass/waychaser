@@ -1,3 +1,9 @@
+## <small>4.0.7 (2021-07-21)</small>
+
+* Merge pull request #433 from mountain-pass/dependabot/npm_and_yarn/glob-parent-5.1.2 ([ca91b6b](https://github.com/mountain-pass/waychaser/commit/ca91b6b)), closes [#433](https://github.com/mountain-pass/waychaser/issues/433)
+
+
+
 ## <small>4.0.6 (2021-07-21)</small>
 
 * Merge pull request #432 from mountain-pass/dependabot/npm_and_yarn/rollup-2.53.3 ([1ea70b7](https://github.com/mountain-pass/waychaser/commit/1ea70b7)), closes [#432](https://github.com/mountain-pass/waychaser/issues/432)
