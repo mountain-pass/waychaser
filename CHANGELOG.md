@@ -1,3 +1,9 @@
+## <small>4.0.10 (2021-07-22)</small>
+
+* Merge pull request #436 from mountain-pass/dependabot/npm_and_yarn/lint-staged-11.1.0 ([c337015](https://github.com/mountain-pass/waychaser/commit/c337015)), closes [#436](https://github.com/mountain-pass/waychaser/issues/436)
+
+
+
 ## <small>4.0.9 (2021-07-22)</small>
 
 * Merge pull request #435 from mountain-pass/dependabot/npm_and_yarn/snyk-1.665.0 ([95fca08](https://github.com/mountain-pass/waychaser/commit/95fca08)), closes [#435](https://github.com/mountain-pass/waychaser/issues/435)
