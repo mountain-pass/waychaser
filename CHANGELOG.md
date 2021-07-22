@@ -1,3 +1,9 @@
+## <small>4.0.9 (2021-07-22)</small>
+
+* Merge pull request #435 from mountain-pass/dependabot/npm_and_yarn/snyk-1.665.0 ([95fca08](https://github.com/mountain-pass/waychaser/commit/95fca08)), closes [#435](https://github.com/mountain-pass/waychaser/issues/435)
+
+
+
 ## <small>4.0.8 (2021-07-22)</small>
 
 * Merge pull request #434 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-jsdoc-35.5.1 ([65587d1](https://github.com/mountain-pass/waychaser/commit/65587d1)), closes [#434](https://github.com/mountain-pass/waychaser/issues/434)
