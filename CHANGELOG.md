@@ -1,3 +1,9 @@
+## <small>4.0.13 (2021-07-26)</small>
+
+* Merge pull request #440 from mountain-pass/dependabot/npm_and_yarn/rollup/plugin-commonjs-19.0.2 ([2d95634](https://github.com/mountain-pass/waychaser/commit/2d95634)), closes [#440](https://github.com/mountain-pass/waychaser/issues/440)
+
+
+
 ## <small>4.0.12 (2021-07-26)</small>
 
 * Merge pull request #439 from mountain-pass/dependabot/npm_and_yarn/snyk-1.667.0 ([71d4320](https://github.com/mountain-pass/waychaser/commit/71d4320)), closes [#439](https://github.com/mountain-pass/waychaser/issues/439)
