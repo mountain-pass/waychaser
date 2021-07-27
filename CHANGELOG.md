@@ -1,3 +1,9 @@
+## <small>4.0.16 (2021-07-27)</small>
+
+* Merge pull request #444 from mountain-pass/dependabot/npm_and_yarn/snyk-1.668.0 ([bb950b2](https://github.com/mountain-pass/waychaser/commit/bb950b2)), closes [#444](https://github.com/mountain-pass/waychaser/issues/444)
+
+
+
 ## <small>4.0.15 (2021-07-27)</small>
 
 * Merge pull request #443 from mountain-pass/dependabot/npm_and_yarn/nodemon-2.0.12 ([0378a63](https://github.com/mountain-pass/waychaser/commit/0378a63)), closes [#443](https://github.com/mountain-pass/waychaser/issues/443)
