@@ -1,3 +1,9 @@
+## <small>4.0.15 (2021-07-27)</small>
+
+* Merge pull request #443 from mountain-pass/dependabot/npm_and_yarn/nodemon-2.0.12 ([0378a63](https://github.com/mountain-pass/waychaser/commit/0378a63)), closes [#443](https://github.com/mountain-pass/waychaser/issues/443)
+
+
+
 ## <small>4.0.14 (2021-07-27)</small>
 
 * Merge pull request #421 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-json-3.0.0 ([4109b37](https://github.com/mountain-pass/waychaser/commit/4109b37)), closes [#421](https://github.com/mountain-pass/waychaser/issues/421)
