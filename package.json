@@ -203,7 +203,7 @@
     "eslint-plugin-unicorn": "^26.0.1",
     "express": "^4.16.3",
     "fs-extra": "^10.0.0",
-    "geckodriver": "^1.20.0",
+    "geckodriver": "^2.0.1",
     "http-terminator": "^3.0.0",
     "humanize-duration": "^3.24.0",
     "husky": "^6.0.0",
