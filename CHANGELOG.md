@@ -1,3 +1,9 @@
+## <small>4.0.20 (2021-07-29)</small>
+
+* Merge pull request #452 from mountain-pass/dependabot/npm_and_yarn/depcheck-1.4.2 ([393297e](https://github.com/mountain-pass/waychaser/commit/393297e)), closes [#452](https://github.com/mountain-pass/waychaser/issues/452)
+
+
+
 ## <small>4.0.19 (2021-07-28)</small>
 
 * Merge pull request #447 from mountain-pass/dependabot/npm_and_yarn/babel/eslint-parser-7.14.7 ([0fd1427](https://github.com/mountain-pass/waychaser/commit/0fd1427)), closes [#447](https://github.com/mountain-pass/waychaser/issues/447)
