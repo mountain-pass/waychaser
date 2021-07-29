@@ -1,3 +1,9 @@
+## <small>4.0.21 (2021-07-29)</small>
+
+* Merge pull request #456 from mountain-pass/dependabot/npm_and_yarn/chromedriver-92.0.0 ([cf1c9d6](https://github.com/mountain-pass/waychaser/commit/cf1c9d6)), closes [#456](https://github.com/mountain-pass/waychaser/issues/456)
+
+
+
 ## <small>4.0.20 (2021-07-29)</small>
 
 * Merge pull request #452 from mountain-pass/dependabot/npm_and_yarn/depcheck-1.4.2 ([393297e](https://github.com/mountain-pass/waychaser/commit/393297e)), closes [#452](https://github.com/mountain-pass/waychaser/issues/452)
