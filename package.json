@@ -176,7 +176,7 @@
     "bufferutil": "^4.0.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "chromedriver": "^90.0.1",
+    "chromedriver": "^92.0.0",
     "concurrently": "^6.0.0",
     "conventional-changelog-cli": "^2.1.1",
     "conventional-recommended-bump": "^6.1.0",
