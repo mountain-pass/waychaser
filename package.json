@@ -159,7 +159,7 @@
     "@cucumber/cucumber": "^7.0.0",
     "@istanbuljs/nyc-config-babel": "^3.0.0",
     "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@windyroad/cucumber-js-throwables": "^1.0.4",
     "aws4": "^1.11.0",
