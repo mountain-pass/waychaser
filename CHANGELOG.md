@@ -1,3 +1,9 @@
+## <small>4.0.22 (2021-07-30)</small>
+
+* Merge pull request #370 from mountain-pass/dependabot/npm_and_yarn/chai-4.3.4 ([976086d](https://github.com/mountain-pass/waychaser/commit/976086d)), closes [#370](https://github.com/mountain-pass/waychaser/issues/370)
+
+
+
 ## <small>4.0.21 (2021-07-29)</small>
 
 * Merge pull request #456 from mountain-pass/dependabot/npm_and_yarn/chromedriver-92.0.0 ([cf1c9d6](https://github.com/mountain-pass/waychaser/commit/cf1c9d6)), closes [#456](https://github.com/mountain-pass/waychaser/issues/456)
