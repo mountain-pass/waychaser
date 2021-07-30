@@ -1,3 +1,9 @@
+## <small>4.0.23 (2021-07-30)</small>
+
+* Merge pull request #457 from mountain-pass/dependabot/npm_and_yarn/core-js-3.16.0 ([ee14143](https://github.com/mountain-pass/waychaser/commit/ee14143)), closes [#457](https://github.com/mountain-pass/waychaser/issues/457)
+
+
+
 ## <small>4.0.22 (2021-07-30)</small>
 
 * Merge pull request #370 from mountain-pass/dependabot/npm_and_yarn/chai-4.3.4 ([976086d](https://github.com/mountain-pass/waychaser/commit/976086d)), closes [#370](https://github.com/mountain-pass/waychaser/issues/370)
