@@ -1,3 +1,9 @@
+## <small>4.0.27 (2021-08-01)</small>
+
+* Merge pull request #462 from mountain-pass/dependabot/npm_and_yarn/babel/preset-env-7.14.9 ([9880e86](https://github.com/mountain-pass/waychaser/commit/9880e86)), closes [#462](https://github.com/mountain-pass/waychaser/issues/462)
+
+
+
 ## <small>4.0.26 (2021-07-30)</small>
 
 * Merge pull request #460 from mountain-pass/dependabot/npm_and_yarn/eslint-7.32.0 ([2c2c107](https://github.com/mountain-pass/waychaser/commit/2c2c107)), closes [#460](https://github.com/mountain-pass/waychaser/issues/460)
