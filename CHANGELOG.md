@@ -1,3 +1,9 @@
+## <small>4.0.28 (2021-08-02)</small>
+
+* Merge pull request #465 from mountain-pass/dependabot/npm_and_yarn/lint-staged-11.1.1 ([2b1fae8](https://github.com/mountain-pass/waychaser/commit/2b1fae8)), closes [#465](https://github.com/mountain-pass/waychaser/issues/465)
+
+
+
 ## <small>4.0.27 (2021-08-01)</small>
 
 * Merge pull request #462 from mountain-pass/dependabot/npm_and_yarn/babel/preset-env-7.14.9 ([9880e86](https://github.com/mountain-pass/waychaser/commit/9880e86)), closes [#462](https://github.com/mountain-pass/waychaser/issues/462)
