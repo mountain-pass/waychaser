@@ -1,3 +1,9 @@
+## <small>4.0.32 (2021-08-02)</small>
+
+* Merge pull request #470 from mountain-pass/dependabot/npm_and_yarn/chromedriver-92.0.1 ([8e8c834](https://github.com/mountain-pass/waychaser/commit/8e8c834)), closes [#470](https://github.com/mountain-pass/waychaser/issues/470)
+
+
+
 ## <small>4.0.31 (2021-08-02)</small>
 
 * Merge pull request #469 from mountain-pass/dependabot/npm_and_yarn/snyk-1.674.0 ([64c787b](https://github.com/mountain-pass/waychaser/commit/64c787b)), closes [#469](https://github.com/mountain-pass/waychaser/issues/469)
