@@ -1,3 +1,9 @@
+## <small>4.0.30 (2021-08-02)</small>
+
+* Merge pull request #468 from mountain-pass/dependabot/npm_and_yarn/snyk-1.673.0 ([72b1f4e](https://github.com/mountain-pass/waychaser/commit/72b1f4e)), closes [#468](https://github.com/mountain-pass/waychaser/issues/468)
+
+
+
 ## <small>4.0.29 (2021-08-02)</small>
 
 * Merge pull request #467 from mountain-pass/dependabot/npm_and_yarn/babel/plugin-syntax-top-level-awa ([90cadae](https://github.com/mountain-pass/waychaser/commit/90cadae)), closes [#467](https://github.com/mountain-pass/waychaser/issues/467)
