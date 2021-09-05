@@ -19,6 +19,12 @@ export default {
       name: 'waychaser',
       plugins: [terser()],
       sourcemap: true
+    },
+    {
+      file: 'dist/waychaser.js',
+      format: 'cjs',
+      plugins: [terser()],
+      sourcemap: true
     }
   ],
   plugins: [
