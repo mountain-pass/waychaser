@@ -33,10 +33,10 @@
     "siren",
     "siren-client"
   ],
-  "main": "dist/waychaser.js",
-  "unpkg": "dist/waychaser.iife.min.js",
-  "browser": "dist/waychaser.iife.min.js",
-  "module": "src/waychaser.js",
+  "main": "dist/waychaser.min.js",
+  "unpkg": "dist/waychaser.min.js",
+  "browser": "dist/waychaser.min.js",
+  "module": "dist/waychaser.mjs",
   "engines": {
     "node": ">=14.17.0"
   },
@@ -126,10 +126,15 @@
     "wait-for-browser-stack": "scripts/${npm_lifecycle_event}.js"
   },
   "files": [
+    "/dist/**/*.cjs",
+    "/dist/**/*.cjs.map",
+    "/dist/**/*.mjs",
+    "/dist/**/*.mjs.map",
     "/dist/**/*.js",
     "/dist/**/*.js.map"
   ],
   "dependencies": {
+    "chromedriver": "^93.0.1",
     "debug": "^4.2.0",
     "flat": "^5.0.2",
     "form-data": "^4.0.0",
@@ -174,7 +179,6 @@
     "bufferutil": "^4.0.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "chromedriver": "^92.0.0",
     "concurrently": "^6.0.0",
     "conventional-changelog-cli": "^2.1.1",
     "conventional-recommended-bump": "^6.1.0",
