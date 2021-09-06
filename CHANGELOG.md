@@ -1,3 +1,9 @@
+## <small>4.0.34 (2021-09-06)</small>
+
+* fix(ci): Fixing chrome tests ([4e341a0](https://github.com/mountain-pass/waychaser/commit/4e341a0))
+
+
+
 ## <small>4.0.33 (2021-09-05)</small>
 
 * build(cjs): Fixed commonjs build ([ff156ca](https://github.com/mountain-pass/waychaser/commit/ff156ca))
