@@ -1,3 +1,9 @@
+## <small>4.0.36 (2021-11-15)</small>
+
+* Merge pull request #449 from mountain-pass/dependabot/npm_and_yarn/rollup-2.55.0 ([71f0e34](https://github.com/mountain-pass/waychaser/commit/71f0e34)), closes [#449](https://github.com/mountain-pass/waychaser/issues/449)
+
+
+
 ## <small>4.0.35 (2021-11-15)</small>
 
 * Merge pull request #475 from mountain-pass/dependabot/npm_and_yarn/jsonpointer-5.0.0 ([129d9cb](https://github.com/mountain-pass/waychaser/commit/129d9cb)), closes [#475](https://github.com/mountain-pass/waychaser/issues/475)
