@@ -9,9 +9,9 @@ async function checkBody (
   }
 ) {
   const bodies = await this.waychaserProxy.getBodies(this.results)
-  bodies.forEach(body => {
+  for (const body of bodies) {
     expect(bodyMutator(body)).to.deep.equal(expectedBody)
-  })
+  }
 }
 
 async function checkUrls (expectedUrl) {
@@ -24,9 +24,9 @@ async function checkUrls (expectedUrl) {
   const urls = await this.waychaserProxy.getUrls(this.results)
 
   const previousResultUrl = expectedUrl === undefined ? urls.pop() : expectedUrl
-  urls.forEach(url => {
+  for (const url of urls) {
     expect(url).to.equal(previousResultUrl)
-  })
+  }
 }
 
 async function expectFindOne (relationship, expectation) {
@@ -37,6 +37,7 @@ async function expectFindOne (relationship, expectation) {
 }
 
 async function findOne (relationship) {
+  // eslint-disable-next-line unicorn/no-array-method-this-argument
   const found = await this.waychaserProxy.find(this.results, relationship)
   logger.debug(found)
   return found
@@ -122,9 +123,9 @@ Then(
       this.results[0],
       'missing'
     )
-    results.forEach(result => {
+    for (const result of results) {
       expect(result).to.be.undefined()
-    })
+    }
   }
 )
 
@@ -137,7 +138,7 @@ Then(
 
 When(
   'we invoke the {string} operation with the input',
-  { timeout: 3600000 },
+  { timeout: 3_600_000 },
   async function (relationship, dataTable) {
     // we store it in expectedBody, because we use in in the next step
     this.expectedBody = dataTable.rowsHash()

@@ -3,9 +3,9 @@ import logging from 'selenium-webdriver/lib/logging'
 import { PendingError } from '@windyroad/cucumber-js-throwables'
 import * as babel from '@babel/core'
 import temp from 'temp'
-import fs from 'fs'
+import fs from 'node:fs'
 import { babelConfig } from '../../../browser-babel-config'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 import { By } from 'selenium-webdriver'
 
 const fsWrite = promisify(fs.write)
@@ -82,7 +82,7 @@ class WebdriverManager {
     console.log({ buttons })
     // this button pressing thing is to get past the warning screen from the tunnel
     /* istanbul ignore next: only gets executed on remote testing */
-    if (buttons.length > 0) {
+    if (buttons.length !== 0) {
       await buttons[0].click()
     }
 
@@ -106,7 +106,7 @@ class WebdriverManager {
             return false
           }
         )
-    }, 40000)
+    }, 40_000)
 
     logger.debug('setting up logger function...')
     await this.executeScript(
@@ -183,11 +183,12 @@ class WebdriverManager {
           }
         ]
 
-        const invocables = searchables.concat([
+        const invocables = [
+          ...searchables,
           id => {
             return window.testResults[id]
           }
-        ])
+        ]
 
         function waychaserInvokeAndHandle (invokable, query, context, options) {
           return window.handleResponse(
@@ -225,17 +226,17 @@ class WebdriverManager {
         }
 
         window.waychaserInvokeFunctions = []
-        invocables.forEach(invokable => {
-          queries.forEach(query =>
+        for (const invokable of invocables) {
+          for (const query of queries) {
             addInvokeFunction(waychaserInvokeAndHandle, invokable, query)
-          )
-        })
+          }
+        }
 
-        searchables.forEach(searchable => {
-          queries.forEach(query =>
+        for (const searchable of searchables) {
+          for (const query of queries) {
             addInvokeFunction(waychaserFindInvokeAndHandle, searchable, query)
-          )
-        })
+          }
+        }
       },
       this.browser
     )
@@ -353,9 +354,9 @@ class WebdriverManager {
         .logs()
         .get(logging.Type.BROWSER)
         .then(entries => {
-          entries.forEach(entry => {
+          for (const entry of entries) {
             logger.browser('[%s] %s', entry.level.name, entry.message)
-          })
+          }
         })
     }
   }

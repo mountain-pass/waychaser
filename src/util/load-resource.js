@@ -6,19 +6,17 @@ import { Resource } from '../resource'
  * @param {URL} url url of the resource to load
  * @param {object} options options to pass to fetch
  * @param {Function} handlers an array of functions that can parse operations from the HTTP response
- *
  * @param mediaRanges
  * @param fetcher
  * @param waychaserContext
  * @returns {Resource} a ApiResourceObject representing the loaded resource
- *
  * @throws {Error} If the server returns with a status >= 400
  */
 export async function loadResource (url, options, waychaserContext) {
   const updatedOptions = Object.assign({}, options)
   updatedOptions.headers = Object.assign(
     {
-      accept: waychaserContext.mediaRanges.join()
+      accept: waychaserContext.mediaRanges.join(',')
     },
     options?.headers
   )

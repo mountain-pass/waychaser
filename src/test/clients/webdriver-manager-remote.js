@@ -2,7 +2,7 @@ import webdriver from 'selenium-webdriver'
 // eslint-disable-next-line no-unused-vars
 import logger from '../../util/logger'
 import { WebdriverManager } from './webdriver-manager'
-import assert from 'assert'
+import assert from 'node:assert'
 import { remoteTunneller } from './remote-tunneller'
 import { BUILD } from './build-info'
 import chrome from 'selenium-webdriver/chrome'
@@ -89,7 +89,7 @@ class WebdriverManagerRemote extends WebdriverManager {
           .addArguments('disable-notifications')
       )
       .build()
-    await this.driver.manage().setTimeouts({ script: 60000 })
+    await this.driver.manage().setTimeouts({ script: 60_000 })
     return this.driver
   }
 

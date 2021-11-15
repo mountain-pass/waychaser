@@ -1,4 +1,5 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
+// eslint-disable-next-line unicorn/prefer-module
 const fs = require('fs')
 
 /* istanbul ignore next: Second branch only happens when not running a CI job */
