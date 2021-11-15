@@ -1,3 +1,9 @@
+## <small>4.0.35 (2021-11-15)</small>
+
+* Merge pull request #475 from mountain-pass/dependabot/npm_and_yarn/jsonpointer-5.0.0 ([129d9cb](https://github.com/mountain-pass/waychaser/commit/129d9cb)), closes [#475](https://github.com/mountain-pass/waychaser/issues/475)
+
+
+
 ## <small>4.0.34 (2021-09-06)</small>
 
 * fix(ci): Fixing chrome tests ([4e341a0](https://github.com/mountain-pass/waychaser/commit/4e341a0))
