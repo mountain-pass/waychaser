@@ -1,3 +1,9 @@
+## <small>4.0.37 (2021-11-15)</small>
+
+* Merge pull request #474 from mountain-pass/dependabot/npm_and_yarn/eslint-plugin-unicorn-35.0.0 ([e65b163](https://github.com/mountain-pass/waychaser/commit/e65b163)), closes [#474](https://github.com/mountain-pass/waychaser/issues/474)
+
+
+
 ## <small>4.0.36 (2021-11-15)</small>
 
 * Merge pull request #449 from mountain-pass/dependabot/npm_and_yarn/rollup-2.55.0 ([71f0e34](https://github.com/mountain-pass/waychaser/commit/71f0e34)), closes [#449](https://github.com/mountain-pass/waychaser/issues/449)
