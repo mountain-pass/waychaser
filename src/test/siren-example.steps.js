@@ -1,6 +1,6 @@
 import { Given, Then } from '@cucumber/cucumber'
 import { expect } from 'chai'
-import fetch from 'isomorphic-fetch'
+import fetch from 'cross-fetch'
 import { handleResponseError } from './handle-response-error'
 
 Given('Assuming a Siren API is available at {string}', async function (url) {

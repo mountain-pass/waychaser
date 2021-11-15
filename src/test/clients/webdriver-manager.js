@@ -3,13 +3,15 @@ import logging from 'selenium-webdriver/lib/logging'
 import { PendingError } from '@windyroad/cucumber-js-throwables'
 import * as babel from '@babel/core'
 import temp from 'temp'
-import fs from 'node:fs'
+import fs from 'fs'
 import { babelConfig } from '../../../browser-babel-config'
-import { promisify } from 'node:util'
+import { promisify } from 'util'
 import { By } from 'selenium-webdriver'
 
 const fsWrite = promisify(fs.write)
 const fsClose = promisify(fs.close)
+
+const bableOptions = babel.loadOptions(babelConfig)
 
 temp.track()
 
@@ -226,17 +228,20 @@ class WebdriverManager {
         }
 
         window.waychaserInvokeFunctions = []
-        for (const invokable of invocables) {
-          for (const query of queries) {
+        // eslint-disable-next-line unicorn/no-array-for-each
+        invocables.forEach(invokable => {
+          // eslint-disable-next-line unicorn/no-array-for-each
+          queries.forEach(query => {
             addInvokeFunction(waychaserInvokeAndHandle, invokable, query)
-          }
-        }
-
-        for (const searchable of searchables) {
-          for (const query of queries) {
+          })
+        })
+        // eslint-disable-next-line unicorn/no-array-for-each
+        searchables.forEach(searchable => {
+          // eslint-disable-next-line unicorn/no-array-for-each
+          queries.forEach(query => {
             addInvokeFunction(waychaserFindInvokeAndHandle, searchable, query)
-          }
-        }
+          })
+        })
       },
       this.browser
     )
@@ -260,7 +265,7 @@ class WebdriverManager {
     await fsWrite(temporaryFile.fd, code)
     await fsClose(temporaryFile.fd)
     const transformed = (
-      await babel.transformFileAsync(temporaryFile.path, babelConfig)
+      await babel.transformFileAsync(temporaryFile.path, bableOptions)
     ).code.replace(/"use strict";(\s)+/, returnApproach) // || '')
     try {
       logger.debug({ transformed })
@@ -299,7 +304,7 @@ class WebdriverManager {
   }
 
   async executeScript (script, ...arguments_) {
-    console.log('executing script...')
+    console.log('executing script...', script.toString())
     return this.doExecuteScript(
       this.driver.executeScript.bind(this.driver),
       `(${script}).apply(window, arguments)`,

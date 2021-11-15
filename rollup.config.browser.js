@@ -8,19 +8,21 @@ export default {
   input: ['src/waychaser.js'],
   output: [
     {
-      file: 'dist/waychaser.iife.js',
-      format: 'iife',
+      file: 'dist/waychaser.js',
+      format: 'umd',
       name: 'waychaser',
-      sourcemap: true
+      sourcemap: true,
+      plugins: []
     },
     {
-      file: 'dist/waychaser.iife.min.js',
-      format: 'iife',
+      file: 'dist/waychaser.min.js',
+      format: 'umd',
       name: 'waychaser',
       plugins: [terser()],
       sourcemap: true
     }
   ],
+  context: 'window',
   plugins: [
     commonjs(),
     resolve({

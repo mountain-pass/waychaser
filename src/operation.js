@@ -84,8 +84,15 @@ export class Operation {
     }
 
     const body = {}
-    for (const key of Object.keys(parameters)) {
-      body[key] = context?.[key]
+    /* istanbul ignore if reason: TODO */
+    if (Array.isArray(parameters)) {
+      for (const key of parameters) {
+        body[key] = context?.[key]
+      }
+    } else {
+      for (const key of Object.keys(parameters)) {
+        body[key] = context?.[key]
+      }
     }
 
     let encodedContent

@@ -52,7 +52,8 @@
       {
         "non-zero": "not-equal"
       }
-    ]
+    ],
+    "unicorn/prefer-node-protocol": "off"
   },
   "overrides": [
     {
@@ -82,7 +83,8 @@
         "security/detect-non-literal-fs-filename": "off",
         "jsdoc/require-jsdoc": "off",
         "security/detect-object-injection": "off",
-        "unicorn/no-array-callback-reference": "off"
+        "unicorn/no-array-callback-reference": "off",
+        "unicorn/prefer-node-protocol": "off"
       }
     },
     {

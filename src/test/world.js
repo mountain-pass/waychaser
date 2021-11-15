@@ -15,7 +15,7 @@ import chai from 'chai'
 import dirtyChai from 'dirty-chai'
 import logger from '../util/logger'
 import chaiAsPromised from 'chai-as-promised'
-import assert from 'node:assert'
+import assert from 'assert'
 
 import { WaychaserDirect } from './clients/waychaser-direct'
 import { WaychaserViaWebdriver } from './clients/waychaser-via-webdriver'

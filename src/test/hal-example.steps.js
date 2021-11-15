@@ -1,6 +1,6 @@
 import { Given, Then, When } from '@cucumber/cucumber'
 import { expect } from 'chai'
-import fetch from 'isomorphic-fetch'
+import fetch from 'cross-fetch'
 import logger from '../util/logger'
 import aws4 from 'aws4'
 import MediaTypes from '../util/media-types'

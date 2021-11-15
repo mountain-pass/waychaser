@@ -52,7 +52,7 @@ function getFeatureGlob (RERUN, profile) {
     }
     /* istanbul ignore next: branching on @ only happens on special test runs */
     if (lastPart.includes('@')) {
-      rval += ` and ${lastPart.replace('[', '(').replace(']', ')')}`
+      rval += ` and ${lastPart.replace('{', '(').replace('}', ')')}`
     }
 
     rval += "'"

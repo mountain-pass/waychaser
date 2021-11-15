@@ -2,7 +2,7 @@ import webdriver from 'selenium-webdriver'
 // eslint-disable-next-line no-unused-vars
 import logger from '../../util/logger'
 import { WebdriverManager } from './webdriver-manager'
-import assert from 'node:assert'
+import assert from 'assert'
 import { remoteTunneller } from './remote-tunneller'
 import { BUILD } from './build-info'
 import chrome from 'selenium-webdriver/chrome'
