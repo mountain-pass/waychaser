@@ -142,7 +142,7 @@
     "flat": "^5.0.2",
     "form-data": "^4.0.0",
     "http-link-header": "^1.0.2",
-    "jsonpointer": "^4.1.0",
+    "jsonpointer": "^5.0.0",
     "qs-stringify": "^1.2.1",
     "uri-template-lite": "^20.5.0"
   },
