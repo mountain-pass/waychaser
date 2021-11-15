@@ -84,7 +84,8 @@
         "jsdoc/require-jsdoc": "off",
         "security/detect-object-injection": "off",
         "unicorn/no-array-callback-reference": "off",
-        "unicorn/prefer-node-protocol": "off"
+        "unicorn/prefer-node-protocol": "off",
+        "unicorn/prefer-module": "off"
       }
     },
     {
