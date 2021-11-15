@@ -343,7 +343,7 @@ schema from 'test-waychaser' gateway
 
 ```js
 import { waychaser, halHandler, MediaTypes } from '@mountainpass/waychaser'
-import fetch from 'isomorphic-fetch'
+import fetch from 'cross-fetch'
 import aws4 from 'aws4'
 
 

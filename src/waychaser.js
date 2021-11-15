@@ -1,13 +1,12 @@
 import logger from './util/logger'
 import { halHandler } from './handlers/hal/hal-handler'
 import { linkHeaderHandler } from './handlers/link-header/link-header-handler'
-import { linkTemplateHeaderHandler } from './handlers/link-template-header/link-template-header-handler'
 import { sirenHandler } from './handlers/siren/siren-handler'
 import { loadResource } from './util/load-resource'
 import { Operation } from './operation'
 import { parseAccept } from './util/parse-accept'
 import MediaTypes from './util/media-types'
-import fetch from 'isomorphic-fetch'
+import fetch from 'cross-fetch'
 import { locationHeaderHandler } from './handlers/location-header/location-header-handler'
 
 /**
@@ -68,7 +67,6 @@ class WayChaser {
   static defaultHandlers = [
     locationHeaderHandler,
     linkHeaderHandler,
-    linkTemplateHeaderHandler,
     halHandler,
     sirenHandler
   ]
