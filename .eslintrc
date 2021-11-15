@@ -115,7 +115,8 @@
         "unicorn/prefer-optional-catch-binding": "off",
         "spaced-comment": "off",
         "no-unused-expressions": "off",
-        "unicorn/no-array-callback-reference": "off"
+        "unicorn/no-array-callback-reference": "off",
+        "unicorn/prefer-module": "off"
       }
     }
   ]
