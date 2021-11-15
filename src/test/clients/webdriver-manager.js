@@ -11,6 +11,8 @@ import { By } from 'selenium-webdriver'
 const fsWrite = promisify(fs.write)
 const fsClose = promisify(fs.close)
 
+const bableOptions = babel.loadOptions(babelConfig)
+
 temp.track()
 
 // based on https://github.com/gotwarlost/istanbul-middleware/blob/dfbca20f361b9c2b79934e395fd266d95d9c5af5/lib/core.js#L217
@@ -82,7 +84,7 @@ class WebdriverManager {
     console.log({ buttons })
     // this button pressing thing is to get past the warning screen from the tunnel
     /* istanbul ignore next: only gets executed on remote testing */
-    if (buttons.length > 0) {
+    if (buttons.length !== 0) {
       await buttons[0].click()
     }
 
@@ -106,7 +108,7 @@ class WebdriverManager {
             return false
           }
         )
-    }, 40000)
+    }, 40_000)
 
     logger.debug('setting up logger function...')
     await this.executeScript(
@@ -183,11 +185,12 @@ class WebdriverManager {
           }
         ]
 
-        const invocables = searchables.concat([
+        const invocables = [
+          ...searchables,
           id => {
             return window.testResults[id]
           }
-        ])
+        ]
 
         function waychaserInvokeAndHandle (invokable, query, context, options) {
           return window.handleResponse(
@@ -225,16 +228,19 @@ class WebdriverManager {
         }
 
         window.waychaserInvokeFunctions = []
+        // eslint-disable-next-line unicorn/no-array-for-each
         invocables.forEach(invokable => {
-          queries.forEach(query =>
+          // eslint-disable-next-line unicorn/no-array-for-each
+          queries.forEach(query => {
             addInvokeFunction(waychaserInvokeAndHandle, invokable, query)
-          )
+          })
         })
-
+        // eslint-disable-next-line unicorn/no-array-for-each
         searchables.forEach(searchable => {
-          queries.forEach(query =>
+          // eslint-disable-next-line unicorn/no-array-for-each
+          queries.forEach(query => {
             addInvokeFunction(waychaserFindInvokeAndHandle, searchable, query)
-          )
+          })
         })
       },
       this.browser
@@ -259,7 +265,7 @@ class WebdriverManager {
     await fsWrite(temporaryFile.fd, code)
     await fsClose(temporaryFile.fd)
     const transformed = (
-      await babel.transformFileAsync(temporaryFile.path, babelConfig)
+      await babel.transformFileAsync(temporaryFile.path, bableOptions)
     ).code.replace(/"use strict";(\s)+/, returnApproach) // || '')
     try {
       logger.debug({ transformed })
@@ -298,7 +304,7 @@ class WebdriverManager {
   }
 
   async executeScript (script, ...arguments_) {
-    console.log('executing script...')
+    console.log('executing script...', script.toString())
     return this.doExecuteScript(
       this.driver.executeScript.bind(this.driver),
       `(${script}).apply(window, arguments)`,
@@ -353,9 +359,9 @@ class WebdriverManager {
         .logs()
         .get(logging.Type.BROWSER)
         .then(entries => {
-          entries.forEach(entry => {
+          for (const entry of entries) {
             logger.browser('[%s] %s', entry.level.name, entry.message)
-          })
+          }
         })
     }
   }

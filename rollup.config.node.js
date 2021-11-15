@@ -17,12 +17,11 @@ export default {
     {
       file: 'dist/waychaser.cjs',
       format: 'cjs',
-      // plugins: [terser()],
+      plugins: [terser()],
       sourcemap: true
     }
   ],
   context: 'global',
-  // moduleContext: yyy,
   plugins: [
     json(),
     nodeResolve({

@@ -58,6 +58,7 @@ Then(
   'it will have a {string} operation that returns the same fragment',
   async function (relationship) {
     // eslint-disable-next-line unicorn/no-array-callback-reference
+    // eslint-disable-next-line unicorn/no-array-method-this-argument
     const found = await this.waychaserProxy.find(this.results, relationship)
     for (const key in found) {
       assert.isDefined(found[key])
@@ -71,6 +72,7 @@ Then(
 )
 
 Then('it will *not* have a {string} operation', async function (relationship) {
+  // eslint-disable-next-line unicorn/no-array-method-this-argument
   const found = await this.waychaserProxy.find(this.results, relationship)
   for (const key in found) {
     assert.isUndefined(found[key])
