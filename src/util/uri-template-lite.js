@@ -2,10 +2,10 @@
 import { URI as origURI } from 'uri-template-lite'
 
 export const URI = (() => {
-  /* istanbul ignore else: else only gets executed on browser */
+  /* istanbul ignore next: it's complicated */
   if (typeof window === 'undefined') {
-    return origURI
+    return origURI || exports.URI
   } else {
-    return window.URI
+    return window.URI || origURI
   }
 })()

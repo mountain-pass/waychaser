@@ -76,6 +76,7 @@
 - [x] Dependabot branches shouldn't run audit. Because the branches restricted to 10, this can prevent the update of 
 the package that is causing the audit failure
 - [x] replace webpack with rollup
+- [ ] provide way to get body synchronously. Having to await both the response and the body and then pass both around is a PITA
 - [ ] add invocation arrays 
 - [ ] have `body()` interpret the `content-type` header
 - [ ] Fix release log and change log - it only includes last commit 😢

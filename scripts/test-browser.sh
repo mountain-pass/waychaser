@@ -7,7 +7,7 @@ BROWSER_AND_MODE=$(echo "${npm_lifecycle_event}" | sed -e 's/test:browser-api-mi
 MODE="${BROWSER_AND_MODE#*:}"
 BROWSER="${BROWSER_AND_MODE%:*}"
 
-npm run build:iife
+npm run build
 
 if [[ "$BROWSER" != "safari" || "$MODE" != "local" || "$OSTYPE" == "darwin"* ]]; then
 NODE_ENV=test \

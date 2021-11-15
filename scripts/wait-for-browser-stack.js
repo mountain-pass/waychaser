@@ -1,6 +1,6 @@
 #!/usr/bin/env babel-node
 
-import fetch from 'isomorphic-fetch'
+import fetch from 'cross-fetch'
 import assert from 'assert'
 import logger from '../src/util/logger'
 
@@ -36,7 +36,6 @@ async function getPlanInfo () {
  * Provides the number of seconds since {@param since}
  *
  * @param {number} since the unix timestamp to meausre the time from
- *
  * @returns {number} the number of seconds that have elapsed since {@param since}
  */
 function secondsSince (since) {

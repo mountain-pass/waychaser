@@ -124,6 +124,7 @@ export class Resource {
       operation.jsonPointer = jsonPointer
       this.operations.push(operation)
     }
+    this.contentAvailable = false
     logger.waychaser('resource created')
   }
 
@@ -137,7 +138,15 @@ export class Resource {
   }
 
   async body () {
-    const fullBody = await this.response.json()
-    return this.jsonPointer ? pointer.get(fullBody, this.jsonPointer) : fullBody
+    if (this.contentAvailable) {
+      return this.content
+    } else {
+      const fullBody = await this.response.json()
+      this.content = this.jsonPointer
+        ? pointer.get(fullBody, this.jsonPointer)
+        : fullBody
+      this.contentAvailable = true
+      return this.content
+    }
   }
 }

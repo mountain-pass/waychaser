@@ -84,9 +84,16 @@ export class Operation {
     }
 
     const body = {}
-    Object.keys(parameters).forEach(key => {
-      body[key] = context?.[key]
-    })
+    /* istanbul ignore if reason: TODO */
+    if (Array.isArray(parameters)) {
+      parameters.forEach(key => {
+        body[key] = context?.[key]
+      })
+    } else {
+      Object.keys(parameters).forEach(key => {
+        body[key] = context?.[key]
+      })
+    }
 
     let encodedContent
     let headers
