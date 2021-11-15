@@ -433,7 +433,7 @@ jobs:
           node-version: 14.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
-      - run: npm run cover:node-api:not[@skippable]
+      - run: npm run cover:node-api:not{@skippable}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -474,7 +474,7 @@ jobs:
 
       - run: npm config set script-shell $(which bash)
       - run: npm ci
-      - run: npm run cover:browser-api:chrome:local:not[@skippable]
+      - run: npm run cover:browser-api:chrome:local:not{@skippable}
       - uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report-chrome-local-not-skippable
