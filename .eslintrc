@@ -46,7 +46,14 @@
     "istanbul/prefer-ignore-reason": "error",
     "promise/no-callback-in-promise": "off",
     "security/detect-object-injection": "off",
-    "unicorn/no-array-reduce": "off"
+    "unicorn/no-array-reduce": "off",
+    "unicorn/explicit-length-check": [
+      "error",
+      {
+        "non-zero": "not-equal"
+      }
+    ],
+    "unicorn/prefer-node-protocol": "off"
   },
   "overrides": [
     {
@@ -76,7 +83,9 @@
         "security/detect-non-literal-fs-filename": "off",
         "jsdoc/require-jsdoc": "off",
         "security/detect-object-injection": "off",
-        "unicorn/no-array-callback-reference": "off"
+        "unicorn/no-array-callback-reference": "off",
+        "unicorn/prefer-node-protocol": "off",
+        "unicorn/prefer-module": "off"
       }
     },
     {
@@ -115,7 +124,8 @@
         "unicorn/prefer-optional-catch-binding": "off",
         "spaced-comment": "off",
         "no-unused-expressions": "off",
-        "unicorn/no-array-callback-reference": "off"
+        "unicorn/no-array-callback-reference": "off",
+        "unicorn/prefer-module": "off"
       }
     }
   ]

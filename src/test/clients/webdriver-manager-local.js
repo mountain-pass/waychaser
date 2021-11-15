@@ -23,7 +23,7 @@ class WebdriverManagerLocal extends WebdriverManager {
       scenario.result.status === 'pending'
     ) {
       logger.debug('waiting for browser debugging to complete...')
-      await this.allowDebug(600000)
+      await this.allowDebug(600_000)
     }
   }
 

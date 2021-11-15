@@ -89,7 +89,7 @@ class WebdriverManagerRemote extends WebdriverManager {
           .addArguments('disable-notifications')
       )
       .build()
-    await this.driver.manage().setTimeouts({ script: 60000 })
+    await this.driver.manage().setTimeouts({ script: 60_000 })
     return this.driver
   }
 

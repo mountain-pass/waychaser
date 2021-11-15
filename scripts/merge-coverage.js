@@ -14,12 +14,12 @@ fsExtra.emptyDirSync(FULL_DIRPATH)
 
 console.log(`copying files to ${FULL_DIRPATH} ...`)
 
-fs.readdirSync(RESULTS_DIR)
+for (const n of fs
+  .readdirSync(RESULTS_DIR)
   .filter(n => n !== FULL_DIRNAME)
   .map(n => `${RESULTS_DIR}/${n}/.nyc_output/`)
-  .filter(n => fs.existsSync(n))
-  .forEach(n => {
-    fsExtra.copySync(n, FULL_DIRPATH)
-  })
+  .filter(n => fs.existsSync(n))) {
+  fsExtra.copySync(n, FULL_DIRPATH)
+}
 
 console.log('... done')

@@ -69,7 +69,7 @@ if (profile.startsWith('browser-api')) {
 
 let baseUrl = `http://${API_HOST}:${API_PORT}`
 
-BeforeAll({ timeout: 240000 }, async function () {
+BeforeAll({ timeout: 240_000 }, async function () {
   logger.info('BEGIN BeforeAll', Date.now())
 
   logger.info('Starting server...')
@@ -97,7 +97,7 @@ function world ({ attach }) {
   return ''
 }
 
-Before({ timeout: 240000 }, async function (scenario) {
+Before({ timeout: 240_000 }, async function (scenario) {
   logger.info('BEGIN Before')
   this.router = getNewRouter()
   this.waychaserProxy = waychaserProxy
@@ -108,7 +108,7 @@ Before({ timeout: 240000 }, async function (scenario) {
   logger.info('END Before')
 })
 
-After({ timeout: 600000 }, async function (scenario) {
+After({ timeout: 600_000 }, async function (scenario) {
   logger.info('BEGIN After')
 
   logger.info('%s: - %s', scenario.pickle.name, scenario.result.status)
@@ -118,7 +118,7 @@ After({ timeout: 600000 }, async function (scenario) {
   logger.info('END After')
 })
 
-AfterAll({ timeout: 600000 }, async function () {
+AfterAll({ timeout: 600_000 }, async function () {
   logger.info('BEGIN AfterAll')
   if (webdriverManager) {
     await webdriverManager.afterAllTests()
