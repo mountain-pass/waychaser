@@ -12,15 +12,14 @@ Feature: Siren Example
   Scenario: Load API
     When the following code is executed:
       """
-            return waychaser.load("http://hyperwizard.azurewebsites.net/hywit/void")
+            return waychaser("http://hyperwizard.azurewebsites.net/hywit/void")
       """
     Then it will have loaded successfully
 
   Scenario: Start Adventure
     When the following code is executed:
       """
-  return waychaser
-    .load('http://hyperwizard.azurewebsites.net/hywit/void')
+  return waychaser('http://hyperwizard.azurewebsites.net/hywit/void')
     .then(wizApi =>
       wizApi.invoke('start-adventure', {
         name: 'tom',
@@ -38,8 +37,7 @@ Feature: Siren Example
   Scenario: Complete Adventure
     When the following code is executed:
       """
-  return waychaser
-    .load('http://hyperwizard.azurewebsites.net/hywit/void')
+  return waychaser('http://hyperwizard.azurewebsites.net/hywit/void')
     .then(current =>
       current.invoke('start-adventure', {
         name: 'waychaser',

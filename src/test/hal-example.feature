@@ -18,7 +18,7 @@ Feature: HAL Example
   Scenario: Load API
     When the following code is executed:
       """
-  return waychaser.load("https://apigateway.ap-southeast-2.amazonaws.com/restapis")
+  return waychaser("https://apigateway.ap-southeast-2.amazonaws.com/restapis")
       """
     Then it will have loaded successfully
 

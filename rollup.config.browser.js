@@ -1,8 +1,9 @@
 import resolve from '@rollup/plugin-node-resolve'
-import { getBabelInputPlugin } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import { terser } from 'rollup-plugin-terser'
-import { babelConfig } from './browser-babel-config.js'
+import typescript from '@rollup/plugin-typescript'
+
+globalThis.regeneratorRuntime = undefined
 
 export default {
   input: ['src/waychaser.js'],
@@ -24,17 +25,10 @@ export default {
   ],
   context: 'window',
   plugins: [
+    typescript(),
     commonjs(),
     resolve({
       browser: true
-    }),
-    getBabelInputPlugin(
-      Object.assign(
-        {
-          babelHelpers: 'runtime'
-        },
-        babelConfig
-      )
-    )
+    })
   ]
 }

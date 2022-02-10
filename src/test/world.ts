@@ -35,7 +35,7 @@ const profile = process.env.npm_lifecycle_event
   .replace('test:', '')
   .replace(/:/g, '-')
 
-const DEFAULT_STEP_TIMEOUT = 90 * 1000
+const DEFAULT_STEP_TIMEOUT = 90_000
 
 let waychaserProxy, webdriverManager
 
@@ -83,18 +83,59 @@ BeforeAll({ timeout: 240_000 }, async function () {
   logger.info('END BeforeAll', Date.now())
 })
 
-function world ({ attach }) {
-  logger.info('BEGIN world')
+import { Stream } from 'stream'
+export type MediaType = 'text/plain' | 'image/png' | 'application/json'
+export type AttachBuffer = (
+  data: Buffer,
+  mediaType: MediaType
+) => void | Promise<void>
+export type AttachStream = (
+  data: Stream,
+  mediaType: MediaType
+) => void | Promise<void>
+export type AttachText = (data: string) => void | Promise<void>
+export type AttachStringifiedJson = (
+  data: string,
+  mediaType: 'application/json'
+) => void | Promise<void>
+export type AttachBase64EncodedPng = (
+  data: string,
+  mediaType: 'image/png'
+) => void | Promise<void>
+export type AttachFn = AttachBuffer &
+  AttachStream &
+  AttachBase64EncodedPng &
+  AttachStringifiedJson &
+  AttachText
 
-  this.attach = attach
-  this.app = app
+export interface CucumberWorldConstructorParams {
+  attach: AttachFn
+  parameters: { [key: string]: string }
+}
+export class CustomWorld {
+  attach: AttachFn
+  app: any
+  router: any
+  baseUrl: string
+  waychaserProxy: any
 
-  // reset the fake API server, so we can set new routes
-  this.router = getNewRouter()
-  this.baseUrl = baseUrl
+  constructor ({ attach }: CucumberWorldConstructorParams) {
+    this.world({ attach })
+  }
 
-  logger.info('END world')
-  return ''
+  private world ({ attach }) {
+    logger.info('BEGIN world')
+
+    this.attach = attach
+    this.app = app
+
+    // reset the fake API server, so we can set new routes
+    this.router = getNewRouter()
+    this.baseUrl = baseUrl
+
+    logger.info('END world')
+    return ''
+  }
 }
 
 Before({ timeout: 240_000 }, async function (scenario) {
@@ -127,7 +168,7 @@ AfterAll({ timeout: 600_000 }, async function () {
   logger.info('END AfterAll')
 })
 
-setWorldConstructor(world)
+setWorldConstructor(CustomWorld)
 
 setDefinitionFunctionWrapper(stepDefinitionWrapper)
 

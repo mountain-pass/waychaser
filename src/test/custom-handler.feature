@@ -67,7 +67,7 @@ Feature: Custom Handler
         And a resource with a "next" operation that returns that resource
         And a custom resource with a "next" <LOCATION> operation that returns that resource
         And waychaser has a custom <LOCATION> handler
-        And waychaser has default handlers
+        # And waychaser has default handlers
         When waychaser successfully loads the latter resource
         And we successfully invoke the "next" operation
         And we successfully invoke the "next" operation
@@ -88,7 +88,7 @@ Feature: Custom Handler
         And a resource with a "next" operation that returns that resource
         And a custom resource with a "next" header operation that returns that resource
         And waychaser has a custom header handler for an array of media types
-        And waychaser has default handlers
+        # And waychaser has default handlers
         When waychaser successfully loads the latter resource
         And we successfully invoke the "next" operation
         And we successfully invoke the "next" operation

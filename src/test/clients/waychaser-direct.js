@@ -9,7 +9,7 @@ function handleResponse (promise) {
   return promise
     ? promise
         .then(resource => {
-          return { success: resource.response.ok, resource }
+          return { success: resource?.ok, resource }
         })
         .catch(error => {
           /* istanbul ignore next: only gets executed when there are test failures */
@@ -28,8 +28,7 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async load (url) {
-    logger.debug('LOAD Fetcher: ', this.waychaser.fetcher)
-    return handleResponse(this.waychaser.load(url))
+    return handleResponse(this.waychaser(url))
   }
 
   async getOperationsCounts (results, filter) {
@@ -65,29 +64,29 @@ class WaychaserDirect extends WaychaserProxy {
     return found
   }
 
-  async invokeAll (result, relationship, context, options) {
-    logger.debug('invoke CONTEXT', context, relationship)
+  async invokeAll (result, relationship, parameters, options) {
+    logger.debug('invoke CONTEXT', parameters, relationship)
     return Promise.all([
-      handleResponse(result.resource.invoke(relationship, context, options)),
+      handleResponse(result.resource.invoke(relationship, parameters, options)),
       handleResponse(
-        result.resource.invoke({ rel: relationship }, context, options)
+        result.resource.invoke({ rel: relationship }, parameters, options)
       ),
       handleResponse(
         result.resource.invoke(
           element => {
             return element.rel === relationship
           },
-          context,
+          parameters,
           options
         )
       ),
       handleResponse(
-        result.resource.operations.invoke(relationship, context, options)
+        result.resource.operations.invoke(relationship, parameters, options)
       ),
       handleResponse(
         result.resource.operations.invoke(
           { rel: relationship },
-          context,
+          parameters,
           options
         )
       ),
@@ -96,56 +95,58 @@ class WaychaserDirect extends WaychaserProxy {
           element => {
             return element.rel === relationship
           },
-          context,
+          parameters,
           options
         )
       ),
       handleResponse(
-        result.resource.ops.invoke(relationship, context, options)
+        result.resource.ops.invoke(relationship, parameters, options)
       ),
       handleResponse(
-        result.resource.ops.invoke({ rel: relationship }, context, options)
+        result.resource.ops.invoke({ rel: relationship }, parameters, options)
       ),
       handleResponse(
         result.resource.ops.invoke(
           element => {
             return element.rel === relationship
           },
-          context,
+          parameters,
           options
         )
       ),
       handleResponse(
         // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
-        result.resource.operations.find(relationship)?.invoke(context, options)
+        result.resource.operations
+          .find(relationship)
+          ?.invoke(parameters, options)
       ),
       handleResponse(
         result.resource.operations
           .find({ rel: relationship })
-          ?.invoke(context, options)
+          ?.invoke(parameters, options)
       ),
       handleResponse(
         result.resource.operations
           .find(element => {
             return element.rel === relationship
           })
-          ?.invoke(context, options)
+          ?.invoke(parameters, options)
       ),
       handleResponse(
         // eslint-disable-next-line unicorn/no-array-callback-reference -- relationship is not a function
-        result.resource.ops.find(relationship)?.invoke(context, options)
+        result.resource.ops.find(relationship)?.invoke(parameters, options)
       ),
       handleResponse(
         result.resource.ops
           .find({ rel: relationship })
-          ?.invoke(context, options)
+          ?.invoke(parameters, options)
       ),
       handleResponse(
         result.resource.ops
           .find(element => {
             return element.rel === relationship
           })
-          ?.invoke(context, options)
+          ?.invoke(parameters, options)
       )
     ])
   }
@@ -177,28 +178,26 @@ class WaychaserDirect extends WaychaserProxy {
 
   async getUrls (results) {
     return results.map(result => {
-      return result.resource.response.url
+      return result.resource.url
     })
   }
 
   async getBodies (results) {
-    return Promise.all(
-      results.map(result => {
-        return result.resource.body()
-      })
-    )
+    return results.map(result => result.resource.content)
   }
 
   async getStatusCodes (results) {
     const codes = {}
     for (const key in results) {
-      codes[key] = results[key].resource.response.status
+      codes[key] = results[key].resource.status
     }
     return codes
   }
 
   async use (handler, mediaRange) {
-    this.waychaser = this.waychaser.use(handler, mediaRange)
+    this.waychaser = this.waychaser.defaults({
+      handlers: [{ handler, mediaRanges: [mediaRange] }]
+    })
   }
 
   async reset () {
@@ -206,7 +205,7 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async useDefaultHandlers () {
-    this.waychaser.useDefaultHandlers()
+    // this.waychaser = waychaser
   }
 
   async parseAccept (accept) {
@@ -223,10 +222,10 @@ class WaychaserDirect extends WaychaserProxy {
     try {
       const resource = await parsedFunction(this.waychaser, baseUrl)
       /* istanbul ignore else: only gets executed when there are test failures */
-      if (resource.response.ok) {
+      if (resource.ok) {
         return { success: true, resource }
       } else {
-        if (resource.response?.status >= 500) {
+        if (resource?.status >= 500) {
           throw new SkippedError(
             `Server is having issues. Status code ${resource.response.status}`
           )
@@ -246,8 +245,7 @@ class WaychaserDirect extends WaychaserProxy {
   }
 
   async withFetch (fetch) {
-    this.waychaser = this.waychaser.withFetch(fetch)
-    logger.debug('Fetcher: ', this.waychaser.fetcher)
+    this.waychaser = this.waychaser.defaults({ fetch })
   }
 
   async getAwsApiGatewaySchema (gatewayName, schemaName) {

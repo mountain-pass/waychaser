@@ -73,11 +73,12 @@ function generateConfig () {
     snippetSyntax:
       './node_modules/@windyroad/cucumber-js-throwables/lib/custom-cucumber-syntax.js'
   }
-  const MODULES = '--require-module @babel/register '
-  const REQUIRE_GLOB = 'src/test/**/*.js'
+  // const MODULES = '--require-module @babel/register '
+  const MODULES =
+    '--require-module ts-node/register --require-module @babel/register'
   const CONFIG = `${FEATURE_GLOB} --format-options '${JSON.stringify(
     FORMAT_OPTIONS
-  )}' ${MODULES} --require ${REQUIRE_GLOB} ${NO_STRICT} --format rerun:${RERUN} ${RETRY} ${PUBLISH} ${FAIL_FAST}`
+  )}' ${MODULES} --require 'src/test/**/*.js' --require 'src/test/**/*.ts' ${NO_STRICT} --format rerun:${RERUN} ${RETRY} ${PUBLISH} ${FAIL_FAST}`
 
   console.log(CONFIG)
   return CONFIG

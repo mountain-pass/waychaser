@@ -1,10 +1,13 @@
 import LinkHeader from 'http-link-header'
 import { Operation } from '../../operation'
+import { WayChaserResponse } from '../../WayChaserResponse'
 
 /**
  * @param response
  */
-export async function linkHeaderHandler (response) {
+export function linkHeaderHandler (
+  response: WayChaserResponse
+): Array<Operation> {
   return [
     ...parseHeader(response.headers.get('link')),
     ...parseHeader(response.headers.get('link-template'))
@@ -14,7 +17,7 @@ export async function linkHeaderHandler (response) {
 /**
  * @param linkHeader
  */
-function parseHeader (linkHeader) {
+function parseHeader (linkHeader: string): Array<Operation> {
   if (linkHeader) {
     const links = LinkHeader.parse(linkHeader)
     return links.refs.map(reference => {
@@ -29,13 +32,14 @@ function parseHeader (linkHeader) {
       const parsedParameters = parameters?.value
         ? JSON.parse(parameters?.value)
         : undefined
-      return Operation.builder(rel)
-        .uri(uri)
-        .method(method)
-        .parameters(parsedParameters)
-        .accept(accept?.value)
-        .other(Object.assign({ handler: 'link-header' }, otherProperties))
-        .build()
+      return {
+        rel,
+        uri,
+        method,
+        parameters: parsedParameters,
+        accept: accept?.value,
+        ...otherProperties
+      }
     })
   } else {
     return []

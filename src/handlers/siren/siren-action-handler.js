@@ -1,17 +1,11 @@
 import { mapSirenActionToOperation } from './map-siren-action-to-operation'
 
 /**
- * @param bodyGetter
+ * @param content
  */
-
-/**
- * @param response
- * @param bodyGetter
- * @param next
- */
-export async function sirenActionHandler (bodyGetter) {
+export async function sirenActionHandler (content) {
   const operations = []
-  const body = await bodyGetter()
+  const body = content
   if (body.actions) {
     for (const action of body.actions) {
       const operation = mapSirenActionToOperation(action)

@@ -23,6 +23,6 @@ Feature: Load Resource
         Given a resource returning status code 200
         When the following code is executed:
             """
-            return waychaser.load(baseUrl)
+            return waychaser(baseUrl)
             """
         Then it will have loaded successfully

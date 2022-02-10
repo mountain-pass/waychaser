@@ -3,7 +3,7 @@ export async function getAwsApiGatewaySchema (
   gatewayName,
   schemaName
 ) {
-  const api = await waychaser.load(
+  const api = await waychaser(
     'https://apigateway.ap-southeast-2.amazonaws.com/restapis'
   )
   const gateway = await api.ops
@@ -15,5 +15,5 @@ export async function getAwsApiGatewaySchema (
   const model = await models.ops
     .filter('item')
     .findInRelated({ name: schemaName })
-  return JSON.parse((await model.body()).schema)
+  return JSON.parse(model.content.schema)
 }

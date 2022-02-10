@@ -1,5 +1,3 @@
-import { Operation } from '../../waychaser'
-
 /**
  * @param {object} action the siren action to map
  * @returns {object} the link objection that the @{param action} maps to
@@ -12,10 +10,11 @@ export function mapSirenActionToOperation (action) {
       bodyParameters[parameter.name] = {}
     }
   }
-  return Operation.builder(name)
-    .uri(href)
-    .accept(type)
-    .parameters(bodyParameters)
-    .other(Object.assign({ handler: 'siren-action' }, otherProperties))
-    .build()
+  return {
+    rel: name,
+    uri: href,
+    accept: type,
+    parameters: fields && bodyParameters,
+    ...otherProperties
+  }
 }

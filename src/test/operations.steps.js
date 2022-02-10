@@ -281,7 +281,6 @@ When('we invoke the {string} operation for the {int}th item', async function (
 
 Then('the {int}th item will be returned', async function (nth) {
   const bodies = await this.waychaserProxy.getBodies(this.results)
-  console.log({ bodies })
   for (const body of bodies) {
     expect(body.id).to.equal(nth)
   }
