@@ -11,7 +11,6 @@ waychaser is released under the non-restrictive Apache 2.0 licenses and follows 
     - [Folder Structure](#folder-structure)
     - [Testing](#testing)
     - [🚫💩](#)
-    - [Babel](#babel)
     - [ESLint](#eslint)
     - [VSCode + ESLint + Prettier](#vscode--eslint--prettier)
       - [Installation guide](#installation-guide)
@@ -68,13 +67,6 @@ If you force commit 💩 then you could get...
 
 ![the old fork in the eye](./docs/images/fork_in_the_eye.gif)
 
-### Babel
-
-[Babel](https://babeljs.io/) helps us to write code in the latest version of JavaScript. If an environment does not support certain features natively, Babel will help us to compile those features down to a supported version.
-
-[.babelrc file](https://babeljs.io/docs/usage/babelrc/) is used describe the configurations required for Babel.
-
-Babel requires plugins to do the transformation. Presets are the set of plugins defined by Babel. Preset **env** allows to use babel-preset-es2015, babel-preset-es2016, and babel-preset-es2017 and it will transform them to ES5.
 
 ### ESLint
 

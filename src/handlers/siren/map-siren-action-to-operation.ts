@@ -1,8 +1,10 @@
+import { Operation } from "../../operation"
+
 /**
  * @param {object} action the siren action to map
  * @returns {object} the link objection that the @{param action} maps to
  */
-export function mapSirenActionToOperation (action) {
+export function mapSirenActionToOperation(action): Operation {
   const { name, href, fields, type, ...otherProperties } = action
   const bodyParameters = {}
   if (fields) {

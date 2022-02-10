@@ -4,7 +4,7 @@ import { Operation } from './operation'
  * @param operation
  */
 export function expandOperation (operation: Operation) {
-  const expandedOperations = []
+  const expandedOperations: Operation[] = []
   const rangeRegex = /{\[(\d+)..(\d+)]}/
   const originalUrl = operation.uri.toString()
   const matches = originalUrl.match(rangeRegex)
@@ -27,7 +27,8 @@ export function expandOperation (operation: Operation) {
   } else {
     const originalAnchor = operation.anchor
     const anchorMatches = originalAnchor?.match(rangeRegex)
-    if (anchorMatches) {
+    if (originalAnchor && 
+      anchorMatches) {
       for (
         let index = Number.parseInt(anchorMatches[1]);
         index <= Number.parseInt(anchorMatches[2]);

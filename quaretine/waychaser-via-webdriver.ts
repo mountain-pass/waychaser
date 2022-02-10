@@ -1,8 +1,8 @@
 // import { SkippedError } from '@windyroad/cucumber-js-throwables'
-import { SkippedError } from '@windyroad/cucumber-js-throwables'
 import { assert } from 'chai'
-import logger from '../../util/logger'
-import { WaychaserProxy } from './waychaser-proxy'
+import logger from '../src/test/logger'
+import { WaychaserProxy } from '../src/test/clients/waychaser-proxy'
+
 
 class WaychaserViaWebdriver extends WaychaserProxy {
   constructor (manager) {

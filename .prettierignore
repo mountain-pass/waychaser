@@ -10,6 +10,7 @@ out
 report
 .vscode
 *.js
+*.ts
 *.md
 stats.json
 .github/workflows/build-and-publish.yml

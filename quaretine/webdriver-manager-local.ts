@@ -3,7 +3,7 @@ import { Builder, Capabilities } from 'selenium-webdriver'
 import logging from 'selenium-webdriver/lib/logging'
 import chrome from 'selenium-webdriver/chrome'
 import firefox from 'selenium-webdriver/firefox'
-import logger from '../../util/logger'
+import logger from '../logger'
 import { API_HOST, API_PORT } from '../config'
 
 class WebdriverManagerLocal extends WebdriverManager {

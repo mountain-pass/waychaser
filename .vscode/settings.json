@@ -2,7 +2,7 @@
   "eslint.alwaysShowStatus": true,
   "editor.formatOnSave": true,
   "cucumberautocomplete.onTypeFormat": true,
-  "cucumberautocomplete.steps": ["src/test/*.steps.js"],
+  "cucumberautocomplete.steps": ["src/test/*.steps.js", "src/test/*.steps.ts"],
   "cucumberautocomplete.skipDocStringsFormat": true,
   "cucumberautocomplete.syncfeatures": "src/test/**/*.feature",
   "editor.codeActionsOnSave": {
@@ -15,12 +15,8 @@
     "**/test-results": true
   },
   "standard.usePackageJson": true,
-  "standard.workingDirectories": [
-  
-  ],
-  "editor.rulers": [
-    120
-  ],
+  "standard.workingDirectories": [],
+  "editor.rulers": [120],
   "commit-message-editor.view.defaultView": "form",
   "commit-message-editor.staticTemplate": [
     "<type>[(scope)]: <description>",
@@ -30,13 +26,11 @@
     "[[BREAKING CHANGE: ]optional footer(s)]"
   ],
   "cSpell.words": [
-    "Edsger",
-    "HATEOAS",
-    "Wellerman",
     "ationship",
     "babelify",
     "browserstack",
     "bufferutil",
+    "Builtins",
     "chromedriver",
     "codacy",
     "codeclimate",
@@ -46,12 +40,15 @@
     "corejs",
     "curied",
     "dependabot",
+    "Edsger",
     "funkyness",
     "geckodriver",
     "github's",
     "godban",
+    "HATEOAS",
     "huzzah",
     "hyperwizard",
+    "instanceof",
     "invision",
     "invocables",
     "iphone",
@@ -68,6 +65,7 @@
     "prerelease",
     "refs",
     "rels",
+    "rxts",
     "saucelabs",
     "searchables",
     "shellcheck",
@@ -75,15 +73,19 @@
     "standardjs",
     "styfle",
     "tada",
+    "tsflow",
     "turnstyle",
+    "vars",
     "waychaser",
     "waychaser's",
     "webdriver",
     "webpacking",
+    "Wellerman",
     "windyroad"
   ],
   "cSpell.language": "en-GB",
-  "cSpell.enableFiletypes": [
-    "feature"
-  ]
+  "cSpell.enableFiletypes": ["feature"],
+  "cucumberautocomplete.gherkinDefinitionPart": "@(given|when|then|step)\\(",
+  "cucumberautocomplete.stepsInvariants": true,
+  "cucumberautocomplete.strictGherkinValidation": true
 }

@@ -1,4 +1,4 @@
-#!/usr/bin/env babel-node
+#!/usr/bin/env ts-node
 /* eslint-disable security/detect-non-literal-fs-filename */
 
 import { scripts } from '../package.json'

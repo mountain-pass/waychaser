@@ -1,4 +1,4 @@
-import logger from '../../util/logger'
+import logger from '../logger'
 import { createServer } from 'http'
 import { API_PORT } from '../config'
 
@@ -22,7 +22,7 @@ app.use(function (error, request, response, next) {
 })
 let router
 
-export function getNewRouter () {
+export function getNewRouter(): express.Router {
   router = express.Router()
   return router
 }
@@ -34,7 +34,7 @@ app.use(function (request, response, next) {
 export let server
 let httpTerminator
 
-export async function stopServer () {
+export async function stopServer() {
   if (httpTerminator !== undefined) {
     logger.info('Stopping Server...')
     await httpTerminator.terminate()
@@ -44,7 +44,7 @@ export async function stopServer () {
   }
 }
 
-export async function startServer () {
+export async function startServer() {
   await stopServer()
   server = createServer(app)
   httpTerminator = createHttpTerminator({

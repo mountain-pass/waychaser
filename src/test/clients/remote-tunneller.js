@@ -1,4 +1,4 @@
-import logger from '../../util/logger'
+import logger from '../logger'
 import localtunnel from 'localtunnel'
 
 class RemoteTunneller {

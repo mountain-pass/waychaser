@@ -1,4 +1,4 @@
-import { Operation } from '../../waychaser'
+import { Operation } from '../../operation'
 import { deCurie } from './de-curie'
 
 /**
@@ -6,9 +6,9 @@ import { deCurie } from './de-curie'
  * @param link
  * @param curies
  */
-export function mapHalLinkToOperation (relationship, link, curies) {
+export function mapHalLinkToOperation(relationship, link, curies) {
   // we don't need to copy `templated` across, because when we invoke an operation, we always
   // assume it's a template and expand it with the passed parameters
   const { href, templated, ...otherProperties } = link
-  return { rel: deCurie(relationship, curies), uri: href, ...otherProperties }
+  return new Operation({ rel: deCurie(relationship, curies), uri: href, ...otherProperties })
 }

@@ -1,6 +1,6 @@
 import webdriver from 'selenium-webdriver'
 // eslint-disable-next-line no-unused-vars
-import logger from '../../util/logger'
+import logger from '../logger'
 import { WebdriverManager } from './webdriver-manager'
 import assert from 'assert'
 import { remoteTunneller } from './remote-tunneller'

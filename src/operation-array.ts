@@ -1,30 +1,30 @@
 import { InvocableOperation, Operation } from './operation'
-import logger from './util/logger'
-import { WayChaserResponse } from './WayChaserResponse'
+import { WayChaserOptions } from './waychaser'
+import { WayChaserResponse, WayChaserProblem } from './waychaser-response'
 
 // const foo: Array<InvocableOperation> = []
 // foo.filter())
 
 export class OperationArray extends Array<InvocableOperation> {
-  private constructor (items?: Array<InvocableOperation>) {
-    super(...items)
+  private constructor(items?: Array<InvocableOperation>) {
+    super(...(items || []))
   }
-  static create (): OperationArray {
+  static create(): OperationArray {
     return Object.create(OperationArray.prototype)
   }
 
-  find (
+  find(
     query:
       | string
-      | {}
+      | Record<string, unknown>
       | ((
-          this: void,
-          value: InvocableOperation,
-          index: number,
-          obj: InvocableOperation[]
-        ) => InvocableOperation),
-    thisArgument?: any
-  ) {
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    thisArgument?: unknown
+  ): InvocableOperation | undefined {
     const finder = Array.prototype.find.bind(this)
     if (typeof query === 'string') {
       return finder(objectFinder({ rel: query }), thisArgument)
@@ -35,21 +35,21 @@ export class OperationArray extends Array<InvocableOperation> {
     }
   }
 
-  filter (
+  filter(
     query:
       | string
-      | {}
+      | Record<string, unknown>
       | ((
-          value: InvocableOperation,
-          index: number,
-          array: InvocableOperation[]
-        ) => value is InvocableOperation),
-    thisArg?: any
+        value: InvocableOperation,
+        index: number,
+        array: InvocableOperation[]
+      ) => unknown),
+    thisArgument?: unknown
   ): OperationArray {
     if (typeof query === 'string') {
-      return this.filter({ rel: query })
+      return this.filter({ rel: query }, thisArgument)
     } else if (typeof query === 'object') {
-      return this.filter(objectFinder(query))
+      return this.filter(objectFinder(query), thisArgument)
     } else {
       const filtered = Array.prototype.filter.bind(this)(query)
       Object.setPrototypeOf(filtered, OperationArray.prototype)
@@ -57,26 +57,80 @@ export class OperationArray extends Array<InvocableOperation> {
     }
   }
 
-  async findInRelated (predicate): Promise<WayChaserResponse> {
-    if (typeof predicate === 'object') {
-      return this.findInRelated(objectFinder(predicate))
-    } else {
-      for (const getter of this) {
-        const resource = await getter.invoke()
-        if (predicate(resource.content)) {
-          return resource
-        }
-      }
-    }
+  invoke(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions>
+  ): Promise<WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never>> | undefined;
+
+  invoke<Content>(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions<Content>>
+  ): Promise<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never>> | undefined;
+
+  invoke<Content>(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions<Content>>
+  ) {
+    const operation = this.find(relationship)
+    return operation ? operation.invoke(options) : undefined
   }
 
-  invoke (
-    relationship: string,
-    parameters,
-    options
-  ): Promise<WayChaserResponse> {
-    const operation = this.find(relationship)
-    return operation ? operation.invoke(parameters, options) : undefined
+  invokeAll(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions>
+  ): Promise<Array<WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never>>>
+
+  invokeAll<Content>(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions<Content>>
+  ): Promise<Array<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never>>>
+
+  invokeAll<Content>(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions<Content>>
+  ) {
+    return Promise.all(this.filter(relationship).map(operation =>
+      operation.invokeAll(options)
+    )).then(arrayOfArrays => {
+      const flat = arrayOfArrays.flat()
+      return flat
+    })
   }
 }
 
@@ -85,79 +139,12 @@ export class OperationArray extends Array<InvocableOperation> {
 // FU JavaScript, FU.
 
 /**
- *
- */
-// export function OperationArrayXX () {
-//   const array = []
-//   array.push.apply(array, arguments)
-//   Object.setPrototypeOf(array, OperationArray.prototype)
-//   return array
-// }
-// OperationArray.prototype = []
-
-// OperationArray.prototype.find = function (query, thisArgument) {
-//   const finder = Array.prototype.find.bind(this)
-//   if (typeof query === 'string') {
-//     return finder(objectFinder({ rel: query }), thisArgument)
-//   } else if (typeof query === 'object') {
-//     return finder(objectFinder(query), thisArgument)
-//   } else {
-//     return finder(query, thisArgument)
-//   }
-// }
-
-// OperationArray.prototype.invoke = function (relationship, context, options) {
-//   logger.waychaser(`OperationArray.invoke: ${relationship}`)
-
-//   //  logger.waychaser('OPERATIONS', JSON.stringify(this, undefined, 2))
-//   const operation = this.find(relationship)
-//   // logger.waychaser(
-//   //   `operation ${JSON.stringify(relationship)}:`,
-//   //   JSON.stringify(operation, undefined, 2)
-//   // )
-//   logger.waychaser('context:', JSON.stringify(context, undefined, 2))
-//   if (operation === undefined) {
-//     logger.waychaser('operation not found', relationship)
-//     logger.waychaser(this)
-//   }
-//   return operation ? operation.invoke(context, options) : undefined
-// }
-
-// OperationArray.prototype.filter = function (query) {
-//   if (typeof query === 'string') {
-//     return this.filter({ rel: query })
-//   } else if (typeof query === 'object') {
-//     return this.filter(objectFinder(query))
-//   } else {
-//     const filtered = Array.prototype.filter.bind(this)(query)
-//     Object.setPrototypeOf(filtered, OperationArray.prototype)
-//     return filtered
-//   }
-// }
-
-// OperationArray.prototype.findInRelated = async function (predicate) {
-//   if (typeof predicate === 'object') {
-//     return this.findInRelated(objectFinder(predicate))
-//   } else {
-//     for (const getter of this) {
-//       const resource = await getter.invoke()
-//       if (predicate(await resource.body())) {
-//         return resource
-//       }
-//     }
-//   }
-// }
-
-/**
  * @param query
  */
-function objectFinder (query: Partial<Operation>) {
+function objectFinder(query: Partial<Operation>) {
   return (o: InvocableOperation) => {
     for (const key in query) {
       if (query[key] !== o[key]) {
-        logger.waychaser(
-          `query[${key}] (${query[key]}) !== operation[${key}] (${o[key]})`
-        )
         return false
       }
     }

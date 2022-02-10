@@ -1,8 +1,8 @@
-#!/usr/bin/env babel-node
+#!/usr/bin/env ts-node
 
-import fetch from 'cross-fetch'
+import fetch from 'node-fetch'
 import assert from 'assert'
-import logger from '../src/util/logger'
+import logger from '../src/test/logger'
 
 assert(
   process.env.BROWSERSTACK_USERNAME,
@@ -16,15 +16,15 @@ assert(
 /**
  * @returns {object} the json containing the plan information
  */
-async function getPlanInfo () {
+async function getPlanInfo() {
   const response = await fetch(
     'https://api.browserstack.com/automate/plan.json',
     {
       headers: {
         Authorization: `Basic ${Buffer.from(
           process.env.BROWSERSTACK_USERNAME +
-            ':' +
-            process.env.BROWSERSTACK_ACCESS_KEY
+          ':' +
+          process.env.BROWSERSTACK_ACCESS_KEY
         ).toString('base64')}`
       }
     }
@@ -35,10 +35,10 @@ async function getPlanInfo () {
 /**
  * Provides the number of seconds since {@param since}
  *
- * @param {number} since the unix timestamp to meausre the time from
+ * @param {number} since the unix timestamp to measure the time from
  * @returns {number} the number of seconds that have elapsed since {@param since}
  */
-function secondsSince (since) {
+function secondsSince(since) {
   return (Date.now() - since) / 1000
 }
 
@@ -49,7 +49,7 @@ function secondsSince (since) {
  * @param {number} max upper bound
  * @returns {number} a random number between {@param min} and {@param max}
  */
-function getRandomInt (min, max) {
+function getRandomInt(min, max) {
   return Math.floor(Math.random() * Math.floor(max - min)) + min
 }
 
@@ -63,9 +63,9 @@ const MAX_INIT_WAIT_TIME = Number.parseInt(
 /**
  *
  */
-async function waitForSpareSession () {
+async function waitForSpareSession() {
   const start = Date.now()
-  // inital random sleep so all the different browserstack tests don't try to start at once
+  // initial random sleep so all the different browserstack tests don't try to start at once
   const initialWaitTime = getRandomInt(0, MAX_INIT_WAIT_TIME)
   if (initialWaitTime > 0) {
     logger.info(`waiting ${initialWaitTime} before starting availability check`)
@@ -77,7 +77,7 @@ async function waitForSpareSession () {
       planInfo.parallel_sessions_max_allowed - RESERVED_SESSIONS
     logger.info(
       `${maxAllowed -
-        planInfo.parallel_sessions_running} of ${maxAllowed} sessions available (${RESERVED_SESSIONS} reserved)`
+      planInfo.parallel_sessions_running} of ${maxAllowed} sessions available (${RESERVED_SESSIONS} reserved)`
     )
     if (planInfo.parallel_sessions_running < maxAllowed) {
       return

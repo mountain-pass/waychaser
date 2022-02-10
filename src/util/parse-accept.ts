@@ -4,26 +4,24 @@
 /**
  * @param {string} accept
  */
-export function parseAccept (accept) {
+export function parseAccept(accept: string): Array<{ type: string }> {
   const entries = accept.split(',')
   return entries
     .map(entry => {
       const fields = entry.split(';')
       const type = fields.shift()
-      const types = type.split('/')
+      const types = type?.split('/')
       const parsedEntry = {
         type,
-        parentType: types[0],
-        subType: types[1]
+        parentType: types?.[0],
+        subType: types?.[1],
+        q: 1
       }
       for (const field of fields) {
         const parsedFields = field.split('=')
         if (field[0] === 'q') {
           parsedEntry[parsedFields[0]] = Number.parseFloat(parsedFields[1])
         }
-      }
-      if (parsedEntry.q === undefined) {
-        parsedEntry.q = 1
       }
       return parsedEntry
     })
@@ -48,7 +46,8 @@ export function parseAccept (accept) {
     })
     .map(entry => {
       return {
-        type: entry.type
+        type: entry.type || ''
       }
     })
+    .filter(entry => entry.type !== '')
 }

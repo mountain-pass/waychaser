@@ -1,17 +1,14 @@
-import logger from '../../util/logger'
+import logger from '../logger'
 import logging from 'selenium-webdriver/lib/logging'
-import { PendingError } from '@windyroad/cucumber-js-throwables'
-import * as babel from '@babel/core'
+// import { PendingError } from '@windyroad/cucumber-js-throwables'
 import temp from 'temp'
 import fs from 'fs'
-import { babelConfig } from '../../../browser-babel-config'
 import { promisify } from 'util'
 import { By } from 'selenium-webdriver'
 
 const fsWrite = promisify(fs.write)
 const fsClose = promisify(fs.close)
 
-const bableOptions = babel.loadOptions(babelConfig)
 
 temp.track()
 
@@ -74,7 +71,7 @@ const profile = process.env.npm_lifecycle_event
   .replace(/:.*/g, '')
 
 class WebdriverManager {
-  async loadWaychaserTestPage (url) {
+  async loadWaychaserTestPage(url) {
     await this.driver.get('https://google.com')
     logger.info(`loading page '${url}/index-${profile}.html'...`)
     await this.driver.get(`${url}/index-${profile}.html`)
@@ -192,13 +189,13 @@ class WebdriverManager {
           }
         ]
 
-        function waychaserInvokeAndHandle (invokable, query, context, options) {
+        function waychaserInvokeAndHandle(invokable, query, context, options) {
           return window.handleResponse(
             invokable.invoke(query, context, options)
           )
         }
 
-        function waychaserFindInvokeAndHandle (
+        function waychaserFindInvokeAndHandle(
           searchable,
           query,
           context,
@@ -211,7 +208,7 @@ class WebdriverManager {
           )
         }
 
-        function addInvokeFunction (functionToCall, invokable, query) {
+        function addInvokeFunction(functionToCall, invokable, query) {
           window.waychaserInvokeFunctions.push(function (
             id,
             relationship,
@@ -254,18 +251,19 @@ class WebdriverManager {
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async beforeAllTests () {
+  async beforeAllTests() {
     throw new PendingError(
       `TODO: implement ${this.constructor.name}.${this.beforeAllTests.name}`
     )
   }
 
-  async doExecuteScript (executor, code, returnApproach, ...arguments_) {
+  async doExecuteScript(executor, code, returnApproach, ...arguments_) {
     const temporaryFile = await temp.open('waychaser-test')
     await fsWrite(temporaryFile.fd, code)
     await fsClose(temporaryFile.fd)
+    throw new Error('TODO: read and transform file')
     const transformed = (
-      await babel.transformFileAsync(temporaryFile.path, bableOptions)
+      'z'
     ).code.replace(/"use strict";(\s)+/, returnApproach) // || '')
     try {
       logger.debug({ transformed })
@@ -294,7 +292,7 @@ class WebdriverManager {
     }
   }
 
-  async executeScriptNoReturn (script, ...arguments_) {
+  async executeScriptNoReturn(script, ...arguments_) {
     return this.doExecuteScript(
       this.driver.executeScript.bind(this.driver),
       script,
@@ -303,7 +301,7 @@ class WebdriverManager {
     )
   }
 
-  async executeScript (script, ...arguments_) {
+  async executeScript(script, ...arguments_) {
     console.log('executing script...', script.toString())
     return this.doExecuteScript(
       this.driver.executeScript.bind(this.driver),
@@ -313,7 +311,7 @@ class WebdriverManager {
     )
   }
 
-  async executeAsyncScript (script, ...arguments_) {
+  async executeAsyncScript(script, ...arguments_) {
     return this.doExecuteScript(
       this.driver.executeAsyncScript.bind(this.driver),
       `(${script}).apply(window, arguments)`,
@@ -322,7 +320,7 @@ class WebdriverManager {
     )
   }
 
-  async beforeTest (scenario) {
+  async beforeTest(scenario) {
     // await this.executeScript(
     //   /* istanbul ignore next: won't work in browser otherwise */
     //   function () {
@@ -335,7 +333,7 @@ class WebdriverManager {
     // logger.debug("set test name to '%s'", scenario.pickle.name)
   }
 
-  async afterTest () {
+  async afterTest() {
     await this.getBrowserLogs()
     /* istanbul ignore else: IE has issues returning the coverage */
     if (this.browser !== 'ie') {
@@ -350,7 +348,7 @@ class WebdriverManager {
     }
   }
 
-  async getBrowserLogs () {
+  async getBrowserLogs() {
     // getting logs appears to be only possible with chrome
     /* istanbul ignore else: doesn't get executed on CI */
     if (this.browser === 'chrome') {
@@ -366,7 +364,7 @@ class WebdriverManager {
     }
   }
 
-  async afterAllTests () {}
+  async afterAllTests() { }
 
   // async clearRemoteCoverage () {
   //   /* istanbul ignore else: else is only taken if coverage is off */
@@ -396,7 +394,7 @@ class WebdriverManager {
   //   }
   // }
 
-  async loadCoverage () {
+  async loadCoverage() {
     // No longer working since we move to rollup 😭
     // /* istanbul ignore else: only gets executed when there are fatal web driver issues  */
     // if (this.driver && process.env.COVERAGE) {
@@ -420,13 +418,13 @@ class WebdriverManager {
   }
 
   /* istanbul ignore next: only gets executed if we didn't overload this method */
-  async doBuildDriver () {
+  async doBuildDriver() {
     throw new PendingError(
       `TODO: implement ${this.constructor.name}.${this.doBuildDriver.name}`
     )
   }
 
-  async buildDriver () {
+  async buildDriver() {
     try {
       return this.doBuildDriver()
     } catch (error) {

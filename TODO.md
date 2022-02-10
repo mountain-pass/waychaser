@@ -68,7 +68,7 @@
 - [x] Remove lokijs (too bloated) - see https://stackoverflow.com/a/30391815/269221
 - [x] Remove @hapi/accept (too bloated)
 - Add examples and real APIs
-  - [ ] HAL
+  - [x] HAL
     - [ ] getting the embedded sub-entities
   - [x] Siren
 - [x] add support for retrieving fragment documents
@@ -76,13 +76,15 @@
 - [x] Dependabot branches shouldn't run audit. Because the branches restricted to 10, this can prevent the update of 
 the package that is causing the audit failure
 - [x] replace webpack with rollup
-- [ ] provide way to get body synchronously. Having to await both the response and the body and then pass both around is a PITA
+- [x] provide way to get body synchronously. Having to await both the response and the body and then pass both around is a PITA
+- [x] add option to pass a type narrowing function into invoke operations 
+- [x] allow custom content parsing
+- [ ] Change item operations to use keys
+- [ ] Only call handler for matching media-types
 - [ ] add invocation arrays 
-- [ ] have `body()` interpret the `content-type` header
 - [ ] Fix release log and change log - it only includes last commit 😢
   - [ ] fix versioning. CUrrently we bump the version as the start of a set of changes, we don't know if there will be a breaking change or not.
 - [ ] Restructure so don't have to load default handlers
-- [ ] Add option for adding custom body encoders
 - [ ] Look at using https://github.com/RichardLitt/standard-readme-preset
 - [ ] add 404 equivalent for when trying to invoke a relationship that doesn't exist
 - [ ] add tests for authenticated requests

@@ -1,13 +1,5 @@
 {
-  "watch": [
-    "."
-  ],
-  "ignore": [
-    "dist",
-    "node_modules",
-    "lib",
-    "test-results",
-    "coverage"
-  ],
+  "watch": ["."],
+  "ignore": ["dist", "node_modules", "lib", "test-results", "coverage"],
   "ext": "*.feature, *.js, *.json, *.css, *.yaml, *.ts"
 }

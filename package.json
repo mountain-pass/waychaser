@@ -34,6 +34,8 @@
     "siren-client"
   ],
   "main": "dist/waychaser.js",
+  "module": "dist/waychaser.es.js",
+  "browser": "dist/waychaser.es.js",
   "types": "dist/waychaser.d.ts",
   "engines": {
     "node": ">=14.17.0"
@@ -44,9 +46,9 @@
   "scripts": {
     "env": "env",
     "build:browser": "rollup --config rollup.config.${npm_lifecycle_event#build:}.js",
-    "build:node": "tsc --project tsconfig.json",
+    "build:node": "tsc --project tsconfig.production.json",
     "build": "npm-run-all --sequential build:*",
-    "serve": "npm run build && API_PORT=${npm_package_config_TEST_API_PORT} babel-node scripts/development-server.js",
+    "serve": "npm run build && API_PORT=${npm_package_config_TEST_API_PORT} ts-node scripts/development-server.js",
     "prepack": "npm run build",
     "lint:sh": "shellcheck **/*.sh",
     "lint:standardjs": "standard --verbose",
@@ -135,50 +137,30 @@
     "/dist/**/*.d.ts"
   ],
   "dependencies": {
-    "cross-fetch": "^3.1.4",
-    "debug": "^4.2.0",
+    "@types/flat": "^5.0.2",
+    "cartesian": "^1.0.1",
     "flat": "^5.0.2",
     "form-data": "^4.0.0",
     "http-link-header": "^1.0.2",
+    "http-problem-details": "^0.1.5",
     "jsonpointer": "^5.0.0",
     "qs-stringify": "^1.2.1",
     "uri-template-lite": "^20.5.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.2",
-    "@babel/core": "^7.12.3",
-    "@babel/eslint-parser": "^7.14.3",
-    "@babel/node": "^7.6.2",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-syntax-top-level-await": "^7.12.13",
-    "@babel/plugin-transform-arrow-functions": "^7.12.1",
-    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "@babel/plugin-transform-runtime": "^7.14.5",
-    "@babel/preset-env": "^7.6.2",
-    "@babel/register": "^7.7.0",
-    "@babel/runtime": "^7.5.0",
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^12.0.0",
-    "@cucumber/cucumber": "^7.0.0",
+    "@cucumber/cucumber": "^7.3.2",
     "@istanbuljs/nyc-config-babel": "^3.0.0",
-    "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.3.0",
     "@types/chai": "^4.3.0",
-    "@types/cucumber": "^7.0.0",
     "@types/node": "^17.0.8",
-    "@windyroad/cucumber-js-throwables": "^1.0.4",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
     "aws4": "^1.11.0",
-    "babel-eslint": "^10.0.2",
-    "babel-loader": "^8.0.0",
-    "babel-plugin-add-module-exports": "^1.0.4",
-    "babel-plugin-dynamic-import-webpack": "^1.1.0",
-    "babel-plugin-istanbul": "^6.0.0",
-    "babel-plugin-transform-imports": "^2.0.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
     "body-parser": "^1.19.0",
     "browserstack-local": "^1.4.8",
     "bufferutil": "^4.0.2",
@@ -189,8 +171,10 @@
     "conventional-changelog-cli": "^2.1.1",
     "conventional-recommended-bump": "^6.1.0",
     "core-js": "^3.7.0",
+    "cross-fetch": "^3.1.5",
     "cucumber-tsflow": "^4.0.0-preview.7",
     "dateformat": "^4.4.1",
+    "debug": "^4.3.3",
     "depcheck": "^1.2.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^7.13.0",
@@ -240,6 +224,7 @@
     "start-server-and-test": "^1.11.7",
     "temp": "^0.9.4",
     "ts-node": "^10.5.0",
+    "tslib": "^2.3.1",
     "typescript": "^4.5.4",
     "unique-names-generator": "^4.3.1",
     "utf-8-validate": "^5.0.3"
@@ -268,18 +253,5 @@
       "pre-push": "npm run pre-push",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
-  },
-  "standard": {
-    "parser": "babel-eslint",
-    "parserOptions": {
-      "sourceType": "module"
-    },
-    "plugins": [
-      "security",
-      "unicorn",
-      "promise",
-      "istanbul",
-      "jsdoc"
-    ]
   }
 }

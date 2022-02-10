@@ -4,9 +4,9 @@ import { WayChaserOptions, sortHandlers } from './waychaser'
  * @param baseOptions
  * @param additionalOptions
  */
-export function augmentOptions (
-  baseOptions: WayChaserOptions,
-  additionalOptions?: WayChaserOptions
+export function augmentOptions<BaseContent, AdditionalContent>(
+  baseOptions: WayChaserOptions<BaseContent>,
+  additionalOptions?: Partial<WayChaserOptions<AdditionalContent>>
 ) {
   const {
     handlers: baseHandlers,
@@ -35,7 +35,7 @@ export function augmentOptions (
   const finalOptions = {
     ...baseOther,
     ...additionalOther,
-    ...{ defaultHandlers: mergedHandlers },
+    defaultHandlers: mergedHandlers,
     handlers: [],
     headers: {
       ...baseHeaders,

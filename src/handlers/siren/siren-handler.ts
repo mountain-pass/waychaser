@@ -1,16 +1,20 @@
+import { Operation } from '../../operation'
 import MediaTypes from '../../util/media-types'
 import { sirenActionHandler } from './siren-action-handler'
 import { sirenLinkHandler } from './siren-link-handler'
 
 /**
  * @param response
+ * @param content
  */
-export async function sirenHandler (response) {
+export function sirenHandler(
+  response: Response,
+  content?: unknown): Array<Operation> {
   const contentType = response.headers.get('content-type')?.split(';')
   if (contentType?.[0] === MediaTypes.SIREN) {
     return [
-      ...(await sirenLinkHandler(response.content)),
-      ...(await sirenActionHandler(response.content))
+      ...(sirenLinkHandler(content)),
+      ...(sirenActionHandler(content))
     ]
   }
   return []

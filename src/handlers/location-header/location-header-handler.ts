@@ -1,15 +1,14 @@
 import { Operation } from '../../operation'
-import { WayChaserResponse } from '../../WayChaserResponse'
 
 /**
  * @param response
  */
-export function locationHeaderHandler (
-  response: WayChaserResponse
+export function locationHeaderHandler(
+  response: Response,
 ): Array<Operation> {
-  const locationHeader = response.headers.get('location')
+  const locationHeader = response?.headers.get('location')
   if (locationHeader) {
-    return [{ rel: 'related', uri: locationHeader }]
+    return [new Operation({ rel: 'related', uri: locationHeader })]
   }
   return []
 }

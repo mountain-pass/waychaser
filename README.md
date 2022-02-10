@@ -62,6 +62,7 @@ This [isomorphic](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) library i
   - [Invoking missing operations](#invoking-missing-operations)
   - [Handling location headers](#handling-location-headers)
 - [Upgrading from 3.x to 4.x](#upgrading-from-3x-to-4x)
+  - [Problem vs WayChaserResponse](#problem-vs-waychaserresponse)
 
 # Usage
 
@@ -664,3 +665,32 @@ updated resource in the response.
 
 Previously WayChaser provided a default instance via the `waychaser` export. This is no longer the case and you will
 need to create your own instance using `new WayChaser()`
+
+
+## Problem vs WayChaserResponse
+
+Problems can be client side or server side
+
+Client side
+ - fetch throws exception - No Response 
+ - can't parse response - Has Response
+ - can parse response, but the type predicate fails - Has Response
+
+Server side
+ - server returns problem document - Has Response
+
+Response may include links that tell the client how to resolve,
+so we want it to be a WayChaserResponse
+
+Options:
+1. invoke returns WayChaserResponse with problem or content
+   - client uses content !== undefined && problem === undefined to check if the were not problems
+   - unclear if we got a problem or not
+2. invoke returns a clean WayChaserResponse with content or a WayChaserProblem with a problem document
+  - client would need to use instanceOf to differentiate
+  - clean WayChaserResponse has a response and content (which could be expectedly undefined)
+  - WayChaserProblem has a problem document and may or may not have a response
+3. invoke returns a clean WayChaserResponse or a ProblemDocument with optional waychaser response as extention
+  - client would need to use instanceOf to differentiate
+  - if server returns PD, then do we wrap the PD? Feels ugly
+

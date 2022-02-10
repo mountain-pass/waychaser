@@ -10,8 +10,17 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "downlevelIteration": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "strictNullChecks": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules/**/*", "src/test/**/*"]
+  "include": ["**/*"],
+  "exclude": [
+    "quaretine/**/*",
+    "node_modules/**/*",
+    "dist/**/*",
+    "coverage/**/*",
+    "report/**/*",
+    "test-results/**/*",
+    "cucumber.js"
+  ]
 }
