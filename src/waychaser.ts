@@ -1,16 +1,319 @@
+/* global Response */
+import { InvocableOperation, Operation } from './operation'
+import { OperationArray } from './operation-array'
+import { parseOperations } from './util/parse-operations'
+import { URI } from './util/uri-template-lite'
+import flatten from 'flat'
+
 import { halHandler } from './handlers/hal/hal-handler'
 import { linkHeaderHandler } from './handlers/link-header/link-header-handler'
 import { sirenHandler } from './handlers/siren/siren-handler'
-import { Operation } from './operation'
 import MediaTypes from './util/media-types'
 // import { fetch } from 'cross-fetch'
 import { locationHeaderHandler } from './handlers/location-header/location-header-handler'
-import { WayChaserResponse, WayChaserProblem } from './waychaser-response'
 import { augmentOptions } from './augment-options'
-import { ProblemDocument } from 'http-problem-details'
+import { ProblemDocument } from '@mountainpass/problem-document'
 
-export { WayChaserResponse as WayChaserResponse }
-export { WayChaserProblem as WayChaserProblem }
+export type ValidationSuccess<Content> = {
+  success: true
+  content: Content
+}
+
+export type ValidationError = {
+  success: false
+  problem: ProblemDocument
+}
+
+export type ValidationResult<Content> = ValidationSuccess<Content> | ValidationError
+
+export type Validator<Content> = (content: unknown) => ValidationResult<Content>;
+
+/**
+ * @param result
+ */
+export function isValidationSuccess<Content>(result: ValidationResult<Content>): result is ValidationSuccess<Content>{
+  return result.success
+}
+
+
+export class WayChaserResponse<Content>  {
+  content: Content
+  allOperations: Record<string, Array<Operation>>
+  operations: OperationArray
+  anchor?: string
+  response: Response
+  fullContent?: unknown
+  parameters: Record<string, unknown>
+
+  constructor({ handlers, defaultOptions, baseResponse, content, fullContent, anchor, parentOperations, parameters }: {
+    handlers?: HandlerSpec[],
+    defaultOptions?: WayChaserOptions,
+    baseResponse: Response,
+    content: Content,
+    fullContent?: unknown,
+    parameters?: Record<string, unknown>
+    anchor?: string
+    parentOperations?: Record<string, Array<Operation>>
+  }
+  ) {
+    this.response = baseResponse
+    this.anchor = anchor
+    this.parameters = parameters || {}
+
+    this.fullContent = fullContent || content;
+    this.content = content;
+    this.operations = OperationArray.create()
+    const thisContext = flatten({ this: content }) as Record<string, string | number | bigint | boolean | undefined>
+
+    if (parentOperations && anchor && defaultOptions) {
+      this.allOperations = parentOperations
+      for (const operation of this.allOperations[anchor] || []) {
+        this.operations.push(
+          new InvocableOperation(operation, this, defaultOptions, thisContext)
+        )
+      }
+      // not only do we need to go through the operations with a matching anchor
+      // we also need to go though anchors that could match this.anchor
+      for (const key in this.allOperations) {
+        if (key !== '') {
+          // need to see if key could match this.anchor
+          const template = new URI.Template(key)
+          const parameters = template.match(this.anchor)
+          const expandedAnchor = template.expand(parameters)
+          if (expandedAnchor === this.anchor) {
+            const expandedOptions = Object.assign({}, defaultOptions, { parameters: Object.assign(parameters, defaultOptions.parameters) })
+            for (const operation of this.allOperations[key]) {
+              this.operations.push(
+                new InvocableOperation(operation, this, expandedOptions, thisContext)
+              )
+            }
+          }
+        }
+      }
+    }
+    else if (baseResponse && handlers && defaultOptions) {
+      this.allOperations = parseOperations({
+        baseResponse,
+        content,
+        handlers
+      })
+      this.operations = OperationArray.create()
+      for (const operation of this.allOperations[''] || []) {
+        const op = new InvocableOperation(operation, this, defaultOptions, thisContext)
+        this.operations.push(
+          op
+        )
+      }
+    }
+  }
+
+  static create(baseResponse: Response,
+    content: unknown,
+    defaultOptions: WayChaserOptions,
+    mergedOptions: WayChaserOptions): WayChaserResponse<unknown>;
+
+  static create<Content>(baseResponse: Response,
+    content: unknown,
+    defaultOptions: WayChaserOptions,
+    mergedOptions: WayChaserOptions<Content>
+  ): WayChaserResponse<Content>
+
+  /**
+   * @param baseResponse
+   * @param content
+   * @param defaultOptions
+   * @param mergedOptions
+   * @returns 
+   * @throws {WayChaserProblem}
+   */
+  static create<Content>(baseResponse: Response,
+    content: unknown,
+    defaultOptions: WayChaserOptions,
+    mergedOptions: WayChaserOptions<Content>) {
+
+    if (content instanceof ProblemDocument) {
+      throw new WayChaserProblem({
+        response: new WayChaserResponse({ handlers: mergedOptions.defaultHandlers, defaultOptions, baseResponse, content, parameters: mergedOptions.parameters }),
+        problem: content,
+      })
+    }
+    else {
+      if (mergedOptions.validator) {
+          const validationResult = mergedOptions.validator(content)
+          if (isValidationSuccess(validationResult)) {
+            return new WayChaserResponse({ handlers: mergedOptions.defaultHandlers, defaultOptions, baseResponse, content: validationResult.content, parameters: mergedOptions.parameters });
+          }
+          else {
+            throw new WayChaserProblem({
+              response: new WayChaserResponse({ handlers: mergedOptions.defaultHandlers, defaultOptions, baseResponse, content, parameters: mergedOptions.parameters }),
+              problem: validationResult.problem,
+            })
+          }
+      }
+      else {
+        return new WayChaserResponse({ handlers: mergedOptions.defaultHandlers, defaultOptions, baseResponse, content, parameters: mergedOptions.parameters })
+      }
+    }
+  }
+
+
+
+  get ops() {
+    return this.operations
+  }
+
+  invoke(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions>
+  ): Promise<WayChaserResponse<unknown>> | undefined;
+
+  invoke<RelatedContent>(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions<RelatedContent>>
+  ): Promise<WayChaserResponse<RelatedContent>> | undefined
+
+  invoke<RelatedContent>(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions<RelatedContent>>
+  ) {
+    return this.operations.invoke(relationship, options)
+  }
+
+  invokeAll(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions>
+  ): Promise<Array<WayChaserResponse<unknown>>>;
+
+  invokeAll<RelatedContent>(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions<RelatedContent>>
+  ): Promise<Array<WayChaserResponse<RelatedContent>>>;
+
+  invokeAll<RelatedContent>(
+    relationship: string | Record<string, unknown>
+      | ((
+        this: void,
+        value: InvocableOperation,
+        index: number,
+        object: InvocableOperation[]
+      ) => unknown),
+    options?: Partial<WayChaserOptions<RelatedContent>>
+  ) {
+    return this.operations.invokeAll(relationship, options)
+  }
+
+  get body(): ReadableStream {
+    throw new Error('Not Implemented. Use `.content` instead')
+  }
+
+  get bodyUsed() {
+    return true
+  }
+
+  get headers() {
+    return this.response?.headers
+  }
+
+  get ok() {
+    return this.response ? this.response.ok : false
+  }
+
+  get redirected() {
+    return this.response ? this.response.redirected : false
+  }
+
+  get status() {
+    return this.response?.status
+  }
+
+  get statusText() {
+    return this.response?.statusText
+  }
+
+  get type() {
+    return this.response?.type
+  }
+
+  get url() {
+    return this.response?.url
+  }
+
+  arrayBuffer(): Promise<ArrayBuffer> {
+    throw new Error('Not Implemented. Use `.content` instead')
+  }
+
+  blob(): Promise<Blob> {
+    throw new Error('Not Implemented. Use `.content` instead')
+  }
+
+  clone(): Response {
+    throw new Error('Not Implemented')
+  }
+
+  formData(): Promise<FormData> {
+    throw new Error('Not Implemented. Use `.content` instead')
+  }
+
+  // async json() {
+  //   throw new Error('Not Implemented. Use `.content` instead')
+  // }
+
+  text(): Promise<string> {
+    throw new Error('Not Implemented. Use `.content` instead')
+  }
+
+
+}
+export class WayChaserProblem extends Error {
+  readonly problem: ProblemDocument
+  readonly response: WayChaserResponse<unknown>
+
+  constructor({ response, problem }: {
+    response: WayChaserResponse<unknown>,
+    problem: ProblemDocument
+  }) {
+    // 'Error' breaks prototype chain here
+    super(problem.detail);
+    // restore prototype chain   
+    const actualProto = new.target.prototype;
+    if (Object.setPrototypeOf) { Object.setPrototypeOf(this, actualProto); }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    else { (this as any).__proto__ = actualProto; }
+
+    this.problem = problem
+    this.response = response
+  }
+}
 
 export type HandlerSpec = {
   handler: (
@@ -30,15 +333,16 @@ export type HandlerSpec = {
 
 export type Stopper = () => void
 
-export type WayChaserOptions<Content = null> = RequestInit & {
+export type WayChaserOptions<ValidatorContent = null> = RequestInit & {
   fetch: typeof fetch
   handlers: Array<HandlerSpec>
   defaultHandlers: Array<HandlerSpec>
-  preInterceptors: Array<(uriOrRequest, updateOptions, Stopper) => void>
-  postInterceptors: Array<(WayChaserResponse, Stopper) => void>
+  preInterceptors: Array<(uriOrRequest, updateOptions, stopper) => void>
+  postInterceptors: Array<<InterceptorContent>(response: (WayChaserResponse<InterceptorContent>), stop: Stopper) => void>
+  postErrorInterceptors: Array<(error: WayChaserProblem | Error, stopper: Stopper) => void>
   contentParser: (response: Response) => Promise<unknown | ProblemDocument | undefined>
-  typePredicate?: Content extends null | undefined | never ? never : (content: unknown) => content is Content
   parameters?: Record<string, unknown>
+  validator?: Validator<ValidatorContent>
 }
 
 /**
@@ -93,18 +397,20 @@ export async function _waychaser(
   uriOrRequest: string | Request,
   defaults: WayChaserOptions,
   options?: Partial<WayChaserOptions>
-): Promise<WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never>>;
+): Promise<WayChaserResponse<unknown>>;
 
 export async function _waychaser<Content>(
   uriOrRequest: string | Request,
   defaults: WayChaserOptions,
   options?: Partial<WayChaserOptions<Content>>
-): Promise<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never>>;
+): Promise<WayChaserResponse<Content>>;
 
 /**
  * @param uriOrRequest
  * @param defaultOptions
  * @param options
+ * @returns WayChaserResponse<Content>
+ * @throws TypeError | AbortError | WayChaserResponseProblem 
  */
 export async function _waychaser<Content>(
   uriOrRequest: string | Request,
@@ -147,45 +453,40 @@ export async function _waychaser<Content>(
     }
   }
 
-  try {
-    const bareResponse = await mergedOptions.fetch(
-      uriOrRequest.toString(),
-      updateOptions
-    )
+  const baseResponse = await mergedOptions.fetch(
+    uriOrRequest.toString(),
+    updateOptions
+  )
 
-    const response = await WayChaserResponse.create(bareResponse, defaultOptions, mergedOptions)
+  // TODO allow lazy loading of the content 
+  const content = await mergedOptions.contentParser(baseResponse)
+  // content is
+  // 1. unknown, 
+  // 2. a post response client side Problem Document,
+  // 3. a server side ProblemDocument, or
+  // 4. undefined
+
+
+  try {
+    const response = await WayChaserResponse.create(baseResponse, content, defaultOptions, mergedOptions)
 
     stop = false
-    for (const interceptor of updateOptions.postInterceptors || []) {
+    for (const interceptor of updateOptions.postInterceptors) {
       interceptor(response, () => (stop = true))
       if (stop) {
         break
       }
     }
     return response
-  }
-  catch (error) {
-    if (error instanceof TypeError) {
-      const problem = new ProblemDocument({
-        type: "https://waychaser.io/type-error",
-        title: "Error sending request"
-      }, { error })
-      return WayChaserProblem.create({ problem })
+  } catch (error) {
+    stop = false
+    for (const interceptor of updateOptions.postErrorInterceptors) {
+      interceptor(error, () => (stop = true))
+      if (stop) {
+        break
+      }
     }
-    else if (error.name === 'AbortError') {
-      const problem = new ProblemDocument({
-        type: "https://waychaser.io/aborted",
-        title: "The request was aborted"
-      }, { error })
-      return WayChaserProblem.create({ problem })
-    }
-    else {
-      const problem = new ProblemDocument({
-        type: "https://waychaser.io/fetch-error",
-        title: "The request failed"
-      }, { error })
-      return WayChaserProblem.create({ problem })
-    }
+    throw error
   }
 }
 
@@ -211,6 +512,7 @@ const wayChaserDefaults: WayChaserOptions = {
   ]),
   preInterceptors: [],
   postInterceptors: [],
+  postErrorInterceptors: [],
   contentParser: async (response: Response): Promise<unknown | ProblemDocument | undefined> => {
     if (response.headers.get('content-length') &&
       response.headers.get('content-length') !== '0') {
@@ -225,15 +527,17 @@ const wayChaserDefaults: WayChaserOptions = {
           return new ProblemDocument({
             type: "https://waychaser.io/invalid-json",
             title: "JSON response could not be parsed",
-            detail: `The response document with content type '${contentType}' could not be parsed as json`
-          }, { content, error })
+            detail: `The response document with content type '${contentType}' could not be parsed as json`,
+            content, error
+          })
         }
       }
       return new ProblemDocument({
         type: "https://waychaser.io/unsupported-content-type",
         title: "The response has an unsupported content type",
-        detail: `The response document has a content type of '${contentType}' which is not supported`
-      }, { content, ...(contentType && { contentType }) });
+        detail: `The response document has a content type of '${contentType}' which is not supported`,
+        content, ...(contentType && { contentType })
+      });
     }
     // else no content. Returning undefined
   }
@@ -261,10 +565,14 @@ function _defaults(
 
 
 
-// type WayChaser<Content> = typeof _waychaser & {
-//   defaults: (newDefaults: WayChaserOptions) => WayChaser<Content>
-// }
-
+/**
+ * calls fetch on the passed in uriOrRequest and parses the response
+ * 
+ * @param uriOrRequest see RequestInit
+ * @param options see WayChaserOptions
+ * @returns WayChaserResponse<Content>
+ * @throws TypeError | AbortError | WayChaserResponseProblem | Error
+ */
 export const waychaser = Object.assign(
   <Content>(
     uriOrRequest: string | Request,

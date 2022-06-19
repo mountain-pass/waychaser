@@ -1,6 +1,5 @@
 import { Operation } from '../../operation'
 import MediaTypes from '../../util/media-types'
-import { BaseWayChaserResponse } from '../../waychaser-response'
 import { mapHalLinkToOperation } from './map-hal-link-to-operation'
 
 type HalLink = {
@@ -14,12 +13,10 @@ type HalLink = {
 /**
  * @param response
  * @param content
- * @param stopper
  */
 export function halHandler(
   response: Response,
-  content?: unknown,
-  stopper?: () => void
+  content?: unknown
 ): Array<Operation> {
   const operations: Array<Operation> = []
   const contentType = response.headers.get('content-type')?.split(';')

@@ -1,6 +1,5 @@
 import { InvocableOperation, Operation } from './operation'
-import { WayChaserOptions } from './waychaser'
-import { WayChaserResponse, WayChaserProblem } from './waychaser-response'
+import { WayChaserOptions, WayChaserResponse } from './waychaser'
 
 // const foo: Array<InvocableOperation> = []
 // foo.filter())
@@ -66,7 +65,7 @@ export class OperationArray extends Array<InvocableOperation> {
         object: InvocableOperation[]
       ) => unknown),
     options?: Partial<WayChaserOptions>
-  ): Promise<WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never>> | undefined;
+  ): Promise<WayChaserResponse<unknown>> | undefined;
 
   invoke<Content>(
     relationship: string | Record<string, unknown>
@@ -77,7 +76,7 @@ export class OperationArray extends Array<InvocableOperation> {
         object: InvocableOperation[]
       ) => unknown),
     options?: Partial<WayChaserOptions<Content>>
-  ): Promise<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never>> | undefined;
+  ): Promise<WayChaserResponse<Content>> | undefined;
 
   invoke<Content>(
     relationship: string | Record<string, unknown>
@@ -102,7 +101,7 @@ export class OperationArray extends Array<InvocableOperation> {
         object: InvocableOperation[]
       ) => unknown),
     options?: Partial<WayChaserOptions>
-  ): Promise<Array<WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never>>>
+  ): Promise<Array<WayChaserResponse<unknown>>>
 
   invokeAll<Content>(
     relationship: string | Record<string, unknown>
@@ -113,7 +112,7 @@ export class OperationArray extends Array<InvocableOperation> {
         object: InvocableOperation[]
       ) => unknown),
     options?: Partial<WayChaserOptions<Content>>
-  ): Promise<Array<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never>>>
+  ): Promise<Array<WayChaserResponse<Content>>>
 
   invokeAll<Content>(
     relationship: string | Record<string, unknown>

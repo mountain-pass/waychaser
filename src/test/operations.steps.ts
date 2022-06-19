@@ -2,7 +2,7 @@ import { assert, expect } from 'chai'
 import { When, Then, DataTable } from '@cucumber/cucumber'
 import logger from './logger'
 import { binding, given, then, when } from 'cucumber-tsflow';
-import { waychaser } from '../waychaser'
+import { Validator, waychaser, WayChaserProblem, WayChaserResponse } from '../waychaser'
 import {
     uniqueNamesGenerator,
     adjectives,
@@ -11,13 +11,13 @@ import {
 } from 'unique-names-generator'
 import { startServer, app, stopServer, getNewRouter } from './fakes/server'
 import { API_PORT, API_HOST } from './config'
-import { WayChaserProblem, WayChaserResponse } from '../waychaser-response';
 import nodeFetch from 'cross-fetch'
 import LinkHeader from 'http-link-header'
 import aws4 from 'aws4'
 import MediaTypes from '../util/media-types';
 import { Operation } from '../operation';
-
+import { ProblemDocument } from '@mountainpass/problem-document';
+import { SafeParseReturnType, SafeParseSuccess, z } from "zod";
 let pathCount = 0
 
 const CUSTOM_HEADER_MEDIA_TYPE = 'application/custom+json'
@@ -32,15 +32,9 @@ export const randomApiPath = () => {
     })}`
 }
 
-function expectIsWayChaserResponse<Content>(response: WayChaserProblem<Response> | WayChaserProblem<never> | WayChaserResponse<Content> | undefined,
-    typePredicate?: (response: unknown) => response is WayChaserResponse<Content>): asserts response is WayChaserResponse<Content> {
-    if (response instanceof WayChaserProblem) {
-        console.error(response)
-    }
+function expectIsWayChaserResponse<Content>(response: WayChaserProblem | WayChaserResponse<Content> | undefined): asserts response is WayChaserResponse<Content> {
+    expect(response).to.not.be.undefined
     expect(response).to.be.instanceOf(WayChaserResponse);
-    if (response && typePredicate) {
-        expect(typePredicate(response)).to.be.true
-    }
 }
 
 function filterParameters(parameters, type): string[] {
@@ -71,15 +65,16 @@ export class OperationSteps {
     currentPath: string;
     router = getNewRouter()
     baseUrl = `http://${API_HOST}:${API_PORT}`
-    response: WayChaserProblem<Response> | WayChaserProblem<never> | WayChaserResponse<unknown> | undefined;
+    response: WayChaserResponse<unknown> | undefined;
     expectedOperations: any[];
     previousPath: string;
     lastPath: string;
     expectedResponseContent: Record<string, string>;
     currentFragment: unknown[];
     awsSchema: any;
-    previousResponse: WayChaserProblem<Response> | WayChaserProblem<never> | WayChaserResponse<unknown> | undefined;
-    items: (WayChaserProblem<Response> | WayChaserProblem<never> | WayChaserResponse<unknown>)[] | undefined;
+    previousResponse: WayChaserProblem | WayChaserResponse<unknown> | undefined;
+    items: (WayChaserProblem | WayChaserResponse<unknown>)[] | undefined;
+    error: any;
 
     @given('an endpoint returning status code {int}')
     public endpoint(status) {
@@ -96,6 +91,21 @@ export class OperationSteps {
         this.previousPath = this.currentPath
         this.currentPath = randomApiPath()
         this.router.get(this.currentPath, async (request, response) => {
+            response.json(JSON.parse(documentString))
+        })
+    };
+
+    @given('an endpoint with a self operation returning')
+    public async anEndpointWithASelfOperationReturning(documentString: string) {
+        this.previousPath = this.currentPath
+        this.currentPath = randomApiPath()
+        this.router.get(this.currentPath, async (request, response) => {
+            const links = new LinkHeader()
+            links.set({
+                rel: 'self',
+                uri: this.currentPath
+            })
+            response.header('link', links.toString())
             response.json(JSON.parse(documentString))
         })
     };
@@ -1076,6 +1086,7 @@ export class OperationSteps {
     async loadResource() {
         console.log('loading', this.currentPath)
         this.response = await this.waychaser(new URL(this.currentPath, this.baseUrl).toString())
+        expectIsWayChaserResponse(this.response)
     }
 
     @when('waychaser successfully loads the first endpoint in the list')
@@ -1091,6 +1102,32 @@ export class OperationSteps {
         expect(this.response.ok).to.be.true
     };
 
+    @when('waychaser loads that endpoint with a validator expecting')
+    public async waychaserLoadsThatEndpointWithAValidatorExpecting(dataTable: DataTable) {
+        try {
+            this.response = await this.waychaser(new URL(this.currentPath, this.baseUrl).toString(), {
+                validator: buildValidator(dataTable)
+            })
+            console.log(this.response)
+        }
+        catch (error) {
+            this.error = error
+        }
+    };
+
+    @when('we invoke the {string} operation with a validator expecting')
+    public async weInvokeTheOperationWithAValidatorExpecting(relationship: string, dataTable: DataTable) {
+        expectIsWayChaserResponse(this.response)
+        try {
+            this.response = await this.response.invoke(relationship, {
+                validator: buildValidator(dataTable)
+            })
+        }
+        catch (error) {
+            this.error = error
+        }
+    };
+
     @then('the response will have no operations')
     public hasNoOperations() {
         this.hasOperations(0)
@@ -1101,11 +1138,13 @@ export class OperationSteps {
     public hasOperations(
         expected: number
     ) {
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.ops.length).to.equal(expected)
     }
 
     @then('the response will have {int} {string} operations')
     public async theResponseWillHaveOperations(count: number, relationship: string) {
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.ops.filter(relationship).length).to.equal(count)
     };
 
@@ -1117,6 +1156,7 @@ export class OperationSteps {
 
     @then('when invokeAll is called on the {string} Operation, {int} items will be returned')
     public async whenInvokeAllIsCalledOnTheOperationsItemsWillBeReturned(relationship: string, count: number) {
+        expectIsWayChaserResponse(this.response)
         this.items = await this.response?.invokeAll('item')
         expect(this.items?.length).to.equal(count)
     };
@@ -1125,17 +1165,19 @@ export class OperationSteps {
     public async eachWillHaveAsOperation(eachRelationship: string, haveRelationship: string) {
         expectIsWayChaserResponse(this.response)
         const items = await this.response.invokeAll(eachRelationship)
-        expect(items.map(item => item.ops.find(haveRelationship)?.rel)).to.deep.equal(items.map(() => haveRelationship))
+        expect(items.map(item => 'ops' in item ? item.ops.find(haveRelationship)?.rel : 'request-error')).to.deep.equal(items.map(() => haveRelationship))
     };
 
     @then('it/the\\ response will have a {string} operation')
     public theResponseWillHaveAOperation(relationship) {
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.ops.find(relationship)).to.not.be.undefined
         this.expectedOperations = [relationship]
     };
 
     @then('it/the\\ response won\'t have any other operations')
     public theResponseWontHaveAnyOtherOperations() {
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.ops.filter(operation => this.expectedOperations.includes[operation.rel]).length).to.equal(0)
     };
 
@@ -1148,16 +1190,26 @@ export class OperationSteps {
 
     @then('it will NOT have loaded successfully')
     public itWillNOTHaveLoadedSuccessfully() {
-        expect(this.response?.ok).to.be.false
+        if (this.response && this.response instanceof WayChaserResponse) {
+            expect(this.response?.ok).to.be.false
+        }
+        else {
+            expect(this.error).to.not.be.undefined
+        }
     };
 
     @when('waychaser loads an endpoint that\'s not available')
     public async waychaserLoadsAnEndpointThatIsNotAvailable() {
-        this.response = await this.waychaser(new URL(this.currentPath, this.baseUrl.replace(
-            // eslint-disable-next-line security/detect-non-literal-regexp -- not regex DoS vulnerable
-            new RegExp(`(:${API_PORT})?$`),
-            ':33556'
-        )).toString())
+        try {
+            this.response = await this.waychaser(new URL(this.currentPath, this.baseUrl.replace(
+                // eslint-disable-next-line security/detect-non-literal-regexp -- not regex DoS vulnerable
+                new RegExp(`(:${API_PORT})?$`),
+                ':33556'
+            )).toString())
+        }
+        catch (error) {
+            this.error = error
+        }
     };
 
     @when('we invoke the {string} operation')
@@ -1170,6 +1222,7 @@ export class OperationSteps {
 
     @when('we invoke the {string} operation with the headers')
     public async weInvokeTheOperationWithTheHeaders(relationship: string, dataTable: DataTable) {
+        expectIsWayChaserResponse(this.response)
         this.response = await this.response?.invoke(relationship, { headers: dataTable.rowsHash() })
     };
 
@@ -1184,6 +1237,7 @@ export class OperationSteps {
     @when('we invoke the {string} operation for the {int}rd item')
     @when('we invoke the {string} operation for the {int}th item')
     public async weInvokeTheOperationForThe1986thItem(relationship: string, index: number) {
+        expectIsWayChaserResponse(this.response)
         this.response = await this.response?.ops.filter(relationship)[index].invoke()
     };
 
@@ -1224,10 +1278,12 @@ export class OperationSteps {
         const api = await this.waychaser(
             'https://apigateway.ap-southeast-2.amazonaws.com/restapis'
         )
+        expectIsWayChaserResponse(api)
         const gatewaysList = await api.invokeAll<{ name: string }>('item')
         const gateway = gatewaysList.find(response => {
             return response instanceof WayChaserResponse && response.content.name === gatewayName
         })
+        expectIsWayChaserResponse(gateway)
         const models = await gateway?.invoke(
             'http://docs.aws.amazon.com/apigateway/latest/developerguide/restapi-restapi-models.html'
         )
@@ -1247,6 +1303,7 @@ export class OperationSteps {
     @when('we invoke the {string} operation for the link name {string}')
     public async weInvokeTheOperationForTheLinkNames(relationship: string, name: string) {
         this.previousResponse = this.response
+        expectIsWayChaserResponse(this.response)
         this.response = await this.response?.invoke({
             rel: relationship,
             name: name
@@ -1255,7 +1312,7 @@ export class OperationSteps {
 
     @then('invoking a missing operation will immediately return undefined')
     public invokingAMissingOperationWillImmediatelyReturnUndefined() {
-        expect(this.response).to.not.be.undefined
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.invoke('missing')).to.be.undefined
     };
 
@@ -1271,6 +1328,7 @@ export class OperationSteps {
 
     @then('when we invoke the {string} operation for the link name {string}')
     public async whenWeInvokeTheOperationForTheLinkNames(relationship: string, name: string) {
+        expectIsWayChaserResponse(this.previousResponse)
         this.response = await this.previousResponse?.invoke({
             rel: relationship,
             name: name
@@ -1298,11 +1356,13 @@ export class OperationSteps {
     @then('the response will have the parameters')
     public async theResponseWillHaveTheParameters(dataTable: DataTable) {
         const expectedContext = dataTable.rowsHash();
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.parameters).to.deep.equal(expectedContext)
     };
 
     @then('the response will have the status code {int}')
     public responseWillHaveTheStatusCodes(status: number) {
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.status).to.equal(status)
     };
 
@@ -1346,6 +1406,7 @@ export class OperationSteps {
 
     @then('it will have a {string} operation that returns the same fragment')
     public async itWillHaveAsOperationThatReturnsTheSameFragment(relationship: string) {
+        expectIsWayChaserResponse(this.response)
         this.response = await this.response?.invoke(relationship)
         expect(this.response?.ok).to.be.true
         expectIsWayChaserResponse(this.response)
@@ -1366,6 +1427,7 @@ export class OperationSteps {
 
     @then('it have {int} operation(s)')
     public async itHavesOperation(count: number) {
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.ops.length).to.equal(count)
     };
 
@@ -1382,12 +1444,14 @@ export class OperationSteps {
 
     @then('the adventure will have started')
     public async theAdventureWillHaveStarted() {
+        expectIsWayChaserResponse(this.response)
         expect(this.response?.ops.find('move')
         ).to.not.be.undefined
     };
 
     @then('we will have completed the adventure')
     public async weWillHaveCompletedTheAdventure() {
+        expectIsWayChaserResponse(this.response)
         const returnOperation = this.response?.ops.find('return')
         expect(returnOperation).to.not.be.undefined
         expect(returnOperation?.title).to.equal('Return to the void.')
@@ -1401,6 +1465,43 @@ export class OperationSteps {
             expectIsWayChaserResponse(item)
             expect(item.content).to.deep.equal(expectedValues[index])
 
+        }
+    };
+}
+
+function isSuccess<Input, Output>(result: SafeParseReturnType<Input, Output>): result is SafeParseSuccess<Output> {
+    return result.success
+}
+
+function buildValidator<Content>(dataTable: DataTable): Validator<Content> {
+    const schemaConfig = {};
+    for (const [key, value] of Object.entries(dataTable.rowsHash())) {
+        schemaConfig[key] = z[value]();
+    }
+    const schema = z.object(schemaConfig);
+
+    return <Content>(content: unknown): {
+        success: true;
+        content: Content;
+    } | {
+        success: false;
+        problem: ProblemDocument;
+    } => {
+        const result = schema.safeParse(content);
+        if (isSuccess(result)) {
+            console.log('success')
+            return { success: true, content: result.data as Content };
+        }
+        else {
+            return {
+                success: false, problem: new ProblemDocument({
+                    type: "https://waychaser.io/validation-error",
+                    title: "Validation error",
+                    detail: "The response content doesn't match what we're expecting",
+                    content,
+                    errors: result.error.format()
+                })
+            };
         }
     };
 }
@@ -1422,210 +1523,3 @@ function createLinks(relationship: string, uri: string, method?: string): LinkHe
     })
     return links
 }
-
-//   Then('the loaded resource will have {string} operation', async function(
-//     relationship
-//   ) {
-//     await expectFindOne.bind(this)(relationship, assert.isDefined)
-//   })
-
-//   Then("it won't have a(n) {string} operation", async function(relationship) {
-//     await expectFindOne.bind(this)(relationship, assert.isUndefined)
-//   })
-
-//   When('we successfully invoke the {string} operation', async function(
-//     relationship
-//   ) {
-//     await invokeSuccessfully.bind(this)(this.results[0], relationship)
-//   })
-
-//   When('we invoke the {string} operation', async function(relationship) {
-//     await invoke.bind(this)(this.results[0], relationship)
-//   })
-
-//   Then('the same response will be returned', async function() {
-//     await checkUrls.bind(this)()
-//   })
-
-//   Then('the former resource will be returned', async function() {
-//     await checkUrls.bind(this)(this.firstResourceRoute)
-//   })
-
-//   When(
-//   'invokes each of the {string} operations in turn {int} times',
-//     async function(relationship, count) {
-//       for (let index = 0; index < count; index++) {
-//         await invoke.bind(this)(this.results[0], relationship)
-//       }
-//     }
-// )
-
-//   Then(
-//   'invoking a missing operation will immediately return undefined',
-//     async function() {
-//       const results = await this.waychaserProxy.invokeAll(
-//         this.results[0],
-//         'missing'
-//       )
-//       for (const result of results) {
-//         expect(result).to.be.undefined
-//       }
-//     }
-// )
-
-//   Then(
-//   'the last resource returned will be the last item in the list',
-//     async function() {
-//       await checkUrls.bind(this)(this.lastOnList)
-//     }
-// )
-
-//   When(
-//   'we invoke the {string} operation with the input',
-//     { timeout: 3_600_000 },
-//     async function(relationship, dataTable) {
-//       // we store it in expectedBody, because we use in in the next step
-//       this.expectedBody = dataTable.rowsHash()
-//       await invoke.bind(this)(this.results[0], relationship, this.expectedBody)
-//     }
-// )
-
-//   Then('resource returned will contain those values', async function() {
-//     await checkBody.bind(this)(this.expectedBody)
-//   })
-
-//   Then('resource returned will contain only', async function(dataTable) {
-//     const expectedBody = dataTable.rowsHash()
-//     await checkBody.bind(this)(expectedBody)
-//   })
-
-//   Then('resource returned will have the status code {int}', async function(
-//     statusCode
-//   ) {
-//     await checkStatusCode.bind(this)(statusCode)
-//   })
-
-//   Then('the body without the links will contain', async function(
-//     documentString
-//   ) {
-//     const expectedBody = JSON.parse(documentString)
-//     await checkBody.bind(this)(
-//       expectedBody,
-//       ({ _links, links, customLinks, ...actualBody }) => {
-//         return actualBody
-//       }
-//     )
-//   })
-
-//   When('the body will contain', async function(documentString) {
-//     const expectedBody = JSON.parse(documentString)
-//     await checkBody.bind(this)(expectedBody)
-//   })
-
-// async function checkOperationCounts(expected) {
-//   const operationsCounts = await this.waychaserProxy.getOperationsCounts(
-//     this.results
-//   )
-//   for (const key in operationsCounts) {
-//     expect(operationsCounts[key]).to.equal(expected)
-//   }
-// }
-
-// async function invokeWithName(relationship, name) {
-//   this.results = await this.waychaserProxy.invokeWithObjectQuery(
-//     this.rootResourceResult,
-//     {
-//       rel: relationship,
-//       name: name
-//     }
-//   )
-// }
-
-// When(
-//   'we invoke the {string} operation for the link name {string}',
-//   async function (relationship, name) {
-//     await invokeWithName.bind(this)(relationship, name)
-//   }
-// )
-
-// Then(
-//   'when we invoke the {string} operation for the link name {string}',
-//   async function (relationship, name) {
-//     await invokeWithName.bind(this)(relationship, name)
-//   }
-// )
-
-// Then('resource returned will contain', async function (documentString) {
-//   const expectedBody = JSON.parse(documentString)
-//   await checkBody.bind(this)(expectedBody)
-// })
-
-// When('we invoke the {string} operation with the headers', async function (
-//   relationship,
-//   dataTable
-// ) {
-//   const options = {
-//     headers: dataTable.rowsHash()
-//   }
-//   await invoke.bind(this)(this.results[0], relationship, undefined, options)
-// })
-
-// Then('it will have {int} {string} operations', async function (
-//   count,
-//   relationship
-// ) {
-//   const operationsCounts = await this.waychaserProxy.getOperationsCounts(
-//     this.results,
-//     relationship
-//   )
-//   for (const key in operationsCounts) {
-//     expect(operationsCounts[key]).to.equal(count)
-//   }
-// })
-
-// Then('each {string} will have a {string} operation', async function (
-//   getRelationship,
-//   hasRelationship
-// ) {
-//   this.previousResult = this.results[0]
-//   const counts = await this.waychaserProxy.getOperationsCounts(
-//     this.results,
-//     getRelationship
-//   )
-//   for (let nth = 0; nth < counts['0-operations']; nth++) {
-//     const items = await this.waychaserProxy.invokeNth(
-//       this.results[0],
-//       getRelationship,
-//       nth
-//     )
-//     for (const item of items) {
-//       expect(item.success).to.be.true
-//     }
-//     const hasCounts = await this.waychaserProxy.getOperationsCounts(
-//       items,
-//       hasRelationship
-//     )
-//     for (const key in hasCounts) {
-//       expect(hasCounts[key]).to.equal(1)
-//     }
-//   }
-// })
-
-// When('we invoke the {string} operation for the {int}th item', async function (
-//   relationship,
-//   nth
-// ) {
-//   this.previousResult = this.results[0]
-//   this.results = await this.waychaserProxy.invokeNth(
-//     this.results[0],
-//     relationship,
-//     nth
-//   )
-// })
-
-// Then('the {int}th item will be returned', async function (nth) {
-//   const bodies = await this.waychaserProxy.getBodies(this.results)
-//   for (const body of bodies) {
-//     expect(body.id).to.equal(nth)
-//   }
-// })

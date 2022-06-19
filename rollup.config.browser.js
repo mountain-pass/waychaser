@@ -16,7 +16,7 @@ export default {
       file: 'dist/waychaser.es.js',
       format: 'es',
       name: 'waychaser',
-      sourcemap: true,
+      sourcemap: !production,
       plugins: []
     },
     {
@@ -24,7 +24,7 @@ export default {
       format: 'es',
       name: 'waychaser',
       plugins: [terser()],
-      sourcemap: true
+      sourcemap: !production
     }
   ],
   context: 'window',
@@ -37,7 +37,7 @@ export default {
     commonjs(),
     resolve({
       browser: true,
-      preferBuiltins: false
+      preferBuiltins: true
     })
   ]
 }

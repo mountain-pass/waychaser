@@ -3,13 +3,10 @@ import qsStringify from 'qs-stringify'
 import FormData from 'form-data'
 import { preferredContentType } from './util/preferred-content-type'
 import flatten from 'flat'
-import { _waychaser, WayChaserOptions } from './waychaser'
-import { BaseWayChaserResponse, WayChaserProblem, WayChaserResponse } from './waychaser-response'
+import { _waychaser, WayChaserOptions, WayChaserResponse, Validator, WayChaserProblem, isValidationSuccess } from './waychaser'
 import pointer from 'jsonpointer'
-import { ProblemDocument } from 'http-problem-details'
-import cartesian from 'cartesian'
-import { augmentOptions } from './augment-options'
 import { methodCanHaveBody } from './util/method-can-have-body'
+import { ProblemDocument } from '@mountainpass/problem-document'
 
 export class Operation {
   rel: string
@@ -40,11 +37,11 @@ export class Operation {
 
 export class InvocableOperation extends Operation {
   defaultOptions: WayChaserOptions
-  response: WayChaserResponse<unknown> | WayChaserProblem<Response>
+  response: WayChaserResponse<unknown>
 
   constructor(
     operation: Operation,
-    response: WayChaserResponse<unknown> | WayChaserProblem<Response>,
+    response: WayChaserResponse<unknown>,
     defaultOptions: WayChaserOptions,
     thisContext: Record<string, string | number | bigint | boolean | undefined>,
   ) {
@@ -53,7 +50,6 @@ export class InvocableOperation extends Operation {
     this.defaultOptions = defaultOptions
     if (this.uri.includes('{this.')) {
       this.uri = URI.expand(this.uri, thisContext)
-      console.log(this.uri)
     }
 
     // const pathParameters = URI.parameters(operation.uri)
@@ -67,48 +63,50 @@ export class InvocableOperation extends Operation {
 
   private invokeAsFragment(
     parameters?: Record<string, unknown>,
-  ): WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never> | undefined;
+  ): WayChaserResponse<unknown> | undefined;
 
   private invokeAsFragment<Content>(
     parameters?: Record<string, unknown>,
-    typePredicate?: (content: unknown) => content is Content
-  ): WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never> | undefined;
+    validator?: Validator<Content>
+  ): WayChaserResponse<Content> | undefined;
 
   private invokeAsFragment<Content>(
     parameters?: Record<string, unknown>,
-    typePredicate?: (content: unknown) => content is Content
-  ) {
+    validator?: Validator<Content>
+  ): WayChaserResponse<Content | unknown> | undefined {
     if (this.uri.startsWith('#/')) {
       const anchor = this.expandUrl(parameters).toString()
       const fragmentContent = this.response.fullContent && pointer.get(this.response.fullContent as object, anchor.slice(1)) as unknown
-      if (typePredicate) {
-        return typePredicate(fragmentContent) ? new WayChaserResponse<Content>({ defaultOptions: this.defaultOptions, baseResponse: this.response.response, content: fragmentContent, fullContent: this.response.fullContent, anchor, parentOperations: this.response.allOperations, parameters })
-          : WayChaserProblem.create({
-            problem: Object.assign(new ProblemDocument({
-              type: "https://waychaser.io/unexpected-content",
-              title: "Unexpected response content",
-              detail: `The response '${JSON.stringify(fragmentContent)}' is not what we're expecting`
-            }), { content: fragmentContent }), defaultOptions: this.defaultOptions, baseResponse: this.response.response, content: fragmentContent, fullContent: this.response.fullContent, parameters
-          });
+      if (validator) {
+        const validationResult = validator(fragmentContent)
+        if (isValidationSuccess(validationResult)) {
+          return new WayChaserResponse({ defaultOptions: this.defaultOptions, baseResponse: this.response.response, content: validationResult.content, fullContent: this.response.fullContent, anchor, parentOperations: this.response.allOperations, parameters });
+        }
+        else {
+          throw new WayChaserProblem({
+            problem: validationResult.problem,
+            response: new WayChaserResponse({ defaultOptions: this.defaultOptions, baseResponse: this.response.response, content: fragmentContent, fullContent: this.response.fullContent, parameters })
+          })
+        }
       }
       else {
-        return new WayChaserResponse<unknown>({ defaultOptions: this.defaultOptions, baseResponse: this.response.response, content: fragmentContent, fullContent: this.response.fullContent, anchor, parentOperations: this.response.allOperations, parameters })
+        return new WayChaserResponse({ defaultOptions: this.defaultOptions, baseResponse: this.response.response, content: fragmentContent, fullContent: this.response.fullContent, anchor, parentOperations: this.response.allOperations, parameters })
       }
     }
   }
 
   async invokeAll(
     options?: Partial<WayChaserOptions>
-  ): Promise<Array<WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never> | undefined>>;
+  ): Promise<Array<WayChaserResponse<unknown> | undefined>>;
 
 
   async invokeAll<Content>(
     options?: Partial<WayChaserOptions<Content>>
-  ): Promise<Array<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never> | undefined>>;
+  ): Promise<Array<WayChaserResponse<Content> | undefined>>;
 
   async invokeAll<Content>(
     options?: Partial<WayChaserOptions<Content>>
-  ): Promise<Array<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never> | undefined>> {
+  ): Promise<Array<WayChaserResponse<Content> | undefined>> {
     if (this.uri.startsWith('#/') && this.response instanceof WayChaserResponse) {
       const result = this.doInvokeAll<Content>(options?.parameters || {})
       return Promise.all(result)
@@ -118,17 +116,17 @@ export class InvocableOperation extends Operation {
 
   private doInvokeAll(
     options?: Partial<WayChaserOptions>
-  ): Array<WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never> | undefined>;
+  ): Array<WayChaserResponse<unknown> | undefined>;
 
 
   private doInvokeAll<Content>(
     parameters: Record<string, unknown>,
-    typePredicate?: (content: unknown) => content is Content
-  ): Array<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never> | undefined>;
+    validator?: Validator<Content>
+  ): Array<WayChaserResponse<Content> | undefined>;
 
 
   private doInvokeAll<Content>(parameters: Record<string, unknown>,
-    typePredicate?: (content: unknown) => content is Content): Array<WayChaserProblem<Response> | WayChaserProblem<never> | WayChaserResponse<unknown> | undefined> {
+    validator?: Validator<Content>): Array<WayChaserResponse<Content> | undefined> {
     const response = this.response as WayChaserResponse<unknown>
     // expand the URI with whatever parameters have been passed in
     const template = new URI.Template(this.uri)
@@ -146,30 +144,35 @@ export class InvocableOperation extends Operation {
         const indices = Array.isArray(parent) ? [...Array.from({ length: parent.length }).keys()] : Object.keys(parent)
         return indices.flatMap(index => {
           const extendedParameters = Object.assign({}, parameters, { [keys[0]]: index })
-          return this.doInvokeAll<Content>(extendedParameters, typePredicate)
+          return this.doInvokeAll<Content>(extendedParameters, validator)
         })
       }
       else {
-        return [WayChaserProblem.create({
-          problem: new ProblemDocument({
-            type: "https://waychaser.io/fragment-uri-error",
-            title: "The fragment URI does not match the content structure"
-          }, { uri: parentUri, content: response.content as object }), parameters
-        })]
+
+        throw new WayChaserProblem(
+          {
+            response: this.response,
+            problem: new ProblemDocument({
+              type: "https://waychaser.io/fragment-uri-error",
+              title: "The fragment URI does not match the content structure",
+              uri: parentUri, content: response.content as object,
+              parameters
+            }),
+          })
       }
     }
-    return [this.invokeAsFragment(parameters, typePredicate)]
+    return [this.invokeAsFragment(parameters, validator)]
   }
 
 
   async invoke(
     options?: Partial<WayChaserOptions>
-  ): Promise<WayChaserResponse<unknown> | WayChaserProblem<Response> | WayChaserProblem<never>>;
+  ): Promise<WayChaserResponse<unknown>>;
 
 
   async invoke<Content>(
     options?: Partial<WayChaserOptions<Content>>
-  ): Promise<WayChaserResponse<Content> | WayChaserProblem<Response> | WayChaserProblem<never>>;
+  ): Promise<WayChaserResponse<Content>>;
 
   async invoke<Content>(
     options?: Partial<WayChaserOptions<Content>>

@@ -1,9 +1,6 @@
 import { Operation } from '../operation'
 import { HandlerSpec } from '../waychaser'
-import { BaseWayChaserResponse } from '../waychaser-response'
 import { expandOperation } from '../expand-operation'
-import { URI } from './uri-template-lite'
-import pointer from 'jsonpointer'
 
 /**
  * @param root0

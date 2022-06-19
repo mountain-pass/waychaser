@@ -1,6 +1,5 @@
 import LinkHeader from 'http-link-header'
 import { Operation } from '../../operation'
-import { BaseWayChaserResponse } from '../../waychaser-response'
 
 /**
  * @param response

@@ -18,3 +18,4 @@ Feature: Load Resource
     Scenario: Load API error cannot connect
         When waychaser loads an endpoint that's not available
         Then it will NOT have loaded successfully
+
