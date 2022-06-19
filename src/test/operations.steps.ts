@@ -1,5 +1,5 @@
-import { assert, expect } from 'chai'
-import { When, Then, DataTable } from '@cucumber/cucumber'
+import { expect } from 'chai'
+import { DataTable } from '@cucumber/cucumber'
 import logger from './logger'
 import { binding, given, then, when } from 'cucumber-tsflow';
 import { Validator, waychaser, WayChaserProblem, WayChaserResponse } from '../waychaser'
@@ -9,7 +9,7 @@ import {
     colors,
     animals
 } from 'unique-names-generator'
-import { startServer, app, stopServer, getNewRouter } from './fakes/server'
+import { getNewRouter } from './fakes/server'
 import { API_PORT, API_HOST } from './config'
 import nodeFetch from 'cross-fetch'
 import LinkHeader from 'http-link-header'
@@ -90,7 +90,7 @@ export class OperationSteps {
     public async anEndpointReturning(documentString: string) {
         this.previousPath = this.currentPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             response.json(JSON.parse(documentString))
         })
     };
@@ -99,7 +99,7 @@ export class OperationSteps {
     public async anEndpointWithASelfOperationReturning(documentString: string) {
         this.previousPath = this.currentPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: 'self',
@@ -113,7 +113,7 @@ export class OperationSteps {
     @given('an endpoint at {string}')
     public anEndpointAt(path: string) {
         this.currentPath = path
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             response.json({})
         })
     };
@@ -121,7 +121,7 @@ export class OperationSteps {
     @given('an endpoint with a {string} operation')
     public anEndpointWithAsOperation(relationship) {
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -135,7 +135,7 @@ export class OperationSteps {
     @given('an endpoint with a {string} operation with the URI {string}')
     public async anEndpointWithAOperationWithTheURI(relationship: string, path: string) {
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -149,7 +149,7 @@ export class OperationSteps {
     @given('an endpoint with a {string} operation with the URI {string} returning')
     public async anEndpointWithAsOperationWithTheURIsReturning(relationship: string, path: string, stringBody: string) {
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -163,7 +163,7 @@ export class OperationSteps {
     @given('an endpoint with the operations')
     public async anEndpointWithTheOperations(dataTable: DataTable) {
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             for (const row of dataTable.hashes()) {
                 links.set(row)
@@ -177,7 +177,7 @@ export class OperationSteps {
     public async anEndpointReturningWithTheFollowingLinks(content: string, dataTable: DataTable) {
         this.previousPath = this.currentPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             for (const row of dataTable.hashes()) {
                 links.set(row)
@@ -192,7 +192,7 @@ export class OperationSteps {
     public async anEndpointWithTheBodyAndTheLinks(body: string, dataTable: DataTable) {
         this.previousPath = this.currentPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             for (const row of dataTable.hashes()) {
                 links.set(row)
@@ -206,7 +206,7 @@ export class OperationSteps {
     public async anEndpointWithNoBodyAndTheLinks(dataTable: DataTable) {
         this.previousPath = this.currentPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             for (const row of dataTable.hashes()) {
                 links.set(row)
@@ -217,7 +217,7 @@ export class OperationSteps {
     };
 
     @given('an endpoint that\'s a collection with {int} items')
-    public async anEndpointThatsACollectionWithsItems(count: number) {
+    public async anEndpointThatsACollectionWithItems(count: number) {
 
         const body = [...Array.from({ length: count }).keys()].map(
             index => ({
@@ -228,7 +228,7 @@ export class OperationSteps {
         )
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({ rel: 'item', uri: `#/{[0..${count - 1}]}` })
             links.set({
@@ -251,12 +251,12 @@ export class OperationSteps {
     @given('an endpoint with a {string} operation that returns an error')
     public anEndpointWithAsOperationThatReturnsAnError(relationship) {
         const errorPath = randomApiPath()
-        this.router.get(errorPath, async (request, response) => {
+        this.router.get(errorPath, async (_request, response) => {
             response.status(500).json({})
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -270,12 +270,12 @@ export class OperationSteps {
     @given('a HAL endpoint with a {string} operation that returns an error')
     public async aHALEndpointWithAsOperationThatReturnsAnError(relationship: string) {
         const errorPath = randomApiPath()
-        this.router.get(errorPath, async (request, response) => {
+        this.router.get(errorPath, async (_request, response) => {
             response.status(500).json({})
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const bodyOperations = {
                 '_links': {
                     [relationship]: { href: errorPath }
@@ -289,12 +289,12 @@ export class OperationSteps {
     @given('a Siren endpoint with a {string} operation that returns an error')
     public async aSirenEndpointWithAsOperationThatReturnsAnError(relationship: string) {
         const errorPath = randomApiPath()
-        this.router.get(errorPath, async (request, response) => {
+        this.router.get(errorPath, async (_request, response) => {
             response.status(500).json({})
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const bodyOperations = createSirenLink(relationship, errorPath)
             response.header('content-type', MediaTypes.SIREN)
             response.json(Object.assign({}, bodyOperations))
@@ -329,7 +329,7 @@ export class OperationSteps {
         this.lastPath = randomApiPath()
         console.log({ last: this.lastPath })
         this.currentPath = this.lastPath
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             response.json({})
         })
         for (let index = 1; index < count; index++) {
@@ -340,12 +340,12 @@ export class OperationSteps {
     };
 
     @given('a list of {int} HAL endpoints linked with {string} operations')
-    public async aListOfsHALEndpointsLinkedWithsOperations(count: number, relationship: string) {
+    public async aListOfsHALEndpointsLinkedWithOperations(count: number, relationship: string) {
         // we add the last one first
         this.lastPath = randomApiPath()
         console.log({ last: this.lastPath })
         this.currentPath = this.lastPath
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             response.json({})
         })
         for (let index = 1; index < count; index++) {
@@ -356,12 +356,12 @@ export class OperationSteps {
     };
 
     @given('a list of {int} Siren endpoints linked with {string} operations')
-    public async aListOfsSirenEndpointsLinkedWithsOperations(count: number, relationship: string) {
+    public async aListOfsSirenEndpointsLinkedWithOperations(count: number, relationship: string) {
         // we add the last one first
         this.lastPath = randomApiPath()
         console.log({ last: this.lastPath })
         this.currentPath = this.lastPath
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             response.json({})
         })
         for (let index = 1; index < count; index++) {
@@ -379,7 +379,7 @@ export class OperationSteps {
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -391,7 +391,7 @@ export class OperationSteps {
     };
 
     @given('a HAL endpoint with a {string} operation that returns the provided {string} {string} parameter')
-    public async aHALEndpointWithAsOperationThatReturnsTheProvidedsParameter(relationship: string, parameterName: string, parameterType: string) {
+    public async aHALEndpointWithAsOperationThatReturnsTheProvidedParameter(relationship: string, parameterName: string, parameterType: string) {
         const operationPath = randomApiPath()
         this.router.get(operationPath + (parameterType === 'path' ? `/:${parameterName}` : ``), async (request, response) => {
             response.json({ [parameterName]: request[parameterType === 'query' ? 'query' : 'params'][parameterName] })
@@ -425,7 +425,7 @@ export class OperationSteps {
     };
 
     @given('an endpoint with a {string} operation that returns the provided {string} header')
-    public anEndpointWithAsOperationThatReturnsTheProvidedsHeader(relationship: string, headerName: string) {
+    public anEndpointWithAsOperationThatReturnsTheProvidedHeader(relationship: string, headerName: string) {
         const operationPath = randomApiPath()
         this.router.get(operationPath, async (request, response) => {
             response.json({
@@ -434,7 +434,7 @@ export class OperationSteps {
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -449,19 +449,19 @@ export class OperationSteps {
     public anEndpointWithAsOperationWithTheMethodThatReturnsTheProvidedParameter(relationship: string, method: string, parameterName: string, parameterType: string) {
         const operationPath = randomApiPath()
         this.router[method.toLowerCase()](operationPath + (parameterType === 'path' ? `/:${parameterName}` : ``), async (request, response) => {
-            response.json({ ...request.query || {}, ...request.body || {}, ...request.params || {} })
+            response.json({ ...(request.query), ...(request.body), ...(request.params) })
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
-            let uri = operationPath;
-            if (parameterType === 'path') {
-                uri += `{/${parameterName}}`
-            }
-            else if (parameterType === 'query') {
-                uri += `{?${parameterName}}`
-            }
+            // let uri = operationPath;
+            // if (parameterType === 'path') {
+            //     uri += `{/${parameterName}}`
+            // }
+            // else if (parameterType === 'query') {
+            //     uri += `{?${parameterName}}`
+            // }
             links.set({
                 rel: relationship,
                 uri: operationPath + (parameterType === 'path' ? `{/${parameterName}}` : `{?${parameterName}}`),
@@ -482,11 +482,11 @@ export class OperationSteps {
         const pathParameters = filterParameters(parameters, 'path')
         const routerUri = [operationPath, ...pathParameters].join('/:')
         this.router[method.toLowerCase()](routerUri, async (request, response) => {
-            response.json({ ...request.query || {}, ...request.body || {}, ...request.params || {} })
+            response.json({ ...(request.query), ...(request.body), ...(request.params) })
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             let uri = operationPath;
             if (pathParameters.length !== 0) {
@@ -514,11 +514,11 @@ export class OperationSteps {
         const pathParameters = filterParameters(parameters, 'path')
         const routerUri = [operationPath, ...pathParameters].join('/:')
         this.router[method.toLowerCase()](routerUri, async (request, response) => {
-            response.json({ ...request.query || {}, ...request.params || {} })
+            response.json({ ...(request.query), ...(request.params) })
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             let uri = operationPath;
             if (pathParameters.length !== 0) {
                 uri += `{/${pathParameters.join(',')}}`
@@ -546,11 +546,11 @@ export class OperationSteps {
         const pathParameters = filterParameters(parameters, 'path')
         const routerUri = [operationPath, ...pathParameters].join('/:')
         this.router[method.toLowerCase()](routerUri, async (request, response) => {
-            response.json({ 'content-type': contentType, ...request.query || {}, ...request.body || {}, ...request.params || {} })
+            response.json({ 'content-type': contentType, ...request.query, ...request.body, ...request.params })
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             let uri = operationPath;
             if (pathParameters.length !== 0) {
@@ -579,11 +579,11 @@ export class OperationSteps {
         const pathParameters = filterParameters(parameters, 'path')
         const routerUri = [operationPath, ...pathParameters].join('/:')
         this.router[method.toLowerCase()](routerUri, async (request, response) => {
-            response.json({ 'content-type': contentType, ...request.query || {}, ...request.body || {}, ...request.params || {} })
+            response.json({ 'content-type': contentType, ...request.query, ...request.body, ...request.params })
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             let uri = operationPath;
             if (pathParameters.length !== 0) {
                 uri += `{/${pathParameters.join(',')}}`
@@ -609,14 +609,14 @@ export class OperationSteps {
     };
 
     @given('an endpoint with a {string} operation with the {string} method that returns the provided {string} {string} parameter and the content type, accepting:')
-    public anEndpointWithAsOperationWithTheMethodThatReturnsTheProvidedsParameterAndTheContentTypeAccepting(relationship: string, method: string, parameterName: string, parameterType: string, dataTable: DataTable) {
+    public anEndpointWithAsOperationWithTheMethodThatReturnsTheProvidedParameterAndTheContentTypeAccepting(relationship: string, method: string, parameterName: string, parameterType: string, dataTable: DataTable) {
         const operationPath = randomApiPath()
         this.router[method.toLowerCase()](operationPath, async (request, response) => {
             response.json({ 'content-type': request.header('content-type').split(';')[0], ...request.body })
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -633,12 +633,12 @@ export class OperationSteps {
     @given('an endpoint with a {string} operation with the {string} method returning status code {int}')
     public anEndpointWithAsOperationWithTheMethodReturningStatusCodes(relationship: string, method: string, statusCode: number) {
         const operationPath = randomApiPath()
-        this.router[method.toLowerCase()](operationPath, async (request, response) => {
+        this.router[method.toLowerCase()](operationPath, async (_request, response) => {
             response.status(statusCode).end()
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -655,12 +655,12 @@ export class OperationSteps {
         const operationPath = randomApiPath()
         const otherPath = this.currentPath
         this.previousPath = otherPath
-        this.router[method.toLowerCase()](operationPath, async (request, response) => {
+        this.router[method.toLowerCase()](operationPath, async (_request, response) => {
             response.header('location', otherPath).end()
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -676,7 +676,7 @@ export class OperationSteps {
     public aCustomEndpointWithAsHeaderOperationThatReturnsItself(relationship: string) {
         this.currentPath = randomApiPath()
         const path = this.currentPath
-        this.router.get(path, async (request, response) => {
+        this.router.get(path, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -692,7 +692,7 @@ export class OperationSteps {
         const previousPath = this.currentPath
         this.previousPath = previousPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -770,7 +770,7 @@ export class OperationSteps {
     public aCustomEndpointReturningTheFollowingWithAsBodyLinkThatReturnsItself(relationship: string, body: string) {
         this.currentPath = randomApiPath()
         const path = this.currentPath
-        this.router.get(path, async (request, response) => {
+        this.router.get(path, async (_request, response) => {
             const bodyOperations = {
                 customLinks: {
                     [relationship]: { href: path }
@@ -783,13 +783,13 @@ export class OperationSteps {
     @given('a custom endpoint with a {string} header operation that returns an error')
     public aCustomEndpointWithAsHeaderOperationThatReturnsAnError(relationship: string) {
         const operationPath = randomApiPath()
-        this.router.get(operationPath, async (request, response) => {
+        this.router.get(operationPath, async (_request, response) => {
             response.status(500).json({})
         })
 
         this.currentPath = randomApiPath()
         const path = this.currentPath
-        this.router.get(path, async (request, response) => {
+        this.router.get(path, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -803,12 +803,12 @@ export class OperationSteps {
     @given('a custom endpoint with a {string} body operation that returns an error')
     public aCustomEndpointWithAsBodyOperationThatReturnsAnError(relationship: string) {
         const operationPath = randomApiPath()
-        this.router.get(operationPath, async (request, response) => {
+        this.router.get(operationPath, async (_request, response) => {
             response.status(500).json({})
         })
 
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const bodyOperations = {
                 customLinks: {
                     [relationship]: { href: operationPath }
@@ -824,7 +824,7 @@ export class OperationSteps {
         const previousPath = this.currentPath
         this.previousPath = previousPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const bodyOperations = {
                 customLinks: {
                     [relationship]: { href: previousPath }
@@ -839,7 +839,7 @@ export class OperationSteps {
         const previousPath = this.currentPath
         this.previousPath = previousPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const bodyOperations = {
                 _links: {
                     [relationship]: { href: previousPath }
@@ -855,7 +855,7 @@ export class OperationSteps {
         const previousPath = this.currentPath
         this.previousPath = previousPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const bodyOperations = createSirenLink(relationship, previousPath)
             response.header('content-type', MediaTypes.SIREN)
             response.json(bodyOperations)
@@ -868,7 +868,7 @@ export class OperationSteps {
         const previousPath = this.currentPath
         this.previousPath = previousPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const bodyOperations = {
                 '_links': {
                     [relationship]: { href: previousPath }
@@ -883,7 +883,7 @@ export class OperationSteps {
         const previousPath = this.currentPath
         this.previousPath = previousPath
         this.currentPath = randomApiPath()
-        this.router.get(this.currentPath, async (request, response) => {
+        this.router.get(this.currentPath, async (_request, response) => {
             const links = new LinkHeader()
             links.set({
                 rel: relationship,
@@ -904,7 +904,7 @@ export class OperationSteps {
                 ) => {
                     if (content && typeof content === 'object' && 'customLinks' in content) {
                         const linkedContent = content as { customLinks: Record<string, { href: string }> }
-                        return Object.keys(linkedContent.customLinks || {}).map(relationship => {
+                        return Object.keys(linkedContent.customLinks).map(relationship => {
                             return new Operation({
                                 rel: relationship,
                                 uri: linkedContent.customLinks[relationship].href
@@ -932,7 +932,7 @@ export class OperationSteps {
                     if (content && typeof content === 'object' && '_links' in content) {
                         const linkedContent = content as { '_links': Record<string, { href: string }> }
                         stopper()
-                        return Object.keys(linkedContent._links || {}).map(relationship => {
+                        return Object.keys(linkedContent._links).map(relationship => {
                             return new Operation({
                                 rel: relationship,
                                 uri: linkedContent._links[relationship].href

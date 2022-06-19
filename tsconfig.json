@@ -13,9 +13,8 @@
     "experimentalDecorators": true,
     "strictNullChecks": true
   },
-  "include": ["**/*"],
+  "include": ["**/*.ts", "**/*.js"],
   "exclude": [
-    "quaretine/**/*",
     "node_modules/**/*",
     "dist/**/*",
     "coverage/**/*",

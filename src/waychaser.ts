@@ -442,7 +442,7 @@ export async function _waychaser<Content>(
   const updateOptions = {
     ...mergedOptions,
 
-    headers: { ...(mergedOptions.headers || {}), accept: fullAcceptHeader }
+    headers: { ...mergedOptions.headers, accept: fullAcceptHeader }
   }
 
   let stop = false

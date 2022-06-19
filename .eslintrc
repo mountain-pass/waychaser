@@ -10,18 +10,15 @@
     "unicorn",
     "promise",
     "istanbul",
-    "jsdoc",
-    "markdown"
+    "jsdoc"
   ],
   "extends": [
-    // "standard",
-    "prettier",
     "plugin:@typescript-eslint/recommended",
     "plugin:security/recommended",
     "plugin:unicorn/recommended",
     "plugin:jsdoc/recommended",
-    "plugin:md/recommended",
-    "plugin:json/recommended"
+    "plugin:json/recommended",
+    "prettier"
   ],
   "env": {
     "browser": false,
@@ -31,20 +28,6 @@
     "Promise": true
   },
   "rules": {
-    // "node/shebang": [
-    //   "error",
-    //   {
-    //     "convertPath": {
-    //       "bin/**/*.js": ["^bin/(.+?)\\.js$", "lib/bin/$1.js"]
-    //     }
-    //   }
-    // ],
-    // "node/no-unsupported-features/es-syntax": [
-    //   "error",
-    //   {
-    //     "ignores": ["modules"]
-    //   }
-    // ],
     "istanbul/no-ignore-file": "error",
     "istanbul/prefer-ignore-reason": "error",
     "promise/no-callback-in-promise": "off",
@@ -61,6 +44,10 @@
   "overrides": [
     {
       "files": ["src/test/**", "cucumber.js"],
+      "parserOptions": {
+        "sourceType": "module",
+        "project": "./tsconfig.dev.json"
+      },
       "plugins": [
         "@typescript-eslint",
         "chai-friendly",
@@ -73,12 +60,11 @@
       "extends": [
         "plugin:@typescript-eslint/recommended",
         "plugin:chai-friendly/recommended",
-        "prettier",
         "plugin:security/recommended",
         "plugin:unicorn/recommended",
         "plugin:jsdoc/recommended",
-        "plugin:md/recommended",
-        "plugin:json/recommended"
+        "plugin:json/recommended",
+        "prettier"
       ],
       "globals": {
         "expect": true,
@@ -101,36 +87,6 @@
       },
       "rules": {
         // "node/shebang": "off"
-      }
-    },
-    {
-      "files": ["**/*.md"],
-      "processor": "markdown/markdown",
-      "rules": {
-        "md/remark": [
-          "error",
-          {
-            "plugins": {
-              "remark-lint-maximum-line-length": ["error", 80]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "files": ["**/*.md/*.js"],
-      // "parser": "@typescript-eslint/parser",
-      "rules": {
-        "no-console": "off",
-        "import/no-unresolved": "off",
-        "unicorn/filename-case": "off",
-        "no-unused-vars": "off",
-        "no-undef": "off",
-        "unicorn/prefer-optional-catch-binding": "off",
-        "spaced-comment": "off",
-        "no-unused-expressions": "off",
-        "unicorn/no-array-callback-reference": "off",
-        "unicorn/prefer-module": "off"
       }
     }
   ]

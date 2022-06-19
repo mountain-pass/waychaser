@@ -1,12 +1,7 @@
 {
   "extends": "./tsconfig",
-  "exclude": [
+  "include": [
     "src/test/**/*",
-    "node_modules/**/*",
-    "dist/**/*",
-    "coverage/**/*",
-    "report/**/*",
-    "test-results/**/*",
     "*.js",
     "*.ts",
     "scripts/**/*.js",
