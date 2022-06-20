@@ -1,3 +1,9 @@
+## 5.0.0 (2022-06-20)
+
+* ci(test): removing node 10.x tests ([a4aae3b](https://github.com/mountain-pass/waychaser/commit/a4aae3b))
+
+
+
 ## <small>4.0.38 (2021-11-15)</small>
 
 * fix(cjs): fixed import issues ([595240b](https://github.com/mountain-pass/waychaser/commit/595240b))
