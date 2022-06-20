@@ -201,8 +201,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    continue-on-error: ${{ matrix.experimental }}
-
     strategy:
       fail-fast: true
       matrix:
