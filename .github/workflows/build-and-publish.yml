@@ -206,11 +206,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [10.x, 12.x, 14.x]
-        experimental: [false]
-        include:
-          - node-version: 16.x
-            experimental: true
+        node-version: [12.x, 14.x, 16.x]
 
     defaults:
       run:
