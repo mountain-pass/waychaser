@@ -57,7 +57,6 @@ Feature: Validator
             | name     | string |
         Then it will have loaded successfully
 
-    @wip
     Scenario: Validate with operations
         Given an endpoint with a self operation returning
             """
@@ -73,3 +72,13 @@ Feature: Validator
             | username | string |
             | name     | string |
         Then it will have loaded successfully
+
+    @wip
+    Scenario: 404 with Validate
+        Given an endpoint returning 404
+        And waychaser has a custom parser for 404s
+        When waychaser loads that endpoint with a validator expecting
+            | username | string |
+            | name     | string |
+        Then it will NOT have loaded successfully
+        And it will NOT be a validation error

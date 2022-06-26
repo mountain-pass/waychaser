@@ -468,7 +468,7 @@ export async function _waychaser<Content>(
 
 
   try {
-    const response = await WayChaserResponse.create(baseResponse, content, defaultOptions, mergedOptions)
+    const response = WayChaserResponse.create(baseResponse, content, defaultOptions, mergedOptions)
 
     stop = false
     for (const interceptor of updateOptions.postInterceptors) {
@@ -557,7 +557,7 @@ function _defaults(
   const defaultedWaychaser = <Content>(
     uriOrRequest: string | Request,
     options?: Partial<WayChaserOptions<Content>>) => _waychaser<Content>(uriOrRequest, mergedOptions, options)
-
+  defaultedWaychaser.currentDefaults = mergedOptions;
   defaultedWaychaser.defaults = (newDefaults: Partial<WayChaserOptions>) =>
     _defaults(newDefaults, mergedOptions)
   return defaultedWaychaser
@@ -581,6 +581,7 @@ export const waychaser = Object.assign(
     return _waychaser(uriOrRequest, wayChaserDefaults, options)
   },
   {
+    currentDefaults: wayChaserDefaults,
     defaults: (newDefaults: Partial<WayChaserOptions>) =>
       _defaults(newDefaults, wayChaserDefaults)
   }

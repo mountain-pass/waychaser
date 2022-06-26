@@ -95,6 +95,16 @@ export class OperationSteps {
         })
     };
 
+    @given('an endpoint returning {int}')
+    public async anEndpointReturningStatus(status: number) {
+        this.previousPath = this.currentPath
+        this.currentPath = randomApiPath()
+        this.router.get(this.currentPath, async (_request, response) => {
+            response.status(status).send();
+        })
+    };
+
+
     @given('an endpoint with a self operation returning')
     public async anEndpointWithASelfOperationReturning(documentString: string) {
         this.previousPath = this.currentPath
@@ -109,6 +119,8 @@ export class OperationSteps {
             response.json(JSON.parse(documentString))
         })
     };
+
+
 
     @given('an endpoint at {string}')
     public anEndpointAt(path: string) {
@@ -894,6 +906,19 @@ export class OperationSteps {
         })
     };
 
+    @given('waychaser has a custom parser for 404s')
+    public async waychaserHasACustomParserFor404s() {
+        const existingContentParser = this.waychaser.currentDefaults.contentParser;
+        this.waychaser = this.waychaser.defaults({
+            contentParser: async (response: Response) => {
+                return response.status === 404 ? new ProblemDocument({
+                    'title': "Not found",
+                    'type': 'https://waychaser.io/not-found'
+                }) : existingContentParser(response);
+            }
+        })
+    };
+
     @given('waychaser has a custom body handler')
     public waychaserHasACustomBodyHandler() {
         this.waychaser = this.waychaser.defaults({
@@ -1190,12 +1215,18 @@ export class OperationSteps {
 
     @then('it will NOT have loaded successfully')
     public itWillNOTHaveLoadedSuccessfully() {
+        console.log({ error: this.error })
         if (this.response && this.response instanceof WayChaserResponse) {
             expect(this.response?.ok).to.be.false
         }
         else {
             expect(this.error).to.not.be.undefined
         }
+    };
+
+    @then('it will NOT be a validation error')
+    public async itWillNOTBeAValidationError() {
+        expect(this.error.problem.type).to.not.equal('https://waychaser.io/validation-error')
     };
 
     @when('waychaser loads an endpoint that\'s not available')
