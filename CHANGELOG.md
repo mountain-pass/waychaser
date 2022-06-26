@@ -1,3 +1,9 @@
+## <small>5.0.1 (2022-06-26)</small>
+
+* feat(defaults): defaults are now accessible via `waychaser.currentDefaults` ([987d73b](https://github.com/mountain-pass/waychaser/commit/987d73b))
+
+
+
 ## 5.0.0 (2022-06-20)
 
 * ci(test): removing node 10.x tests ([a4aae3b](https://github.com/mountain-pass/waychaser/commit/a4aae3b))
