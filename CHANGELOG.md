@@ -1,3 +1,9 @@
+## <small>5.0.2 (2022-06-26)</small>
+
+* Merge pull request #488 from mountain-pass/dependabot/npm_and_yarn/shell-quote-1.7.3 ([8a5b378](https://github.com/mountain-pass/waychaser/commit/8a5b378)), closes [#488](https://github.com/mountain-pass/waychaser/issues/488)
+
+
+
 ## <small>5.0.1 (2022-06-26)</small>
 
 * feat(defaults): defaults are now accessible via `waychaser.currentDefaults` ([987d73b](https://github.com/mountain-pass/waychaser/commit/987d73b))
