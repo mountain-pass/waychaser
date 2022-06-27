@@ -1,3 +1,9 @@
+## <small>5.0.6 (2022-06-27)</small>
+
+* fix(content-parser): fixed issues detecting thrown problem-documents ([61d8b98](https://github.com/mountain-pass/waychaser/commit/61d8b98))
+
+
+
 ## <small>5.0.5 (2022-06-27)</small>
 
 * Merge pull request #487 from mountain-pass/dependabot/npm_and_yarn/follow-redirects-1.15.1 ([c6066f3](https://github.com/mountain-pass/waychaser/commit/c6066f3)), closes [#487](https://github.com/mountain-pass/waychaser/issues/487)
