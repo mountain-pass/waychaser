@@ -12,7 +12,7 @@ Feature: Ranged Link
         Then the response will have 200 "item" operations
 
     Scenario: Ranged Link Automatically Expands - expand anchors
-        Given an endpoint with the operations
+        Given an endpoint returning an array of 25 items with the operations
             | rel       | uri              | anchor      |
             | item      | #/{[0..24]}      |             |
             | canonical | /items/{this.id} | #/{[0..24]} |
@@ -20,8 +20,10 @@ Feature: Ranged Link
         Then the response will have 25 "item" operations
         And each "item" will have a "canonical" operation
 
+
+
     Scenario: Ranged Link Automatically Expands - expand anchors
-        Given an endpoint with the operations
+        Given an endpoint returning an 5 x 2 2D array of with the operations
             | rel       | uri                 | anchor              |
             | item      | #/{[0..4]}/{[0..1]} |                     |
             | canonical | /items/{this.id}    | #/{[0..4]}/{[0..1]} |

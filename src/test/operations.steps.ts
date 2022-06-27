@@ -172,6 +172,36 @@ export class OperationSteps {
         })
     };
 
+    @given('an endpoint returning an array of {int} items with the operations')
+    public async anEndpointReturningAnArrayOfsItemsWithTheOperations(count: number, dataTable: DataTable) {
+        this.currentPath = randomApiPath()
+        this.router.get(this.currentPath, async (_request, response) => {
+            const links = new LinkHeader()
+            for (const row of dataTable.hashes()) {
+                links.set(row)
+            }
+            response.header('link', links.toString())
+            // eslint-disable-next-line unicorn/new-for-builtins
+            response.json([...Array(count).keys()])
+        })
+    };
+
+    @given('an endpoint returning an {int} x {int} 2D array of with the operations')
+    public async anEndpointReturningAnsXs2DArrayOfWithTheOperations(x: number, y: number, dataTable: DataTable) {
+        this.currentPath = randomApiPath()
+        this.router.get(this.currentPath, async (_request, response) => {
+            const links = new LinkHeader()
+            for (const row of dataTable.hashes()) {
+                links.set(row)
+            }
+            response.header('link', links.toString())
+            // eslint-disable-next-line unicorn/new-for-builtins
+            const body = [...Array(x).keys()].map((xValue) => [...Array(y).keys()].map(yValue => ({ x: xValue, y: yValue })))
+            response.json(body)
+        })
+    };
+
+
     @given('an endpoint with the operations')
     public async anEndpointWithTheOperations(dataTable: DataTable) {
         this.currentPath = randomApiPath()
@@ -1189,6 +1219,8 @@ export class OperationSteps {
     public async eachWillHaveAsOperation(eachRelationship: string, haveRelationship: string) {
         expectIsWayChaserResponse(this.response)
         const items = await this.response.invokeAll(eachRelationship)
+        console.log({ response: this.response })
+        console.log({ items })
         expect(items.map(item => 'ops' in item ? item.ops.find(haveRelationship)?.rel : 'request-error')).to.deep.equal(items.map(() => haveRelationship))
     };
 

@@ -77,6 +77,9 @@ export class InvocableOperation extends Operation {
     if (this.uri.startsWith('#/')) {
       const anchor = this.expandUrl(parameters).toString()
       const fragmentContent = this.response.fullContent && pointer.get(this.response.fullContent as object, anchor.slice(1)) as unknown
+      if (fragmentContent === undefined) {
+        return undefined;
+      }
       if (validator) {
         const validationResult = validator(fragmentContent)
         if (isValidationSuccess(validationResult)) {
@@ -111,7 +114,9 @@ export class InvocableOperation extends Operation {
       const result = this.doInvokeAll<Content>(options?.parameters || {})
       return Promise.all(result)
     }
-    return Promise.all([this.invoke<Content>(options)])
+    else {
+      return Promise.all([this.invoke<Content>(options)])
+    }
   }
 
   private doInvokeAll(
@@ -127,12 +132,11 @@ export class InvocableOperation extends Operation {
 
   private doInvokeAll<Content>(parameters: Record<string, unknown>,
     validator?: Validator<Content>): Array<WayChaserResponse<Content> | undefined> {
-    const response = this.response as WayChaserResponse<unknown>
+    const response = this.response
     // expand the URI with whatever parameters have been passed in
     const template = new URI.Template(this.uri)
     const uriParameters = Object.assign(URI.parameters(this.uri), parameters)
     const currentUri = template.expand(uriParameters).replace(/%7B/g, "{").replace(/%7D/g, "}")
-
     // get unfilled parameters
     const currentUriParameters = URI.parameters(currentUri)
     const keys = Object.keys(currentUriParameters)
@@ -161,7 +165,9 @@ export class InvocableOperation extends Operation {
           })
       }
     }
-    return [this.invokeAsFragment(parameters, validator)]
+    else {
+      return [this.invokeAsFragment(parameters, validator)]
+    }
   }
 
 
@@ -177,66 +183,67 @@ export class InvocableOperation extends Operation {
   async invoke<Content>(
     options?: Partial<WayChaserOptions<Content>>
   ) {
-    const fragment = this.invokeAsFragment(options?.parameters)
-    if (fragment) {
-      return fragment
+    if (this.uri.startsWith('#/')) {
+      return this.invokeAsFragment(options?.parameters)
     }
-    const parameterSpecs = this.parameters || {}
-    const parameters = Object.assign({}, this.defaultOptions.parameters, options?.parameters)
-    const invokeUrl = this.url(parameters)
+    else {
+      const parameterSpecs = this.parameters || {}
+      const parameters = Object.assign({}, this.defaultOptions.parameters, options?.parameters)
+      const invokeUrl = this.url(parameters)
 
-    const body = {}
-    /* istanbul ignore if reason: TODO */
-    if (Array.isArray(parameterSpecs)) {
-      for (const key of parameterSpecs) {
-        body[key] = parameters?.[key]
-      }
-    } else {
-      for (const key of Object.keys(parameterSpecs)) {
-        body[key] = parameters?.[key]
-      }
-    }
-    let encodedContent
-    let headers = {}
-    const requestOptions = Object.assign({}, options)
-    requestOptions.method = this.method
-
-    if (Object.keys(this.parameters).length !== 0 && methodCanHaveBody(this.method || 'GET')) {
-      const contentType = preferredContentType(
-        this.accept,
-        [
-          'application/x-www-form-urlencoded',
-          'application/json',
-          'multipart/form-data'
-        ],
-        'application/x-www-form-urlencoded'
-      )
-      switch (contentType) {
-        case 'application/x-www-form-urlencoded':
-          encodedContent = qsStringify(body)
-          break
-        case 'application/json':
-          encodedContent = JSON.stringify(body)
-          break
-        case 'multipart/form-data':
-          encodedContent = new FormData()
-          for (const name in body) {
-            encodedContent.append(name, body[name])
-          }
-          break
-      }
-      if (contentType !== 'multipart/form-data') {
-        headers = {
-          'content-type': contentType
+      const body = {}
+      /* istanbul ignore if reason: TODO */
+      if (Array.isArray(parameterSpecs)) {
+        for (const key of parameterSpecs) {
+          body[key] = parameters?.[key]
+        }
+      } else {
+        for (const key of Object.keys(parameterSpecs)) {
+          body[key] = parameters?.[key]
         }
       }
-      // else fetch adds the right content-type header for us
-      // with the boundaries
+      let encodedContent
+      let headers = {}
+      const requestOptions = Object.assign({}, options)
+      requestOptions.method = this.method
 
-      requestOptions.body = encodedContent
-      requestOptions.headers = Object.assign(headers, options?.headers)
+      if (Object.keys(this.parameters).length !== 0 && methodCanHaveBody(this.method || 'GET')) {
+        const contentType = preferredContentType(
+          this.accept,
+          [
+            'application/x-www-form-urlencoded',
+            'application/json',
+            'multipart/form-data'
+          ],
+          'application/x-www-form-urlencoded'
+        )
+        switch (contentType) {
+          case 'application/x-www-form-urlencoded':
+            encodedContent = qsStringify(body)
+            break
+          case 'application/json':
+            encodedContent = JSON.stringify(body)
+            break
+          case 'multipart/form-data':
+            encodedContent = new FormData()
+            for (const name in body) {
+              encodedContent.append(name, body[name])
+            }
+            break
+        }
+        if (contentType !== 'multipart/form-data') {
+          headers = {
+            'content-type': contentType
+          }
+        }
+        // else fetch adds the right content-type header for us
+        // with the boundaries
+
+        requestOptions.body = encodedContent
+        requestOptions.headers = Object.assign(headers, options?.headers)
+      }
+      return _waychaser(invokeUrl.toString(), this.defaultOptions, requestOptions)
     }
-    return _waychaser(invokeUrl.toString(), this.defaultOptions, requestOptions)
   }
 
   private url(parameters?: Record<string, unknown>) {

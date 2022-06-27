@@ -124,7 +124,8 @@ export class OperationArray extends Array<InvocableOperation> {
       ) => unknown),
     options?: Partial<WayChaserOptions<Content>>
   ) {
-    return Promise.all(this.filter(relationship).map(operation =>
+    const operations = this.filter(relationship)
+    return Promise.all(operations.map(operation =>
       operation.invokeAll(options)
     )).then(arrayOfArrays => {
       const flat = arrayOfArrays.flat()
