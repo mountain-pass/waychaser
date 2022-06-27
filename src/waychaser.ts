@@ -479,7 +479,8 @@ export async function _waychaser<Content>(
       return response
     }
     catch(error){
-      throw error instanceof ProblemDocument ? new WayChaserProblem({
+      // for some reason, error instanceof ProblemDocument was returning false
+      throw error.constructor.name === 'ProblemDocument' ? new WayChaserProblem({
           response: new WayChaserResponse({ handlers: mergedOptions.defaultHandlers, defaultOptions, baseResponse, content: error, parameters: mergedOptions.parameters }),
           problem: error,
         }) : error;
@@ -525,7 +526,6 @@ function tryParseJson(content: string, contentType: string) {
   }
 }
 
-
 const wayChaserDefaults: WayChaserOptions = {
   fetch: typeof window !== 'undefined' ? window.fetch?.bind(window) : getGlobal()?.fetch,
   handlers: [],
@@ -538,12 +538,12 @@ const wayChaserDefaults: WayChaserOptions = {
   preInterceptors: [],
   postInterceptors: [],
   postErrorInterceptors: [],
-  contentParser: async (response: Response): Promise<unknown | ProblemDocument | undefined> => {
+  contentParser: async (response: Response): Promise<unknown | undefined> => {
     if (response.headers.get('content-length') &&
       response.headers.get('content-length') !== '0') {
       const content = await response.text()
-      const contentType = response.headers.get('content-type')
-      if (contentType?.split(';')?.[0].endsWith('json')) {
+      const contentType = response.headers.get('content-type')?.split(';')?.[0]
+      if (contentType?.endsWith('json')) {
         const jsonContent = tryParseJson(content, contentType)
         if( contentType === 'application/problem+json' ) {
           throw Object.assign(new ProblemDocument(jsonContent), jsonContent)
