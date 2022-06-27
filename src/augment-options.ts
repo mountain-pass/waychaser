@@ -12,12 +12,14 @@ export function augmentOptions<BaseContent, AdditionalContent>(
     handlers: baseHandlers,
     defaultHandlers: baseDefaultHandlers,
     headers: baseHeaders,
+    contentParser: baseContentParser,
     ...baseOther
   } = baseOptions
   const {
     handlers: additionalHandlers,
     defaultHandlers: additionalDefaultHandlers,
     headers: additionalHeaders,
+    contentParser: additionalContentParser,
     ...additionalOther
   } = additionalOptions || {}
 
@@ -32,7 +34,9 @@ export function augmentOptions<BaseContent, AdditionalContent>(
     ...(additionalDefaultHandlers || baseDefaultHandlers || [])
   ])
 
-  const finalOptions = {
+  const mergedContentParser = additionalContentParser ? (response: Response) => additionalContentParser(response, baseContentParser) : baseContentParser
+
+  return {
     ...baseOther,
     ...additionalOther,
     defaultHandlers: mergedHandlers,
@@ -40,7 +44,7 @@ export function augmentOptions<BaseContent, AdditionalContent>(
     headers: {
       ...baseHeaders,
       ...additionalHeaders
-    }
+    },
+    contentParser: mergedContentParser
   }
-  return finalOptions
 }

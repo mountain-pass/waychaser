@@ -333,6 +333,8 @@ export type HandlerSpec = {
 
 export type Stopper = () => void
 
+export type ContentParser = (response: Response, contentParser?: ContentParser) => Promise<unknown | ProblemDocument | undefined>
+
 export type WayChaserOptions<ValidatorContent = null> = RequestInit & {
   fetch: typeof fetch
   handlers: Array<HandlerSpec>
@@ -340,7 +342,7 @@ export type WayChaserOptions<ValidatorContent = null> = RequestInit & {
   preInterceptors: Array<(uriOrRequest, updateOptions, stopper) => void>
   postInterceptors: Array<<InterceptorContent>(response: (WayChaserResponse<InterceptorContent>), stop: Stopper) => void>
   postErrorInterceptors: Array<(error: WayChaserProblem | Error, stopper: Stopper) => void>
-  contentParser: (response: Response) => Promise<unknown | ProblemDocument | undefined>
+  contentParser: ContentParser
   parameters?: Record<string, unknown>
   validator?: Validator<ValidatorContent>
 }
@@ -458,27 +460,31 @@ export async function _waychaser<Content>(
     updateOptions
   )
 
-  // TODO allow lazy loading of the content 
-  const content = await mergedOptions.contentParser(baseResponse)
-  // content is
-  // 1. unknown, 
-  // 2. a post response client side Problem Document,
-  // 3. a server side ProblemDocument, or
-  // 4. undefined
-
-
   try {
-    const response = WayChaserResponse.create(baseResponse, content, defaultOptions, mergedOptions)
+    try {
+      // TODO allow lazy loading of the content 
+      const content = await mergedOptions.contentParser(baseResponse)
+      // content is
+      // 1. unknown, 
+      // 4. undefined
+      const response = WayChaserResponse.create(baseResponse, content, defaultOptions, mergedOptions)
 
-    stop = false
-    for (const interceptor of updateOptions.postInterceptors) {
-      interceptor(response, () => (stop = true))
-      if (stop) {
-        break
+      stop = false
+      for (const interceptor of updateOptions.postInterceptors) {
+        interceptor(response, () => (stop = true))
+        if (stop) {
+          break
+        }
       }
+      return response
     }
-    return response
-  } catch (error) {
+    catch(error){
+      throw error instanceof ProblemDocument ? new WayChaserProblem({
+          response: new WayChaserResponse({ handlers: mergedOptions.defaultHandlers, defaultOptions, baseResponse, content: error, parameters: mergedOptions.parameters }),
+          problem: error,
+        }) : error;
+    }
+  } catch(error) {
     stop = false
     for (const interceptor of updateOptions.postErrorInterceptors) {
       interceptor(error, () => (stop = true))
@@ -524,7 +530,7 @@ const wayChaserDefaults: WayChaserOptions = {
           return contentType === 'application/problem+json' ? Object.assign(new ProblemDocument(jsonContent), jsonContent) : jsonContent;
         }
         catch (error) {
-          return new ProblemDocument({
+          throw new ProblemDocument({
             type: "https://waychaser.io/invalid-json",
             title: "JSON response could not be parsed",
             detail: `The response document with content type '${contentType}' could not be parsed as json`,
@@ -532,7 +538,7 @@ const wayChaserDefaults: WayChaserOptions = {
           })
         }
       }
-      return new ProblemDocument({
+      throw new ProblemDocument({
         type: "https://waychaser.io/unsupported-content-type",
         title: "The response has an unsupported content type",
         detail: `The response document has a content type of '${contentType}' which is not supported`,

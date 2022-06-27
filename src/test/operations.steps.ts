@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { DataTable } from '@cucumber/cucumber'
 import logger from './logger'
 import { binding, given, then, when } from 'cucumber-tsflow';
-import { Validator, waychaser, WayChaserProblem, WayChaserResponse } from '../waychaser'
+import { ContentParser, Validator, waychaser, WayChaserProblem, WayChaserResponse } from '../waychaser'
 import {
     uniqueNamesGenerator,
     adjectives,
@@ -908,13 +908,12 @@ export class OperationSteps {
 
     @given('waychaser has a custom parser for 404s')
     public async waychaserHasACustomParserFor404s() {
-        const existingContentParser = this.waychaser.currentDefaults.contentParser;
         this.waychaser = this.waychaser.defaults({
-            contentParser: async (response: Response) => {
+            contentParser: async (response: Response, contentParser: ContentParser) => {
                 return response.status === 404 ? new ProblemDocument({
                     'title': "Not found",
                     'type': 'https://waychaser.io/not-found'
-                }) : existingContentParser(response);
+                }) : contentParser(response);
             }
         })
     };
