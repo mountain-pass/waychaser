@@ -506,6 +506,25 @@ function getGlobal() {
   return;
 }
 
+/**
+ *
+ * @param content
+ * @param contentType
+ */
+function tryParseJson(content: string, contentType: string) {
+  try {
+    return JSON.parse(content)
+  }
+  catch(error) {
+    throw new ProblemDocument({
+      type: "https://waychaser.io/invalid-json",
+      title: "JSON response could not be parsed",
+      detail: `The response document with content type '${contentType}' could not be parsed as json`,
+      content, error
+    })
+  }
+}
+
 
 const wayChaserDefaults: WayChaserOptions = {
   fetch: typeof window !== 'undefined' ? window.fetch?.bind(window) : getGlobal()?.fetch,
@@ -525,25 +544,14 @@ const wayChaserDefaults: WayChaserOptions = {
       const content = await response.text()
       const contentType = response.headers.get('content-type')
       if (contentType?.split(';')?.[0].endsWith('json')) {
-        try {
-          const jsonContent = JSON.parse(content)
-          return contentType === 'application/problem+json' ? Object.assign(new ProblemDocument(jsonContent), jsonContent) : jsonContent;
+        const jsonContent = tryParseJson(content, contentType)
+        if( contentType === 'application/problem+json' ) {
+          throw Object.assign(new ProblemDocument(jsonContent), jsonContent)
         }
-        catch (error) {
-          throw new ProblemDocument({
-            type: "https://waychaser.io/invalid-json",
-            title: "JSON response could not be parsed",
-            detail: `The response document with content type '${contentType}' could not be parsed as json`,
-            content, error
-          })
+        else {
+          return jsonContent;
         }
       }
-      throw new ProblemDocument({
-        type: "https://waychaser.io/unsupported-content-type",
-        title: "The response has an unsupported content type",
-        detail: `The response document has a content type of '${contentType}' which is not supported`,
-        content, ...(contentType && { contentType })
-      });
     }
     // else no content. Returning undefined
   }
