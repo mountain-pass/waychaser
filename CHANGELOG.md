@@ -1,3 +1,9 @@
+## <small>5.0.8 (2022-06-27)</small>
+
+* Merge pull request #485 from mountain-pass/dependabot/npm_and_yarn/nanoid-3.3.4 ([f60c199](https://github.com/mountain-pass/waychaser/commit/f60c199)), closes [#485](https://github.com/mountain-pass/waychaser/issues/485)
+
+
+
 ## <small>5.0.7 (2022-06-27)</small>
 
 * Merge pull request #486 from mountain-pass/dependabot/npm_and_yarn/moment-2.29.3 ([88830fd](https://github.com/mountain-pass/waychaser/commit/88830fd)), closes [#486](https://github.com/mountain-pass/waychaser/issues/486)
