@@ -1,3 +1,9 @@
+## <small>5.0.3 (2022-06-27)</small>
+
+* feat(content-parser): content parsers can now access previous implementations ([27ac9ba](https://github.com/mountain-pass/waychaser/commit/27ac9ba))
+
+
+
 ## <small>5.0.2 (2022-06-26)</small>
 
 * Merge pull request #488 from mountain-pass/dependabot/npm_and_yarn/shell-quote-1.7.3 ([8a5b378](https://github.com/mountain-pass/waychaser/commit/8a5b378)), closes [#488](https://github.com/mountain-pass/waychaser/issues/488)

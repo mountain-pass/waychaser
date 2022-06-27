@@ -71,7 +71,7 @@ try {
 ```html
 <script
   type="text/javascript"
-  src="https://unpkg.com/@mountainpass/waychaser@5.0.2"
+  src="https://unpkg.com/@mountainpass/waychaser@5.0.3"
 ></script>
 
 ...
