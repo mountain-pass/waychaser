@@ -1,3 +1,9 @@
+## <small>5.0.4 (2022-06-27)</small>
+
+* feat(content-parser): content parsers now throw problem documents ([c0e5293](https://github.com/mountain-pass/waychaser/commit/c0e5293))
+
+
+
 ## <small>5.0.3 (2022-06-27)</small>
 
 * feat(content-parser): content parsers can now access previous implementations ([27ac9ba](https://github.com/mountain-pass/waychaser/commit/27ac9ba))
