@@ -1,3 +1,9 @@
+## <small>5.0.7 (2022-06-27)</small>
+
+* Merge pull request #486 from mountain-pass/dependabot/npm_and_yarn/moment-2.29.3 ([88830fd](https://github.com/mountain-pass/waychaser/commit/88830fd)), closes [#486](https://github.com/mountain-pass/waychaser/issues/486)
+
+
+
 ## <small>5.0.6 (2022-06-27)</small>
 
 * fix(content-parser): fixed issues detecting thrown problem-documents ([61d8b98](https://github.com/mountain-pass/waychaser/commit/61d8b98))
