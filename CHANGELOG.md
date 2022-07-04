@@ -1,3 +1,9 @@
+## <small>5.0.11 (2022-07-04)</small>
+
+* Merge pull request #476 from mountain-pass/dependabot/npm_and_yarn/path-parse-1.0.7 ([428aa12](https://github.com/mountain-pass/waychaser/commit/428aa12)), closes [#476](https://github.com/mountain-pass/waychaser/issues/476)
+
+
+
 ## <small>5.0.10 (2022-07-04)</small>
 
 * Merge pull request #477 from mountain-pass/dependabot/npm_and_yarn/shelljs-0.8.5 ([b12baa9](https://github.com/mountain-pass/waychaser/commit/b12baa9)), closes [#477](https://github.com/mountain-pass/waychaser/issues/477)
