@@ -1,3 +1,9 @@
+## <small>5.0.9 (2022-07-04)</small>
+
+* fix(errors): not all errors were being wrapped ([37420cc](https://github.com/mountain-pass/waychaser/commit/37420cc))
+
+
+
 ## <small>5.0.8 (2022-06-27)</small>
 
 * Merge pull request #485 from mountain-pass/dependabot/npm_and_yarn/nanoid-3.3.4 ([f60c199](https://github.com/mountain-pass/waychaser/commit/f60c199)), closes [#485](https://github.com/mountain-pass/waychaser/issues/485)
