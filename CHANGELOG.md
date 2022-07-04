@@ -1,3 +1,9 @@
+## <small>5.0.10 (2022-07-04)</small>
+
+* Merge pull request #477 from mountain-pass/dependabot/npm_and_yarn/shelljs-0.8.5 ([b12baa9](https://github.com/mountain-pass/waychaser/commit/b12baa9)), closes [#477](https://github.com/mountain-pass/waychaser/issues/477)
+
+
+
 ## <small>5.0.9 (2022-07-04)</small>
 
 * fix(errors): not all errors were being wrapped ([37420cc](https://github.com/mountain-pass/waychaser/commit/37420cc))
