@@ -411,8 +411,8 @@ export async function _waychaser<Content>(
  * @param uriOrRequest
  * @param defaultOptions
  * @param options
- * @returns WayChaserResponse<Content>
- * @throws TypeError | AbortError | WayChaserResponseProblem 
+ * @returns {Promise<WayChaserResponse<Content>>}
+ * @throws {TypeError | AbortError | WayChaserProblem}
  */
 export async function _waychaser<Content>(
   uriOrRequest: string | Request,
@@ -461,39 +461,45 @@ export async function _waychaser<Content>(
   )
 
   try {
-    try {
-      // TODO allow lazy loading of the content 
-      const content = await mergedOptions.contentParser(baseResponse)
-      // content is
-      // 1. unknown, 
-      // 4. undefined
-      const response = WayChaserResponse.create(baseResponse, content, defaultOptions, mergedOptions)
+    // TODO allow lazy loading of the content 
+    const content = await mergedOptions.contentParser(baseResponse)
+    // content is
+    // 1. unknown, 
+    // 4. undefined
+    const response = WayChaserResponse.create(baseResponse, content, defaultOptions, mergedOptions)
 
-      stop = false
-      for (const interceptor of updateOptions.postInterceptors) {
-        interceptor(response, () => (stop = true))
-        if (stop) {
-          break
-        }
-      }
-      return response
-    }
-    catch(error){
-      // for some reason, error instanceof ProblemDocument was returning false
-      throw error.constructor.name === 'ProblemDocument' ? new WayChaserProblem({
-          response: new WayChaserResponse({ handlers: mergedOptions.defaultHandlers, defaultOptions, baseResponse, content: error, parameters: mergedOptions.parameters }),
-          problem: error,
-        }) : error;
-    }
-  } catch(error) {
     stop = false
-    for (const interceptor of updateOptions.postErrorInterceptors) {
-      interceptor(error, () => (stop = true))
+    for (const interceptor of updateOptions.postInterceptors) {
+      interceptor(response, () => (stop = true))
       if (stop) {
         break
       }
     }
-    throw error
+    return response
+  }
+  catch(error: unknown){
+    const response = new WayChaserResponse({ handlers: mergedOptions.defaultHandlers, defaultOptions, baseResponse, content: error, parameters: mergedOptions.parameters })
+        
+    const wayChaserProblem = error instanceof ProblemDocument ? new WayChaserProblem({
+        response,
+        problem: error,
+      }) : new WayChaserProblem({
+        response,
+        problem: new ProblemDocument({
+          type: "https://waychaser.io/unexected-error",
+          title: "An unexpected error occurred",
+          error
+        }),
+      });
+      stop = false
+      for (const interceptor of updateOptions.postErrorInterceptors) {
+        interceptor(wayChaserProblem, () => (stop = true))
+        if (stop) {
+          break
+        }
+      }
+  
+    throw wayChaserProblem
   }
 }
 
