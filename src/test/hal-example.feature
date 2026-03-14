@@ -3,7 +3,7 @@
 # if we start to see it become unreliable. Doubt that will happen with AWS.
 # If it does happen, then we'll need other tests to make sure we still have coverage
 # when these tests are skipped
-@not-chrome @not-firefox @not-safari @not-ie @not-edge @not-iphone @not-android @not-headless
+@skippable @not-chrome @not-firefox @not-safari @not-ie @not-edge @not-iphone @not-android @not-headless
 Feature: HAL Example
 
   So that I can better understand how to use waychaser
