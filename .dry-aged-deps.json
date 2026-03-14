@@ -44,6 +44,7 @@
     "nyc": "major version upgrade requires migration",
     "prettier": "major version upgrade requires migration",
     "rollup": "major version upgrade requires migration",
+    "selenium-webdriver": "semver range from beta causes version inconsistencies",
     "start-server-and-test": "major version upgrade requires migration",
     "typescript": "4.9.x introduces stricter AbortSignal types that break build",
     "uri-template-lite": "major version upgrade requires migration",
