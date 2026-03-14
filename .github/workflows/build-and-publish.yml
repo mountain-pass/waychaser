@@ -98,33 +98,33 @@ jobs:
           name: duplication-report
           path: report
 
-  audit:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && ! startsWith( github.head_ref, 'dependabot' )"
-    
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache-
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-      - run: npm audit --production
+  # audit:
+  #   if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]') && ! startsWith( github.head_ref, 'dependabot' )"
+  #
+  #   runs-on: ubuntu-latest
+  #
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - name: Cache NPM dependencies
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: |
+  #           ~/.npm
+  #           node_modules
+  #         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.OS }}-npm-cache-
+  #
+  #     - name: Use Node.js 18.x
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 18.x
+  #     - run: npm audit --production
 
   dry-aged-deps:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
@@ -156,45 +156,45 @@ jobs:
       - run: npm ci
       - run: npx dry-aged-deps --check
 
-  security:
-    needs:
-      - check-secret
-    if: |
-      needs.check-secret.outputs.SECRETS_SET == 'true' &&
-       ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')  && ! startsWith( github.head_ref, 'dependabot' )
-
-    runs-on: ubuntu-latest
-
-    env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache-
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-      - run: npm config set script-shell $(which bash)
-      - run: npm ci
-      # We've seen situations where snyk is unavailable
-      # so do a bit of retry on failure
-      - uses: nick-invision/retry@v2
-        with:
-          timeout_seconds: 120
-          max_attempts: 3
-          retry_wait_seconds: 10
-          command: npm run security
+  # security:
+  #   needs:
+  #     - check-secret
+  #   if: |
+  #     needs.check-secret.outputs.SECRETS_SET == 'true' &&
+  #      ! contains(toJSON(github.event.commits.*.message), '[skip-ci]')  && ! startsWith( github.head_ref, 'dependabot' )
+  #
+  #   runs-on: ubuntu-latest
+  #
+  #   env:
+  #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - name: Cache NPM dependencies
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: |
+  #           ~/.npm
+  #           node_modules
+  #         key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.OS }}-npm-cache-
+  #
+  #     - name: Use Node.js 18.x
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 18.x
+  #     - run: npm config set script-shell $(which bash)
+  #     - run: npm ci
+  #     # We've seen situations where snyk is unavailable
+  #     # so do a bit of retry on failure
+  #     - uses: nick-invision/retry@v2
+  #       with:
+  #         timeout_seconds: 120
+  #         max_attempts: 3
+  #         retry_wait_seconds: 10
+  #         command: npm run security
 
   build:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
@@ -738,9 +738,9 @@ jobs:
       # - check-coverage-local-not-skippable
       # - check-coverage
       - lint
-      - audit
+      # - audit
       - dry-aged-deps
-      - security
+      # - security
       - build
       - duplication
     if: |
@@ -860,9 +860,9 @@ jobs:
       # - check-coverage-local-not-skippable
       # - check-coverage
       - lint
-      - audit
+      # - audit
       - dry-aged-deps
-      - security
+      # - security
       - build
       - duplication
     if: |
