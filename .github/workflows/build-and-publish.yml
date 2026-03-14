@@ -126,6 +126,36 @@ jobs:
           node-version: 12.x
       - run: npm audit --production
 
+  dry-aged-deps:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - run: npm config set script-shell $(which bash)
+      - run: npm ci
+      - run: npx dry-aged-deps --check
+
   security:
     needs:
       - check-secret
@@ -709,6 +739,7 @@ jobs:
       # - check-coverage
       - lint
       - audit
+      - dry-aged-deps
       - security
       - build
       - duplication
@@ -830,6 +861,7 @@ jobs:
       # - check-coverage
       - lint
       - audit
+      - dry-aged-deps
       - security
       - build
       - duplication
