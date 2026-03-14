@@ -144,7 +144,7 @@
     "http-link-header": "^1.0.2",
     "jsonpointer": "^5.0.0",
     "qs-stringify": "^1.2.1",
-    "uri-template-lite": "^23.4.0"
+    "uri-template-lite": "^20.5.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",
