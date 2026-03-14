@@ -1,3 +1,9 @@
+## <small>5.0.12 (2026-03-14)</small>
+
+* Merge pull request #501 from mountain-pass/claude/install-deps-run-tests-AUODi ([b71371b](https://github.com/mountain-pass/waychaser/commit/b71371b)), closes [#501](https://github.com/mountain-pass/waychaser/issues/501)
+
+
+
 ## <small>5.0.11 (2022-07-04)</small>
 
 * Merge pull request #476 from mountain-pass/dependabot/npm_and_yarn/path-parse-1.0.7 ([428aa12](https://github.com/mountain-pass/waychaser/commit/428aa12)), closes [#476](https://github.com/mountain-pass/waychaser/issues/476)
