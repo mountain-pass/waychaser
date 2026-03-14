@@ -42,10 +42,10 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -54,10 +54,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run lint
@@ -74,10 +74,10 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -86,14 +86,14 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 12.x
+          node-version: 18.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run duplication
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: duplication-report
           path: report
@@ -108,10 +108,10 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -120,10 +120,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 12.x
+          node-version: 18.x
       - run: npm audit --production
 
   dry-aged-deps:
@@ -136,10 +136,10 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -148,10 +148,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npx dry-aged-deps --check
@@ -169,10 +169,10 @@ jobs:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -181,10 +181,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 12.x
+          node-version: 18.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       # We've seen situations where snyk is unavailable
@@ -206,10 +206,10 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -218,10 +218,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 12.x
+          node-version: 18.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run build
@@ -234,17 +234,17 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [18.x, 20.x, 22.x]
 
     defaults:
       run:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -254,7 +254,7 @@ jobs:
             ${{ runner.OS }}-npm-cache-
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm config set script-shell $(which bash)
@@ -263,7 +263,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report-node-${{ matrix.node-version }}
           path: coverage/node-api
@@ -283,10 +283,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -296,14 +296,14 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
   #     - run: npm config set script-shell $(which bash)
   #     - run: npm ci
   #     - run: npm run cover:browser-api:chrome:local
-  #     - uses: actions/upload-artifact@v2
+  #     - uses: actions/upload-artifact@v4
   #       with:
   #         name: code-coverage-report-chrome-local
   #         path: coverage/browser-api-chrome-local
@@ -323,10 +323,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -336,7 +336,7 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
@@ -359,10 +359,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -372,14 +372,14 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
   #     - run: npm config set script-shell $(which bash)
   #     - run: npm ci
   #     - run: npm run cover:browser-api:firefox:local
-  #     - uses: actions/upload-artifact@v2
+  #     - uses: actions/upload-artifact@v4
   #       with:
   #         name: code-coverage-report-firefox-local
   #         path: coverage/browser-api-firefox-local
@@ -398,10 +398,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -411,7 +411,7 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
@@ -440,10 +440,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -452,7 +452,7 @@ jobs:
   #         restore-keys: |
   #           ${{ runner.OS }}-npm-cache-
 
-  #     - uses: actions/setup-node@v1
+  #     - uses: actions/setup-node@v4
   #       with:
   #         node-version: 14.x
   #     - run: npm config set script-shell $(which bash)
@@ -461,7 +461,7 @@ jobs:
   #       env:
   #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #     - uses: actions/upload-artifact@v2
+  #     - uses: actions/upload-artifact@v4
   #       with:
   #         name: code-coverage-report-node-not-skippable-14.x
   #         path: coverage/node-api-not--skippable-
@@ -479,10 +479,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -492,14 +492,14 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
   #     - run: npm config set script-shell $(which bash)
   #     - run: npm ci
   #     - run: npm run cover:browser-api:chrome:local:not{@skippable}
-  #     - uses: actions/upload-artifact@v2
+  #     - uses: actions/upload-artifact@v4
   #       with:
   #         name: code-coverage-report-chrome-local-not-skippable
   #         path: coverage/browser-api-chrome-local-not--skippable-
@@ -518,10 +518,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -531,7 +531,7 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
@@ -564,10 +564,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -577,7 +577,7 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
@@ -606,10 +606,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -619,7 +619,7 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
@@ -677,7 +677,7 @@ jobs:
   #     - run: exit 1
   #       if: steps.attempt-1.outputs.result != 'success' && steps.attempt-2.outputs.result != 'success' && steps.attempt-3.outputs.result != 'success'
 
-  #     - uses: actions/upload-artifact@v2
+  #     - uses: actions/upload-artifact@v4
   #       with:
   #         name: code-coverage-report-${{ matrix.browser }}
   #         path: coverage/browser-api-${{ matrix.browser }}-remote
@@ -697,10 +697,10 @@ jobs:
   #       shell: bash
 
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v4
 
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v1
+  #       uses: actions/cache@v4
   #       with:
   #         path: |
   #           ~/.npm
@@ -710,7 +710,7 @@ jobs:
   #           ${{ runner.OS }}-npm-cache-
 
   #     - name: Use Node.js 12.x
-  #       uses: actions/setup-node@v1
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 12.x
 
@@ -756,10 +756,10 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -768,9 +768,9 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
         with:
-          node-version: 12.x
+          node-version: 18.x
           registry-url: https://registry.npmjs.org/
       - name: Publish and Tag
         run: |
