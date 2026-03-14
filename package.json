@@ -176,7 +176,7 @@
     "depcheck": "^1.2.0",
     "dirty-chai": "^2.0.1",
     "dry-aged-deps": "^2.6.0",
-    "eslint": "^8",
+    "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-import-resolver-typescript": "^2.7.1",
