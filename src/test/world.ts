@@ -14,7 +14,7 @@ import { startServer, app, stopServer, getNewRouter } from './fakes/server'
 import { API_PORT, API_HOST } from './config'
 
 chai.use(chaiAsPromised)
-//chai.use(dirtyChai)
+
 
 global.expect = chai.expect
 
