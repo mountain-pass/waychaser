@@ -233,7 +233,7 @@
     "zod": "^3.15.1"
   },
   "lint-staged": {
-    "*.{js,md}": [
+    "*.js": [
       "eslint --fix"
     ],
     "*.{sh}": [
