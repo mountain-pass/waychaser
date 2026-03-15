@@ -5,8 +5,6 @@
     "chai": "major version upgrade requires migration",
     "chai-as-promised": "major version upgrade requires migration",
     "eslint": "8.57.x breaks eslint-plugin-unicorn@42 getAllComments API",
-    "eslint-import-resolver-typescript": "major version upgrade requires migration",
-    "eslint-plugin-jsdoc": "major version upgrade requires migration",
     "eslint-plugin-jsonc": "major version upgrade requires migration",
     "eslint-plugin-unicorn": "major version upgrade requires migration",
     "flat": "major version upgrade requires migration",
