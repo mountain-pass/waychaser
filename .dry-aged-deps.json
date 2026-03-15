@@ -13,12 +13,10 @@
     "eslint-plugin-unicorn": "major version upgrade requires migration",
     "express": "major version upgrade requires migration",
     "flat": "major version upgrade requires migration",
-    "geckodriver": "major version upgrade requires migration",
-    "nyc": "major version upgrade requires migration",
     "prettier": "major version upgrade requires migration",
     "selenium-webdriver": "semver range from beta causes version inconsistencies",
     "typescript": "4.9.x introduces stricter AbortSignal types that break build",
     "uri-template-lite": "v23 removes URI export, requires wrapper rewrite in src/util/uri-template-lite.js",
-    "zod": "major version upgrade requires migration"
+    "zod": "v4 type definitions require TypeScript >= 5.x, blocked by typescript exclusion"
   }
 }
