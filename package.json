@@ -40,6 +40,9 @@
   "engines": {
     "node": ">=14.17.0"
   },
+  "overrides": {
+    "serialize-javascript": "^6.0.2"
+  },
   "config": {
     "TEST_API_PORT": 6060
   },

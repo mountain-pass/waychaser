@@ -1,32 +1,32 @@
-import nodeResolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
-import terser from '@rollup/plugin-terser'
-import json from '@rollup/plugin-json'
-import typescript from '@rollup/plugin-typescript'
+import nodeResolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import terser from "@rollup/plugin-terser";
+import json from "@rollup/plugin-json";
+import typescript from "@rollup/plugin-typescript";
 
 export default {
-  input: ['src/waychaser.js'],
+  input: ["src/waychaser.js"],
   output: [
     {
-      file: 'dist/waychaser.mjs',
-      format: 'es',
+      file: "dist/waychaser.mjs",
+      format: "es",
       plugins: [terser()],
-      sourcemap: true
+      sourcemap: true,
     },
     {
-      file: 'dist/waychaser.cjs',
-      format: 'cjs',
+      file: "dist/waychaser.cjs",
+      format: "cjs",
       plugins: [terser()],
-      sourcemap: true
-    }
+      sourcemap: true,
+    },
   ],
-  context: 'global',
+  context: "global",
   plugins: [
     json(),
     nodeResolve({
-      browser: false
+      browser: false,
     }),
     typescript(),
-    commonjs()
-  ]
-}
+    commonjs(),
+  ],
+};
