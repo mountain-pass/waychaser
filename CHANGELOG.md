@@ -1,3 +1,6 @@
+## <small>5.0.25 (2026-03-15)</small>
+
+* Merge pull request #515 from mountain-pass/claude/install-deps-run-tests-AUODi ([69e475d](https://github.com/mountain-pass/waychaser/commit/69e475d)), closes [#515](https://github.com/mountain-pass/waychaser/issues/515)
 ## <small>5.0.24 (2026-03-15)</small>
 
 * Merge pull request #514 from mountain-pass/claude/install-deps-run-tests-AUODi ([8c79563](https://github.com/mountain-pass/waychaser/commit/8c79563)), closes [#514](https://github.com/mountain-pass/waychaser/issues/514)
