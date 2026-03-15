@@ -50,6 +50,7 @@ export async function startServer() {
   httpTerminator = createHttpTerminator({
     server
   })
+  server.keepAliveTimeout = 1000
   return new Promise(resolve => {
     server.listen(API_PORT, function () {
       logger.info(
