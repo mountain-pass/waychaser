@@ -71,7 +71,7 @@ function generateConfig() {
   const FORMAT_OPTIONS = {
     snippetInterface: 'async-await',
     snippetSyntax:
-      './src/test/custom-snippet-syntax.ts'
+      './src/test/custom-snippet-syntax.js'
   }
   const MODULES =
     '--require-module ts-node/register'
