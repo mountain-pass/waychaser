@@ -1124,18 +1124,6 @@ export class OperationSteps {
         })
     };
 
-    @given('Assuming a Siren API is available at {string}')
-    public async assumingASirenAPIIsAvailableAts(url: string) {
-        const response = await nodeFetch(url, {
-            headers: {
-                accept: 'application/vnd.siren+json'
-            }
-        })
-        if (!response.ok) {
-            return 'skipped'
-        }
-    };
-
     @when('waychaser loads that endpoint')
     async loadResource() {
         console.log('loading', this.currentPath)
@@ -1502,21 +1490,6 @@ export class OperationSteps {
         expect('id' in content).to.be.true
         expect(content.id).to.equal(index)
 
-    };
-
-    @then('the adventure will have started')
-    public async theAdventureWillHaveStarted() {
-        expectIsWayChaserResponse(this.response)
-        expect(this.response?.ops.find('move')
-        ).to.not.be.undefined
-    };
-
-    @then('we will have completed the adventure')
-    public async weWillHaveCompletedTheAdventure() {
-        expectIsWayChaserResponse(this.response)
-        const returnOperation = this.response?.ops.find('return')
-        expect(returnOperation).to.not.be.undefined
-        expect(returnOperation?.title).to.equal('Return to the void.')
     };
 
     @then('the items will contain {string}')

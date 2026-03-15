@@ -14,7 +14,7 @@
   ],
   "extends": [
     "plugin:@typescript-eslint/recommended",
-    "plugin:security/recommended",
+    "plugin:security/recommended-legacy",
     "plugin:unicorn/recommended",
     "plugin:jsdoc/recommended",
     "plugin:json/recommended",
@@ -60,7 +60,7 @@
       "extends": [
         "plugin:@typescript-eslint/recommended",
         "plugin:chai-friendly/recommended",
-        "plugin:security/recommended",
+        "plugin:security/recommended-legacy",
         "plugin:unicorn/recommended",
         "plugin:jsdoc/recommended",
         "plugin:json/recommended",
