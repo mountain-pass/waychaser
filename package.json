@@ -49,6 +49,7 @@
     "TEST_API_PORT": 6060
   },
   "scripts": {
+    "prepare": "husky",
     "dry-aged-deps": "dry-aged-deps --check",
     "env": "env",
     "build:browser": "rollup --config rollup.config.${npm_lifecycle_event#build:}.mjs",
@@ -203,12 +204,12 @@
     "geckodriver": "^1.20.0",
     "http-terminator": "^3.0.0",
     "humanize-duration": "^3.24.0",
-    "husky": "^6.0.0",
+    "husky": "^9.1.7",
     "imagemin-lint-staged": "^0.5.1",
     "istanbul": "^0.4.5",
     "jscpd": "^3.3.25",
     "jsdoc": "^3.6.7",
-    "lint-staged": "^11.0.0",
+    "lint-staged": "^15.5.2",
     "localtunnel": "^2.0.1",
     "markdownlint": "^0.23.0",
     "moment-timezone": "^0.6.0",
@@ -233,27 +234,16 @@
   },
   "lint-staged": {
     "*.{js,md}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "*.{sh}": [
-      "shellcheck",
-      "git add"
+      "shellcheck"
     ],
     "*.{json,css,md,yaml,yml,html,less,scss}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.{png,jpeg,jpg,gif,svg}": [
-      "imagemin-lint-staged",
-      "git add"
+      "imagemin-lint-staged"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run pre-push",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   }
 }
