@@ -11,7 +11,6 @@
     "eslint": "v9+ requires flat config migration, blocked by eslint 8.x ecosystem",
     "eslint-plugin-jsonc": "v3 requires eslint >= 9.38, blocked by eslint 8.x",
     "eslint-plugin-unicorn": "v57+ requires eslint >= 9.20, blocked by eslint 8.x",
-    "flat": "major version upgrade requires migration",
     "typescript": "4.9.x introduces stricter AbortSignal types that break build",
     "uri-template-lite": "v23 removes URI export, requires wrapper rewrite in src/util/uri-template-lite.js",
     "zod": "v4 type definitions require TypeScript >= 5.x, blocked by typescript exclusion"

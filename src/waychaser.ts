@@ -3,7 +3,7 @@ import { InvocableOperation, Operation } from './operation'
 import { OperationArray } from './operation-array'
 import { parseOperations } from './util/parse-operations'
 import { URI } from './util/uri-template-lite'
-import flatten from 'flat'
+import { flatten } from 'flat'
 
 import { halHandler } from './handlers/hal/hal-handler'
 import { linkHeaderHandler } from './handlers/link-header/link-header-handler'
