@@ -8,8 +8,8 @@ import { Operation } from '../../operation'
  */
 export function linkHeaderHandler(
   response: Response,
-  content?: unknown,
-  stopper?: () => void
+  _content?: unknown,
+  _stopper?: () => void
 ): Array<Operation> {
   return [
     ...parseHeader(response.headers.get('link')),
