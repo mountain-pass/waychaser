@@ -1,6 +1,5 @@
 {
   "exclude": {
-    "chromedriver": "version tracks Chrome browser releases, upgrade when CI Chrome version changes",
-    "eslint": "v10 removed context.getSourceCode() API, blocked by eslint-plugin-istanbul 0.1.2"
+    "chromedriver": "version tracks Chrome browser releases, upgrade when CI Chrome version changes"
   }
 }

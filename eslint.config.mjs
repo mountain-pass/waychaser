@@ -2,9 +2,44 @@ import tseslint from "typescript-eslint";
 import eslintPluginSecurity from "eslint-plugin-security";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import eslintPluginPromise from "eslint-plugin-promise";
-import eslintPluginIstanbul from "eslint-plugin-istanbul";
+// Inline istanbul rules (replaces unmaintained eslint-plugin-istanbul 0.1.2
+// which used the removed context.getSourceCode() API)
+const ignoreFileRE = /^\s*istanbul\s+ignore\s+file(?=\W|$)/u;
+const hasIgnore = (v) =>
+  /^\s*istanbul\s+ignore\s+(if|else|next|file)(?=\W|$)/u.test(v);
+const hasReason = (v) =>
+  /^\s*istanbul\s+ignore\s+(if|else|next|file)\W+\w/u.test(v);
+const commentRule = (messageId, predicate) => ({
+  meta: {
+    messages: { [messageId]: messageId },
+    schema: [],
+    type: "suggestion",
+  },
+  create(context) {
+    return {
+      Program() {
+        for (const comment of context.sourceCode.getAllComments()) {
+          if (predicate(comment.value)) {
+            context.report({ messageId, node: comment });
+          }
+        }
+      },
+    };
+  },
+});
+const istanbulPlugin = {
+  rules: {
+    "no-ignore-file": commentRule("Prefer config for ignoring files", (v) =>
+      ignoreFileRE.test(v),
+    ),
+    "prefer-ignore-reason": commentRule(
+      "Add a reason why code coverage should be ignored",
+      (v) => hasIgnore(v.trim()) && !hasReason(v.trim()),
+    ),
+  },
+};
 import eslintPluginJsdoc from "eslint-plugin-jsdoc";
-import eslintPluginJson from "eslint-plugin-json";
+import eslintPluginJsonc from "eslint-plugin-jsonc";
 import eslintPluginChaiFriendly from "eslint-plugin-chai-friendly";
 import eslintConfigPrettier from "eslint-config-prettier";
 
@@ -26,11 +61,8 @@ export default tseslint.config(
     ],
   },
 
-  // JSON files - use JSON plugin only (no TypeScript parsing)
-  {
-    files: ["**/*.json"],
-    ...eslintPluginJson.configs.recommended,
-  },
+  // JSON files - use JSONC plugin (no TypeScript parsing)
+  ...eslintPluginJsonc.configs["flat/recommended-with-json"],
 
   // Base TypeScript config (TS/JS files only)
   {
@@ -52,7 +84,7 @@ export default tseslint.config(
       },
     },
     plugins: {
-      istanbul: eslintPluginIstanbul,
+      istanbul: istanbulPlugin,
     },
   },
 
