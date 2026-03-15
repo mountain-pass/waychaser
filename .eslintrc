@@ -86,7 +86,7 @@
         "allowImportExportEverywhere": true
       },
       "rules": {
-        // "node/shebang": "off"
+        "unicorn/prefer-top-level-await": "off"
       }
     }
   ]

@@ -198,7 +198,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-security": "^4.0.0",
-    "eslint-plugin-unicorn": "^42.0.0",
+    "eslint-plugin-unicorn": "^56.0.0",
     "express": "^5.0.0",
     "fs-extra": "^11.3.4",
     "geckodriver": "^6.1.0",

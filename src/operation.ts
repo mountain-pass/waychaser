@@ -115,7 +115,7 @@ export class InvocableOperation extends Operation {
       return Promise.all(result)
     }
     else {
-      return Promise.all([this.invoke<Content>(options)])
+      return this.invoke<Content>(options).then(result => [result])
     }
   }
 
@@ -136,11 +136,14 @@ export class InvocableOperation extends Operation {
     // expand the URI with whatever parameters have been passed in
     const template = new URI.Template(this.uri)
     const uriParameters = Object.assign(URI.parameters(this.uri), parameters)
-    const currentUri = template.expand(uriParameters).replace(/%7B/g, "{").replace(/%7D/g, "}")
+    const currentUri = template.expand(uriParameters).replaceAll('%7B', "{").replaceAll('%7D', "}")
     // get unfilled parameters
     const currentUriParameters = URI.parameters(currentUri)
     const keys = Object.keys(currentUriParameters)
-    if (keys.length !== 0) {
+    if (keys.length === 0) {
+      return [this.invokeAsFragment(parameters, validator)]
+    }
+    else {
       const field = currentUriParameters[keys[0]]
       const parentUri = currentUri.slice(1, currentUri.indexOf(field) - 1);
       const parent = parentUri === '' ? response.content : pointer.get(response.content as object, parentUri)
@@ -164,9 +167,6 @@ export class InvocableOperation extends Operation {
             }),
           })
       }
-    }
-    else {
-      return [this.invokeAsFragment(parameters, validator)]
     }
   }
 
@@ -218,18 +218,21 @@ export class InvocableOperation extends Operation {
           'application/x-www-form-urlencoded'
         )
         switch (contentType) {
-          case 'application/x-www-form-urlencoded':
+          case 'application/x-www-form-urlencoded': {
             encodedContent = qsStringify(body)
             break
-          case 'application/json':
+          }
+          case 'application/json': {
             encodedContent = JSON.stringify(body)
             break
-          case 'multipart/form-data':
+          }
+          case 'multipart/form-data': {
             encodedContent = new FormData()
             for (const name in body) {
               encodedContent.append(name, body[name])
             }
             break
+          }
         }
         if (contentType !== 'multipart/form-data') {
           headers = {

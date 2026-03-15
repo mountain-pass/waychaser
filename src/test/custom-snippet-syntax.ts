@@ -5,11 +5,11 @@ const CALLBACK_NAME = 'callback'
 
 const toCamelCase = function (string_) {
     return string_
-        .replace(/\s(.)/g, function ($1) {
+        .replaceAll(/\s(.)/g, function ($1) {
             return $1.toUpperCase();
         })
-        .replace(/\s/g, '')
-        .replace(/\W/g, '')
+        .replaceAll(/\s/g, '')
+        .replaceAll(/\W/g, '')
         .replace(/^(.)/, function ($1) {
             return $1.toLowerCase();
         });

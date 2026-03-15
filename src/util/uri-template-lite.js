@@ -7,11 +7,11 @@ import { URI as origURI } from 'uri-template-lite'
  */
 function getUri() {
   /* istanbul ignore next: it's complicated */
-  if (typeof window === 'undefined') {
+  if (typeof globalThis === 'undefined') {
     // eslint-disable-next-line unicorn/prefer-module
-    return origURI || global.URI
+    return origURI || globalThis.URI
   } else {
-    return window.URI || origURI
+    return globalThis.URI || origURI
   }
 }
 

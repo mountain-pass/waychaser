@@ -507,9 +507,9 @@ export async function _waychaser<Content>(
  *
  */
 function getGlobal() {
-  if (typeof self !== 'undefined') { return self; }
-  if (typeof window !== 'undefined') { return window; }
-  if (typeof global !== 'undefined') { return global; }
+  if (typeof globalThis !== 'undefined') { return globalThis; }
+  if (typeof globalThis !== 'undefined') { return globalThis; }
+  if (typeof globalThis !== 'undefined') { return globalThis; }
   return;
 }
 
@@ -533,7 +533,7 @@ function tryParseJson(content: string, contentType: string) {
 }
 
 const wayChaserDefaults: WayChaserOptions = {
-  fetch: typeof window !== 'undefined' ? window.fetch?.bind(window) : getGlobal()?.fetch,
+  fetch: typeof globalThis === 'undefined' ? getGlobal()?.fetch : globalThis.fetch?.bind(globalThis),
   handlers: [],
   defaultHandlers: sortHandlers([
     { handler: locationHeaderHandler, mediaRanges: ['*/*'], q: 0.4 },
@@ -587,7 +587,6 @@ function _defaults(
 
 /**
  * calls fetch on the passed in uriOrRequest and parses the response
- * 
  * @param uriOrRequest see RequestInit
  * @param options see WayChaserOptions
  * @returns WayChaserResponse<Content>

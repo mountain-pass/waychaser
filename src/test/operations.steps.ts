@@ -1212,14 +1212,14 @@ export class OperationSteps {
         expect(items.map(item => 'ops' in item ? item.ops.find(haveRelationship)?.rel : 'request-error')).to.deep.equal(items.map(() => haveRelationship))
     };
 
-    @then('it/the\\ response will have a {string} operation')
+    @then(String.raw`it/the\ response will have a {string} operation`)
     public theResponseWillHaveAOperation(relationship) {
         expectIsWayChaserResponse(this.response)
         expect(this.response?.ops.find(relationship)).to.not.be.undefined
         this.expectedOperations = [relationship]
     };
 
-    @then('it/the\\ response won\'t have any other operations')
+    @then(String.raw`it/the\ response won't have any other operations`)
     public theResponseWontHaveAnyOtherOperations() {
         expectIsWayChaserResponse(this.response)
         expect(this.response?.ops.filter(operation => this.expectedOperations.includes[operation.rel]).length).to.equal(0)
