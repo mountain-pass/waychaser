@@ -24,14 +24,13 @@
     "flat": "major version upgrade requires migration",
     "geckodriver": "major version upgrade requires migration",
     "jsdoc": "major version upgrade to v4 requires migration",
-    "jscpd": "major version upgrade requires migration",
     "markdownlint": "major version upgrade requires migration",
     "nyc": "major version upgrade requires migration",
     "prettier": "major version upgrade requires migration",
     "selenium-webdriver": "semver range from beta causes version inconsistencies",
+    "shellcheck": "v4 requires Node >= 20, project supports Node 18",
     "typescript": "4.9.x introduces stricter AbortSignal types that break build",
     "uri-template-lite": "v23 removes URI export, requires wrapper rewrite in src/util/uri-template-lite.js",
-    "utf-8-validate": "major version upgrade requires migration",
     "zod": "major version upgrade requires migration"
   }
 }
