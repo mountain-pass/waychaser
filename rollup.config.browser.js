@@ -1,8 +1,10 @@
+import { createRequire } from 'module'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
-import tsconfig from "./tsconfig.production.json";
+const require = createRequire(import.meta.url)
+const tsconfig = require("./tsconfig.production.json");
 const production = !process.env.ROLLUP_WATCH
 
 //globalThis.regeneratorRuntime = undefined
