@@ -99,23 +99,26 @@ export type AttachFn = AttachBuffer &
 
 export interface CucumberWorldConstructorParameters {
   attach: AttachFn
+  log: (...messages: any[]) => void | Promise<void>
   parameters: { [key: string]: string }
 }
 export class CustomWorld {
   attach: AttachFn
+  log: (...messages: any[]) => void | Promise<void>
   app: any
   router: any
   baseUrl: string
   // waychaserProxy: any
 
-  constructor({ attach }: CucumberWorldConstructorParameters) {
-    this.world({ attach })
+  constructor({ attach, log }: CucumberWorldConstructorParameters) {
+    this.world({ attach, log })
   }
 
-  private world({ attach }) {
+  private world({ attach, log }) {
     logger.info('BEGIN world')
 
     this.attach = attach
+    this.log = log
     this.app = app
 
     // reset the fake API server, so we can set new routes
