@@ -46,7 +46,7 @@
   "scripts": {
     "dry-aged-deps": "dry-aged-deps --check",
     "env": "env",
-    "build:browser": "rollup --config rollup.config.${npm_lifecycle_event#build:}.js",
+    "build:browser": "rollup --config rollup.config.${npm_lifecycle_event#build:}.mjs",
     "build:node": "tsc --project tsconfig.production.json",
     "build": "npm-run-all --sequential build:*",
     "serve": "npm run build && API_PORT=${npm_package_config_TEST_API_PORT} ts-node scripts/development-server.js",
