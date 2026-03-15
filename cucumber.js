@@ -6,7 +6,7 @@ const fs = require('fs')
 const FAIL_FAST = process.env.CI ? '' : '--fail-fast'
 const NO_STRICT = process.env.NO_STRICT || ''
 
-const PUBLISH = '--publish-quiet'
+const PUBLISH = ''
 
 /* istanbul ignore next: branch only taken when remote */
 const RETRY =
@@ -71,7 +71,7 @@ function generateConfig() {
   const FORMAT_OPTIONS = {
     snippetInterface: 'async-await',
     snippetSyntax:
-      './src/test/custom-snippet-syntax.ts'
+      './src/test/custom-snippet-syntax.js'
   }
   const MODULES =
     '--require-module ts-node/register'

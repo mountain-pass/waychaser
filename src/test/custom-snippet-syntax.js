@@ -1,5 +1,3 @@
-import { ISnippetSnytax } from "@cucumber/cucumber/lib/formatter/step_definition_snippet_builder/snippet_syntax";
-
 const CALLBACK_NAME = 'callback'
 
 
@@ -15,8 +13,7 @@ const toCamelCase = function (string_) {
         });
 };
 
-class CustomSnippetSyntax implements ISnippetSnytax {
-    snippetInterface: any;
+class CustomSnippetSyntax {
     constructor(snippetInterface) {
         this.snippetInterface = snippetInterface
     }
@@ -47,11 +44,7 @@ class CustomSnippetSyntax implements ISnippetSnytax {
                 `${prefix}@${functionName.toLowerCase()}('${template}')
 ${prefix}public async ${methodName}(${parameters.join(', ')}) {`
             return snippet;
-
-
-            //return `${prefix} @${functionName.toLowerCase()} ${generatedExpression.expressionTemplate.replace(/[^\da-z]+/gi, "_")}('${generatedExpression.source.replace(/'/g, "\\'")}', (${allParameterNames.join(', ')}) {\n`
         })
-        //        return snippet;
         return `${definitionChoices.join('\n')}
     // ${comment}
     ${implementation}
@@ -61,7 +54,7 @@ ${prefix}public async ${methodName}(${parameters.join(', ')}) {`
 
 module.exports = CustomSnippetSyntax
 
-function typeNameOf(name: string) {
+function typeNameOf(name) {
     const typeMappings = {
         int: 'number',
         float: 'number',
