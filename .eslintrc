@@ -17,7 +17,7 @@
     "plugin:security/recommended-legacy",
     "plugin:unicorn/recommended",
     "plugin:jsdoc/recommended",
-    "plugin:json/recommended",
+    "plugin:json/recommended-legacy",
     "prettier"
   ],
   "env": {
@@ -63,7 +63,7 @@
         "plugin:security/recommended-legacy",
         "plugin:unicorn/recommended",
         "plugin:jsdoc/recommended",
-        "plugin:json/recommended",
+        "plugin:json/recommended-legacy",
         "prettier"
       ],
       "globals": {
