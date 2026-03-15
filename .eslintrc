@@ -39,7 +39,11 @@
         "non-zero": "not-equal"
       }
     ],
-    "unicorn/prefer-node-protocol": "off"
+    "unicorn/prefer-node-protocol": "off",
+    "@typescript-eslint/no-unused-vars": ["error", {
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_"
+    }]
   },
   "overrides": [
     {
@@ -71,6 +75,8 @@
         "PendingError": true
       },
       "rules": {
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
         "security/detect-non-literal-fs-filename": "off",
         "jsdoc/require-jsdoc": "off",
         "security/detect-object-injection": "off",

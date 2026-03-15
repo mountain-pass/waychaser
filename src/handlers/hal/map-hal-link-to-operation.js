@@ -9,6 +9,6 @@ import { deCurie } from './de-curie'
 export function mapHalLinkToOperation(relationship, link, curies) {
   // we don't need to copy `templated` across, because when we invoke an operation, we always
   // assume it's a template and expand it with the passed parameters
-  const { href, templated, ...otherProperties } = link
+  const { href, templated: _templated, ...otherProperties } = link
   return new Operation({ rel: deCurie(relationship, curies), uri: href, ...otherProperties })
 }

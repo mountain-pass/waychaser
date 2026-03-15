@@ -36,7 +36,7 @@ export function parseOperations({ handlers, baseResponse, content }: {
     const expanded = expandOperation(operation)
     for (const operation of expanded) {
       const anchor = operation.anchor || ''
-      expandedOperations[anchor] || (expandedOperations[anchor] = [])
+      if (!expandedOperations[anchor]) { expandedOperations[anchor] = [] }
       expandedOperations[anchor].push(operation)
     }
   }
