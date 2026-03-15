@@ -54,10 +54,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run lint
@@ -86,10 +86,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run duplication
@@ -148,10 +148,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npx dry-aged-deps --check
@@ -218,10 +218,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache-
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - run: npm config set script-shell $(which bash)
       - run: npm ci
       - run: npm run build
@@ -234,7 +234,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [20.x, 22.x]
 
     defaults:
       run:
@@ -770,7 +770,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org/
       - name: Publish and Tag
         run: |
