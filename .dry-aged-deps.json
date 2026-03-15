@@ -1,8 +1,5 @@
 {
   "exclude": {
-    "@types/chai": "major version upgrade requires migration",
-    "chai": "major version upgrade requires migration",
-    "chai-as-promised": "major version upgrade requires migration",
     "chromedriver": "version tracks Chrome browser releases, upgrade when CI Chrome version changes",
     "eslint": "v9+ requires flat config migration, blocked by eslint 8.x ecosystem",
     "eslint-plugin-jsonc": "v3 requires eslint >= 9.38, blocked by eslint 8.x",
