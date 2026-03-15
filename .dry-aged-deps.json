@@ -1,6 +1,5 @@
 {
   "exclude": {
-    "@cucumber/cucumber": "major version upgrade requires migration",
     "@types/chai": "major version upgrade requires migration",
     "@types/node": "pinned to 20.10.0, v22+ requires TypeScript >= 5.x, blocked by typescript exclusion",
     "@typescript-eslint/eslint-plugin": "v6+ requires TypeScript >= 4.7.4, blocked by typescript 4.5.4",

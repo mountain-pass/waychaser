@@ -1,4 +1,11 @@
-import { ISnippetSnytax } from "@cucumber/cucumber/lib/formatter/step_definition_snippet_builder/snippet_syntax";
+interface ISnippetSnytax {
+    build: (options: {
+        comment: string;
+        functionName: string;
+        generatedExpressions: ReadonlyArray<{ expressionTemplate: string; parameterTypes: ReadonlyArray<{ name: string }>; parameterNames: string[]; source: string }>;
+        stepParameterNames: string[];
+    }) => string;
+}
 
 const CALLBACK_NAME = 'callback'
 
