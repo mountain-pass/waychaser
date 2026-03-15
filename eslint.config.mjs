@@ -10,7 +10,11 @@ const hasIgnore = (v) =>
 const hasReason = (v) =>
   /^\s*istanbul\s+ignore\s+(if|else|next|file)\W+\w/u.test(v);
 const commentRule = (messageId, predicate) => ({
-  meta: { messages: { [messageId]: messageId }, schema: [], type: "suggestion" },
+  meta: {
+    messages: { [messageId]: messageId },
+    schema: [],
+    type: "suggestion",
+  },
   create(context) {
     return {
       Program() {
@@ -25,9 +29,8 @@ const commentRule = (messageId, predicate) => ({
 });
 const istanbulPlugin = {
   rules: {
-    "no-ignore-file": commentRule(
-      "Prefer config for ignoring files",
-      (v) => ignoreFileRE.test(v),
+    "no-ignore-file": commentRule("Prefer config for ignoring files", (v) =>
+      ignoreFileRE.test(v),
     ),
     "prefer-ignore-reason": commentRule(
       "Add a reason why code coverage should be ignored",
