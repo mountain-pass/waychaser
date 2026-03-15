@@ -17,7 +17,7 @@ import aws4 from 'aws4'
 import MediaTypes from '../util/media-types';
 import { Operation } from '../operation';
 import { ProblemDocument } from '@mountainpass/problem-document';
-import { SafeParseReturnType, SafeParseSuccess, z } from "zod";
+import { z } from "zod";
 let pathCount = 0
 
 const CUSTOM_HEADER_MEDIA_TYPE = 'application/custom+json'
@@ -1504,10 +1504,6 @@ export class OperationSteps {
     };
 }
 
-function isSuccess<Input, Output>(result: SafeParseReturnType<Input, Output>): result is SafeParseSuccess<Output> {
-    return result.success
-}
-
 function buildValidator<Content>(dataTable: DataTable): Validator<Content> {
     const schemaConfig = {};
     for (const [key, value] of Object.entries(dataTable.rowsHash())) {
@@ -1523,7 +1519,7 @@ function buildValidator<Content>(dataTable: DataTable): Validator<Content> {
         problem: ProblemDocument;
     } => {
         const result = schema.safeParse(content);
-        if (isSuccess(result)) {
+        if (result.success) {
             console.log('success')
             return { success: true, content: result.data as Content };
         }

@@ -6,7 +6,6 @@
     "chromedriver": "version tracks Chrome browser releases, upgrade when CI Chrome version changes",
     "eslint": "v9+ requires flat config migration, blocked by eslint 8.x ecosystem",
     "eslint-plugin-jsonc": "v3 requires eslint >= 9.38, blocked by eslint 8.x",
-    "eslint-plugin-unicorn": "v57+ requires eslint >= 9.20, blocked by eslint 8.x",
-    "zod": "v4 major version upgrade requires migration"
+    "eslint-plugin-unicorn": "v57+ requires eslint >= 9.20, blocked by eslint 8.x"
   }
 }
