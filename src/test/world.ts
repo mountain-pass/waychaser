@@ -16,11 +16,11 @@ import { API_PORT, API_HOST } from './config'
 chai.use(chaiAsPromised)
 
 
-global.expect = chai.expect
+globalThis.expect = chai.expect
 
 const profile = process.env.npm_lifecycle_event
   ?.replace('test:', '')
-  .replace(/:/g, '-')
+  .replaceAll(':', '-')
 
 const DEFAULT_STEP_TIMEOUT = 90_000
 
