@@ -1,10 +1,6 @@
 {
   "exclude": {
     "@cucumber/cucumber": "major version upgrade requires migration",
-    "@rollup/plugin-commonjs": "major version upgrade requires migration",
-    "@rollup/plugin-json": "major version upgrade requires migration",
-    "@rollup/plugin-node-resolve": "major version upgrade requires migration",
-    "@rollup/plugin-typescript": "major version upgrade requires migration",
     "@types/chai": "major version upgrade requires migration",
     "chai": "major version upgrade requires migration",
     "chai-as-promised": "major version upgrade requires migration",
@@ -34,7 +30,6 @@
     "markdownlint": "major version upgrade requires migration",
     "nyc": "major version upgrade requires migration",
     "prettier": "major version upgrade requires migration",
-    "rollup": "major version upgrade requires migration",
     "selenium-webdriver": "semver range from beta causes version inconsistencies",
     "typescript": "4.9.x introduces stricter AbortSignal types that break build",
     "uri-template-lite": "v23 removes URI export, requires wrapper rewrite in src/util/uri-template-lite.js",
