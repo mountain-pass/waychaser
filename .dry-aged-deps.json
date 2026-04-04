@@ -1,7 +1,6 @@
 {
   "exclude": {
     "chromedriver": "version tracks Chrome browser releases, upgrade when CI Chrome version changes",
-    "typescript": "major bump (v6), needs compatibility review",
     "start-server-and-test": "v3 installed but dry-aged-deps reports v2 as latest (registry cache issue)"
   }
 }

@@ -6,7 +6,11 @@ import { WayChaserOptions, WayChaserResponse } from './waychaser'
 
 export class OperationArray extends Array<InvocableOperation> {
   private constructor(items?: Array<InvocableOperation>) {
-    super(...(items || []))
+    super()
+    if (items) this.push(...items)
+  }
+  static get [Symbol.species]() {
+    return Array
   }
   static create(): OperationArray {
     return Object.create(OperationArray.prototype)
