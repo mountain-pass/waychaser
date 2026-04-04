@@ -1,3 +1,6 @@
+## <small>5.0.45 (2026-04-04)</small>
+
+* chore(deps): update patch-level devDependencies ([981c905](https://github.com/mountain-pass/waychaser/commit/981c905))
 ## <small>5.0.44 (2026-04-04)</small>
 
 * chore: exclude stale devDependencies from dry-aged-deps check ([a0a85c8](https://github.com/mountain-pass/waychaser/commit/a0a85c8))
