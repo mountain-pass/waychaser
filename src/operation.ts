@@ -186,7 +186,17 @@ export class InvocableOperation extends Operation {
     if (this.uri.startsWith('#/')) {
       return this.invokeAsFragment(options?.parameters)
     }
-    else {
+    else if (this.uri.includes('#/')) {
+      // URI has both a path and a fragment (e.g., /addresses?q=...#/0)
+      // Resolve the fragment against the current response's content
+      const fragment = this.uri.slice(this.uri.indexOf('#/') + 1)
+      const fragmentContent = this.response.fullContent && pointer.get(this.response.fullContent as object, fragment) as unknown
+      if (fragmentContent !== undefined) {
+        return new WayChaserResponse({ defaultOptions: this.defaultOptions, baseResponse: this.response.response, content: fragmentContent, fullContent: this.response.fullContent, anchor: '#' + fragment, parentOperations: this.response.allOperations, parameters: options?.parameters })
+      }
+      // Fall through to HTTP request if fragment resolution fails
+    }
+    {
       const parameterSpecs = this.parameters || {}
       const parameters = Object.assign({}, this.defaultOptions.parameters, options?.parameters)
       const invokeUrl = this.url(parameters)
