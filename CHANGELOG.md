@@ -1,3 +1,6 @@
+## <small>5.0.44 (2026-04-04)</small>
+
+* chore: exclude stale devDependencies from dry-aged-deps check ([a0a85c8](https://github.com/mountain-pass/waychaser/commit/a0a85c8))
 ## <small>5.0.43 (2026-03-15)</small>
 
 * Merge pull request #533 from mountain-pass/claude/install-deps-run-tests-AUODi ([1c65de5](https://github.com/mountain-pass/waychaser/commit/1c65de5)), closes [#533](https://github.com/mountain-pass/waychaser/issues/533)
