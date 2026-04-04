@@ -1,3 +1,6 @@
+## <small>5.0.49 (2026-04-04)</small>
+
+* chore(deps): update in-range dev dependencies ([2391af3](https://github.com/mountain-pass/waychaser/commit/2391af3))
 ## <small>5.0.48 (2026-04-04)</small>
 
 * chore(deps): upgrade TypeScript to v6 ([1c7a685](https://github.com/mountain-pass/waychaser/commit/1c7a685))
