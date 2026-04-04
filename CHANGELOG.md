@@ -1,3 +1,6 @@
+## <small>5.0.47 (2026-04-04)</small>
+
+* chore(deps): update eslint-plugin-unicorn to v64 ([4522c82](https://github.com/mountain-pass/waychaser/commit/4522c82))
 ## <small>5.0.46 (2026-04-04)</small>
 
 * chore(deps): update minor devDependencies ([cd6f1a8](https://github.com/mountain-pass/waychaser/commit/cd6f1a8))
