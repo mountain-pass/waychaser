@@ -1,3 +1,6 @@
+## <small>5.0.46 (2026-04-04)</small>
+
+* chore(deps): update minor devDependencies ([cd6f1a8](https://github.com/mountain-pass/waychaser/commit/cd6f1a8))
 ## <small>5.0.45 (2026-04-04)</small>
 
 * chore(deps): update patch-level devDependencies ([981c905](https://github.com/mountain-pass/waychaser/commit/981c905))
