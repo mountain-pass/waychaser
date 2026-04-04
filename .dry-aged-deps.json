@@ -4,10 +4,7 @@
     "@commitlint/cli": "minor bump, batch with next dependency update PR",
     "@commitlint/config-conventional": "minor bump, batch with next dependency update PR",
     "core-js": "minor bump, batch with next dependency update PR",
-    "eslint-plugin-chai-friendly": "minor bump, batch with next dependency update PR",
     "eslint-plugin-unicorn": "major bump, needs compatibility review",
-    "moment-timezone": "minor bump, batch with next dependency update PR",
-    "snyk": "minor bump, batch with next dependency update PR",
     "typescript": "major bump (v6), needs compatibility review"
   }
 }
