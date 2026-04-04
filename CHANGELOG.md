@@ -1,3 +1,6 @@
+## <small>5.0.48 (2026-04-04)</small>
+
+* chore(deps): upgrade TypeScript to v6 ([1c7a685](https://github.com/mountain-pass/waychaser/commit/1c7a685))
 ## <small>5.0.47 (2026-04-04)</small>
 
 * chore(deps): update eslint-plugin-unicorn to v64 ([4522c82](https://github.com/mountain-pass/waychaser/commit/4522c82))
