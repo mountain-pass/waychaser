@@ -19,11 +19,14 @@ fi
 echo "Build workflow: https://github.com/mountain-pass/waychaser/actions/runs/$RUN_ID"
 echo ""
 
-gh run watch "$RUN_ID" --exit-status && echo "" && echo "Pipeline passed." || {
+if gh run watch "$RUN_ID" --exit-status; then
+  echo ""
+  echo "Pipeline passed."
+else
   echo ""
   echo "Pipeline failed. Check: https://github.com/mountain-pass/waychaser/actions/runs/$RUN_ID"
   exit 1
-}
+fi
 
 # Check if publish job ran
 PUBLISH_CONCLUSION=$(gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.name == "publish") | .conclusion' 2>/dev/null)
