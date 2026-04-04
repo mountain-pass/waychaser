@@ -1,9 +1,6 @@
 {
   "exclude": {
     "chromedriver": "version tracks Chrome browser releases, upgrade when CI Chrome version changes",
-    "@commitlint/cli": "minor bump, batch with next dependency update PR",
-    "@commitlint/config-conventional": "minor bump, batch with next dependency update PR",
-    "core-js": "minor bump, batch with next dependency update PR",
     "eslint-plugin-unicorn": "major bump, needs compatibility review",
     "typescript": "major bump (v6), needs compatibility review",
     "start-server-and-test": "v3 installed but dry-aged-deps reports v2 as latest (registry cache issue)"

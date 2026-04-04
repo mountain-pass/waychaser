@@ -157,8 +157,8 @@
     "uri-template-lite": "^23.4.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.4",
-    "@commitlint/config-conventional": "^20.4.4",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@cucumber/cucumber": "^12.7.0",
     "@rollup/plugin-commonjs": "^29.0.2",
     "@rollup/plugin-json": "^6.1.0",
@@ -178,7 +178,7 @@
     "concurrently": "^9.2.1",
     "conventional-changelog-cli": "^5.0.0",
     "conventional-recommended-bump": "^11.2.0",
-    "core-js": "^3.48.0",
+    "core-js": "^3.49.0",
     "cross-fetch": "^4.1.0",
     "cucumber-tsflow": "^4.6.1",
     "dateformat": "^5.0.3",
