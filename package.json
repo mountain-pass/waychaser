@@ -49,6 +49,7 @@
     "TEST_API_PORT": 6060
   },
   "scripts": {
+    "push:watch": "bash scripts/push-and-watch.sh",
     "prepare": "husky",
     "dry-aged-deps": "dry-aged-deps --check",
     "env": "env",
