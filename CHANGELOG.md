@@ -1,3 +1,6 @@
+## <small>5.0.50 (2026-04-05)</small>
+
+* fix: restore CJS output after TypeScript v6 upgrade ([cde5094](https://github.com/mountain-pass/waychaser/commit/cde5094))
 ## <small>5.0.49 (2026-04-04)</small>
 
 * chore(deps): update in-range dev dependencies ([2391af3](https://github.com/mountain-pass/waychaser/commit/2391af3))
